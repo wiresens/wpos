@@ -1,0 +1,70 @@
+**********************
+FIXME
+***********************
+module:libbslxml
+file:ntpv/libbslxml/xmlconfig.cpp:346
+
+//There is a problem here. The xml->readInt(tag)  calls
+//readString(tag).toInt() which may fail to convert the tag value ( if tag was not a string convertible to and integer)
+//into an integer. The function will just return the result without
+// alerting the user about the error.
+//and the resultant value will be 0, the  default of QString::toInt() which the user may not know This is a potential bug
+
+int XmlConfig::readInt(const QString& tag){
+    return readString(tag).toInt();
+}
+This must take a second parameter that will tell whether the conversion was succesfull or not
+
+int XmlConfig::readInt(const QString& tag, bool* ok)
+
+
+/*************************************************
+Possible out of sync of XML configuration files
+***************************************************
+The content of the XML configuration files for the UI are stored in the database
+which makes it difficult to change a parameter directlly from the XML.
+Or the is another way to change to content coherently.
+Besides, other apps read directly the content of those files form the disk
+which may not be in a consistant state whith that of the database.
+We should find a better way to handle this.
+
+Two "" "" appearing strangely on stdout. the reason maybe the the following
+dDebug() calls
+void BslButtonSetWidget::showEvent(QShowEvent *e){
+    QPushButton *button = gbuttons->findButton("dcopreceipt");
+
+    auto bus = QDBusConnection::sessionBus();
+    ReceiptPrimitivesInterface *prim_iface = new ReceiptPrimitivesInterface(service, primitives_obj, bus, this);
+    ReceiptNtpvInterface *ntpv_iface = new ReceiptNtpvInterface(service, ntpv_obj, bus, this);
+
+    if (button){
+        if ( !prim_iface->isValid() || !ntpv_iface->isValid()){
+            qDebug() << bus.lastError().message();
+            button->hide();
+        }
+        else
+            button->show();
+    }
+    QWidget::showEvent(e);
+}
+
+***************************
+HList::remove()
+**************************
+Is a potential bug because it always removes the first element
+of it's list, which might not be what the user intended.
+
+We saw potential use in:
+bool GenericSignalManager::unregisterGenericSignal(const QString& signal, QObject *object)
+bool GenericSignalManager::unregisterGenericDataSignal(const QString& signal, QObject *object)
+where it calls node->_objects.remove() after finding
+an object at position i, it removes not object at i, but always object
+at 0.
+
+Work Around:
+We should track all it's usage in the project by first 
+commenting it and compiling the code and expecting for compiler errors
+in all the places where it is called, and carefully check what was being done.
+
+void KillTicketsWidget::downNElementsSlot()
+void KillTicketsWidget::upNElementsSlot()

@@ -1,0 +1,9 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (products)>
+<!ELEMENT products (product*) >
+<!ELEMENT product (code?, name?, price?, tax?, logo?, description?) >
+<!ELEMENT code (#PCDATA) >
+<!ELEMENT name (#PCDATA) >
+<!ELEMENT price (#PCDATA) >
+<!ELEMENT tax (#PCDATA) >
+<!ELEMENT logo (#PCDATA) >
+<!ELEMENT description (#PCDATA) >

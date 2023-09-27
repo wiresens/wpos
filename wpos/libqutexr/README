@@ -1,0 +1,29 @@
+qutexr is an XML-RPC client and server library initially using Qt 3.1. now ported to Qt 5.12
+qutexr only depends on QT, so it is portable to any platform supported by Qt 5.12,
+including windows, many unix flavors, as well as Mac OSX.
+
+qutexr makes use of Qt's native type system to avoid a burdensome interface.
+Unlike many xmlrpc libraries, both the client and server are simple and easy
+to incorporate into existing projects.
+
+All methods are non-blocking and make use of Qt's signal and slot mechanism.
+This makes this library very easy to use in GUIs as well as event driven
+servers.
+
+The library code is in the libqutexr/ directory.  There is an example client and 
+server in the examples/ directory.
+
+This code should be easy to use for anyone who is experienced with Qt.
+
+Oscar Boykin
+boykin@pobox.com
+
+This code has been revised by Carlos Manzanedo...
+Some errors have been fixed:
+        one of them was the error that affected the
+        comunication with kxmlrpcd... an xml header was missing.
+        
+The update to Qt 5.12 has been made by Gilles Bene Pougoue <gilles.benepougoue@gmail.com>
+
+
+

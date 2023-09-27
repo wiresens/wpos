@@ -1,0 +1,3 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (taxes)>
+<!ELEMENT taxes (tax*) >
+<!ELEMENT tax (#PCDATA) >

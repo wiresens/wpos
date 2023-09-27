@@ -1,0 +1,87 @@
+Qutexr es una biblioteca para cliente servidor  XML-RPC que hace uso de 
+QT (al menos a partir de 3.1) qutexr solo depende de QT asi que es 
+completamente portable a cualquier plataforma que haga uso de QT
+incluida windows, cualquier sabor de unix o MaxOSX
+
+
+Qutexr hace uso de las llamadas nativas de QT. Al contrario que otras 
+bibliotecas de xmlrpc, el cliente y servidor son realmente sencillos
+de utilizar e incorporar en programas ya existentes.
+
+
+Todos los metodos son no bloqueantes y hacen uso de señales y slots QT.
+Esto hace que la biblioteca sea de muy facul uso y la recomienda incluso
+para aplicaciones que hacen uso de interfaces graficos (GUI) asi como
+en servidores programados para la gestion de eventos.
+
+El codigo de la biblioteca esta en el directorio src, hay un ejemplo de
+cliente y servidor en el directorio de ejemplos.
+
+El codigo deberia ser sencillo para alguien que este experimentado en el uso
+de la biblioteca QT .
+
+Oscar Boykin
+boykin@pobox.com
+
+Este codigo ha sido revisado y modificado por Carlos Manzanedo <carlos@napsis.com>
+por diversos motivos la biblioteca contenia fallos que han sido subsanados.
+
+Uno de estos fallos afectaba a la encapsulacion de un XML como string en otro XML
+para este paso se hace una transferencia de caracteres que permite hacer uso
+de libqutexr como biblioteca ideal para transferencia de XML en un entorno 
+en el que se combinan:
+
+cliente qutexr de Xml-Rpc<-->nkxmlrpcd<-->cliente dcop.
+
+
+Para esta comunicacion entre otras cosas hacia falta otra cabecera mas en el XML
+
+
+El proyecto Libqutexr fue abandonado por Oscar Boykin, al que desde aqui agradezco
+este codigo que actualmente esta siendo utilizado en otros proyectos. Actualmente
+el codigo esta siendo mantenido por Carlos Manzanedo en la empresa Napsis S.L. 
+
+Translation from Google translate
+---------------------------------
+Qutexr is an XML-RPC client-server library that makes use of
+QT (at least as of 3.1) qutexr only depends on QT so it's
+completely portable to any platform that makes use of QT
+including windows, any flavor of unix or MaxOSX
+
+
+Qutexr makes use of native QT calls. unlike others
+xmlrpc libraries, the client and server are really simple
+to use and incorporate into existing programs.
+
+
+All methods are non-blocking and make use of QT signals and slots.
+This makes the library very easy to use and recommends even
+for applications that make use of graphical interfaces (GUI) as well as
+on servers programmed for event management.
+
+The library code is in the src directory, there is an example of
+client and server in the examples directory.
+
+The code should be easy for someone who is experienced in using it.
+from the QT library.
+
+oscarboykin
+boykin@pobox.com
+
+This code has been reviewed and modified by Carlos Manzanedo <carlos@napsis.com>
+for various reasons the library contained errors that have been corrected.
+
+One of these bugs affected the encapsulation of an XML as a string in another XML.
+For this step, a transfer of characters is made that allows the use of
+of libqutexr as an ideal library for XML transfer in an environment
+in which are combined:
+
+Xml-Rpc qutexr client<-->nkxmlrpcd<-->dcop client.
+
+
+For this communication, among other things, another header was needed in the XML
+
+
+The Libqutexr project was abandoned by Oscar Boykin, whom I thank from here
+this code that is currently being used in other projects. Now
+the code is being maintained by Carlos Manzanedo in the company Napsis S.L.

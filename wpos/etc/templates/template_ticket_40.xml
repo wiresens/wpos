@@ -1,0 +1,140 @@
+<AUTOMATICALLY_GENERATED_XML>
+      <tr>
+            <td width="5" values="1" align="left" >
+                  <b>
+                        <font width="2" height="2" >%COMPANY%</font>
+                  </b>
+                  <br/>
+                  <font width="0" height="0" />
+            </td>
+      </tr>
+      <br/>
+      <br/>
+      <normal/>
+      <b>CIF : %CIF%</b>
+      <br/>
+      <b>%ADDRESS%</b>
+      <br/>
+      <b>%LOCALIDAD% %PROVINCIA% Telefono: %TELEPHONE%</b>
+      <br/>
+      <b>%HEAD%</b>
+      <hr width="40" />
+      <td>
+            <normal>Caja: </normal>
+            <b>%lounge%</b>
+      </td>
+      <tr>
+            <td>
+                  <normal>Empleado: </normal>
+                  <b>%employee%</b>
+            </td>
+      </tr>
+      <tr>
+            <td>
+                  <normal>TICKET: </normal>
+                  <b>%ticketnumber%</b>
+            </td>
+      </tr>
+      <tr>
+            <td>
+                  <normal>Fecha: </normal>
+                  <normal>%timestamp%</normal>
+            </td>
+      </tr>
+      <br/>
+      <command>
+            <th>
+                  <td width="19" values="1" >
+                        <b>DESCRIPCION</b>
+                  </td>
+                  <td width="1" values="1" >
+                        <normal>
+&nbsp;                        </normal>
+                  </td>
+                  <td width="4" values="1" >
+                        <b>CANT</b>
+                  </td>
+                  <td width="1" values="1" >
+                        <normal>
+&nbsp;                        </normal>
+                  </td>
+                  <td width="6" values="1" >
+                        <b>P.UNI.</b>
+                  </td>
+                  <td width="1" values="1" >
+                        <normal>
+&nbsp;                        </normal>
+                  </td>
+                  <td width="7" values="1" >
+                        <b>IMPORTE</b>
+                  </td>
+                  <td width="1" values="1" >
+                        <normal>
+&nbsp;                        </normal>
+                  </td>
+            </th>
+            <trproduct>
+                  <td width="19" values="1" >
+                        <normal>%description%</normal>
+                  </td>
+                  <td width="1" values="1" >
+                        <b/>
+                  </td>
+                  <td width="4" values="1" align="right" >
+                        <normal>%quantity%</normal>
+                  </td>
+                  <td width="1" values="1" >
+                        <b/>
+                  </td>
+                  <td width="6" values="1" align="right" >
+                        <normal>%unitPrice%</normal>
+                  </td>
+                  <td width="1" values="1" >
+                        <b/>
+                  </td>
+                  <td width="7" values="1" align="right" >
+                        <normal>%price%</normal>
+                  </td>
+                  <td width="1" values="1" >
+                        <b/>
+                  </td>
+            </trproduct>
+            <hr width="40" type="solid" /> 					%TAX% 					<tr>
+                  <td width="20" values="1" >
+                        <normal/>
+                  </td>
+                  <td width="19" values="3" >
+                        <font width="1" height="1" >
+                              <b>TOTAL: </b>
+                              <b>%total_price%</b>
+                              <b> EUR</b>
+                        </font>
+                        <font width="0" height="0" />
+                  </td>
+            </tr>
+            <hr width="40" type="solid" />
+      </command>
+      <tr>
+            <td width="7" >
+                  <normal/>
+            </td>
+            <td width="30" >
+                  <b>%BYE%</b>
+            </td>
+      </tr>
+      <tr>
+            <td width="4" values="1" >
+                  <normal/>
+            </td>
+            <td width="38" values="1" >
+                  <b>%FOOT%</b>
+            </td>
+      </tr>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <cut type="partial" />
+</AUTOMATICALLY_GENERATED_XML>

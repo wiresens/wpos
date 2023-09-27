@@ -1,0 +1,30 @@
+#!/bin/bash
+#Author: carlos@napsis.com
+#
+# Postinstall script of wpos.
+#
+#This script will run at the wPOS "make install" stage
+# it will create the wpos group and prepare files to be owned by wpos group.
+# Users that want to run wPOS must be added to the wpos group at /etc/group
+#
+
+grupo_wpos=$(cat /etc/group | sed s/:/' '/ | awk '$1~/wpos/ {print $1}' | wc -l)
+
+dir_wpos=/etc/wpos
+dir_wpos_backoffice=/etc/wpos_backoffice
+
+if [ $grupo_wpos -eq 0 ]
+then
+        /usr/sbin/addgroup wpos
+fi
+
+        if [ -d $dir_wpos ]
+	then
+		echo "creando grupo y permisos"	
+                chgrp -R wpos $dir_wpos
+                chgrp -R wpos ${dir_wpos}/*
+                chmod -R g+rw $dir_wpos
+                chmod g+rwx $dir_wpos
+                find ${dir_wpos}/ -type d | xargs chmod g+rwx
+                find ${dir_wpos}/ -type f | xargs chmod g+rw
+	fi

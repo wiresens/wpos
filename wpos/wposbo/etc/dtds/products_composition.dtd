@@ -1,0 +1,6 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (composition)>
+<!ELEMENT composition (composition_code, ingredient+) >
+<!ELEMENT composition_code (#PCDATA) >
+<!ELEMENT ingredient (ingredient_code, quantity) >
+<!ELEMENT ingredient_code (#PCDATA) >
+<!ELEMENT quantity (#PCDATA) >

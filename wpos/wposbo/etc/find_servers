@@ -1,0 +1,25 @@
+#! /bin/bash
+
+if [ $# -ne 1 ]
+then
+	echo "No se han dado suficientes argumentos" >&2
+	echo "uso: $0 fichero" >&2
+	exit 255
+fi
+
+FICHERO=$1 #"/tmp/database_server.xml"
+
+if [ -f $FICHERO ]
+then
+	rm -r $FICHERO
+fi
+
+ip a | awk ' $1 ~/inet/ {print $2 }'| tail -n1 |xargs -i'\{' nmap -T insane -p5432  -oX  $FICHERO '\{' >/dev/null
+#ip a | awk ' $1 ~/inet/ {print $2 }'| tail -n1 |xargs -i'\{' nmap -T insane -p5432 '\{' | awk '$1 ~/Interesting/ {print $4}' | sed s/:// |xargs -i'\]' xmlmanage w $FICHERO dbserver '\]'
+
+if [ -f /tmp/xml ]
+then
+	rm -r /tmp/xml
+fi
+
+chmod 666 $FICHERO

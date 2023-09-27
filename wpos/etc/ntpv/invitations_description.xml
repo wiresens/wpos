@@ -1,0 +1,28 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+    <menuentries>
+        <menuentry>
+            <entry>
+                <name>Invitaciones_entry</name>
+                <text>Invitaciones</text>
+                <pixmap>/usr/share/ntpv/apps/offers/package_toys.png</pixmap>
+                <visible>true</visible>
+                <enabled>true</enabled>
+            </entry>
+            <menu>
+                <name>Invitaciones_entry</name>
+                <items>
+                    <item>
+                        <text>invitacion</text>
+                        <pixmap>/usr/share/ntpv/apps/offers/package_toys.png</pixmap>
+                        <offer>
+                            <type>invitacion</type>
+                            <name>invitacion</name>
+                        </offer>
+                    </item>
+                </items>
+            </menu>
+        </menuentry>
+    </menuentries>
+    <defaultentry>Invitaciones_entry</defaultentry>
+</AUTOMATICALLY_GENERATED_XML>

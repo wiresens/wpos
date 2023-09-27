@@ -1,0 +1,15 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <user>
+            <employee_id>123123</employee_id>
+            <name>carlos</name>
+            <last_name>Lopez Gonzalez</last_name>
+            <address>C\chile n20</address>
+            <nss>1231312313</nss>
+            <phone>916334553</phone>
+            <cellular>656566566</cellular>
+            <email>carlos@bluesock.net</email>
+            <company_id>BlueSock S.L.</company_id>
+            <picture>/etc/linuxbar/pictures/carlos.jpg</picture>
+      </user>
+</AUTOMATICALLY_GENERATED_XML>

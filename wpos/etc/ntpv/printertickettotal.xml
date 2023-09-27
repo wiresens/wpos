@@ -1,0 +1,31 @@
+<AUTOMATICALLY_GENERATED_XML>
+    <th>
+        <td width="2" values="1">
+            <normal/>
+        </td>
+        <td width="40" values="1">
+            <b>Dinero en Caja</b>
+        </td>
+    </th>
+    <br/>
+    <tr>
+        <td width="2" values="1">
+            <normal/>
+        </td>
+        <td width="29" values="5">
+            <font width="1" height="1"/>
+            <b>TOTAL: </b>
+            <b>%total_in_cash%</b>
+            <b> Euros</b>
+            <font width="0" height="0"/>
+        </td>
+    </tr>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <br/>
+    <cut/>
+</AUTOMATICALLY_GENERATED_XML>

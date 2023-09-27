@@ -1,0 +1,108 @@
+Libbslxml y xmlmanage
+
+
+Libbslxml es, la implementaciín de la biblioteca que permite el acceso simple a los datos de un XML. Está implementada en C++, pero crear una biblioteca similar en C sería sencillo. Dada la actual dependencia de Qt o TinyQt, la mayoría de las salidas proveen un QString, lo que quizá en la mayoria de los casos no sea lo más deseable. Libbslxml permite las siguientes funcionalidades:
+
+
+Acceso de lectura/escritura de datos a la manera de estructuras y vectores de lenguajes imperativos mayoritarios.
+
+
+Ubicación a nivel de rutas relativas o rutas absolutas.
+
+
+Posibilidad de crear y leer atributos de las etiquetas.
+
+
+Funciones de busqueda sobre el XML a nivel de contenidos e información.
+
+
+Trabajo con Nodos y Atributos.
+
+
+Formateo del XML en texto.
+
+
+Funciones de creación y borrado de dominios y etiquetas.
+
+
+Funciones de copia de secciones de un documento a otro.
+
+
+Funciones que permiten contar etiquetas dentro de un dominio.
+
+
+Como ejemplo, este código:
+
+XmlConfig *xml = new XmlConfig();
+xml->createElementSetDomain("hardware.cpus.cpu");
+xml->createElement("id","0");
+xml->createElement("frequency","1546");
+xml->delDomain();
+xml->createElementSetDomain("hardware.cpus.cpu");
+xml->createElement("id","1");
+xml->createElement("frequency","2000");
+xml->delDomain();
+xml->save("/tmp/prueba.xml");
+
+
+Generaría el siguiente fragmento de xml:
+
+<?xml version = '1.0' encoding = 'UTF-8'?>
+    <AUTOMATICALLY_GENERATED_XML>
+        <hardware>
+            <cpus>
+                <cpu>
+                    <id>0</id> 
+                    <frequency>1546</frequency> 
+                </cpu> 
+                <cpu> 
+                    <id>1</id> 
+                    <frequency>2000</frequency> 
+                </cpu> 
+            </cpus> 
+        </hardware> 
+    </AUTOMATICALLY_GENERATED_XML>
+
+
+Y la lectura sería más o menos igual de simple, por ejemplo
+
+xml->delDomain();
+if (!xml->setDomain("hardware.cpus"){
+cerr < < "no existe dominio de CPUS" < < endl;
+)
+for(int i=0;ihowManyTags("cpu");i++){
+cout < < "Cpu numero " < < endl;
+cout < < (xml->readString("cpu["+QString::number(i)+"].id")).latin1() ;
+cout < < (xml->readString("cpu["+QString::number(i)+"].frequency")).latin1() < < endl ;
+}
+
+
+xmlmanage
+
+
+En muchos de los casos tener una biblioteca simple no es suficientemente flexible. Por ejemplo, para escribir partes de configuración en un XML sacada directamente de /proc, o diálogos sencillos en ncurses que quieran modificar los datos, un script es lo más sencillo y lo más utilizado en UNIX. El problema es que trabajar con ese XML debería ser suficientemente sencillo.
+
+
+Para trabajar sobre esos datos de manera similar a como lo hacemos con libbslxml, pero haciendo uso de scripts, hemos creado xmlmanage. Se trata de un programa de línea de comando que permite utilizar de una manera flexible, dentro de las posibilidades de la línea de comando, todas las funcionalidades que se proveen en libbslxml.
+
+
+Esto nos evita la necesidad de usar awk o alguna otra forma de tratamiento de texto para manejar el XML y nos asegura que el fiche XML estará siempre en un estado correcto.
+
+
+Por ejemplo, para crear el XML enunciado más arriba habría bastado con:
+
+xmlmanage w /tmp/prueba.xml hardware.cpus
+xmlmanage --write /tmp/prueba.xml hardware.cpus.cpu.id 0 
+xmlmanage w /tmp/prueba.xml hardware.cpus.cpu.frequency 1546 
+xmlmanage w /tmp/prueba.xml hardware.cpus.cpu[1].id 1 
+xmlmanage w /tmp/prueba.xml hardware.cpus.cpu[1].frequency 2000
+
+
+Y para leerlo algo similar a:
+
+xmlmanage --list nodes /tmp/prueba.xml hardware.cpus cpu
+
+Éste daría como salida dos líneas con los nodos cpu que podrían recogerse con wc -l, para saber que son 2 y luego pasar a hacer la lectura.
+
+xmlmanage --read /tmp/prueba.xml hardware.cpus.cpu[0].id 
+xmlmanage --read /tmp/prueba.xml hardware.cpus.cpu[0].frequency

@@ -1,0 +1,1505 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <product>
+            <name>generico</name>
+      </product>
+      <screens>
+            <screen>
+                  <name>Desayuno</name>
+                  <cols>5</cols>
+                  <rows>5</rows>
+                  <showtext>true</showtext>
+                  <product col="0" row="0">
+                        <name>cafe_solo</name>
+                  </product>
+                  <product col="1" row="0">
+                        <name>cafe_irlandes</name>
+                  </product>
+                  <product col="2" row="0">
+                        <name>cafe_con_leche</name>
+                  </product>
+                  <product col="3" row="0">
+                        <name>chocolate</name>
+                  </product>
+                  <product col="4" row="0">
+                        <name>cafe_descafeinado</name>
+                  </product>
+                  <product col="0" row="2">
+                        <name>racion_mantequilla</name>
+                  </product>
+                  <product col="1" row="2">
+                        <name>racion_mermelada</name>
+                  </product>
+                  <product col="0" row="1">
+                        <name>te</name>
+                  </product>
+                  <product col="0" row="3">
+                        <name>tortel_de_hojaldre</name>
+                  </product>
+                  <product col="1" row="1">
+                        <name>manzanilla_tila</name>
+                  </product>
+                  <product col="1" row="3">
+                        <name>palmera</name>
+                  </product>
+                  <product col="2" row="3">
+                        <name>suizo</name>
+                  </product>
+                  <product col="2" row="2">
+                        <name>suplemento_nata</name>
+                  </product>
+                  <product col="0" row="4">
+                        <name>tarta</name>
+                  </product>
+                  <product col="1" row="4">
+                        <name>tarta_helada</name>
+                  </product>
+                  <product col="3" row="3">
+                        <name>tostada_con_mantequilla</name>
+                  </product>
+                  <product col="2" row="4">
+                        <name>yoghurt</name>
+                  </product>
+                  <product col="4" row="3">
+                        <name>granizado</name>
+                  </product>
+                  <product col="2" row="1">
+                        <name>zumo_frutas</name>
+                  </product>
+                  <product col="3" row="1">
+                        <name>zumo_naranja</name>
+                  </product>
+                  <product col="4" row="1">
+                        <name>zumo_tomate</name>
+                  </product>
+                  <product col="4" row="2">
+                        <name>leche_merengada</name>
+                  </product>
+                  <product col="3" row="2">
+                        <name>helado_casa</name>
+                  </product>
+                  <product col="4" row="4">
+                        <name>helados_variados</name>
+                  </product>
+            </screen>
+            <screen>
+                  <name>Alcoholes y Cocktails</name>
+                  <cols>6</cols>
+                  <rows>6</rows>
+                  <showtext>true</showtext>
+                  <product col="0" row="0">
+                        <name>whisky_nacional</name>
+                  </product>
+                  <product col="0" row="1">
+                        <name>gran_dyc</name>
+                  </product>
+                  <product col="1" row="0">
+                        <name>whisky_importacion</name>
+                  </product>
+                  <product col="1" row="1">
+                        <name>whisky_reserva</name>
+                  </product>
+                  <product col="2" row="0">
+                        <name>whisky_reserva_especial</name>
+                  </product>
+                  <product col="2" row="1">
+                        <name>vodka</name>
+                  </product>
+                  <product col="5" row="0">
+                        <name>terry</name>
+                  </product>
+                  <product col="5" row="1">
+                        <name>soberano</name>
+                  </product>
+                  <product col="3" row="0">
+                        <name>ron_negrita</name>
+                  </product>
+                  <product col="4" row="0">
+                        <name>pacharan</name>
+                  </product>
+                  <product col="4" row="1">
+                        <name>magno</name>
+                  </product>
+                  <product col="3" row="1">
+                        <name>licores</name>
+                  </product>
+                  <product col="5" row="2">
+                        <name>campari</name>
+                  </product>
+                  <product col="4" row="2">
+                        <name>vermouth_rojo</name>
+                  </product>
+                  <product col="3" row="2">
+                        <name>vermouth_blanco</name>
+                  </product>
+                  <product col="2" row="2">
+                        <name>marie_brizard</name>
+                  </product>
+                  <product col="1" row="2">
+                        <name>chichon</name>
+                  </product>
+                  <product col="0" row="2">
+                        <name>chinchon_seco</name>
+                  </product>
+                  <product col="2" row="5">
+                        <name>cocktail_champagne</name>
+                  </product>
+                  <product col="3" row="5">
+                        <name>cocktail_martini</name>
+                  </product>
+                  <product col="4" row="5">
+                        <name>cocktail_sin_alcohol</name>
+                  </product>
+                  <product col="5" row="5">
+                        <name>cocktail_vermouth</name>
+                  </product>
+                  <product col="0" row="5">
+                        <name>jarra_sangria</name>
+                  </product>
+                  <product col="4" row="4">
+                        <name>cuba_libre</name>
+                  </product>
+                  <product col="5" row="4">
+                        <name>gin-tonic</name>
+                  </product>
+                  <product col="1" row="5">
+                        <name>mosto</name>
+                  </product>
+                  <product col="1" row="4">
+                        <name>triple_seco</name>
+                  </product>
+                  <product col="0" row="4">
+                        <name>cointreau</name>
+                  </product>
+                  <product col="2" row="4">
+                        <name>lepanto</name>
+                  </product>
+            </screen>
+            <screen>
+                  <name>Vinos y Cervezas</name>
+                  <cols>5</cols>
+                  <rows>5</rows>
+                  <showtext>true</showtext>
+                  <product col="0" row="0">
+                        <name>botellin_cerveza</name>
+                  </product>
+                  <product col="1" row="0">
+                        <name>botellin_especial_nacional</name>
+                  </product>
+                  <product col="2" row="0">
+                        <name>cerveza_especial_importacion</name>
+                  </product>
+                  <product col="3" row="0">
+                        <name>cerveza_reserva</name>
+                  </product>
+                  <product col="0" row="1">
+                        <name>caña</name>
+                  </product>
+                  <product col="1" row="1">
+                        <name>cerveza_sin_alcohol</name>
+                  </product>
+                  <product col="4" row="0">
+                        <name>bote_de_cerveza</name>
+                  </product>
+                  <product col="2" row="1">
+                        <name>jarra</name>
+                  </product>
+                  <product col="3" row="1">
+                        <name>tercio_especial_nacional</name>
+                  </product>
+                  <product col="4" row="1">
+                        <name>tercio_cerveza</name>
+                  </product>
+                  <product col="0" row="2">
+                        <name>moriles</name>
+                  </product>
+                  <product col="1" row="2">
+                        <name>vino_manzanilla</name>
+                  </product>
+                  <product col="0" row="3">
+                        <name>jarra_sangria</name>
+                  </product>
+                  <product col="1" row="4">
+                        <name>oporto</name>
+                  </product>
+                  <product col="1" row="3">
+                        <name>botella_sidra</name>
+                  </product>
+                  <product col="0" row="4">
+                        <name>tio_pepe</name>
+                  </product>
+                  <product col="2" row="4">
+                        <name>botella_albali</name>
+                  </product>
+                  <product col="4" row="4">
+                        <name>botella_rioja</name>
+                  </product>
+                  <product col="3" row="4">
+                        <name>botella_valdepeñás</name>
+                  </product>
+                  <product col="3" row="3">
+                        <name>valdepeñas_1/2</name>
+                  </product>
+                  <product col="4" row="3">
+                        <name>rioja_1/2</name>
+                  </product>
+                  <product col="2" row="3">
+                        <name>albali_1/2</name>
+                  </product>
+                  <product col="2" row="2">
+                        <name>copa_albali</name>
+                  </product>
+                  <product col="4" row="2">
+                        <name>copa_rioja</name>
+                  </product>
+                  <product col="3" row="2">
+                        <name>copa_valdepeñas</name>
+                  </product>
+            </screen>
+            <screen>
+                  <name>Refrescos y Raciones</name>
+                  <cols>5</cols>
+                  <rows>5</rows>
+                  <showtext>true</showtext>
+                  <product col="0" row="0">
+                        <name>agua_mineral_1/3</name>
+                  </product>
+                  <product col="1" row="0">
+                        <name>agua_mineral_!/2</name>
+                  </product>
+                  <product col="2" row="0">
+                        <name>agua_mineral_litro</name>
+                  </product>
+                  <product col="4" row="4">
+                        <name>cortezas</name>
+                  </product>
+                  <product col="0" row="1">
+                        <name>granizado</name>
+                  </product>
+                  <product col="1" row="1">
+                        <name>horchata</name>
+                  </product>
+                  <product col="3" row="4">
+                        <name>mejillones_en_conserva</name>
+                  </product>
+                  <product col="0" row="4">
+                        <name>montado_jamon</name>
+                  </product>
+                  <product col="1" row="4">
+                        <name>montado_lomo</name>
+                  </product>
+                  <product col="2" row="4">
+                        <name>patatas_fritas</name>
+                  </product>
+                  <product col="2" row="1">
+                        <name>zumo_frutas</name>
+                  </product>
+                  <product col="3" row="1">
+                        <name>zumo_naranja</name>
+                  </product>
+                  <product col="4" row="1">
+                        <name>zumo_tomate</name>
+                  </product>
+                  <product col="3" row="0">
+                        <name>bitter_kas</name>
+                  </product>
+                  <product col="0" row="2">
+                        <name>refresco</name>
+                  </product>
+                  <product col="1" row="2">
+                        <name>tonica</name>
+                  </product>
+                  <product col="0" row="3">
+                        <name>aceitunas</name>
+                  </product>
+                  <product col="1" row="3">
+                        <name>almejas_en_conserva</name>
+                  </product>
+                  <product col="2" row="3">
+                        <name>almendras</name>
+                  </product>
+                  <product col="3" row="3">
+                        <name>berberechos_en_conserva</name>
+                  </product>
+                  <product col="4" row="3">
+                        <name>anchoas</name>
+                  </product>
+                  <product col="3" row="2">
+                        <name>boquerones_en_vinagre</name>
+                  </product>
+                  <product col="4" row="2">
+                        <name>calamares_fritos</name>
+                  </product>
+                  <product col="2" row="2">
+                        <name>batido</name>
+                  </product>
+                  <product col="4" row="0">
+                        <name>mosto</name>
+                  </product>
+            </screen>
+            <screen>
+                  <name>Principal</name>
+                  <cols>6</cols>
+                  <rows>6</rows>
+                  <showtext>true</showtext>
+                  <product col="3" row="0">
+                        <name>cafe_solo</name>
+                  </product>
+                  <product col="4" row="0">
+                        <name>cafe_con_leche</name>
+                  </product>
+                  <product col="5" row="0">
+                        <name>cafe_descafeinado</name>
+                  </product>
+                  <product col="2" row="0">
+                        <name>chocolate</name>
+                  </product>
+                  <product col="2" row="1">
+                        <name>botellin_cerveza</name>
+                  </product>
+                  <product col="3" row="1">
+                        <name>caña</name>
+                  </product>
+                  <product col="4" row="1">
+                        <name>cerveza_sin_alcohol</name>
+                  </product>
+                  <product col="5" row="1">
+                        <name>jarra</name>
+                  </product>
+                  <product col="5" row="2">
+                        <name>licores</name>
+                  </product>
+                  <product col="4" row="2">
+                        <name>soberano</name>
+                  </product>
+                  <product col="0" row="0">
+                        <name>manzanilla_tila</name>
+                  </product>
+                  <product col="1" row="0">
+                        <name>te</name>
+                  </product>
+                  <product col="1" row="1">
+                        <name>tercio_cerveza</name>
+                  </product>
+                  <product col="0" row="1">
+                        <name>cerveza_especial_importacion</name>
+                  </product>
+                  <product col="3" row="2">
+                        <name>terry</name>
+                  </product>
+                  <product col="2" row="2">
+                        <name>pacharan</name>
+                  </product>
+                  <product col="0" row="2">
+                        <name>vermouth_rojo</name>
+                  </product>
+                  <product col="4" row="3">
+                        <name>cuba_libre</name>
+                  </product>
+                  <product col="5" row="3">
+                        <name>gin-tonic</name>
+                  </product>
+                  <product col="3" row="3">
+                        <name>ron_negrita</name>
+                  </product>
+                  <product col="0" row="3">
+                        <name>whisky_importacion</name>
+                  </product>
+                  <product col="1" row="2">
+                        <name>vodka</name>
+                  </product>
+                  <product col="1" row="3">
+                        <name>whisky_nacional</name>
+                  </product>
+                  <product col="2" row="3">
+                        <name>whisky_reserva</name>
+                  </product>
+                  <product col="3" row="5">
+                        <name>zumo_frutas</name>
+                  </product>
+                  <product col="4" row="5">
+                        <name>zumo_naranja</name>
+                  </product>
+                  <product col="5" row="5">
+                        <name>zumo_tomate</name>
+                  </product>
+                  <product col="2" row="5">
+                        <name>refresco</name>
+                  </product>
+                  <product col="1" row="5">
+                        <name>mosto</name>
+                  </product>
+                  <product col="0" row="5">
+                        <name>horchata</name>
+                  </product>
+                  <product col="5" row="4">
+                        <name>jarra_sangria</name>
+                  </product>
+                  <product col="4" row="4">
+                        <name>copa_rioja</name>
+                  </product>
+                  <product col="3" row="4">
+                        <name>cocktail_vermouth</name>
+                  </product>
+                  <product col="0" row="4">
+                        <name>calamares_fritos</name>
+                  </product>
+                  <product col="2" row="4">
+                        <name>batido</name>
+                  </product>
+                  <product col="1" row="4">
+                        <name>aceitunas</name>
+                  </product>
+            </screen>
+      </screens>
+      <products>
+            <product>
+                  <name>aceitunas</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>agua_mineral_!/2</name>
+                  <icon>/usr/share/ntpv/logos/agua_mediolitro.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>agua_mineral_1/3</name>
+                  <icon>/usr/share/ntpv/logos/agua_50ml.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>agua_mineral_litro</name>
+                  <icon>/usr/share/ntpv/logos/agua_1l.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>albali_1/2</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>almejas_en_conserva</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>almendras</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>anchoas</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>batido</name>
+                  <icon>/usr/share/ntpv/logos/chocolate.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>berberechos_en_conserva</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>bitter_kas</name>
+                  <icon>/usr/share/ntpv/logos/bitter_kas.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>boquerones_en_vinagre</name>
+                  <icon>/usr/share/ntpv/logos/boquerones_vinagre.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>bote_de_cerveza</name>
+                  <icon>/usr/share/ntpv/logos/mahou_bote.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>botella_albali</name>
+                  <icon>/usr/share/ntpv/logos/albani_tinto_botella.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>botella_rioja</name>
+                  <icon>/usr/share/ntpv/logos/rioja_tinto_botella.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>botella_sidra</name>
+                  <icon>/usr/share/ntpv/logos/sidra_el_gaitero.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>botella_valdepeñás</name>
+                  <icon>/usr/share/ntpv/logos/valdepenias_tinto_botella.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>botellin_cerveza</name>
+                  <icon>/usr/share/ntpv/logos/mahou_botellin.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>botellin_especial_nacional</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cafe_descafeinado</name>
+                  <icon>/usr/share/ntpv/logos/nescafe_descafeinado.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cafe_irlandes</name>
+                  <icon>/usr/share/ntpv/logos/cafe_irlandes.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cafe_solo</name>
+                  <icon>/usr/share/ntpv/logos/cafe.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cafe_con_leche</name>
+                  <icon>/usr/share/ntpv/logos/cafe.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>calamares_fritos</name>
+                  <icon>/usr/share/ntpv/logos/calamares_fritos.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>campari</name>
+                  <icon>/usr/share/ntpv/logos/campari.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>caña</name>
+                  <icon>/usr/share/ntpv/logos/copa_cerveza.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cerveza_especial_importacion</name>
+                  <icon>/usr/share/ntpv/logos/voll_dam.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cerveza_reserva</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cerveza_sin_alcohol</name>
+                  <icon>/usr/share/ntpv/logos/copa_cerveza_sin.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>chichon</name>
+                  <icon>/usr/share/ntpv/logos/chinchon.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>chinchon_seco</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>chocolate</name>
+                  <icon>/usr/share/ntpv/logos/desayuno.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cocktail_champagne</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cocktail_martini</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cocktail_sin_alcohol</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cocktail_vermouth</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>codorniu</name>
+                  <icon>/usr/share/ntpv/logos/champgne.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cointreau</name>
+                  <icon>/usr/share/ntpv/logos/cointreau.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>copa_albali</name>
+                  <icon>/usr/share/ntpv/logos/albani_tinto_copa.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>copa_rioja</name>
+                  <icon>/usr/share/ntpv/logos/rioja_tinto_copa.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>copa_valdepeñas</name>
+                  <icon>/usr/share/ntpv/logos/valdepenias_tinto_botella.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cortezas</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>cuba_libre</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>gin-tonic</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>gran_dyc</name>
+                  <icon>/usr/share/ntpv/logos/dyc_8.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>granizado</name>
+                  <icon>/usr/share/ntpv/logos/granizado_limon_1.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>helado_casa</name>
+                  <icon>/usr/share/ntpv/logos/frigo_magnum_soft_intense.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>helados_variados</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>horchata</name>
+                  <icon>/usr/share/ntpv/logos/horchata.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>jarra</name>
+                  <icon>/usr/share/ntpv/logos/jarra.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>jarra_sangria</name>
+                  <icon>/usr/share/ntpv/logos/jarra_sangria.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>leche_merengada</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>lepanto</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>licores</name>
+                  <icon>/usr/share/ntpv/logos/licor_orujo_hierbas.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>magno</name>
+                  <icon>/usr/share/ntpv/logos/magno.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>manzanilla_tila</name>
+                  <icon>/usr/share/ntpv/logos/manzanilla_hornimans.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>marie_brizard</name>
+                  <icon>/usr/share/ntpv/logos/marie_brizard.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>mejillones_en_conserva</name>
+                  <icon>/usr/share/ntpv/logos/mejillones_1.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>montado_jamon</name>
+                  <icon>/usr/share/ntpv/logos/montado.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>montado_lomo</name>
+                  <icon>/usr/share/ntpv/logos/montado.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>moriles</name>
+                  <icon>/usr/share/ntpv/logos/moriles_montebello.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>mosto</name>
+                  <icon>/usr/share/ntpv/logos/mosto.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>oporto</name>
+                  <icon>/usr/share/ntpv/logos/vino_oporto2.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>pacharan</name>
+                  <icon>/usr/share/ntpv/logos/pacharan.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>palmera</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>patatas_fritas</name>
+                  <icon>/usr/share/ntpv/logos/patatas_matutano_1.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>racion_mantequilla</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>racion_mermelada</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>refresco</name>
+                  <icon>/usr/share/ntpv/logos/Coca-Cola_4.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>rioja_1/2</name>
+                  <icon>/usr/share/ntpv/logos/rioja_tinto_copa.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>ron_negrita</name>
+                  <icon>/usr/share/ntpv/logos/negrita.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>soberano</name>
+                  <icon>/usr/share/ntpv/logos/soberano.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>suizo</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>suplemento_nata</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>tarta</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>tarta_helada</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>te</name>
+                  <icon>/usr/share/ntpv/logos/te_hornimans.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>tercio_cerveza</name>
+                  <icon>/usr/share/ntpv/logos/mahou_tercio.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>tercio_especial_nacional</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>terry</name>
+                  <icon>/usr/share/ntpv/logos/terry.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>tio_pepe</name>
+                  <icon>/usr/share/ntpv/logos/tio_pepe.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>tonica</name>
+                  <icon>/usr/share/ntpv/logos/Tonica2.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>tortel_de_hojaldre</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>tostada_con_mantequilla</name>
+                  <icon>/usr/share/ntpv/logos/tostada_1.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>triple_seco</name>
+                  <icon>/usr/share/ntpv/logos/triple_seco.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>valdepeñas_1/2</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>vermouth_blanco</name>
+                  <icon>/usr/share/ntpv/logos/martini_bianco.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>vermouth_rojo</name>
+                  <icon>/usr/share/ntpv/logos/martini.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>vino_manzanilla</name>
+                  <icon>/usr/share/ntpv/logos/manzanilla.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>vodka</name>
+                  <icon>/usr/share/ntpv/logos/absolut.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>whisky_importacion</name>
+                  <icon>/usr/share/ntpv/logos/ballantines.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>whisky_nacional</name>
+                  <icon>/usr/share/ntpv/logos/dyc.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>whisky_reserva</name>
+                  <icon>/usr/share/ntpv/logos/ballantines_12.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>whisky_reserva_especial</name>
+                  <icon>/usr/share/ntpv/logos/jack_daniels.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>yoghurt</name>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>zumo_frutas</name>
+                  <icon>/usr/share/ntpv/logos/zumo_pina.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>zumo_naranja</name>
+                  <icon>/usr/share/ntpv/logos/zumo_naranja.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+            <product>
+                  <name>zumo_tomate</name>
+                  <icon>/usr/share/ntpv/logos/zumo_tomate.png</icon>
+                  <options>
+                        <option>
+                              <type>Lugar</type>
+                              <value>Sala</value>
+                              <value type="default">Mostrador</value>
+                        </option>
+                  </options>
+            </product>
+      </products>
+</AUTOMATICALLY_GENERATED_XML>

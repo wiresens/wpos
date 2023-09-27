@@ -1,0 +1,13 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (user)>
+<!ELEMENT user (employee_id,name,last_name,address,nss,phone,cellular,email,company_id,picture,gerente)>
+<!ELEMENT employee_id (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT last_name (#PCDATA)>
+<!ELEMENT address (#PCDATA)>
+<!ELEMENT phone (#PCDATA)>
+<!ELEMENT nss (#PCDATA)>
+<!ELEMENT cellular (#PCDATA)>
+<!ELEMENT email (#PCDATA)>
+<!ELEMENT company_id (#PCDATA)>
+<!ELEMENT picture (#PCDATA)>
+<!ELEMENT gerente (#PCDATA)>

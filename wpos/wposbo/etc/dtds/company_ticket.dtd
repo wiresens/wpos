@@ -1,0 +1,12 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (ticket_values) >
+<!ELEMENT ticket_values (company, cif?, address?, localidad?, provincia?, telephone, head?, foot?, bye, showtaxes) >
+<!ELEMENT company (#PCDATA) >
+<!ELEMENT cif (#PCDATA) >
+<!ELEMENT address (#PCDATA) >
+<!ELEMENT localidad (#PCDATA) >
+<!ELEMENT provincia (#PCDATA) >
+<!ELEMENT telephone (#PCDATA) >
+<!ELEMENT head (#PCDATA) >
+<!ELEMENT foot (#PCDATA) >
+<!ELEMENT bye (#PCDATA) >
+<!ELEMENT showtaxes (#PCDATA) >

@@ -1,0 +1,9 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (identity,finger,presence,quality,model_number,fingerprint_path,model_path)>
+<!ELEMENT identity (#PCDATA)>
+<!ELEMENT finger (#PCDATA)>
+<!ELEMENT presence (#PCDATA)>
+<!ELEMENT quality (#PCDATA)>
+<!ELEMENT model_number (#PCDATA)>
+<!ELEMENT fingerprint_path (#PCDATA)>                
+<!ELEMENT model_path (#PCDATA)>        
+						

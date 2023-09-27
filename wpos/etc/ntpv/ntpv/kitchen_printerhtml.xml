@@ -1,0 +1,79 @@
+<AUTOMATICALLY_GENERATED_XML>
+<!--      <hr width="42" />-->      <tr>
+            <td>
+                  <normal>Caja: </normal>
+                  <b>%lounge%</b>
+                  <normal>--</normal>
+                  <b>%table%</b>
+            </td>
+      </tr>
+      <tr>
+            <td>
+                  <normal>Empleado: </normal>
+                  <b>%employee%</b>
+            </td>
+      </tr>
+      <tr>
+            <td>
+                  <normal>TICKET: </normal>
+                  <b>%ticketnumber%</b>
+            </td>
+      </tr>
+      <tr>
+            <td>
+                  <normal>Fecha: </normal>
+                  <normal>%timestamp%</normal>
+            </td>
+      </tr>
+      <br/>
+      <command>
+            <th>
+                  <td width="3" values="1" >
+                        <normal>PED</normal>
+                  </td>
+                  <td width="1" values="1" >
+                        <normal>
+&nbsp;                        </normal>
+                  </td>
+                  <td width="3" values="1" align="left" >
+                        <b>CAN</b>
+                  </td>
+                  <td width="1" values="1" >
+                        <normal>
+&nbsp;                        </normal>
+                  </td>
+                  <td width="34" values="1" align="left" >
+                        <b>DESCRIPCION</b>
+                  </td>
+                  <br/>
+            </th>
+            <trproduct>
+                  <td width="3" values="1" align="left" >
+                        <normal>%printed%</normal>
+                  </td>
+                  <td width="1" values="1" >
+                        <normal>
+&nbsp;                        </normal>
+                  </td>
+                  <td width="3" values="1" align="left" >
+                        <normal>%quantity%</normal>
+                  </td>
+                  <td width="1" values="1" >
+                        <normal>
+&nbsp;                        </normal>
+                  </td>
+                  <td width="34" values="1" >
+                        <normal>%description%</normal>
+                  </td>
+                  <trproptions width="42" separator="return" init_space="12" alignn="left" />
+                  <hr width="42" />
+            </trproduct>
+      </command>
+<!--      <hr width="42" />-->      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <cut type="partial" />
+</AUTOMATICALLY_GENERATED_XML>

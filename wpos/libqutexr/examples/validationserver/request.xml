@@ -1,0 +1,20 @@
+<?xml version='1.0'?>
+<methodCall>
+ <methodName>sample.sumAndDifference</methodName>
+ <params>
+  <param>
+   <value>
+    <array>
+     <data>
+      <value>
+       <int>5</int>
+      </value>
+      <value>
+       <int>15</int>
+      </value>
+     </data>
+    </array>
+   </value>
+  </param>
+ </params>
+</methodCall>

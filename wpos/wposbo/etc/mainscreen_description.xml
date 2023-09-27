@@ -1,0 +1,341 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+  <toptitlepixmap>/usr/share/ntpv_backoffice/apps/ntpv_header.png</toptitlepixmap>
+  <downtitlepixmap>/usr/share/ntpv_backoffice/apps/ntpv_foot.png</downtitlepixmap>
+  <menus>
+    <xgridsize>160</xgridsize>
+    <ygridsize>170</ygridsize>
+    <gridspacing>30</gridspacing>
+    <backgroundcolor></backgroundcolor>
+    <backgroundpixmap>/usr/share/ntpv_backoffice/apps/tile_blur.png</backgroundpixmap>
+    <fontfamily>SansSerif</fontfamily>
+    <fontsize>14</fontsize>
+    <bold>true</bold>
+    <menu>
+      <name>SYSCONF_MENU</name>
+      <text>System configuration</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/sysconf.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>SYSCONF_SUBMENU</name>
+        <text>System configuration</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/sysconf.png</pixmap>
+        <url>file://var/ntpv_backoffice/system_configuration.html</url>
+        <items>
+          <item>
+            <name>SYSCONF_SUBMENU_FX2000DEVICE</name>
+            <text>Fingerprint Reader</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/fx2000.jpg</pixmap>
+          </item>
+          <item>
+            <name>SYSCONF_SUBMENU_TICKETDESIGN_WIDGET</name>
+            <text>Ticket Management</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/printer.png</pixmap>
+          </item>
+	      <item>
+            <name>SYSCONF_SUBMENU_DDBB_SUBMENU_GENERAL</name>
+            <text>Database</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/ddbb_general.png</pixmap>
+          </item>
+          <item>
+            <name>SYSCONF_SUBMENU_DEVICES_CONFIG_WIDGET</name>
+            <text>Devices</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/hwinfo.png</pixmap>
+          </item>
+          <item>
+            <name>SYSCONF_SUBMENU_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>
+        </items>        
+      </submenu>
+    </menu>
+    <menu>
+      <name>USER_MENU</name>
+      <text>Users</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/users.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>USER_SUBMENU</name>
+        <text>Users</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/users.png</pixmap>
+        <url>file://var/ntpv_backoffice/system_configuration.html</url>
+        <items>
+          <item>
+            <name>USER_SUBMENU_ADD</name>
+            <text>Create User</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/users_add.png</pixmap>
+          </item>
+          <item>
+            <name>USER_SUBMENU_MODIFY</name>
+            <text>Modify User</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/users_modify.png</pixmap>
+          </item>
+          <item>
+            <name>USER_SUBMENU_DEL</name>
+            <alias>USER_SUBMENU_MODIFY</alias>
+            <text>Delete User</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/users_del1.png</pixmap>
+          </item>
+          <item>
+            <name>USER_SUBMENU_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>          
+        </items>
+      </submenu>
+    </menu>
+    <menu>
+      <name>OFFERS_OPTIONS_MENU</name>
+      <text>Offers and Options</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/ksplash.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>OFFERS_OPTIONS_SUBMENU</name>
+        <text>Options and Offers</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/ksplash.png</pixmap>
+        <url>file://var/ntpv_backoffice/lounge_configuration.html</url>
+        <items>
+	  <item>
+            <name>OFFERS_OPTIONS_SUBMENU_ADD_OPTION</name>
+            <text>Create Option</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/producto.png</pixmap>
+          </item>
+	  <item>
+            <name>OFFERS_OPTIONS_SUBMENU_UPDATE_OPTION</name>
+            <text>Update Option</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/product_rewritexml.png</pixmap>
+          </item>
+	  <item>
+            <name>OFFERS_OPTIONS_SUBMENU_DEL_OPTION</name>
+            <text>Delete Option</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/borrar_producto.png</pixmap>
+          </item>
+	  <item>
+            <name>OFFERS_OPTIONS_SUBMENU_ADD_OFFER</name>
+            <text>Create Offer</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/producto.png</pixmap>
+          </item>
+	  <item>
+            <name>OFFERS_OPTIONS_SUBMENU_UPDATE_OFFER</name>
+            <text>Update Offer</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/product_rewritexml.png</pixmap>
+          </item>
+	  <item>
+            <name>OFFERS_OPTIONS_SUBMENU_DEL_OFFER</name>
+            <text>Delete Offer</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/borrar_producto.png</pixmap>
+          </item>
+          <item>
+            <name>OFFERS_OPTIONS_SUBMENY_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>
+        </items>
+      </submenu>
+    </menu>
+    <menu>
+      <name>PRODUCTS_MENU</name>
+      <text>Products</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/productos.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>PRODUCTS_SUBMENU</name>
+        <text>Products</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/productos.png</pixmap>
+        <url>file://var/ntpv_backoffice/products_configuration.html</url>
+        <items>
+          <item>
+            <name>PRODUCTS_SUBMENU_ADD_UNITARY</name>
+            <text>Create  Product</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/producto.png</pixmap>
+          </item>
+          <item>
+            <name>PRODUCTS_SUBMENU_ADD_COMPOSITE</name>
+            <text>Create Composition</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/productos.png</pixmap>
+          </item>
+          <item>
+            <name>PRODUCTS_SUBMENU_MODIFY</name>
+            <text>Modify Product</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/modificar_productos.png</pixmap>
+          </item>
+          <item>
+            <name>PRODUCTS_SUBMENU_DEL</name>
+            <text>Delete Product</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/borrar_producto.png</pixmap>
+          </item>
+	  <item>
+            <name>PRODUCTS_SUBMENU_XML_UPDATE</name>
+            <text>Update XML</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/product_rewritexml.png</pixmap>
+          </item>
+          <item>
+            <name>PRODUCTS_SUBMENU_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>
+        </items>
+      </submenu>
+    </menu>
+    <menu>
+      <name>DESIGN_MENU</name>
+      <text>Settings</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/design.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>DESIGN_SUBMENU</name>
+        <text>Screens Configuration</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/design.png</pixmap>
+        <url>file://var/ntpv_backoffice/design_configuration.html</url>
+        <items>
+          <item>
+            <name>DESIGN_SUBMENU_SCREEN</name>
+            <text>Products</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/design2.png</pixmap>
+          </item>
+          <item>
+            <name>DESIGN_SUBMENU_OFFERS</name>
+            <text>Offers</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/design2.png</pixmap>
+          </item>
+          <item>
+            <name>DESIGN_SUBMENU_BUTTONS</name>
+            <text>Quick Buttons</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/design2.png</pixmap>
+          </item>
+          <item>
+            <name>DESIGN_SUBMENU_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>
+        </items>
+      </submenu>
+    </menu>   
+    <menu>
+      <name>HISTORIC_MENU</name>
+      <text>Listings Menu</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/historico.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>HISTORIC_SUBMENU</name>
+        <text>Listings</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/historico.png</pixmap>
+        <url>file://var/ntpv_backoffice/report_configuration.html</url>
+        <items>
+          <item>
+            <name>TICKET_HISTORIC_SUBMENU</name>
+            <text>Tickets</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/fileshare.png</pixmap>
+          </item>
+          <item>
+            <name>Z_HISTORIC_SUBMENU</name>
+            <text>Tonnage</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/z.png</pixmap>
+          </item>
+          <item>
+            <name>HISTORIC_SUBMENU_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>
+        </items>
+      </submenu>
+    </menu>
+    <menu>
+      <name>REPORT_MENU</name>
+      <text>Reporting Center</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/reports.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>REPORT_SUBMENU</name>
+        <text>Reporting Center</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/reports.png</pixmap>
+        <url>file://var/ntpv_backoffice/report_configuration.html</url>
+        <items>
+          <item>
+            <name>PROFIT_SUBMENU</name>
+            <text>Income</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/report.png</pixmap>
+          </item>
+          <item>
+            <name>PRODUCT_AND_OFFERS_SUBMENU</name>
+            <text>Products and Offers</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/report.png</pixmap>
+          </item>
+          <item>
+            <name>REPORT_SUBMENU_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>
+        </items>
+      </submenu>
+    </menu>
+    <menu>
+      <name>STICK_MENU</name>
+      <text>Memory Stick</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/stick_64x64.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>STICK_SUBMENU</name>
+        <text>Memory Stick</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/stick_64x64.png</pixmap>
+        <url>file://var/ntpv_backoffice/report_configuration.html</url>
+        <items>
+          <item>
+            <name>STICK_SUBMENU</name>
+            <text>Operations</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/stick_48x48.png</pixmap>
+          </item>
+          <item>
+            <name>REPORT_SUBMENU_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>
+        </items>
+      </submenu>
+    </menu>
+    <menu>
+      <name>SUPPORT_MENU</name>
+      <text>Support Center</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/support.png</pixmap>
+      <xpos></xpos>
+      <ypos></ypos>
+      <submenu>
+        <name>SUPPORT_SUBMENU</name>
+        <text>Support Center</text>
+        <pixmap>/usr/share/ntpv_backoffice/apps/64x64/support.png</pixmap>
+        <url>file://var/ntpv_backoffice/support_configuration.html</url>
+        <items>
+	  <item>
+            <name>SUPPORT_SUBMENU</name>
+            <text>Support</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/logo_napsis_48.png</pixmap>
+          </item>
+	  <item>
+            <name>TECH_TEAM_SUBMENU</name>
+            <text>Credit</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/users.png</pixmap>
+          </item>
+          <item>
+            <name>SUPPORT_SUBMENU_BACK</name>
+            <text>Return</text>
+            <pixmap>/usr/share/ntpv_backoffice/apps/48x48/back.png</pixmap>
+          </item>
+        </items>
+      </submenu>
+    </menu>
+    <menu>
+      <name>EXIT_MENU</name>
+      <text>Exit</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/64x64/exit.png</pixmap>
+    </menu>
+  </menus>
+</AUTOMATICALLY_GENERATED_XML>

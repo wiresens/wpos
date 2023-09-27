@@ -1,0 +1,13 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (authtoken?,servers,main?,kitchen?)>
+<!ELEMENT authtoken (#PCDATA)>
+<!ELEMENT servers (server*)>
+<!ELEMENT server (ip,name?)>
+<!ELEMENT ip (#PCDATA)>
+<!ELEMENT name (#PCDATA)>
+<!ELEMENT main (type,device,length?,user?,passwd?)>
+<!ELEMENT kitchen (type,device,length?,user?,passwd?)>
+<!ELEMENT type (#PCDATA)>
+<!ELEMENT device (#PCDATA)>
+<!ELEMENT user (#PCDATA)>
+<!ELEMENT length (#PCDATA)>
+<!ELEMENT passwd (#PCDATA)>

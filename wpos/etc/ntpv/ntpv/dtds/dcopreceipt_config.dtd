@@ -1,0 +1,6 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (authtoken?,servers)>
+<!ELEMENT authtoken (#PCDATA)>
+<!ELEMENT servers (server*)>
+<!ELEMENT server (ip,name?)>
+<!ELEMENT ip (#PCDATA)>
+<!ELEMENT name (#PCDATA)>

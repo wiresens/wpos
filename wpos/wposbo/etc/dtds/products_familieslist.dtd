@@ -1,0 +1,3 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (families) >
+<!ELEMENT families (family*) >
+<!ELEMENT family (#PCDATA) >

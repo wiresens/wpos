@@ -1,0 +1,32 @@
+<?xml version="1.0" ?>
+<!-- nmap 3.75 scan initiated Tue Jan 18 18:23:13 2005 as: nmap -T insane -p5432 -oX /etc/ntpv_backoffice/database_server.xml 192.168.2.8/24 -->
+<nmaprun scanner="nmap" args="nmap -T insane -p5432 -oX /etc/ntpv_backoffice/database_server.xml 192.168.2.8/24" start="1106068993" version="3.75" xmloutputversion="1.01">
+<scaninfo type="syn" protocol="tcp" numservices="1" services="5432" />
+<verbose level="0" />
+<debugging level="0" />
+<host><status state="up" />
+<address addr="192.168.2.8" addrtype="ipv4" />
+<hostnames><hostname name="toshiba" type="PTR" /></hostnames>
+<ports><extraports state="unknown" count="0" />
+<port protocol="tcp" portid="5432"><state state="open" /><service name="postgres" method="table" conf="3" /></port>
+</ports>
+</host>
+<host><status state="up" />
+<address addr="192.168.2.254" addrtype="ipv4" />
+<address addr="00:0D:54:A5:62:74" addrtype="mac" vendor="3Com Europe" />
+<hostnames />
+<ports><extraports state="unknown" count="0" />
+<port protocol="tcp" portid="5432"><state state="closed" /><service name="postgres" method="table" conf="3" /></port>
+</ports>
+</host>
+<host><status state="up" />
+<address addr="192.168.2.255" addrtype="ipv4" />
+<address addr="00:0D:54:A5:62:74" addrtype="mac" vendor="3Com Europe" />
+<hostnames />
+<ports><extraports state="unknown" count="0" />
+<port protocol="tcp" portid="5432"><state state="filtered" /><service name="postgres" method="table" conf="3" /></port>
+</ports>
+</host>
+<runstats><finished time="1106068998" /><hosts up="3" down="253" total="256" />
+<!-- Nmap run completed at Tue Jan 18 18:23:18 2005; 256 IP addresses (3 hosts up) scanned in 5.025 seconds -->
+</runstats></nmaprun>

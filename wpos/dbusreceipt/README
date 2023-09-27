@@ -1,0 +1,13 @@
+dbusreceipt makes nTPV to enable the receipt saving functions.
+When dbusreceipt is launched, nTPV can load and save receipts.
+
+dbusreceipt also communicate with nTPV POS systems to syncronize
+receipts between POS. Whith dbusreceipt a waiter can load a receipt
+that has been created at a remote nTPV POS.
+(see /etc/dcopreceipt_config.xml)
+
+dbusreceipt also needs an xml description file to define the lounges
+at the restaurant. This file is also autoexplicative, you can find it
+at /etc/ntpv/lounges.xml.
+
+This module was previously a closed module.

@@ -1,0 +1,15 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <lounge>
+            <name>BARRA</name>
+            <tables>30</tables>
+            <iconset>/usr/share/ntpv/apps/chair3.png</iconset>
+            <tablesiconset>/usr/share/ntpv/apps/chair3.png</tablesiconset>
+      </lounge>
+      <lounge>
+            <name>TERRAZA</name>
+            <tables>30</tables>
+            <iconset>/usr/share/ntpv/apps/table4.png</iconset>
+            <tablesiconset>/usr/share/ntpv/apps/table4.png</tablesiconset>
+      </lounge>
+</AUTOMATICALLY_GENERATED_XML>

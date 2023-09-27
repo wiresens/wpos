@@ -1,0 +1,12 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (product_code?, offers) >
+<!ELEMENT product_code (#PCDATA) >
+<!ELEMENT offers (offer*) >
+<!ELEMENT offer (offer_type, description_type?, offer_name, description_offer?, cpp_operator?, value?, default?, logo?) >
+<!ELEMENT offer_type (#PCDATA) >
+<!ELEMENT description_type (#PCDATA) >
+<!ELEMENT offer_name (#PCDATA) >
+<!ELEMENT description_offer (#PCDATA) >
+<!ELEMENT cpp_operator (#PCDATA) >
+<!ELEMENT value (#PCDATA) >
+<!ELEMENT default (#PCDATA) >
+<!ELEMENT logo (#PCDATA) >

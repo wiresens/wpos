@@ -1,0 +1,39 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <lounge>
+            <name>BARRA</name>
+            <tables>30</tables>
+            <iconset>/usr/share/ntpv/apps/chair3.png</iconset>
+            <tablesiconset>/usr/share/ntpv/apps/chair3.png</tablesiconset>
+            <options>
+                  <option>
+                        <type>servido en</type>
+                        <value>mostrador</value>
+                  </option>
+            </options>
+      </lounge>
+      <lounge>
+            <name>TERRAZA</name>
+            <tables>7</tables>
+            <iconset>/usr/share/ntpv/apps/table4.png</iconset>
+            <tablesiconset>/usr/share/ntpv/apps/table4.png</tablesiconset>
+            <options>
+                  <option>
+                        <type>servido en</type>
+                        <value>terraza</value>
+                  </option>
+            </options>
+      </lounge>
+      <lounge>
+            <name>SALON</name>
+            <tables>6</tables>
+            <iconset>/usr/share/ntpv/apps/table3.png</iconset>
+            <tablesiconset>/usr/share/ntpv/apps/table3.png</tablesiconset>
+            <options>
+                  <option>
+                        <type>servido en</type>
+                        <value>terraza</value>
+                  </option>
+            </options>
+      </lounge>
+</AUTOMATICALLY_GENERATED_XML>

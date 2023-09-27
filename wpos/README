@@ -1,0 +1,69 @@
+----------------------------------------------------------------
+nTPV is a point of sale (POS) system designed and developed by Napsis Corp.
+
+After Napsis closure, nTPV is being mantained by Napsis founders and partners as a Open Source Project.
+	Carlos Manzanedo Rueda <carlos@napsis.com>
+	Pedro-Ángel Gonzalez Rueda <pedro@napsis.com>
+
+It was initially designed to manage restaurants, bars, cafes, and similar businesses, but now, it's evolving into a general purpose POS. It uses DCOP and nkxmlrpcd for distributed comunications among POS, and uses PostgreSQL as its database backend. It features a fast and easy-to-use interface. Its high modularity and scalability makes it easy to enhance and mantain.
+
+Napsis provide other plugins that adds more features to POS systems like:
+
+Currently all this modules except DCOPFX2000 have been released with this source package.
+If you are interested on the Biometric fingerprint autentication, please send a mail to <carlos@napsis.com>
+
+	
+	[ DCOPFX2000 ] Biometric fingerprint autentication of waiters and users.
+       [ DCOPRECEIPT ] Easy use of orders, tables, and invoice saving... no more ordering notebooks are needed
+       [ DCOPREPORTS ] Reports generated with this plugin allows to obtain information to increase benefits.
+         [ DCOPSTICK ] Manage your backups and store your reports with USB storage drives.
+
+libraries needed to compile nTPV
+--------------------------------
+
+	- libgdchart (http://www.fred.net/brv/chart/)
+	- qt3 (www.trolltech.com)
+	- qt3 postgres plugin
+	- kde (www.kde.org)
+	- libxml2 (http://xmlsoft.org/)
+	
+
+
+Installing nTPV.  (Quick method.)
+----------------------------------
+
+nTPV now use QMake package generation thanks to Trolltech. It's very simple and quick to compile and install nTPV. 
+
+QMake must be installed.
+
+
+As user, type:
+
+	tar xzvf ntpv-1.2.tar.gz
+	
+It will create a nTPV directory. Enter at the directory and run
+
+	qmake
+	make
+	
+To install nTPV you need to be root.
+
+As root, type:
+	make install
+
+And that's all.
+
+Cleaning all sources.
+----------------------
+
+As user type:
+
+	make clean
+
+
+Uninstalling nTPV.
+------------------
+
+As root, type:
+
+	make uninstall

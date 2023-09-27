@@ -1,0 +1,6 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (database)>
+<!ELEMENT database (hostname,dbname,user,passwd)>
+<!ELEMENT hostname (#PCDATA)>
+<!ELEMENT dbname (#PCDATA)>
+<!ELEMENT user (#PCDATA)>
+<!ELEMENT passwd (#PCDATA)>

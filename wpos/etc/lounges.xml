@@ -1,0 +1,39 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+    <lounge>
+        <name>FLAMENGO</name>
+        <tables>20</tables>
+        <iconset>/usr/share/ntpv/apps/table1.png</iconset>
+        <tablesiconset>/usr/share/ntpv/apps/table1.png</tablesiconset>
+    </lounge>
+    <lounge>
+        <name>RACING</name>
+        <tables>15</tables>
+        <iconset>/usr/share/ntpv/apps/table2.png</iconset>
+        <tablesiconset>/usr/share/ntpv/apps/table2.png</tablesiconset>
+    </lounge>
+    <lounge>
+        <name>BARRA</name>
+        <tables>30</tables>
+        <iconset>/usr/share/ntpv/apps/table3.png</iconset>
+        <tablesiconset>/usr/share/ntpv/apps/table3.png</tablesiconset>
+    </lounge>
+    <lounge>
+        <name>TERRAZA</name>
+        <tables>30</tables>
+        <iconset>/usr/share/ntpv/apps/table4.png</iconset>
+        <tablesiconset>/usr/share/ntpv/apps/table4.png</tablesiconset>
+    </lounge>
+    <lounge>
+        <name>MARIA</name>
+        <tables>10</tables>
+        <iconset>/usr/share/ntpv/apps/chair1.png</iconset>
+        <tablesiconset>/usr/share/ntpv/apps/chair1.png</tablesiconset>
+    </lounge>
+    <lounge>
+        <name>CAROUSSEL</name>
+        <tables>30</tables>
+        <iconset>/usr/share/ntpv/apps/chair2.png</iconset>
+        <tablesiconset>/usr/share/ntpv/apps/chair2.png</tablesiconset>
+    </lounge>
+</AUTOMATICALLY_GENERATED_XML>

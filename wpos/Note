@@ -1,0 +1,588 @@
+QDateTime::fromString(tmps_date,Qt::ISODateWithMs)
+
+else if( child_elt.tagName() == "dateTime.iso8601"){
+                    //We must insert the "-" for Qt to recogize them:
+                    QString tmps_date{child_elt.text()};
+                    tmps_date.insert(4,'-');
+                    tmps_date.insert(7,'-');
+                    QVariant tmp_date{ QDateTime::fromString(tmps_date,Qt::ISODateWithMs)};
+                    if( tmp_date.isValid() )
+                        this->QVariant::operator=( tmp_date );
+
+auto  timeStamp = QDateTime::currentDateTime().toString("yyyyMMddThh:mm:ss.zzz");
+
+# PGSQL Loglevel values in order of decreasing detail:
+#log_min_messages = warning             # values in order of decreasing detail:
+#   debug5
+#   debug4
+#   debug3
+#   debug2
+#   debug1
+#   info
+#   notice
+#   warning
+#   error
+#   log
+#   fatal
+#   panic
+
+QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
+
+Global Parameters:
+Date oupu formant : const char* = "dd/MM/yyyy hh:mm"
+
+***********************************
+Dump the database
+**********************************
+pg_dump -U ntpv -d ntpv -h localhost -f ntpv.sql
+
+SELECT n.nspname as "Schema",
+          c.relname as "Name",
+          CASE c.relkind WHEN 'r' THEN 'table' WHEN 'v' THEN 'view' WHEN 'm' THEN 'materialized view' WHEN 'i' THEN 'index' WHEN 'S' THEN 'sequence' WHEN 's' THEN 'special' WHEN 'f' THEN 'foreign table' WHEN 'p' THEN 'partitioned table' WHEN 'I' THEN 'partitioned index' END as "Type",
+          pg_catalog.pg_get_userbyid(c.relowner) as "Owner"
+        FROM pg_catalog.pg_class c
+             LEFT JOIN pg_catalog.pg_namespace n ON n.oid = c.relnamespace
+        WHERE c.relkind IN ('r','p','v','m','S','f','')
+              AND n.nspname <> 'pg_catalog'
+              AND n.nspname <> 'information_schema'
+              AND n.nspname !~ '^pg_toast'
+          AND pg_catalog.pg_table_is_visible(c.oid)
+        ORDER BY 1,2;
+
+************************
+DBusInterface providers:
+************************
+Future:
+conventions:
+    service = reverse-company-domain.product.application
+    interface  = service.SomeInterface
+    object     = /product/application/SomeInterface
+
+    reverse-company-domain      = com.wiresens
+    product                     = wpos
+    applications
+        application1            = wpos
+            interfaces                
+                SomeInterface1  = ConfigFilesWatcher
+                SomeInterface1  = Greeter  //LoginScreen
+                SomeInterface1  = Authenticator //BslNumCodeWidget
+                SomeInterface1  = ReceiptRecover
+        
+        application2            = dbusprinter
+            interfaces                
+                SomeInterface1  = DBusReceiptPrinter
+        
+        application3            = dbusreceipt
+            interfaces                
+                SomeInterface1  = DBusRemoteReceiptManager
+                SomeInterface1  = DBusLocalReceiptManager
+
+Present:
+service1: com.wiresens.nTPV , future rename to com.wiresens.wpos.Receipt
+    interface1: com.wiresens.nTPV.DCOPReceiptNtpv from dcopreceipt::DCOPReceiptLinuxbar
+    interface1 future rename :  com.wiresens.wpos.Receipt.Local
+    
+    interface2: com.wiresens.nTPV.DCOPReceiptPrimitives from dcopreceipt::DCOPReceiptPrim
+    interface2 future rename :  com.wiresens.wpos.Receipt.Remote
+
+service2: com.wiresens.nTPV , future rename to com.wiresens.wpos.Printer
+    interface: com.wiresens.nTPV.DCOPPrinter from dcopprinter::DCOPPrinter
+    interface future rename :  com.wiresens.wpos.Printer
+
+com.wiresens.nTPV.ReadConfigInterface from ntpv::barcore::FileAlterationWatcher
+com.wiresens.nTPV.BslEnterTheMatrixDB from ntpv::BslEnterTheMatrix
+com.wiresens.nTPV.EnterAdminAuth from ntpv::menusystem::BslNumCodeWidget
+com.wiresens.nTPV.NtpvReceiptInterface from ntpv::menusystem::ReceiptRecoverWidget
+
+************************
+DBusInterface consumers:
+************************
+    service : "com.wiresens.nTPV" , future rename to com.wiresens.wpos.Receipt
+
+    ---------------------------------------------
+    |consumer : ntpv::barecore::DcopReceiptComm::*|
+    ---------------------------------------------
+        interface: com::wiresens::nTPV::DCOPReceiptPrimitives , future rename to com::wiresens::wpos::Receipt::Remote
+        obj: "/nTPV/DCOPReceiptPrimitives"
+        include: dcopreceiptprim_interface.h
+
+        interface: com::wiresens::nTPV::DCOPReceiptNtpv,  future rename to com::wiresens::wpos::Receipt::Local
+        obj: "/nTPV/DCOPReceiptNtpv"
+        include : dcopreceiptlinuxbar_interface.h
+
+    ------------------------------------------------------------------------
+    |consumer : ntpv::customize::BslButtonSetWidget::showEvent(QShowEvent *e)|
+    ------------------------------------------------------------------------
+        interface : com::wiresens::nTPV::DCOPReceiptPrimitives
+        obj : "/nTPV/DCOPReceiptPrimitives"
+        include: dcopreceiptprim_interface.h
+
+        interface: com::wiresens::nTPV::DCOPReceiptNtpv
+        obj:"/nTPV/DCOPReceiptNtpv"
+        include : dcopreceiptlinuxbar_interface.h
+
+    --------------------------------------------------------------------
+    |consumer : ntpv::menusystem::ReceiptRecoverWidget::refreshAndShow()|
+    --------------------------------------------------------------------
+        interface : com::wiresens::nTPV::DCOPReceiptPrimitives
+        obj : "/nTPV/DCOPReceiptPrimitives"
+        include: dcopreceiptprim_interface.h
+
+        interface: com::wiresens::nTPV::DCOPReceiptNtpv
+        obj:"/nTPV/DCOPReceiptNtpv"
+        include : dcopreceiptlinuxbar_interface.h
+
+
+************************
+DBusInterface consumers:
+************************
+    service : "com.wiresens.ntpv.printer", future rename to com.wiresens.wpos.Printer
+    
+    ------------------------------------------------------------------------
+    |consumer : ntpv::printer::PrinterManager::*|
+    ------------------------------------------------------------------------
+        interface : com::wiresens::nTPV::DCOPPrinter , future rename to com::wiresens::wpos::Printer
+        obj : "/nTPV/DCOPPrinter"
+
+
+
+------------------------------------------------------------
+How to check the existance of a D-Bus service on the system:
+------------------------------------------------------------
+qdbus com.wiresens.nTPV.Printer /nTPV/DCOPPrinter
+
+Problem while opening the Cash Box device at node /dev/ttyS0: Permission denied
+Here, make sure the process is member of the group  "dialout"
+
+ls -l /dev/ttyS0
+crw-rw---- 1 root dialout 4, 64 Feb 19 18:30 /dev/ttyS0
+
+SELECT pg_catalog.quote_ident(c.relname) FROM pg_catalog.pg_class c WHERE c.relkind IN ('r', 'S', 'v', 'm', 'f', 'p') AND substring(pg_catalog.quote_ident(c.relname),1,6)='cash_m' AND pg_catalog.pg_table_is_visible(c.oid) AND c.relnamespace <> (SELECT oid FROM pg_catalog.pg_namespace WHERE nspname = 'pg_catalog')
+        UNION
+        SELECT pg_catalog.quote_ident(n.nspname) || '.' FROM pg_catalog.pg_namespace n WHERE substring(pg_catalog.quote_ident(n.nspname) || '.',1,6)='cash_m' AND (SELECT pg_catalog.count(*) FROM pg_catalog.pg_namespace WHERE substring(pg_catalog.quote_ident(nspname) || '.',1,6) = substring('cash_m',1,pg_catalog.length(pg_catalog.quote_ident(nspname))+1)) > 1
+        UNION
+        SELECT pg_catalog.quote_ident(n.nspname) || '.' || pg_catalog.quote_ident(c.relname) FROM pg_catalog.pg_class c, pg_catalog.pg_namespace n WHERE c.relnamespace = n.oid AND c.relkind IN ('r', 'S', 'v', 'm', 'f', 'p') AND substring(pg_catalog.quote_ident(n.nspname) || '.' || pg_catalog.quote_ident(c.relname),1,6)='cash_m' AND substring(pg_catalog.quote_ident(n.nspname) || '.',1,6) = substring('cash_m',1,pg_catalog.length(pg_catalog.quote_ident(n.nspname))+1) AND (SELECT pg_catalog.count(*) FROM pg_catalog.pg_namespace WHERE substring(pg_catalog.quote_ident(nspname) || '.',1,6) = substring('cash_m',1,pg_catalog.length(pg_catalog.quote_ident(nspname))+1)) = 1
+
+
+AuthCore::AuthCore(QObject *parent)
+db = new AuthCoreDB("AuthCoreDBConnection", BAR_DB_SETTINGS);
+
+BarCore::initCore(bool flush_last)
+db = new BarCoreDB("BarCoreConnection", BAR_DB_SETTINGS);
+
+EventLogCore::EventLogCore(QObject *parent,const char *name )
+db{new EventLogCoreDB("EventLogCoreConnection", BAR_DB_SETTINGS)}
+
+FileManager::FileManager(QObject *parent, const char *name )
+db {new FileManagerDB("FileManagerConnection", BAR_DB_SETTINGS)}
+
+BslEnterTheMatrix::BslEnterTheMatrix(QWidget* parent, const char *name)
+db  {new AuthCoreDB("BslEnterTheMatrixDB", BAR_DB_SETTINGS)}
+
+QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *p)
+db = new AuxDB("option_check",BAR_DB_SETTINGS)
+
+BslChangeMoneyWidget::BslChangeMoneyWidget(QWidget *parent, const char *name)
+db = new BslChangeMoneyWidgetDB ("BslChangeMoneyWidgetConnection",BAR_DB_SETTINGS)
+
+void BslKillTicketsWidget::initComponent()
+db = new BslKillTicketsDB("BslKillTicketsConnection", BAR_DB_SETTINGS)
+
+void ReceiptRecoverWidget::initComponent()
+db = new BslKillTicketsDB("ReceiptConnection", BAR_DB_SETTINGS)
+
+void Product::setTextAtButton()
+db = new BarCoreDB("nTPV_ProductCoreConnection", BAR_DB_SETTINGS)
+
+TicketCore::TicketCore(QObject *parent, const char *name)
+db = new TicketCoreDB("TicketCoreConnection",BAR_DB_SETTINGS)
+
+bool TicketCore::dailyCashOperations(bool partial)
+aux_db = new BslChangeMoneyWidgetDB("TicketCoreCashInWidget",BAR_DB_SETTINGS)
+
+
+I don't think one can set arbitrarily sized images on any of 
+the existing button classes. If one want a simple image 
+behaving like a button, you can write your own 
+QAbstractButton subclass, something like:
+
+class ImageButton : public QAbstractButton {
+Q_OBJECT
+public:
+...
+    void setPixmap( const QPixmap& pm ) { m_pixmap = pm ; update(); }
+    QSize sizeHint() const { return m_pixmap.size(); }
+protected:
+    void paintEvent( QPaintEvent* e ) 
+    {
+        QPainter p( this );
+        p.drawPixmap( 0, 0, m_pixmap );
+    }
+};
+
+
+Constant Value Description
+QSizePolicy::Fixed			0
+The QWidget::sizeHint() is the only acceptable alternative, 
+so the widget can never grow or shrink (e.g. the vertical 
+direction of a push button).
+
+QSizePolicy::Minimum		GrowFlag
+The sizeHint() is minimal, and sufficient. The widget can be expanded, but there is no advantage to it being larger (e.g. the horizontal direction of a push button). It cannot be smaller than the size provided by sizeHint().
+
+QSizePolicy::Maximum		ShrinkFlag
+The sizeHint() is a maximum. The widget can be shrunk any amount without detriment if other widgets need the space (e.g. a separator line). It cannot be larger than the size provided by sizeHint().
+
+QSizePolicy::Preferred		GrowFlag | ShrinkFlag
+The sizeHint() is best, but the widget can be shrunk and still be useful. The widget can be expanded, but there is no advantage to it being larger than sizeHint() (the default QWidget policy).
+
+QSizePolicy::Expanding		GrowFlag | ShrinkFlag | ExpandFlag
+The sizeHint() is a sensible size, but the widget can be shrunk and still be useful. The widget can make use of extra space, so it should get as much space as possible (e.g. the horizontal direction of a horizontal slider).
+
+QSizePolicy::MinimumExpanding		GrowFlag | ExpandFlag
+The sizeHint() is minimal, and sufficient. The widget can make use of extra space, so it should get as much space as possible (e.g. the horizontal direction of a horizontal slider).
+
+QSizePolicy::Ignored		ShrinkFlag | GrowFlag | IgnoreFlag
+The sizeHint() is ignored. The widget will get as much space as possible.
+
+See also PolicyFlag, setHorizontalPolicy(), and setVerticalPolicy().
+enum QSizePolicy::PolicyFlag
+These flags are combined together to form the various Policy values:
+
+Constant Value Description
+QSizePolicy::GrowFlag 1
+The widget can grow beyond its size hint if necessary.
+
+QSizePolicy::ExpandFlag 2
+The widget should get as much space as possible.
+
+QSizePolicy::ShrinkFlag 4
+The widget can shrink below its size hint if necessary.
+
+QSizePolicy::IgnoreFlag 8
+The widget's size hint is ignored. The widget will get as much space as possible.
+
+-----------------------
+Tools>>>Cancel Tickets
+----------------------
+2023-05-22 18:50:22.070 SELECT price FROM ticket_items WHERE ticket_code = 222;
+2023-05-22 18:50:22.071 SELECT e.name || ' ' || e.last_name, i.employee_id, i.start_time, i.end_time,  i.pay_type, t.lounge_code, t.table_code FROM (tickets i JOIN staff e USING (employee_id)) LEFT JOIN ticket_table t USING (ticket_code) WHERE ticket_code=222;
+2023-05-22 18:50:22.073 SELECT product_code, price, units, order_time, tax, tax_rate, item_code FROM ticket_items WHERE ticket_code = 222;
+2023-05-22 18:50:22.090 SELECT product FROM products WHERE product_code = 'batido'
+2023-05-22 18:50:22.091 SELECT ingredient_code FROM prod_composition WHERE product_code = 'batido'
+2023-05-22 18:50:22.128 SELECT option_type, prod_option FROM ticket_item_opts WHERE item_code='3092'
+2023-05-22 18:50:22.145 SELECT offer_type, prod_offer FROM ticket_item_offers WHERE item_code='3092'
+2023-05-22 18:50:22.146 SELECT product FROM products WHERE product_code = 'cocktail_vermouth'
+2023-05-22 18:50:22.147 SELECT ingredient_code FROM prod_composition WHERE product_code = 'cocktail_vermouth'
+2023-05-22 18:50:22.148 SELECT option_type, prod_option FROM ticket_item_opts WHERE item_code='3093'
+2023-05-22 18:50:22.149 SELECT offer_type, prod_offer FROM ticket_item_offers WHERE item_code='3093'
+2023-05-22 18:50:22.149 SELECT product FROM products WHERE product_code = 'batido'
+2023-05-22 18:50:22.150 SELECT ingredient_code FROM prod_composition WHERE product_code = 'batido'
+2023-05-22 18:50:22.150 SELECT option_type, prod_option FROM ticket_item_opts WHERE item_code='3094'
+2023-05-22 18:50:22.150 SELECT offer_type, prod_offer FROM ticket_item_offers WHERE item_code='3094'
+2023-05-22 18:50:22.151 SELECT product FROM products WHERE product_code = 'whisky_importacion'
+2023-05-22 18:50:22.151 SELECT ingredient_code FROM prod_composition WHERE product_code = 'whisky_importacion'
+2023-05-22 18:50:22.151 SELECT option_type, prod_option FROM ticket_item_opts WHERE item_code='3095'
+2023-05-22 18:50:22.152 SELECT offer_type, prod_offer FROM ticket_item_offers WHERE item_code='3095'
+2023-05-22 18:50:22.152 SELECT product FROM products WHERE product_code = 'vermouth_rojo'
+2023-05-22 18:50:22.152 SELECT ingredient_code FROM prod_composition WHERE product_code = 'vermouth_rojo'
+2023-05-22 18:50:22.152 SELECT option_type, prod_option FROM ticket_item_opts WHERE item_code='3096'
+2023-05-22 18:50:22.153 SELECT offer_type, prod_offer FROM ticket_item_offers WHERE item_code='3096'
+
+***************************
+Curl Command
+***************************
+curl -H 'Content-Type: application/xml' -d ' <member><name>faultString</name></member>' -X POST  http://192.168.182.17:18300/RPC2
+
+wposbo/menusystem/menu
+#include "bslgenericscreenwidget.h"
+    #include "bslmainscreenwidget.h"
+    #include "bslinstantiator.h"
+    #include "menusystem/design/bslsubmenuinfo.h"
+
+#include "bslmainscreenwidget.h"
+    #include "bslgenericscreenwidget.h"
+    #include "bslinstantiator.h"
+
+#include "bslinstantiator.h"
+    #include "techwidget.h"
+    #include "supportwidget.h"
+
+#   include "menusystem/design/bslsubmenuinfo.h"
+    #include "menusystem/design/bslposdesignselectorwidget.h"
+    #include "menusystem/design/bslscreenproductsdesignwidget.h"
+    #include "menusystem/design/bslscreenproductsdesignwidget.h"
+    #include "menusystem/design/bslscreeninvitationsdesignwidget.h"
+    #include "menusystem/design/nticketdesignwidget.h"
+    #include "menusystem/design/shortcutbuttonwidget.h"
+
+    #include "menusystem/products/naddproductwidget.h"
+    #include "menusystem/products/ndelproductwidget.h"
+    #include "menusystem/products/nupdateselectionwidget.h"
+    #include "menusystem/products/bsladdproductswidget.h"
+    #include "menusystem/products/bslselectproductwidget.h"
+    #include "menusystem/products/updatexml.h"
+
+    #include "menusystem/database/bslddbbwidget.h"
+
+    #include "menusystem/system/fx2000configwidget.h"
+    #include "menusystem/system/memstickwidget.h"
+    #include "menusystem/system/devicesconfig.h"
+
+    #include "menusystem/users/bsladduserswidget.h"
+    #include "menusystem/users/bslselectuserswidget.h"
+
+    #include "menusystem/offers_options/naddofferwidget.h"
+    #include "menusystem/offers_options/ndelofferwidget.h"
+    #include "menusystem/offers_options/nupdateofferwidget.h"
+    #include "menusystem/offers_options/naddoptionwidget.h"
+    #include "menusystem/offers_options/ndeloptionwidget.h"
+    #include "menusystem/offers_options/nupdateoptionwidget.h"
+
+    #include "menusystem/reports/nprofitreportwidget.h"
+    #include "menusystem/reports/nprodandofferreportwidget.h"
+    #include "menusystem/reports/persticketwidget.h"
+    #include "menusystem/reports/perszwidget.h"
+
+    #include "databasemodule/databasemodule.h"
+    #include "usersmodule/usermodule.h"
+    #include "productsmodule/productmodule.h"
+
+    #include <libbslxml/xmlconfig.h>
+    #include <ntpvlib/hlist.h>
+
+wposbo/menusystem/design
+#include "bsldeleteofferwidget.h"
+    #include "productsmodule/offersmodule/productoffermodule.h"
+
+
+#include "bsladdscreeninvitationswidget.h"
+    #include "bslscreeninvitationsdesignwidget.h"
+
+
+#include "bslposdesignselectorwidget.h"
+    #include "bslscreenproductsdesignwidget.h"
+    #include "bslscreeninvitationsdesignwidget.h"
+
+#include "bsldeletescreeninvitationswidget.h"
+
+#include "bslscreeninvitationsdesignwidget.h"
+    #include "bsldeleteofferwidget.h"
+    #include "bsladdscreeninvitationswidget.h"
+    #include "bsldeletescreeninvitationswidget.h"
+    #include "menusystem/products/bsladdofferwidget.h"
+    #include "productsmodule/offersmodule/productoffermodule.h"
+    #include "database/productoffersmoduledb.h"
+
+#include "bslscreenproductsdesignwidget.h"
+    #include "productsmodule/productmodule.h"
+    #include "database/productsmoduledb.h"
+    #include <ntpvlibwidget/bsldragobjects.h>
+
+#include "bslsubmenuinfo.h"
+    #include <ntpvlibwidget/browser.h>
+
+#include "nticketdesignwidget.h"
+    #include <libbslxml/xmlconfig.h>
+
+#include "shortcutbuttonwidget.h"
+    #include "productsmodule/productmodule.h"
+    #include "productsmodule/offersmodule/productoffermodule.h"
+    #include "productsmodule/optionsmodule/productoptionmodule.h"
+    #include "database/productsmoduledb.h"
+
+    #include <libbslxml/xmlconfig.h
+    #include <ntpvlib/hlist.h>
+    #include <ntpvlibwidget/bsldragobjects.h>
+
++********++++++++++++++++++++++
+wposbo/menusystem/products
+++++++++++++++++++++++++++++++
+#include "bsladdofferwidget.h"
+
+#include "naddproductwidget.h"
+
+#include "ndelproductwidget.h"
+
+#include "bsladdoptionwidget.h"
+    #include "bsladdofferwidget.h"
+    #include "productinsertwidget.h"
+
+#include "bsladdproductswidget.h"
+    #include "bsladdoptionwidget.h"
+    #include "bsladdofferwidget.h"
+    #include "productinsertwidget.h"
+
+#include "bslselectproductwidget.h"
+    #include "bslupdateproductswidget.h"
+
+#include "bslupdateproductswidget.h"
+    #include "bsladdproductswidget.h"
+
+#include "nupdateproductwidget.h"
+    #include "naddproductwidget.h"
+
+#include "nupdateselectionwidget.h"
+    #include "nupdateproductwidget.h"
+
+#include "updatexml.h"
+
+wposbo/menusystem/users
+#include "bsladduserswidget.h"
+    #include "menusystem/system/fx2000enrollwidget.h"
+
+#include "bslselectuserswidget.h"
+    #include "bslupdateuser.h
+    #include "usersmodule/usermodule.h"
+    #include "databasemodule/databasemodule.h"
+    #include <libbslxml/xmlconfig.h>
+
+#include "bslupdateuser.h"
+    #include "menusystem/system/fx2000enrollwidget.h"
+    #include "usersmodule/usermodule.h"
+    #include <libbslxml/xmlconfig.h>
+
+wposbo/menusystem/system
+#include "memstickwidget.h"
+
+#include "devicesconfig.h"
+    #include <libbslxml/xmlconfig.h>
+
+#include "fx2000configwidget.h"
+    #include "fx2000enrollwidget.h"
+    #include "memstickinterface.h"
+    #include "usersmodule/usermodule.h"
+
+#include "fx2000enrollwidget.h"
+    #include <libbslxml/xmlconfig.h>
+
+
+wposbo                  2
+    database            5   
+    databasemodule      1
+    menusystem
+        database        1
+        design          9
+        menus           3
+        offers_options  6
+        products       10
+        reports         4
+            viewer     23
+        system          4
+        users           3
+    productsmodule      1
+        offersmodule    1
+        optionsmodule   1
+    usersmodule         1
+    Total              75
+
+froms                   1
+    menusystem
+        database        1
+        design          8
+        menus           2
+        offers_options  3
+        products        7
+        reports         4
+            viewer      2
+        system          3
+        users           2
+Totol                  33 Done
+
+Adaptors                 8 
+com.wiresens.databasemodule.xml      Ok
+com.wiresens.productoptionmodule.xml Ok
+com.wiresens.productoffermodule.xml  Ok
+com.wiresens.productmodule.xml       Ok  
+com.wiresens.usermodule.xml          Ok
+com.wiresens.nupdateofferwidget.xml  
+com.wiresens.nprofitreportwidget.xml 
+com.wiresens.memstickwidget.xml 
+
+
+wposbo/menusystem/design
+0 nticketdesignwidget.h 
+0 bslsubmenuinfo.h
+0 shortcutbuttonwidget.h
+1 bsldeletescreeninvitationswidget.h
+2 bslscreenproductsdesignwidget.h
+2 bsldeleteofferwidget.h
+3 bsladdscreeninvitationswidget.h
+3 bslposdesignselectorwidget.h
+
+menusystem
+    design
+        bslscreenproductsdesignwidget.cpp
+        shortcutbuttonwidget.cpp( check constructor) ShortcutButtonWidget(QWidget *parent, const QString& name)
+            Many places have been commented with annotation @benes
+            //@benes    progress->setValue(0,count) ===> progress->setValue(count);
+            
+            //@benes    shortcut_button_table->setLeftMargin(0);
+            //@benes    shortcut_button_table->setTopMargin(0); ===> shortcut_button_table->layout()->setContentsMargins(0,0,0,0);
+
+Memory leek:
+void ReceiptRecoverWidget::openOrderKbExitClickedSlot():
+new xml  without delete.
+
+Button      QPushButton
+isOn()   => !isDown()
+toggle() => toggle()
+setOn() => setChecked()
+setToggleButton() => setCheckable()
+
+QRadioButton : idem
+setChecked(false)
+
+//Packages for PDF support in Qt
+qtpdf5-dev
+libqt5pdf5 libqt5pdfwidgets5
+
+installs libQt5Pdf.so and libQt5PdfWidgets.so
+
+classes:
+QPdfBookmarkModel
+QPdfDocument 
+QPdfDocumentRenderOptions 
+QPdfLink 
+QPdfPageNavigator 
+QPdfPageRenderer 
+QPdfSearchModel 
+QPdfSelection 
+QPdfView 
+QPdfWriter
+
+----------------
+On ODB C++ ORM : 
+----------------
+**ODB 2.5.0-b.23 support for the --std c++20  and GCC 12:
+We've published ODB 2.5.0-b.23 to cppget.org which adds support for GCC 12. : 
+Besides that, this beta also adds support for the --std c++20 option value
+and includes a number of bug fixes
+ref:https://www.codesynthesis.com/pipermail/odb-users/2022-August/004796.html
+
+**ODB 2.5.0-b.25 support GCC 13:
+We have published ODB 2.5.0-b.25 to cppget.org which adds support for
+GCC 13. Besides that, this beta also adds support for custom table
+definition options in addition to column definition options. The
+installation instructions now contain steps for installing offline.
+ref:https://www.codesynthesis.com/pipermail/odb-users/2023-July/004883.html
+
+
+**ODB 2.4.0 released : Wed Feb 11 06:59:41 EST 2015
+ref:https://www.codesynthesis.com/pipermail/odb-announcements/2015/000041.html
+
+A more detailed discussion of the major new features can be found in the
+following blog post:
+https://www.codesynthesis.com/~boris/blog/2015/02/11/odb-2-4-0-released/
+    - Bulk Operations
+    - Object Loading Views
+
+Config FIles Renaming
+In programme, use variables to name config files:
+advanced_order_description.xml  devices_config.xml           order_description.xml
+bar_database.xml                invitations_description.xml  printerhtml.xml
+bar.xml                         invoice_template.xml         printertickettotal.xml
+button_state.xml                invoice.xml                  printerz_con_opciones.xml
+company_ticket_data.xml         kitchen_printerhtml.xml      printerz_old.xml
+dcopprinter_config.xml          lounges.xml                  printerz_sin_opciones.xml
+dcopreceipt_config.xml          ntpv_buttons.xml             printerz.xml

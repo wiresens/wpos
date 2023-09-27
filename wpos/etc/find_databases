@@ -1,0 +1,34 @@
+#!/bin/bash 
+
+if [ $# -ne 3 ]
+then 
+	echo "No se han dado suficientes argumentos" >&2
+	echo "uso: $0 usuario servidor fichero" >&2
+	exit 255
+fi
+
+USER=$1
+SERVER=$2
+FICHERO=$3
+
+if [ -f $FICHERO ]
+then
+	rm -r $FICHERO
+fi
+
+
+psql -U $USER -h $SERVER -l 2>/dev/null |tail +4 |grep -v '^(.*)$'|awk '{print $1}' |xargs -i']' xmlmanage w $FICHERO name ']'
+
+if [ -f /tmp/xml ]
+then
+	rm /tmp/xml
+fi
+
+if [ -f $FICHERO ]
+then
+	chmod 666 $FICHERO
+fi	
+
+
+
+

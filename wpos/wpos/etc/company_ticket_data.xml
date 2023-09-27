@@ -1,0 +1,15 @@
+<?xml version = '1.0' encoding = 'ISO-8859-1'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <ticket_values>
+            <company>Napsis </company>
+            <cif>5555555</cif>
+            <address>Madrid-Spain</address>
+            <localidad>SSRR</localidad>
+            <provincia>Madrid</provincia>
+            <telephone>675959586</telephone>
+            <head>  Thanks for using nTPV</head>
+            <foot>  nTPV Hospitality system</foot>
+            <bye>   GRACIAS POR SU VISITA</bye>
+            <showtaxes>false</showtaxes>
+      </ticket_values>
+</AUTOMATICALLY_GENERATED_XML>

@@ -30,3 +30,20 @@
 *.exe
 *.out
 *.app
+
+# Sources files
+*_interface.h
+*_interface.cpp
+*-odb.*
+com.*.xml
+
+# qtcreator generated files
+*.pro.user*
+.directory
+*.debug
+Makefile*
+*.prl
+*.app
+moc_*.cpp
+ui_*.h
+qrc_*.cpp

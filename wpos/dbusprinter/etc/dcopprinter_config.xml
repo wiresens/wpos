@@ -1,0 +1,19 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <authtoken>0123456789ABCDEF</authtoken>
+      <servers>
+            <server>
+                  <ip>localhost</ip>
+            </server>
+      </servers>
+      <main>
+            <type>direct</type>
+            <device>/dev/lp0</device>
+            <length>42</length>
+      </main>
+      <kitchen>
+            <type>ipp</type>
+            <device>SAMSUNG_BARRA@caja</device>
+            <length>42</length>
+      </kitchen>
+</AUTOMATICALLY_GENERATED_XML>

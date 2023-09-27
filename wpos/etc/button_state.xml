@@ -1,0 +1,29 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <admin_buttons>
+            <button>
+                  <name>toggle_cash</name>
+                  <state>on</state>
+            </button>
+            <button>
+                  <name>toggle_waiters</name>
+                  <state>on</state>
+            </button>
+            <button>
+                  <name>toggle_printing</name>
+                  <state>off</state>
+            </button>
+            <button>
+                  <name>toggle_fx2000</name>
+                  <state>off</state>
+            </button>
+            <button>
+                  <name>toggle_double_printing</name>
+                  <state>off</state>
+            </button>
+            <button>
+                  <name>toggle_out_screen</name>
+                  <state>off</state>
+            </button>
+      </admin_buttons>
+</AUTOMATICALLY_GENERATED_XML>

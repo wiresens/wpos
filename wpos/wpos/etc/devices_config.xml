@@ -1,0 +1,7 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <cashbox>
+            <type>cash_drawer</type>
+            <dev>/dev/ttyS0</dev>
+      </cashbox>
+</AUTOMATICALLY_GENERATED_XML>

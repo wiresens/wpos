@@ -1,0 +1,21 @@
+qutexrlib QT-based XML-RPC library
+qutexrlib es una biblioteca Xml-RPC basada en QT.
+Copyright (C) 2003  P. Oscar Boykin <boykin@pobox.com>
+bugfixes at 01/2004 by Carlos Manzanedo <carlos@napsis.com>
+
+Este programa es software abierto; puedes distribuirlo y/o
+modificarlo bajo terminos de la licencia GNU General Public
+License (Licencia Publica General) tal y como la ha publicado
+la Free Software Fundation (Fundacion de Software Libre), en
+su version 2 o su version mas actual.
+
+Este programa ha sido distribuido con la esperanza de ser util
+pero sin NINGUNA GARANTIA; incluso sin ningun tipo de garantia 
+sobre venta o cumplir un proposito particular. Para mas detalles
+mirar la licencia GPL que acompaña al programa.
+
+
+Junto con este programa y fuentes has tenido que recibir una
+copia de dicha licencia, si no ha sido asi deberias escribir a
+la fundacion de software libre Free Software Fundation (FSF) a:
+Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.

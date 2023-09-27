@@ -1,0 +1,10 @@
+<?xml version='1.0' encoding='ISO-8859-1'?>
+<AUTOMATICALLY_GENERATED_XML>
+      <database>
+            <hostname>localhost</hostname>
+            <dbname>ntpv</dbname>
+            <user>ntpv</user>
+            <passwd>d0rc4566</passwd>
+            <port>5432</port>
+      </database>
+</AUTOMATICALLY_GENERATED_XML>

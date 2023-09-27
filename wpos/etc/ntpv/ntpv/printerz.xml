@@ -1,0 +1,210 @@
+<AUTOMATICALLY_GENERATED_XML>
+      <normal/>
+      <tr/>
+      <font width="1" height="1"/>
+      <u>%type%</u>
+      <u> de caja</u>
+      <br/>
+      <br/>
+      <td width="4" values="1">
+            <normal/>
+      </td>
+      <b>De </b>
+      <normal>%timestamp_first%</normal>
+      <br/>
+      <td width="4" values="1">
+            <normal/>
+      </td>
+      <b>a </b>
+      <normal>%timestamp_last%</normal>
+      <br/>
+      <font width="0" height="0"/>
+      <normal/>
+      <br/>
+      <th>
+            <td width="2" values="1">
+                  <normal/>
+            </td>
+            <td width="40" values="1">
+                  <b>Desglose de Caja</b>
+            </td>
+      </th>
+      <br/>
+      <tr>
+            <td width="2" values="1">
+                  <normal/>
+            </td>
+            <td width="29" values="5">
+                  <font width="1" height="1"/>
+                  <b>TOTAL: </b>
+                  <b>%total%</b>
+                  <b> Euros</b>
+                  <font width="0" height="0"/>
+            </td>
+      </tr>
+      <br/>
+      <trpaytypes>
+            <td width="2" values="1">
+                  <normal/>
+            </td>
+            <u>
+                  <b>%name%</b>
+            </u>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="2">
+                  <b>Tickets: </b>
+                  <normal>%num_tickets%</normal>
+            </td>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="3">
+                  <b>Total: </b>
+                  <normal>%total_income%</normal>
+                  <normal> Euros</normal>
+            </td>
+      </trpaytypes>
+      <br/>
+      <th>
+            <td width="2" values="1">
+                  <normal/>
+            </td>
+            <td width="40" values="1">
+                  <b>Desglose de Personal</b>
+            </td>
+      </th>
+      <tr/>
+      <trcamareros>
+            <td width="2" values="1">
+                  <normal/>
+            </td>
+            <u>
+                  <b>%name%</b>
+            </u>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="2">
+                  <b>NIF: </b>
+                  <normal>%id%</normal>
+            </td>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="2">
+                  <b>Tickets cobrados: </b>
+                  <normal>%num_tickets%</normal>
+            </td>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="3">
+                  <b>Total: </b>
+                  <normal>%total_income%</normal>
+                  <normal> Euros</normal>
+            </td>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="2">
+                  <b>Aperturas de caja: </b>
+                  <normal>%cashbox_open%</normal>
+            </td>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="2">
+                  <b>Invitaciones: </b>
+                  <normal>%total_invitations%</normal>
+            </td>
+            <br/>
+            <troffers>
+                  <td width="7" values="1">
+                        <normal/>
+                  </td>
+                  <td>
+                        <u>Invitacion:</u>
+                        <normal/>
+                        <normal>%type%</normal>
+                        <normal>/</normal>
+                        <normal>%name%</normal>
+                        <br/>
+                  </td>
+                  <td width="9" values="1">
+                        <normal/>
+                  </td>
+                  <td>
+                        <normal>Cantidad: </normal>
+                        <normal>%count%</normal>
+                        <br/>
+                  </td>
+            </troffers>
+      </trcamareros>
+      <br/>
+      <th>
+            <td width="2" values="1">
+                  <normal/>
+            </td>
+            <td width="40" values="1">
+                  <b>Desglose de Invitaciones</b>
+            </td>
+      </th>
+      <br/>
+      <trtotaloffers>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td>
+                  <u>Invitacion:</u>
+                  <normal/>
+                  <normal>%type%</normal>
+                  <normal>/</normal>
+                  <normal>%name%</normal>
+                  <br/>
+            </td>
+            <td width="7" values="1">
+                  <normal/>
+            </td>
+            <td>
+                  <normal>Cantidad: </normal>
+                  <normal>%count%</normal>
+                  <br/>
+            </td>
+      </trtotaloffers>
+      <trzproducts>
+            <td width="2" values="1">
+                  <normal/>
+            </td>
+            <u>
+                  <b>%name%</b>
+            </u>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="2">
+                  <b>Ventas: </b>
+                  <normal>%units%</normal>
+            </td>
+            <br/>
+            <td width="5" values="1">
+                  <normal/>
+            </td>
+            <td width="37" values="3">
+                  <b>Total: </b>
+                  <normal>%total_income%</normal>
+                  <normal> Euros</normal>
+            </td>
+      </trzproducts>
+      <br/>
+      <!--cut/-->
+</AUTOMATICALLY_GENERATED_XML>

@@ -1,0 +1,22 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+	<authtoken>0123456789ABCDEF</authtoken>
+	<servers>
+<!--
+    to insert other nTPV pos systems to communicate the receipt you must activate the nkxmlrpcd
+    and uncomment this lines
+    	<server>
+		<ip>remote_server_1</ip>
+	</server>
+	<server>
+		<ip>remote_server_2</ip>
+	</server>
+	
+	...
+	...
+	...
+	
+	do not insert localhost as server or it will have uncertain behaviour.
+-->
+	</servers>
+</AUTOMATICALLY_GENERATED_XML>

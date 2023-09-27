@@ -1,0 +1,27 @@
+#!/bin/bash
+#Author: carlos@napsis.com
+#
+# Postinstall script of nTPV. This script will run at the nTPV "make install" stage
+# it will create the nTPV group and prepare files to be owned by ntpv group.
+# Users that want to run nTPV must be added to the nTPV group at /etc/group 
+#
+
+grupo_ntpv=$(cat /etc/group |sed s/:/' '/ | awk '$1~/ntpv/ {print $1}' |wc -l)
+
+dir_ntpv_backoffice=/etc/ntpv_backoffice
+
+if [ $grupo_ntpv -eq 0 ]
+then
+/usr/sbin/addgroup ntpv
+fi
+
+if [ -d $dir_ntpv_backoffice ]
+then
+echo "creando grupo y permisos"
+chgrp -R ntpv $dir_ntpv_backoffice
+chgrp -R ntpv ${dir_ntpv_backoffice}/*
+chmod -R g+w $dir_ntpv_backoffice
+chmod g+rwx $dir_ntpv_backoffice
+find ${dir_ntpv_backoffice}/ -type d | xargs chmod g+rwx
+find ${dir_ntpv_backoffice}/ -type f | xargs chmod g+rw
+fi

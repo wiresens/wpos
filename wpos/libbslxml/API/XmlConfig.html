@@ -1,0 +1,433 @@
+<HTML>
+<HEAD>
+<TITLE>class XmlConfig</TITLE>
+
+<META NAME="Generator" CONTENT="KDOC ">
+</HEAD>
+<BODY bgcolor="#ffffff" text="#000000" link="#0000ff" vlink="#000099" alink= "#ffffff">
+<TABLE WIDTH="100%" BORDER="0">
+<TR>
+<TD>
+	<TABLE BORDER="0">
+		<TR><TD valign="top" align="left" cellspacing="10">
+		<h1>class XmlConfig</h1>
+		</TD>
+		<TD valign="top" align="right" colspan="1">this class give access to the xml files in a silly but easy way. <small><A HREF="#longdesc">More...</A></small></TD></TR>
+	</TABLE>
+	<HR>
+	<TABLE BORDER="0">
+		<TR><TH>Definition</TH><TD><code>#include &lt;<A HREF="parted2xml___xmlconfig_h.html">parted2xml/xmlconfig.h</A>&gt;</code></TD></TR>
+<TR><TH><A HREF="full-list-XmlConfig.html">List of all Methods</A></TH></TR>
+	</TABLE>
+	</TD>
+<TD align="right"><TABLE BORDER="0"><TR><TD><small><A HREF="index-long.html">Annotated List</A></small></TD></TR>
+<TR><TD><small><A HREF="header-list.html">Files</A></small></TD></TR>
+<TR><TD><small><A HREF="all-globals.html">Globals</A></small></TD></TR>
+<TR><TD><small><A HREF="hier.html">Hierarchy</A></small></TD></TR>
+<TR><TD><small><A HREF="index.html">Index</A></small></TD></TR>
+</TABLE></TD></TR></TABLE>
+<h4>Public Methods</h4><ul><LI>&nbsp;<b><A HREF="#ref1">XmlConfig</A></b> (<A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> file, int mode=IO_ReadOnly) 
+</LI>
+<LI>&nbsp;<b><A HREF="#ref2">~XmlConfig</A></b> () 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref3">howManyTags</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref4">howManyAtributes</A></b> (<A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref5">save</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> file=nullptr) 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qdomdocument.html">QDomDocument</A> &nbsp;<b><A HREF="#ref6">cloneDocument</A></b> () 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<b><A HREF="#ref7">file</A></b> () 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<b><A HREF="#ref8">readString</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref9">readInt</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> key) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref10">write</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> value) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref11">write</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const int value) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref12">doWrite</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag, const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> value) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref13">doWrite</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag, const int value) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref14">createElement</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> node_name, const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> value=nullptr, const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> comment=nullptr) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref15">deleteElement</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref16">setDomain</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> domain, bool overwrite_domain=false) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref17">releaseDomain</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> domain) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref18">createComment</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag, const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> comment) 
+</LI>
+<LI>int &nbsp;<b><A HREF="#ref19">readIntSimple</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> key) 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<b><A HREF="#ref20">readStringSimple</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI>long long &nbsp;<b><A HREF="#ref21">readSectorSimple</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref22">writeSimple</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> value) 
+</LI>
+<LI>bool &nbsp;<b><A HREF="#ref23">writeSimple</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const int value) 
+</LI>
+</ul><h4>Private Methods</h4><ul><LI><A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A> &nbsp;<b><A HREF="#ref24">nodeFromTag</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A> &nbsp;<b><A HREF="#ref25">find</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const <A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A> from, bool anidate=true) 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<b><A HREF="#ref26">discardBracket</A></b> (<A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> token, int *number) 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<b><A HREF="#ref27">lookForward</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<b><A HREF="#ref28">lookBackward</A></b> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag) 
+</LI>
+<LI><A HREF="../../../../usr/lib/qt3/doc/html/qdomelement.html">QDomElement</A> &nbsp;<b><A HREF="#ref29">nextElement</A></b> (<A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A> node) 
+</LI>
+</ul><h4>Private Members</h4><ul><LI>QFile *<b><A HREF="#ref30">f</A></b></LI>
+<LI>int <b><A HREF="#ref31">mode</A></b></LI>
+<LI>QDomDocument *<b><A HREF="#ref32">doc</A></b></LI>
+<LI>QDomNode <b><A HREF="#ref33">currentNode</A></b></LI>
+<LI>QDomNode <b><A HREF="#ref34">domain</A></b></LI>
+</ul><HR><H2><A NAME="longdesc">Detailed Description</A></H2><p>
+</p>
+<A NAME="XmlConfig"></A><A NAME="ref1"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>XmlConfig</strong> (<A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> file, int mode=IO_ReadOnly)
+<br></td><td align="right"><h3><strong>XmlConfig</strong></h3></td></tr></table><p></p><p>
+ CONSTRUCTOR
+ We make the xml document from the file. So we can close the file, we have all the info
+ in doc, we only deal with Xml clases from now on.
+</p>
+<p></p>
+<p></p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>file</i></TD><TD align="left" valign="top">File we read the XML from , if the file can't be read or it's not a valid XML
+ file will print an error messague and exit
+</TD></TR>
+<TR><TD align="left" valign="top"><i>mode</i></TD><TD align="left" valign="top">The mode we open the document. If we open the document in readonly mode we can't
+ save the changes in the same file, so it's safe always to read from a XML without breaking it
+	</TD></TR>
+</TABLE></P>
+<A NAME="~XmlConfig"></A><A NAME="ref2"></A><table width="100%"><tr bgcolor="#eeeeee"><td>&nbsp;<strong>~XmlConfig</strong> ()
+<br></td><td align="right"><h3><strong>~XmlConfig</strong></h3></td></tr></table><p></p><p>
+ DESTRUCTOR
+ Nothing to be done, qt cares about freeing dom objects memory when we die
+	</p>
+<A NAME="howManyTags"></A><A NAME="ref3"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>howManyTags</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>howManyTags</strong></h3></td></tr></table><p></p><p>
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">It's the tag we look for, we return the number of the tags with this name
+ in the domain
+</TD></TR>
+<TR><TD align="left" valign="top"><i>domain</i></TD><TD align="left" valign="top">It's the domain we look the tags in. If domain is nullptr, we look in
+ the entire document. Example <disk> <partition><partition> <disk> <partition>
+ howManyTags ("partition")  returns 3
+ howManyTags("partition","disk[0]") returns 2
+ howManyTags("partition", "disk[1]") returns 1
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: the number of tags with name tag  in the domain domain
+	</p>
+<A NAME="howManyAtributes"></A><A NAME="ref4"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>howManyAtributes</strong> (<A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>howManyAtributes</strong></h3></td></tr></table><p></p><p>
+ how many atributes has a tag, useful to navigate between the atributes
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">in the form "x[n].y[m].z[p]"
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: the number of atributes of tag
+	</p>
+<A NAME="save"></A><A NAME="ref5"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>save</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> file=nullptr)
+<br></td><td align="right"><h3><strong>save</strong></h3></td></tr></table><p></p><p>
+ Saves the xml data in a file named file and flush it to disk.
+ If the filename is null it will write the data to the same file it reads
+ it from. Note that the constructor of this object needs to be said
+ explicitely that you want to save data with IO_ReadWrite	
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>file</i></TD><TD align="left" valign="top">the file we want to save the XML data in
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if success or false otherwise
+	</p>
+<A NAME="cloneDocument"></A><A NAME="ref6"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qdomdocument.html">QDomDocument</A> &nbsp;<strong>cloneDocument</strong> ()
+<br></td><td align="right"><h3><strong>cloneDocument</strong></h3></td></tr></table><p></p><p>
+ it's useful to be called from the constructor that will make a new xmlconfig object with the
+ same data but not necesary accesed in the same way, so
+ you can write to the file afterwards. With the same or other name
+ The changes in this xmlconfig data will not affect the other xmlconfig data
+</p>
+<p><b>Returns</b>: the entire xml document
+  </p>
+<A NAME="file"></A><A NAME="ref7"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<strong>file</strong> ()
+<br></td><td align="right"><h3><strong>file</strong></h3></td></tr></table><p></p><p>
+ return the name of the file  we have taken the data from
+ if we save the data in other file, this method will return the name
+ of the new file
+ In short, it returns the name of the representation of the data
+ in disk (surely not updated)
+</p>
+<p><b>Returns</b>: the name of the file
+	</p>
+<A NAME="readString"></A><A NAME="ref8"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<strong>readString</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>readString</strong></h3></td></tr></table><p></p><p>
+ The general form of the tag is  "x[n].y[m].z[p]" We look for the string in the xml doc
+ the string must be unique or we will just return the first one we find.
+ The numbers are known thanks to howManyTags();
+ TODO?: it's trivial to implement a way to detect a non-unique string so we can return the error but
+ it will require other param
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">from where we are going to read data
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: the data from the tag with name tag
+	</p>
+<A NAME="readInt"></A><A NAME="ref9"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>readInt</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> key)
+<br></td><td align="right"><h3><strong>readInt</strong></h3></td></tr></table><p></p><p>
+</p>
+<p><b>Returns</b>: the integer in the string, integer is a very common type so it's worthy
+  </p>
+<A NAME="write"></A><A NAME="ref10"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>write</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> value)
+<br></td><td align="right"><h3><strong>write</strong></h3></td></tr></table><p></p><p>
+ Writes the value value in the tag tag , it's done in memory if you want to modify the
+ file .save() must be called to sync data with disk
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">the tag where we want to write the value
+</TD></TR>
+<TR><TD align="left" valign="top"><i>value</i></TD><TD align="left" valign="top">the value to be written
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if succesfull , false otherwhise (false if the tag don't exist)
+	</p>
+<A NAME="write"></A><A NAME="ref11"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>write</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const int value)
+<br></td><td align="right"><h3><strong>write</strong></h3></td></tr></table><p></p><p>
+	Same as above, writes a integer in the xml configuration
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">the tag where we want to write the value
+</TD></TR>
+<TR><TD align="left" valign="top"><i>value</i></TD><TD align="left" valign="top">the value to be written
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if succesfull , false otherwhise
+	</p>
+<A NAME="doWrite"></A><A NAME="ref12"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>doWrite</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag, const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> value)
+<br></td><td align="right"><h3><strong>doWrite</strong></h3></td></tr></table><p></p><p>
+ The same that write but if the tag dont exist it will create it and write the value
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">the tag to be written
+</TD></TR>
+<TR><TD align="left" valign="top"><i>value</i></TD><TD align="left" valign="top">the value to be written
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if succesfull false otherwise
+  </p>
+<A NAME="doWrite"></A><A NAME="ref13"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>doWrite</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag, const int value)
+<br></td><td align="right"><h3><strong>doWrite</strong></h3></td></tr></table><p></p><p>
+ A convenient function, lots of times, we'll write int
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">the tag to be written
+</TD></TR>
+<TR><TD align="left" valign="top"><i>value</i></TD><TD align="left" valign="top">the value to be written
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if succesfull false otherwise
+  </p>
+<A NAME="createElement"></A><A NAME="ref14"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>createElement</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> node_name, const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> value=nullptr, const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> comment=nullptr)
+<br></td><td align="right"><h3><strong>createElement</strong></h3></td></tr></table><p></p><p>
+ This will create a new Element in the xml taking the root as the
+ jail we are in , we have the x[].y[].z[] notation again.
+ This will create a <!--comment --><node_name> value </node_name> in the xml doc
+ The comment is absolutely optional
+ The node will be written in the position marked with [n] or in the LAST position
+ if no [n] specified
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>node_name</i></TD><TD align="left" valign="top">the name for this element
+</TD></TR>
+<TR><TD align="left" valign="top"><i>value</i></TD><TD align="left" valign="top">the value, for convenience, it saves to call write afterwards
+</TD></TR>
+<TR><TD align="left" valign="top"><i>comment</i></TD><TD align="left" valign="top">the comment that will be written JUST BEFORE, half implemented
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if success false if fail.
+	</p>
+<A NAME="deleteElement"></A><A NAME="ref15"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>deleteElement</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>deleteElement</strong></h3></td></tr></table><p></p><p>
+ This will delete a element <tag> tag value </tag>
+ also note that this can delete a big amount of info as
+ <a> <d>info</d><e>info</e>< <c> info</c></a>  deleting "a" here
+ will delete all the children tags
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">the tag to be deleted in x.y.z notation
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if succesful , false if not found
+	</p>
+<A NAME="setDomain"></A><A NAME="ref16"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>setDomain</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> domain, bool overwrite_domain=false)
+<br></td><td align="right"><h3><strong>setDomain</strong></h3></td></tr></table><p></p><p>
+ Limit the scope of all the operations to the domain in domain
+ This make the reads/writes more efficient but are not in any way
+ necesary so you can just ignore setDomain and releaseDomain
+ in your application
+ note that as you enter in a jail when using this function you must
+ take care about exiting from it using releaseDomain
+ you can anidate domains, setDomain(a) ; setDomain (b) will set the domain to
+ a.b and so on
+ note that you can say if the domain you are setting is global (relative to the document)
+ or relative to the current domain, so :
+ setDomain("a.b.c", true); is the same that
+ setDomain("a"); setDomain(b); setDomain(c);
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>domain</i></TD><TD align="left" valign="top">domain in simple x[n].y[m].z[p] notation
+</TD></TR>
+<TR><TD align="left" valign="top"><i>overwrite_domain</i></TD><TD align="left" valign="top">true if you set a new domain , false if the domain is relative to the old domain
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if success , false when fails.
+	</p>
+<A NAME="releaseDomain"></A><A NAME="ref17"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>releaseDomain</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> domain)
+<br></td><td align="right"><h3><strong>releaseDomain</strong></h3></td></tr></table><p></p><p>
+ Just release the jail the setDomain() enter us in, read the
+ setDomain comment
+ the domain must be a simple string no need to specify [] as we take
+ care of releasing just what was set.
+ for instance:
+ setDomain ("disk[1].partition[2].geometry")
+ releaseDomain("geometry"); will let the domain set to disk[1].partition[2]
+ releaseDomain("partition");  will let the domain set to disk[1]
+ releaseDomain("disk");  will eliminate the jail at all
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>domain</i></TD><TD align="left" valign="top">the domain to be released
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if successful
+	</p>
+<A NAME="createComment"></A><A NAME="ref18"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>createComment</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag, const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> comment)
+<br></td><td align="right"><h3><strong>createComment</strong></h3></td></tr></table><p></p><p>
+ It will create a comment just over the tag tag
+ the comments are not parsed with this API, so you can't change
+ nor delete them (not yet)
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">the tag over where we put the comment
+</TD></TR>
+<TR><TD align="left" valign="top"><i>comment</i></TD><TD align="left" valign="top">the comment we want to write
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: true if succesful , false otherwise
+  </p>
+<A NAME="readIntSimple"></A><A NAME="ref19"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int &nbsp;<strong>readIntSimple</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> key)
+<br></td><td align="right"><h3><strong>readIntSimple</strong></h3></td></tr></table><p></p><p>
+ API 2
+ The simple methods will access in a herarquical way.
+ This methods are going to die, just leaving it in case the other way of doing things
+ turns on complex code.
+ We must not use it as it will be removed.
+	</p>
+<A NAME="readStringSimple"></A><A NAME="ref20"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<strong>readStringSimple</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>readStringSimple</strong></h3></td></tr></table><p></p><p>
+ API 2
+ Looks for the string in the XML file and returns the value asociated to it
+  </p>
+<A NAME="readSectorSimple"></A><A NAME="ref21"></A><table width="100%"><tr bgcolor="#eeeeee"><td>long long &nbsp;<strong>readSectorSimple</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>readSectorSimple</strong></h3></td></tr></table><p></p><p>
+ API 2
+ The same as above, it returns a sector
+	</p>
+<A NAME="writeSimple"></A><A NAME="ref22"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>writeSimple</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> value)
+<br></td><td align="right"><h3><strong>writeSimple</strong></h3></td></tr></table><p></p><p>
+ API 2
+ Writes a value in the Xml tag with name key.
+ In case this node "don't have space" (it just have other tags, no values)
+ It will enter this level so the next time we try to read/write will do it here
+ Note that this means that the XML file tags MUST EXIST even if they have void data
+ It also means that when you enter a level you must be careful because if you look for
+ something outside it you'll go out so you'll have to enter again.
+ The aim is that this never happens so the code seems pretty natural, and easy to follow.
+</p>
+<p><b>Returns</b>: true if success or false otherwhise
+  </p>
+<A NAME="writeSimple"></A><A NAME="ref23"></A><table width="100%"><tr bgcolor="#eeeeee"><td>bool &nbsp;<strong>writeSimple</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const int value)
+<br></td><td align="right"><h3><strong>writeSimple</strong></h3></td></tr></table><p></p><p>
+ API 2
+  Same as above, writes a integer in the xml configuration </p>
+<A NAME="nodeFromTag"></A><A NAME="ref24"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A> &nbsp;<strong>nodeFromTag</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>nodeFromTag</strong></h3></td></tr></table><p> <small>[private]</small></p><p>
+ This method finds a node from a tag  name. It understand the x[n].y[m].z[p]
+ thing and will be used everywhere
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">the tag we want to find in this document
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: the node in the document with this tag as name
+</p>
+<A NAME="find"></A><A NAME="ref25"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A> &nbsp;<strong>find</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag,const <A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A> from, bool anidate=true)
+<br></td><td align="right"><h3><strong>find</strong></h3></td></tr></table><p> <small>[private]</small></p><p>
+ Helper function  for nodeFromTag. It just return the first node found.
+ We first look all the siblings and then begin to enter in the next level so
+ in the end we must have walked the entire tree. It's not very efficent for now.
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>tag</i></TD><TD align="left" valign="top">the tag name we are looking for
+</TD></TR>
+<TR><TD align="left" valign="top"><i>from</i></TD><TD align="left" valign="top">we start looking in this node "inwards"
+</TD></TR>
+<TR><TD align="left" valign="top"><i>anidate</i></TD><TD align="left" valign="top">if true we'll search between the children, if false we'll search between the siblings
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: the first node with this node found
+</p>
+<A NAME="discardBracket"></A><A NAME="ref26"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<strong>discardBracket</strong> (<A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> token, int *number)
+<br></td><td align="right"><h3><strong>discardBracket</strong></h3></td></tr></table><p> <small>[private]</small></p><p>
+ Yet another helper method, it accepts a string  token[number]
+ and returns token and number with no [ ].
+</p>
+<p><b>Parameters</b>:<TABLE BORDER="0" CELLPADDING="5">
+<TR><TD align="left" valign="top"><i>token</i></TD><TD align="left" valign="top">is the QString that we want to parse
+</TD></TR>
+<TR><TD align="left" valign="top"><i>number</i></TD><TD align="left" valign="top">is the number inside the brackets
+</TD></TR>
+</TABLE></P>
+<p><b>Returns</b>: the parsed string
+</p>
+<A NAME="lookForward"></A><A NAME="ref27"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<strong>lookForward</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>lookForward</strong></h3></td></tr></table><p> <small>[private]</small></p><p>
+ API 2
+	Looks in the same level from the current node to the end, if doesn't
+find anything just return null, else it modifies the current node and
+return the text found </p>
+<A NAME="lookBackward"></A><A NAME="ref28"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> &nbsp;<strong>lookBackward</strong> (const <A HREF="../../../../usr/lib/qt3/doc/html/qstring.html">QString</A> tag)
+<br></td><td align="right"><h3><strong>lookBackward</strong></h3></td></tr></table><p> <small>[private]</small></p><p>
+ API 2
+Looks backwards in the same level from the current node to the end, if doesn't
+find anything just return null, else it modifies the current node and
+return the text found </p>
+<A NAME="nextElement"></A><A NAME="ref29"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qdomelement.html">QDomElement</A> &nbsp;<strong>nextElement</strong> (<A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A> node)
+<br></td><td align="right"><h3><strong>nextElement</strong></h3></td></tr></table><p> <small>[private]</small></p><A NAME="f"></A><A NAME="ref30"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qfile.html">QFile</A> * <strong>f</strong>
+</td><td align="right"><h3><strong>f</strong></h3></td></tr></table><p> <small>[private]</small></p><A NAME="mode"></A><A NAME="ref31"></A><table width="100%"><tr bgcolor="#eeeeee"><td>int  <strong>mode</strong>
+</td><td align="right"><h3><strong>mode</strong></h3></td></tr></table><p> <small>[private]</small></p><A NAME="doc"></A><A NAME="ref32"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qdomdocument.html">QDomDocument</A> * <strong>doc</strong>
+</td><td align="right"><h3><strong>doc</strong></h3></td></tr></table><p> <small>[private]</small></p><A NAME="currentNode"></A><A NAME="ref33"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A>  <strong>currentNode</strong>
+</td><td align="right"><h3><strong>currentNode</strong></h3></td></tr></table><p> <small>[private]</small></p><A NAME="domain"></A><A NAME="ref34"></A><table width="100%"><tr bgcolor="#eeeeee"><td><A HREF="../../../../usr/lib/qt3/doc/html/qdomnode.html">QDomNode</A>  <strong>domain</strong>
+</td><td align="right"><h3><strong>domain</strong></h3></td></tr></table><p> <small>[private]</small></p><HR><UL><LI><i>Version</i>: 0.1
+ This class will deal with the configuration stored in the XML file
+ When a class wants to know the configuration stored or wants to store his own
+ it just write and read in this object.
+ The aim of the class is to be very easy to work with.
+ It provides two different APIs , API 1 and API 2 (original names isn't it?)
+ API 1  This is the API that must be used, it's supposed to work
+ The general form of the tag is  "x[n].y[m].z[p]" We look for the string in the xml doc
+ the string must be unique or we will just return the first one we find.
+ The numbers are known thanks to howManyTags();
+ API 2 is the *Simple functions, if they are not needed will be deprecated and deleted	
+ from this object
+	</LI><LI><i>Generated</i>: jordi on shadow on Sat Jun  8 11:58:11 2002, using kdoc 2.0a54.</LI></UL></BODY></HTML>

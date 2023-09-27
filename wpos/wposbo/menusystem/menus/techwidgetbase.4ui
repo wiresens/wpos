@@ -1,0 +1,119 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>TechWidgetBase</class>
+ <widget class="QWidget" name="TechWidgetBase">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>842</width>
+    <height>725</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form2</string>
+  </property>
+  <layout class="QVBoxLayout">
+   <item>
+    <spacer name="spacer90">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>30</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+   <item>
+    <layout class="QHBoxLayout">
+     <item>
+      <spacer name="spacer88">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>31</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+     <item>
+      <widget class="QTextEdit" name="textEdit1">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+       <property name="text" stdset="0">
+        <string>&lt;br&gt;&lt;br&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+1&quot;&gt;&lt;u&gt;Equipo Tecnico&lt;/u&gt;&lt;/font&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;b&gt;Directores de Proyecto : &lt;/b&gt; Carlos Manzanedo y Pedro-Angel Gonzalez&lt;br&gt;
+&lt;b&gt;Base de Datos :&lt;/b&gt; Pedro-Angel Gonzalez&lt;br&gt;
+&lt;b&gt;Programador Principal :&lt;/b&gt; Carlos Manzanedo&lt;br&gt;
+&lt;b&gt;Programador (impresora SRP-350) :&lt;/b&gt; Pablo Fernandez&lt;br&gt;
+&lt;b&gt;Programador (widget comanda ) :&lt;/b&gt; Jose Ignacio Ferrero&lt;br&gt;
+&lt;b&gt;Iconografia :&lt;/b&gt; Jorge Lopez-Lago&lt;br&gt;&lt;/p&gt;
+&lt;br&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+1&quot;&gt;&lt;u&gt;Agradecimientos&lt;/u&gt;&lt;/font&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;Jose Ignacio Ferrero ,Marta Matos y Clara Uria&lt;br&gt;
+Mesón Rueda &lt;font size=&quot;-1&quot;&gt;(C\Felix Rodriguez de la fuente ,Algete, Madrid)&lt;/font&gt;&lt;br&gt;&lt;/p&gt;
+
+&lt;br&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;font size=&quot;+1&quot;&gt;&lt;u&gt;Agradecimiento a Proyectos externos&lt;/u&gt;&lt;/font&gt;&lt;/p&gt;
+&lt;p align=&quot;center&quot;&gt;&lt;b&gt; ReportMan&lt;/b&gt;   (http://www.reportman.sourceforge.net)&lt;br&gt;&lt;b&gt; BlueSock&lt;/b&gt;   (http://www.bluesock.net)&lt;br&gt;
+&lt;b&gt; TrollTech &lt;/b&gt;   (http://www.trolltech.com)&lt;br&gt;
+&lt;b&gt; KDE&lt;/b&gt;   (http://www.kde.org)&lt;br&gt;
+&lt;b&gt; libxml &lt;/b&gt;  (http://www.xmlsoft.org)&lt;br&gt;
+&lt;b&gt; PostgreSQL &lt;/b&gt;  (http://www.postgresql.org)&lt;br&gt;&lt;/p&gt;&lt;/p&gt;</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="spacer88_2">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeType">
+        <enum>QSizePolicy::Fixed</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>31</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
+   </item>
+   <item>
+    <spacer name="spacer90_2">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeType">
+      <enum>QSizePolicy::Fixed</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>30</height>
+      </size>
+     </property>
+    </spacer>
+   </item>
+  </layout>
+ </widget>
+ <layoutdefault spacing="6" margin="11"/>
+ <resources/>
+ <connections/>
+</ui>

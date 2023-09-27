@@ -1,0 +1,10 @@
+<!ELEMENT AUTOMATICALLY_GENERATED_XML (product_code?, options) >
+<!ELEMENT product_code (#PCDATA) >
+<!ELEMENT options (option*) >
+<!ELEMENT option (option_type, description_type?, option_name, description_option?, value?, default?) >
+<!ELEMENT option_type (#PCDATA) >
+<!ELEMENT description_type (#PCDATA) >
+<!ELEMENT option_name (#PCDATA) >
+<!ELEMENT description_option (#PCDATA) >
+<!ELEMENT value (#PCDATA) >
+<!ELEMENT default (#PCDATA) >

@@ -1,0 +1,53 @@
+**********************************
+Detected Problems Running wposbo
+**********************************
+Core Problems:
++++++++++++++++++++++++++++++++++++++++++++++++
+1. XmlConfig 
+
+----------------------------------------------
+1.1 XmlConfig validity methods' name misliding
+
+Description:
+methods XmlConfig::isValid(), XmlConfig::validateXmlWithDTD() and
+XmlConfig::validateXmlWithInternalDTD() names may not hint very well
+on what the actually do. 
+XmlConfig::isValid() only reports whether the XML was well parsed
+XmlConfig::validateXmlWithDTD() check if XML validates with DTD
+One might expect that isValid actually check that the XML is both
+well formated and that it validates with DTD; which is not the case now.
+We need to fix it in the future  
+
+
+****************************************************************************
+GUI Problems:
+++++++++++++++++++++++++++++++++++++++++++++++++
+1. MainScreenWidget Misbehaviour
+
+-------------------------------------------------------------------
+1.1 wposbo crash when navigating to System Configuration >> Database
+
+Error Message:
+element database: validity error : Element database content does not follow the DTD, 
+expecting (hostname , dbname , user , passwd), got (hostname dbname user passwd port )
+element port: validity error : No declaration for element port
+element AUTOMATICALLY_GENERATED_XML: validity error : Element AUTOMATICALLY_GENERATED_XML content does not follow the DTD, 
+expecting (database), got 
+------------------------------------------------------------------------------------
+1.2 MainScreenWidget header and footer does not auto resize
+
+Description:
+When resizing the main window application(LinuxBarBackOfficeWidget), 
+MainScreenWidget header and footer image does not resize, Maybe this is because
+they are not autorisizable images. Let's try to use SVG Images or other
+solution to fix that
+--------------------------------------------------------------------------------
+
+2. LinuxBarBackOfficeWidget Problems
+2.1 Splash Message not displayed at wposbo startup
+Description:
+The splascreen is shown but the splah messages do not appear.
+Hint: Check every classes that emits or receives splash signal to se if
+they do what they should be doing well. Maybe this is because we set the 
+color variable and aligment for the splash message as a members of the class ..
+Status : Solved

@@ -1,0 +1,93 @@
+Libbslxml
+
+STORY
+-----
+The initial development of libbslxml was funded by Blue Sock.
+Currently the said company does not provide support for this library;
+Napsis S.L. being the one that has happened to maintain and solve
+the problems that affected the library.
+
+Libbslxml was used as the core of many programs made at Blue Sock by
+Carlos Manzanedo and Jordi Polo. Among others CoolDrive and the BSLinux distribution.
+CoolBlue was the installer for the said distro, and used as core of the data model of this library.
+
+Currently, most of the programs developed by Napsis make intensive use of XML as a modeling language for
+data and even data exchange between programs. libbslxml is used in programs like ntpv, dcopfx2000,
+NDiskClient, NDiskServer, and others.
+
+Goal
+----
+The idea of ??simple access to data for programmers on XML is a more complex subject than it seems at first glance.
+The amount of structures that are used for programming makes a complete API, without losing cleanliness, very difficult to perform.
+
+Our first intention has been to create a data access model that emulates structures and vectors of the
+majority of imperative languages, so that a learning period of the basic functions is achieved almost
+in no time and a learning period of the advanced functions achieved in an hour, in the case of a programmer
+used to imperative programming languages.
+
+Features
+--------
+Libbslxml is, as we have said, the implementation of the library that allows
+simple access to the data of an XML tree. It is implemented in C ++, but creating
+a similar library in C would be easy.
+Given the current dependency on Qt or TinyQt, most of the outputs provide a QString.
+Libbslxml allows the following functionalities:
+    -Read / write access to data in the manner of structures and vectors of majority of imperative languages.
+    -Location at the level of relative paths or absolute paths.
+    -Ability to create and read tag attributes.
+    -Search functions on XML at the content and information level.
+    -Work with Nodes and Attributes.
+    -Formatting the XML in text.
+    -Functions for creating and deleting domains and labels.
+    -Functions for copying sections from one document to another.
+    -Functions that allow to count labels within a domain.
+
+API and Code Example
+-----------------------
+
+Along with the libbslxml source package you can find a directory
+that contains the API for that library. In any case, and to facilitate
+the use, a code fragment is provided in this README.
+
+As an example:
+
+XmlConfig *xml = new XmlConfig();
+xml->createElementSetDomain("hardware.cpus.cpu");
+xml->createElement("id", "0");
+xml->createElement("frequency", "1546");
+xml->delDomain();
+xml->createElementSetDomain("hardware.cpus.cpu");
+xml->createElement("id", "1");
+xml->createElement("frequency", "2000");
+xml->delDomain();
+xml->save("/tmp/test.xml");
+
+It would generate the following xml snippet:
+
+<?xml version='1.0' encoding='UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+    <hardware>
+        <cpus>
+            <cpu>
+                <id> 0 </id>
+                <frequency> 1546 </frequency>
+            </cpu>
+            <cpu>
+                <id> 1 </id>
+                <frequency> 2000 </frequency>
+            </cpu>
+        </cpus>
+    </hardware>
+</AUTOMATICALLY_GENERATED_XML>
+
+The reading would be more or less simple, as for example:
+
+xml->delDomain();
+if (!xml->setDomain("hardware.cpus"))
+    cerr <<"no CPUS domain exists" <<endl;
+
+for (int i = 0; xml->ihowManyTags("cpu"); i++ ){
+    cout <<"Cpu number" <<endl;
+    cout << xml->readString("cpu[" + QString::number(i) + "].id").toLatin1();
+    cout << xml->readString("cpu[" + QString::number(i) + "].frequency").toLatin1() <<endl;
+}

@@ -1,0 +1,100 @@
+***********************************
+*Database Connexion Names to Check*
+***********************************
+AuthCoreDBConnection
+nTPV_ProductCoreConnection
+BslChangeMoneyWidgetConnection
+option_check
+BslEnterTheMatrixDB
+BarCoreConnection
+
+********************
+*Entities to Rename*
+********************
+BslOrderTableWidget -> BslOrderContentWidget
+BslOrderTableWidget *getOrderTable() -> content() 
+BslOrderHeaderWidget *getOrderHeader(); -> header()
+
+*********************************
+Add waiter Photo on the Order header. The function does
+nothing presently:
+void BslOrderHeaderWidget::showPhoto(bool show_it){}
+file: ntpv/ntpvlibwidget/bslorderheaderwidget.cpp
+Actually, the functionally is implemented. 
+We shall check to see why this functon does nothing
+
+**********************************************
+Refactor the parseXmlDescription() of many classes, using
+helper functions to reduce the lenght on code. It Actually
+more than 300 lines. Which is very bad. The is too much 
+code repetition 
+
+*********************************************************
+Fix the way paymode is handled. When everver a user click on the button
+for paymode type, a text or code corresponding to the paymode type should be
+sent to to slot that handle the paymode.
+
+Presently, for each paymode, there is a specific slot with the name of the paymode,
+that calls a function( a signal), passing it the hardcoded name of the paymode.
+void PayModeWidget::proceccionCivilClickedSlot(){
+    sendTicketSignal("proteccion civil");
+}
+
+void PayModeWidget::sodexhoClickedSlot(){
+    sendTicketSignal("sodexho pass");
+}
+
+We should handle this dynamically so that, we have
+PayModeWidget::paymodeClicked(const QString& paymode) 
+PayModeWidget::handlePaymodeClicked(const QString& paymode) 
+
+
+************************************************
+problems while opening device: Permission denied
+************************************************
+This message is printed to stderr when clicking on 
+button abrir caja ( Open Cash Box )
+
+from : void OpenBox::genericSignalSlot(const QString& signal_name)
+It tried to open the file /dev/ttyS0 as specified in the
+configuration file /etc/ntpv/devices_config.xml.
+As with the finger print devices, we should use dbus/udev
+to automatically detect whether a cashbox device is connected
+or not, displaying or hiding the button as the device comes in 
+or goes. The configuration should not be harcoded in the xml file.
+
+************************************************
+bslmenubutton.cpp : Redesign
+************************************************
+Since we are no more using a QMenu widget to implement popup menu
+functionality( we replaced it with a QFrame that has the Qt::Popup window flag), we should investigate to see whether the folliwing metthods are still relevant:
+	+ setOrientation()
+	+ orientation()
+	+ closePopUp()
+
+Also, we are allways aligning the popup menu in grid and makes it overlap the area of "upper buttons" when displayed. We made the asumption that the grid will allways have two columns. Therefore, the following methods might not be relevant anymore:
+	+ alignInGrid()
+The aligment is done automatically in the method  childEvent(). 
+
+Rievize HList and make it
+it data member stack allocated objects
+QPtrList<T>  *list ===> QPtrList<T>  list;
+QPtrMap<T>* dict   ===> QPtrMap<T>   dict 
+
+ntpvlibwidget:
+bsldragobjects.cpp: Classes Have been moved 
+	*** from QIconView to QListView
+	*** from QIconViewItem to QListWidgetItem
+	*** QTable to QTableWidget
+Only wposbo uses theses classes. Check later if porting was successfull
+
+XmlConfig: releaseDomain vs delDomain
+The basicly do the samething, releasing domain, but the name "delDomain" is confusing.
+we will rename it releaseDomain in the future and have these two overloads:
+bool releaseDomain(const QString& domain, bool recursive=true);
+bool releaseDomain (bool recursive=true)
+
+The present situation is:
+bool releaseDomain(const QString& domain, bool recursive=true);
+bool delDomain (bool recursive=true), which is a bit misleading:
+See description in : ntpv/libbslxml/xmlconfig.h

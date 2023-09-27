@@ -1,0 +1,112 @@
+<?xml version = '1.0' encoding = 'UTF-8'?>
+<AUTOMATICALLY_GENERATED_XML>
+  <devices>
+    <printers>
+      <printer>
+        <name>none</name>
+        <text>Sin Impresora</text>
+        <port>none</port>
+        <pixmap>/usr/share/ntpv_backoffice/apps/48x48/printer_noselection.png</pixmap>
+      </printer>
+      <printer>
+        <name>samsung-srp350</name>
+        <text>Samsung SRP-350</text>
+        <port>parallel0</port>
+        <pixmap>/usr/share/ntpv_backoffice/apps/48x48/printer.png</pixmap>
+        <default>true</default>
+      </printer>
+    </printers>
+    <screens>
+      <screen>
+        <name>none</name>
+        <text>Sin Visor</text>
+        <port>none</port>
+        <pixmap>/usr/share/ntpv_backoffice/apps/48x48/screen1_noselection.png</pixmap>
+        <default>true</default>
+      </screen>
+      <screen>
+        <name>bs-flat14AA</name>
+        <text>Blue Sock Flat 14AA</text>
+        <port>usb0</port>
+        <pixmap>/usr/share/ntpv_backoffice/apps/48x48/screen1.png</pixmap>
+      </screen>
+      <screen>
+        <name>bs-flat15AA</name>
+        <text>Blue Sock Flat 15BB</text>
+        <port>usb0</port>
+        <pixmap>/usr/share/ntpv_backoffice/apps/48x48/screen1.png</pixmap>
+      </screen> 
+    </screens>
+    <atms>
+      <atm>
+        <name>none</name>
+        <text>Sin Cajon</text>
+        <port>none</port>
+        <pixmap>/usr/share/ntpv_backoffice/apps/48x48/atm_noselection.png</pixmap>
+      </atm>
+      <atm>
+        <name>ec-410-black</name>
+        <text>Cajon 41 serie</text>
+        <port>serial0</port>
+        <pixmap>/usr/share/ntpv_backoffice/apps/48x48/atm.png</pixmap>
+        <default>true</default>
+      </atm>       
+    </atms>
+  </devices>
+  <ports>
+    <port>
+      <name>none</name>
+      <text>Sin puerto seleccionado</text>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/cancel.png</pixmap>
+    </port>  
+    <port>
+      <name>serial0</name>
+      <text>/dev/ttyS0 (COM 1)</text>
+      <device>/dev/ttyS0</device>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/serial_devices.png</pixmap>
+    </port>
+    <port>
+      <name>serial1</name>
+      <text>/dev/ttyS1 (COM 2)</text>
+      <device>/dev/ttyS1</device>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/serial_devices.png</pixmap>
+    </port>
+    <port>
+      <name>parallel0</name>
+      <text>/dev/lp0 (LPT 1)</text>
+      <device>/dev/lp0</device>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/serial_devices.png</pixmap>
+    </port>
+    <port>
+      <name>parallel1</name>
+      <text>/dev/lp1 (LPT 2)</text>
+      <device>/dev/lp1</device>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/serial_devices.png</pixmap>
+    </port>
+    <port>
+      <name>usb0</name>
+      <text>USB0</text>
+      <type>serial</type>
+      <device>/dev/ttyUSB0</device>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/usb_devices.png</pixmap>
+    </port>
+    <port>
+      <name>usb1</name>
+      <text>USB1</text>
+      <type>serial</type>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/usb_devices.png</pixmap>
+    </port>
+    <port>
+      <name>usb2</name>
+      <text>USB2</text>
+      <type>serial</type>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/usb_devices.png</pixmap>
+    </port>
+    <port>
+      <name>usb3</name>
+      <text>USB3</text>
+      <type>serial</type>
+      <pixmap>/usr/share/ntpv_backoffice/apps/32x32/usb_devices.png</pixmap>
+    </port> 
+  </ports>
+</AUTOMATICALLY_GENERATED_XML>

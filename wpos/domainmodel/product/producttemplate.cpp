@@ -1,0 +1,2 @@
+#include "producttemplate.h"
+

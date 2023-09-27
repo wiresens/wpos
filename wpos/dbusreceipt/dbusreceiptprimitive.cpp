@@ -1,0 +1,154 @@
+/***************************************************************************
+                          dbusreceiptprimitive.cpp  -  description
+                             -------------------
+    begin                : Thu Jan 8 2004
+    copyright            : (C) 2004 by Napsis S.L.
+    email                : carlos@napsis.com
+
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+
+#include "dbusreceiptprimitive.h"
+#include "dbusreceiptprimitive_adaptor.h"
+#include <xmlconfig.h>
+
+#include <QFileSystemWatcher>
+#include <QCoreApplication>
+#include <QString>
+
+#define DB_CONNECTION_NAME "Db_Receipt"
+#define DB_CONNECTION_PATH "/etc/ntpv/bar_database.xml"
+
+const QString DBusReceiptPrimitive::DBusObject  = QString{"/wpos/dbusreceipt/DBusReceiptPrimitive"};
+
+DBusReceiptPrimitive::DBusReceiptPrimitive(QObject *parent, const QString& name):
+    QObject(parent)
+{
+    new DBusReceiptPrimitiveAdaptor(this);
+    QDBusConnection dbus = QDBusConnection::sessionBus();
+    dbus.registerObject(DBusReceiptPrimitive::DBusObject, this);
+
+    receipt_db = new ReceiptDB(DB_CONNECTION_NAME, DB_CONNECTION_PATH);
+    setObjectName(name);
+
+    //it should be used by other modules so please be sure that if not implemented here it
+    //should be created before all the modules are created.
+    file_watcher = new QFileSystemWatcher(this);
+
+    file_watcher->addPath(DB_CONNECTION_PATH);
+    connect(file_watcher, SIGNAL(fileChanged(const QString&)),
+            this, SLOT(fileDirtySlot(const QString&)));
+}
+
+DBusReceiptPrimitive::~DBusReceiptPrimitive(){
+    delete receipt_db;
+}
+
+bool DBusReceiptPrimitive::createReceipt(QString xml_receipt){
+
+    XmlConfig xml;
+    if (xml_receipt.isEmpty() || !xml.readXmlFromString(xml_receipt))
+        return false;
+
+    bool ret = receipt_db->create(xml, false);
+    if (ret){
+        xml.delDomain();
+        auto employee_id = xml.readString("employee.dni");
+        auto start_time = xml.readString("timestamps.start");
+        emit receiptChangedByStartDate(employee_id, start_time);
+    }
+    return ret;
+}
+
+bool DBusReceiptPrimitive::saveReceipt(QString xml_receipt){
+
+    XmlConfig xml;
+    if (xml_receipt.isEmpty()|| !xml.readXmlFromString(xml_receipt))
+        return false;
+
+    bool saved = receipt_db->saveReceipt(xml);
+    if (saved){
+        xml.delDomain();
+        auto employee_id = xml.readString("employee.dni");
+        auto start_time = xml.readString("timestamps.start");
+        emit receiptChangedByStartDate(employee_id, start_time);
+    }
+    return saved;
+}
+
+bool DBusReceiptPrimitive::deleteReceiptByStartDate(QString employee_id, QString start_time){
+    bool deleted = false;
+    deleted = receipt_db->deleteReceiptByDate(employee_id,start_time);
+    if (deleted)
+        emit receiptChangedByStartDate(employee_id,start_time);
+
+    return deleted;
+}
+
+QString DBusReceiptPrimitive::getReceiptByStartDate(QString employee_id, QString start_time){
+    return receipt_db->getReceiptByDate(employee_id,start_time);
+}
+
+QString DBusReceiptPrimitive::getReceiptResume(){
+    return receipt_db->getReceiptResume();
+}
+
+QString DBusReceiptPrimitive::getReceiptResume(QString employee_id){
+    return receipt_db->getReceiptResume(employee_id);
+}
+
+bool DBusReceiptPrimitive::lockReceiptByStartDate(QString employee_id, QString start_time){
+    bool locked = false;
+    locked = receipt_db->lockReceiptByDate(employee_id, start_time);
+    if (locked) emit receiptChangedByStartDate(employee_id, start_time);
+    return locked;
+}
+
+bool DBusReceiptPrimitive::unlockReceiptByStartDate(QString employee_id, QString start_time){
+    bool unlocked = false;
+    unlocked = receipt_db->unlockReceiptByDate(employee_id,start_time);
+    if (unlocked)
+        emit receiptChangedByStartDate(employee_id,start_time);
+    return unlocked;
+}
+
+bool DBusReceiptPrimitive::existsReceiptByStartDate(QString employee_id, QString start_date){
+    qDebug() << "Begin DBus Service Request DBusReceiptPrimitive::existsReceiptByStartDate() ";
+
+    bool exist = false;
+    exist = receipt_db->existReceiptByDate(employee_id, start_date);
+    if (exist)  emit receiptChangedByStartDate(employee_id, start_date);
+
+    qDebug() << "End DBus Service Request DBusReceiptPrimitive::existsReceiptByStartDate()";
+    qDebug() << "Result : " << exist;
+    return exist;
+}
+
+bool DBusReceiptPrimitive::getReceiptStateByStartDate(QString employee_id, QString start_time){
+    bool exists = false;
+    exists =receipt_db->getReceiptStateByDate(employee_id, start_time);
+    if (exists)
+        emit receiptChangedByStartDate(employee_id,start_time);
+    return exists;
+}
+
+void DBusReceiptPrimitive::fileDirtySlot(const QString& file){
+
+    if (file == DB_CONNECTION_PATH){
+        qDebug() << qApp->applicationName() <<": Rereading database configuration";
+        usleep(2000);
+        XmlConfig xml (DB_CONNECTION_PATH);
+        if (xml.isValid()){
+            delete receipt_db;
+            receipt_db = new ReceiptDB(DB_CONNECTION_NAME, DB_CONNECTION_PATH);
+        }
+    }
+}
