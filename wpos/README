@@ -1,69 +1,77 @@
 ----------------------------------------------------------------
-nTPV is a point of sale (POS) system designed and developed by Napsis Corp.
+Background History
+----------------------------------------------------------------
+nTPV was a point of sale (POS) system designed and developed by Napsis Corp in 2003,
+implemented in C++ with Qt3.
 
-After Napsis closure, nTPV is being mantained by Napsis founders and partners as a Open Source Project.
-	Carlos Manzanedo Rueda <carlos@napsis.com>
-	Pedro-Ángel Gonzalez Rueda <pedro@napsis.com>
+After Napsis closure, nTPV was mantained by Napsis founders and partners 
+as a Open Source Project on sourceforge until December 2008.
 
-It was initially designed to manage restaurants, bars, cafes, and similar businesses, but now, it's evolving into a general purpose POS. It uses DCOP and nkxmlrpcd for distributed comunications among POS, and uses PostgreSQL as its database backend. It features a fast and easy-to-use interface. Its high modularity and scalability makes it easy to enhance and mantain.
+It was initially designed to manage restaurants, bars, cafes, and similar businesses, 
+but now, it's evolving into a general purpose POS. It uses DCOP and nkxmlrpcd for 
+distributed comunications among POS, and uses PostgreSQL as its database backend. 
+It features a fast and easy-to-use interface. Its high modularity and scalability 
+makes it easy to enhance and mantain.
 
 Napsis provide other plugins that adds more features to POS systems like:
-
 Currently all this modules except DCOPFX2000 have been released with this source package.
 If you are interested on the Biometric fingerprint autentication, please send a mail to <carlos@napsis.com>
 
-	
-	[ DCOPFX2000 ] Biometric fingerprint autentication of waiters and users.
-       [ DCOPRECEIPT ] Easy use of orders, tables, and invoice saving... no more ordering notebooks are needed
-       [ DCOPREPORTS ] Reports generated with this plugin allows to obtain information to increase benefits.
-         [ DCOPSTICK ] Manage your backups and store your reports with USB storage drives.
+  [DCOPFX2000]  Biometric fingerprint autentication of waiters and users.
+  [DCOPRECEIPT] Easy use of orders, tables, and invoice saving... no more ordering notebooks are needed
+  [DCOPREPORTS] Reports generated with this plugin allows to obtain information to increase benefits.
+  [DCOPSTICK]   Manage your backups and store your reports with USB storage drives.
 
-libraries needed to compile nTPV
---------------------------------
+But nTPV as developped by napsis had some problems which made it's maintenance difficults:
+	* No use of the MVC design patern to separate GUI from Data
+	* Used mostly Transaction Script and sometime Table Module to model the Domain
+The system was working only on old Linux systems supporting KDE and Qt3 which both are legacy technology abandonned
+for Years. But since software had some potential and was widelly used in those days, at Wiresens we undertook 
+to port it the recent technologies and refactor its design the overcome the two problems mentioned above.
+In this regard, so far we have currently done the following successfully:
+	* Ported form Qt3 to Qt5
+	* Replaced DCOP with DBus
+	* Repalced the Gosview Document viewer by an internal PDF Reader
 
-	- libgdchart (http://www.fred.net/brv/chart/)
-	- qt3 (www.trolltech.com)
-	- qt3 postgres plugin
-	- kde (www.kde.org)
+So presently, it has the same functionality as legacy nTPV. We are working hard to make it more general
+to be used in all retail systems:
+The system is now called wPOS
+
+TODO:
+-------------------------------------------------------------------------------------------------------------
+We are currently working on :
+	* Adopting an MVC approach to sepparate the GUI from Data
+	* Transition from Transaction Script to Domain Model
+	* Transition from QWidget to QML to be supported on Mobile Patforms
+	* Transition from qmake build system  to cmake
+
+wPOS dependecies on Ubuntu 22.04( Ubuntu packages):
+-------------------------------------------------------------------------------------------------------------
+	- qt5 (https://www.qt.io)	
+	- qtpdf5-dev libqt5pdf5 libqt5pdfwidgets5 libqt5webenginewidgets5 libqt5sql5-psql
+	- libgdchart (http://www.fred.net/brv/chart/) : libgdchart-gd2-xpm, libgdchart-gd2-xpm-dev
 	- libxml2 (http://xmlsoft.org/)
 	
+building wPOS.  (Quick method.)
+-------------------------------------------------------------------------------------------------------------
+wPOS now use qmake package generation. It's very simple and quick to compile and install. 
+qmake and make must be installed.
 
-
-Installing nTPV.  (Quick method.)
-----------------------------------
-
-nTPV now use QMake package generation thanks to Trolltech. It's very simple and quick to compile and install nTPV. 
-
-QMake must be installed.
-
-
-As user, type:
-
-	tar xzvf ntpv-1.2.tar.gz
-	
-It will create a nTPV directory. Enter at the directory and run
-
-	qmake
-	make
-	
-To install nTPV you need to be root.
-
-As root, type:
-	make install
+git clone https://github.com/wiresens/wpos.git
+cd wpos/wpos
+qmake wpos.pro -spec linux-g++-64
+make -j4
+sudo make install
 
 And that's all.
 
 Cleaning all sources.
 ----------------------
-
-As user type:
-
-	make clean
+make clean
 
 
-Uninstalling nTPV.
+Uninstalling.
 ------------------
+sudo make uninstall
 
-As root, type:
-
-	make uninstall
+Or you can use the latest Qtcreator IDE. At the time of this writting, it was QtCreator 11 on Kubuntu 22.04
