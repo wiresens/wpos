@@ -586,3 +586,6 @@ button_state.xml                invoice.xml                  printerz_con_opcion
 company_ticket_data.xml         kitchen_printerhtml.xml      printerz_old.xml
 dcopprinter_config.xml          lounges.xml                  printerz_sin_opciones.xml
 dcopreceipt_config.xml          ntpv_buttons.xml             printerz.xml
+
+Restrict unauthorized repository cloning on GitHub
+Anonymous repository cloning is only enabled for public projects so make your project private to disable anonymous cloning. If you want to allow users to clone/pull/push over SSH, you must add create_ssh_key permission on role. Users will be able to manage their SSH keys in 'my account'.
