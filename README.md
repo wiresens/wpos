@@ -22,7 +22,7 @@ makes it easy to enhance and mantain.
 	 	[DCOPSTICK]   Manage your backups and store your reports with USB storage drives.
 
 But nTPV as developped by napsis had some problems which made it's maintenance difficults:
-* No use of the **MVC design patern** to separate GUI from Data
+* No use of the **MVC design pattern** to separate GUI from Data
 * Used mostly **Transaction Script** and sometime **Table Module** to model the Domain
   
 The system was working only on old Linux systems supporting KDE and Qt3 which both are legacy technology abandonned
@@ -31,7 +31,7 @@ to port it the recent technologies and refactor its design the overcome the two 
 
 In this regard, so far we have currently done the following successfully:
 * Ported form **Qt3** to **Qt5**
-* Replaced **DCOP** with **DBus**
+* Replaced **DCOP** with **D-Bus**
 * Repalced the Gosview Document viewer by an internal PDF Reader
 
 So presently, it has the same functionality as legacy nTPV. We are working hard to make it more general
@@ -43,7 +43,7 @@ The system is now called **wPOS**
 ### We are currently working on :
 * Adopting an MVC approach to sepparate the GUI from Data
 * Transition from Transaction Script to **Domain Model**
-* Transition from **QWidget** to **QM**L to be supported on Mobile Patforms
+* Transition from **QWidget** to **QML** to be supported on Mobile Patforms
 * Transition from **qmake** build system  to **cmake**
 
 ## wPOS Dependecies on Ubuntu 22.04( Ubuntu packages):
