@@ -38,11 +38,11 @@ TicketsHandlingWidget::TicketsHandlingWidget(
     order_down_button->setAutoRepeat(true);
     order_up_button->setAutoRepeat(true);
 
-    ticket_down_button->setIcon(QPixmap("/usr/share/ntpv/apps/down_48.png"));
-    ticket_up_button->setIcon(QPixmap("/usr/share/ntpv/apps/up_48.png"));
-    order_down_button->setIcon(QPixmap("/usr/share/ntpv/apps/down_48.png"));
-    order_up_button->setIcon(QPixmap("/usr/share/ntpv/apps/up_48.png"));
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
+    ticket_down_button->setIcon(QPixmap("controls:down_48.png"));
+    ticket_up_button->setIcon(QPixmap("controls:up_48.png"));
+    order_down_button->setIcon(QPixmap("controls:down_48.png"));
+    order_up_button->setIcon(QPixmap("controls:up_48.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
 
     auto order_layout = new QVBoxLayout(order_frame);

@@ -131,7 +131,7 @@ bool XRVariant::isXmlRpcType(const QVariant& qv)
     else if( qv.type() == QVariant::List ) {
         bool all_good{true};
 
-        for( const auto v : qv.toList() )
+        for( const auto& v : qv.toList() )
             all_good = all_good && isXmlRpcType(v);
         return all_good;
     }
@@ -142,7 +142,7 @@ bool XRVariant::isXmlRpcType(const QVariant& qv)
             all_good = all_good && isXmlRpcType( *it);
         }
 
-        for(const auto v : qv.toMap()){
+        for(const auto& v : qv.toMap()){
             all_good = all_good && isXmlRpcType( v );
         }
         return all_good;
@@ -252,7 +252,7 @@ QDomElement XRVariant::toDomElement(QDomDocument& doc) const
         QDomElement data_el = doc.createElement("data");
         type_el.appendChild(data_el);
 
-        for( const auto  v : toList() )
+        for( const auto&  v : toList() )
             data_el.appendChild( XRVariant(v).toDomElement(doc) );
     }
     else if( this_type == QVariant::Map ){

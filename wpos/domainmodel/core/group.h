@@ -36,10 +36,15 @@ SOFTWARE.
 namespace ws{
 namespace model{
 
-class Group : public Persistable
-{
+//class Group : public Persistable<Group>
+class Group : public Persistable{
+    friend class odb::access;
+
 public:
-    Group();
+    virtual ~Group() = default;
+
+protected:
+    Group() = default;
 };
 
 }

@@ -49,8 +49,8 @@ ChangeMoneyWidget::ChangeMoneyWidget(QWidget *parent, const QString& name) :
     keyPad = new FloatKeyboardBox(numpad_frame);
 
     // Initialize all images
-    ok_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_ok_48.png"));
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls:button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
     // Create the connection to the database
     db = new ChangeMoneyWidgetDB ("BslChangeMoneyWidgetConnection",Files::configFilePath("database"));

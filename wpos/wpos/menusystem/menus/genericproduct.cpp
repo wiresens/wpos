@@ -40,8 +40,8 @@ GenericProduct::GenericProduct(const QString& product_name,
     numpad_frame_layout->addWidget(key_pad);
 
     generic_product_name = product_name;
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls:button_ok_48.png"));
 
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::XCORE_SET_PRODUCT_PRICE, this);

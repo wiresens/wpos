@@ -29,7 +29,7 @@ ProductXmFileUpdateWidget::ProductXmFileUpdateWidget(
     setupUi(this);
     setObjectName(name);
     progress_frame->hide();
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
     connect(ok_button, &QPushButton::released, this, &ProductXmFileUpdateWidget::acceptSlot);
 }
 

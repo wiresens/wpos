@@ -46,7 +46,6 @@ void CashDevice::initCashDevice(){}
 void CashDevice::genericSignalSlot(const QString& signal_name){
 
     if (signal_name == GSIGNAL::OPEN_CASHBOX){
-
         open(CASHBOX_DEVICE, CASHBOX_TYPE);
         XmlConfig xml;
         xml.createElement("event_type", "open_cashbox");
@@ -55,13 +54,13 @@ void CashDevice::genericSignalSlot(const QString& signal_name){
 }
 
 bool CashDevice::open(const QString& cashbox_dev, const QString& cashbox_type){
-    const char* device_node = cashbox_dev.toStdString().c_str();
-    FILE *device = fopen(device_node, "w");
+    std::string device_node = cashbox_dev.toStdString();
+    FILE *device = fopen(device_node.c_str(), "w");
 
     auto error_msg = "CashDevice::genericSignalSlot( " + GSIGNAL::OPEN_CASHBOX.toStdString() +" )";
-    error_msg += std::string("Problem while opening the Cash Box device at node " + std::string(device_node));
+    error_msg += std::string("Problem while opening the Cash Box device at node " + std::string(device_node.c_str()));
 
-    if (!device) std::perror(error_msg.c_str());
+    if ( !device ) std::perror(error_msg.c_str());
     else{
         if ( cashbox_type == "cash_drawer"  || cashbox_type == "p_samsung_350" ){
             char c[] = { 0x1b, 0x70, 0x00, 0x30, 0x30 };

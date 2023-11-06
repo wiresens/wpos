@@ -41,8 +41,8 @@ using namespace std;
 
 #define NUM_DIGITS_FOR_PASSWD 4
 #define AUTH_TIME_SLEEP 750
-#define nullptr_FINGERPRINT "/usr/share/ntpv/apps/null_fingerprint.png"
-#define BAD_FINGERPRINT "/usr/share/ntpv/apps/bad_fingerprint.png"
+#define nullptr_FINGERPRINT "controls:null_fingerprint.png"
+#define BAD_FINGERPRINT "controls:bad_fingerprint.png"
 
 extern AuthCore *auth;
 
@@ -67,9 +67,9 @@ NumCodeWidget::NumCodeWidget(QWidget *parent, const QString& name) :
 
     caption_label->setVisible(false);
     passwd_label->setText(passwd);
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_ok_48.png"));
-    shutdown_button->setIcon(QPixmap("/usr/share/ntpv/apps/exit.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls:button_ok_48.png"));
+    shutdown_button->setIcon(QPixmap("controls:exit.png"));
     shutdown_button->setText(tr("Shutdown"));
 
     smap = new QSignalMapper(this);

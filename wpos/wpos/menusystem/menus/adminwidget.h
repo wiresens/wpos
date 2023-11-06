@@ -24,7 +24,7 @@ class QProcess;
 class AdminWidget : public QWidget, private Ui::AdminWidget  {
     Q_OBJECT
 public:
-    explicit AdminWidget(ProductScreenStack *stack, QWidget* parent=0, const QString& name = QString());
+    explicit AdminWidget(ProductScreenStack *stack, QWidget* parent=nullptr, const QString& name = QString());
     ~AdminWidget();
 
     QPushButton *toggle_cash;

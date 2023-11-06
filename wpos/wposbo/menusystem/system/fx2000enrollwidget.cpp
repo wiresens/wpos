@@ -33,19 +33,19 @@
 #include <QProgressBar>
 #include <QLocale>
 
-const QString& RH   {"/usr/share/ntpv_backoffice/apps/hands/r-hand.png"};
-const QString& RH_0 {"/usr/share/ntpv_backoffice/apps/hands/r-hand0.png"};
-const QString& RH_1 {"/usr/share/ntpv_backoffice/apps/hands/r-hand1.png"};
-const QString& RH_2 {"/usr/share/ntpv_backoffice/apps/hands/r-hand2.png"};
-const QString& RH_3 {"/usr/share/ntpv_backoffice/apps/hands/r-hand3.png"};
-const QString& RH_4 {"/usr/share/ntpv_backoffice/apps/hands/r-hand4.png"};
-const QString& LH   {"/usr/share/ntpv_backoffice/apps/hands/l-hand.png"};
-const QString& LH_0 {"/usr/share/ntpv_backoffice/apps/hands/l-hand0.png"};
-const QString& LH_1 {"/usr/share/ntpv_backoffice/apps/hands/l-hand1.png"};
-const QString& LH_2 {"/usr/share/ntpv_backoffice/apps/hands/l-hand2.png"};
-const QString& LH_3 {"/usr/share/ntpv_backoffice/apps/hands/l-hand3.png"};
-const QString& LH_4 {"/usr/share/ntpv_backoffice/apps/hands/l-hand4.png"};
-const QString& EMPTY_FINGERPRINT {"/usr/share/ntpv_backoffice/apps/hands/black_fingerprint.png"};
+const QString& RH   {"hands:r-hand.png"};
+const QString& RH_0 {"hands:r-hand0.png"};
+const QString& RH_1 {"hands:r-hand1.png"};
+const QString& RH_2 {"hands:r-hand2.png"};
+const QString& RH_3 {"hands:r-hand3.png"};
+const QString& RH_4 {"hands:r-hand4.png"};
+const QString& LH   {"hands:l-hand.png"};
+const QString& LH_0 {"hands:l-hand0.png"};
+const QString& LH_1 {"hands:l-hand1.png"};
+const QString& LH_2 {"hands:l-hand2.png"};
+const QString& LH_3 {"hands:l-hand3.png"};
+const QString& LH_4 {"hands:l-hand4.png"};
+const QString& EMPTY_FINGERPRINT {"hands:black_fingerprint.png"};
 const QString& FINGERPRINT_DCOP_MODULE {"dcopfx2000"};
 
 #include <iostream>

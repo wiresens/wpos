@@ -34,7 +34,7 @@ public:
         ZOperation = 1
     };
 
-    explicit XZWidget(QWidget *parent=0, const QString& name = QString());
+    explicit XZWidget(QWidget *parent, const QString& name = QString());
     ~XZWidget();
     void showEvent(QShowEvent *e);
     void hideEvent(QHideEvent *e);

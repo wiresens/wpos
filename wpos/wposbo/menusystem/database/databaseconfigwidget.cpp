@@ -49,16 +49,14 @@ using namespace std;
 static const int TIME_INTERVAL = 10;
 static const int WINDOW_HEIGHT = 680;
 static const int FIELD = 0;
-const QString& DDBB_CONFIGURATION_FILE = "/etc/ntpv/bar_database.xml";
-const QString& DDBB_CONFIGURATION_DTD = "/etc/ntpv_backoffice/dtds/dbmodule_config.dtd";
-static const QString& DDBB_CONFIGURATION_DTD_NMAP = "/etc/ntpv_backoffice/dtds/dbmodule_config_nmap.dtd";
-const QString& DDBB_FIND_SERVERS_PATH = "/etc/ntpv_backoffice/find_servers";
-const QString& DDBB_FIND_DATABASES_PATH = "/etc/ntpv_backoffice/find_databases";
+
+const QString& DDBB_CONFIGURATION_FILE              = "/etc/ntpv/bar_database.xml";
+const QString& DDBB_CONFIGURATION_DTD               = "/etc/ntpv_backoffice/dtds/dbmodule_config.dtd";
+static const QString& DDBB_CONFIGURATION_DTD_NMAP   = "/etc/ntpv_backoffice/dtds/dbmodule_config_nmap.dtd";
+const QString& DDBB_FIND_SERVERS_PATH               = "/etc/ntpv_backoffice/find_servers";
+const QString& DDBB_FIND_DATABASES_PATH             = "/etc/ntpv_backoffice/find_databases";
 //const QString& DDBB_SERVERS_PATH  = "/etc/ntpv_backoffice/database_server.xml";
-const QString& NMAP_RESULT_XML  = "/tmp/database_server.xml"; //put the result of nmap here
-const QString& DDBB_ICON_48_PATH= "/usr/share/ntpv_backoffice/apps/48x48/";
-const QString& DDBB_SERVER_ICON = DDBB_ICON_48_PATH+"kcmsystem.png";
-const QString& DDBB_DB_ICON = DDBB_ICON_48_PATH+"kcmdevices.png";
+const QString& NMAP_RESULT_XML                      = "/tmp/database_server.xml"; //put the result of nmap here
 
 DatabaseConfigWidget::DatabaseConfigWidget(DatabaseModule *dbmod,  QWidget *parent, const QString& name) :
     QWidget(parent), db_mod(dbmod)
@@ -80,13 +78,13 @@ DatabaseConfigWidget::DatabaseConfigWidget(DatabaseModule *dbmod,  QWidget *pare
     hostnames_list_wgt->setViewMode(QListView::ListMode);
     dbname_list_wgt->setViewMode(QListView::IconMode);
 
-    server_pixmap_label->setPixmap(QPixmap( DDBB_ICON_48_PATH + "kcmsystem.png"));
-    user_pixmap_label->setPixmap(QPixmap( DDBB_ICON_48_PATH + "personal.png"));
-    database_pixmap_label->setPixmap(QPixmap(DDBB_ICON_48_PATH + "kcmdevices.png"));
-    image_scan->setPixmap(QPixmap(DDBB_ICON_48_PATH + "info1.png"));
+    server_pixmap_label->setPixmap(QPixmap( "controls48:kcmsystem.png"));
+    user_pixmap_label->setPixmap(QPixmap("controls48:personal.png"));
+    database_pixmap_label->setPixmap(QPixmap("controls48:kcmdevices.png"));
+    image_scan->setPixmap(QPixmap("controls48:info1.png"));
 
-    cancel_button->setIcon(QPixmap(DDBB_ICON_48_PATH + "button_cancel.png"));
-    ok_button->setIcon(QPixmap(DDBB_ICON_48_PATH + "button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
 
     connect(user_name_ledit, SIGNAL(textChanged(const QString &)), this, SLOT(userNameChanged(const QString &)));
 
@@ -255,7 +253,7 @@ void DatabaseConfigWidget::endFindServers(int exitCode, QProcess::ExitStatus exi
     }
 
     stack->setCurrentWidget(servers);
-    showValues(hostnames, hostnames_list_wgt, QPixmap(DDBB_SERVER_ICON));
+    showValues(hostnames, hostnames_list_wgt, QPixmap("controls48:kcmsystem.png"));
 
     // Set normal cursor and others elements to on state when discovering has finnished
     // QApplication::setOverrideCursor(QCursor(ArrowCursor));
@@ -314,7 +312,7 @@ void DatabaseConfigWidget::endFindDatabases(int exitCode, QProcess::ExitStatus e
         hostnames += xml.readString("name["+QString::number(i)+"]");
 
     stack->setCurrentWidget(servers);
-    showValues(hostnames, dbname_list_wgt, QPixmap(DDBB_DB_ICON));
+    showValues(hostnames, dbname_list_wgt, QPixmap("controls48:kcmdevices.png"));
 }
 
 void DatabaseConfigWidget::setProgressBar(){
@@ -350,11 +348,11 @@ bool DatabaseConfigWidget::getHostConfig(){
 
     QStringList hostnames;
     hostnames += xml.readString("database.hostname");
-    showValues(hostnames, hostnames_list_wgt, QPixmap(DDBB_SERVER_ICON));
+    showValues(hostnames, hostnames_list_wgt, QPixmap("controls48:kcmsystem.png"));
 
     hostnames.clear();
     hostnames.append(xml.readString("database.dbname"));
-    showValues(hostnames, dbname_list_wgt, QPixmap(DDBB_DB_ICON));
+    showValues(hostnames, dbname_list_wgt, QPixmap("controls48:kcmdevices.png"));
     return true;
 }
 

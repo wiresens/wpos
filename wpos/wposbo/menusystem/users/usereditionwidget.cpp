@@ -1,5 +1,6 @@
 #include "usereditionwidget.h"
 
+#include <wposcore/config.h>
 #include <libbslxml/xmlconfig.h>
 #include "menusystem/system/fx2000enrollwidget.h"
 
@@ -38,12 +39,12 @@ UserEditionWidget::UserEditionWidget(
     hlayout->addWidget(enroll_widget);
 
     // Set pixmaps for this widget to avoid ugly black effect from QT when inserting pixmap in ui's
-    generic_data_pixmap->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/basic_data_user.png"));
-    location_data_pixmap->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/location_data_user.png"));
-    info_data_pixmap->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/info.png"));
+    generic_data_pixmap->setPixmap(QPixmap("controls32:basic_data_user.png"));
+    location_data_pixmap->setPixmap(QPixmap("controls32:location_data_user.png"));
+    info_data_pixmap->setPixmap(QPixmap("controls32:info.png"));
 
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_cancel.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
 
     connect(picture_button, &QPushButton::pressed, this, &UserEditionWidget::setUserPicture);
     connect(ok_button, &QPushButton::pressed, this, &UserEditionWidget::apply);
@@ -51,10 +52,11 @@ UserEditionWidget::UserEditionWidget(
 }
 
 void UserEditionWidget::setUserPicture(){
-    QString filename = QFileDialog::getOpenFileName(this,
-                    tr("Choose a photo for the user"), "/usr/share/ntpv",
-                    tr("Images (*.png *.xpm *.jpg)"));
-    picture_path = filename;
+    picture_path = QFileDialog::getOpenFileName(
+        this,
+        tr("Choose a photo for the user"), Files::PicturesDir,
+        tr("Images (*.png *.xpm *.jpg)"));
+
     picture_button->setIcon(QPixmap(picture_path));
 
 }

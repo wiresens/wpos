@@ -1,13 +1,13 @@
 /***************************************************************************
-                          bsllinuxbar.cpp  -  description
+                          mainscreen.cpp  -  description
                              -------------------
-    begin                 : mon Jun 2 2003
-    copyright             : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
+    begin                 : mon Jun 2 2022
+    copyright             : (C) 2022 by Wiresens INC.
+    email                 : gilles.bene@wiresens.com
 
-@author Carlos Manzanedo Rueda
+@author Gilles Bene Pougoue
 
-%LICENCIA%
+%LICENCE%
  ***************************************************************************/
 #include "mainscreen.h"
 
@@ -23,25 +23,22 @@
 #include <iostream>
 using namespace std;
 
-/************************************************************************************************************
- *
- *
- ************************************************************************************************************/
-
 const QString MainScreen::DBusService = QString{"com.wiresens.wpos.wpos"};
 
 const QString MainScreen::LOGIN_SCREEN{"LOGIN_SCREEN"};
 const QString MainScreen::SALES_SCREEN {"SALES_SCREEN"};
 const QString MainScreen::READ_CONFIG_SCREEN {"READ_CONFIG_SCREEN"};
 
-
-MainScreen::MainScreen(QSplashScreen& splash_screen, const QString& name):
-    MenuStack(nullptr)
+MainScreen::MainScreen(
+    QSplashScreen& splash,
+    const QString& name):
+    MenuStack{nullptr, name}  //The MenuStack has no parent
 {
     setObjectName(name);
     setSizePolicy( QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding) );
     setWindowIcon(QIcon("icons/wiresens.png"));
-//    setWindowFlag(Qt::FramelessWindowHint);
+
+    //    setWindowFlag(Qt::FramelessWindowHint);
     // Create and add to the stack the "Enter the Matrix" Widget
     /** We've modified BslEnterTheMatrix so that it's parent is a BslMenuPage. It's constructor
      * now automatically calls parent->addWidget(this, name) in it's constructor so that we do no longer call
@@ -49,30 +46,29 @@ MainScreen::MainScreen(QSplashScreen& splash_screen, const QString& name):
      * ScreensPresentation and ReadConfigWidget. We will change BslMenuPage constructor so that it also take the Layout
     **/
 
-    MenuPage* page = new MenuPage(this, LOGIN_SCREEN);
-    page->setLayoutType(MenuPage::VBOX);
-    login_screen = new LoginScreen(page, LOGIN_SCREEN);
-    addPage(page, LOGIN_SCREEN);
-//    addPage(login_screen, LOGIN_SCREEN);
-
-    // Create and add to the stack the "Application" Widget
-    page = new MenuPage(this, SALES_SCREEN);
-    page->setLayoutType(MenuPage::VBOX);
-    sales_screen = new SalesScreen(page, splash_screen, SALES_SCREEN);
-    page->addWidget(sales_screen, SALES_SCREEN);
-    addPage(page, SALES_SCREEN);
-//    addPage(sales_screen, SALES_SCREEN);
-
-    // Create and add to the stack the "ReadConfig" Widget
-    page = new MenuPage( this, READ_CONFIG_SCREEN);
-    page->setLayoutType(MenuPage::VBOX);
-    config_screen = new ReadConfigScreen(page, READ_CONFIG_SCREEN);
-    page->addWidget(config_screen, READ_CONFIG_SCREEN);
-    addPage(page, READ_CONFIG_SCREEN);
-//    addPage(config_screen, READ_CONFIG_SCREEN);
-
     auto gsm = GenericSignalManager::instance();
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+
+    // Create and add to the stack the Login Widget
+    auto page = new MenuPage(this, LOGIN_SCREEN);
+    page->setLayoutType(MenuPage::VBOX);
+    loginScreen = new LoginScreen(page, LOGIN_SCREEN);
+    addPage(page, LOGIN_SCREEN);
+
+    // Create and add to the stack the "Sales Widget
+    page = new MenuPage(this, SALES_SCREEN);
+    page->setLayoutType(MenuPage::VBOX);
+    salesScreen = new SalesScreen(page, splash, SALES_SCREEN);
+    page->addWidget(salesScreen, SALES_SCREEN);
+    addPage(page, SALES_SCREEN);
+
+    // Create and add to the stack the "ReadConfig Widget
+    page = new MenuPage( this, READ_CONFIG_SCREEN);
+    page->setLayoutType(MenuPage::VBOX);
+    configScreen = new ReadConfigScreen(page, READ_CONFIG_SCREEN);
+    page->addWidget(configScreen, READ_CONFIG_SCREEN);
+    addPage(page, READ_CONFIG_SCREEN);
+
     setCurrentPage(LOGIN_SCREEN);
 }
 

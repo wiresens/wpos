@@ -17,6 +17,7 @@
 #include "productsmodule/productmodule.h"
 #include "database/productsmoduledb.h"
 
+#include <wposcore/config.h>
 #include <wposwidget/dragobjects.h>
 
 #include <QPushButton>
@@ -44,8 +45,8 @@ using namespace std;
 
 static const QString& SCREEN_PRODUCTS_LIST_DTD =  "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
 static const QString& SCREENS_XML = "/etc/ntpv/bar.xml";
-static const QString& ICON_PATH = "/usr/share/ntpv/logos/";
-static QString DEFAULT_NAME = QObject::tr("Current screen");
+static const QString& ICON_PATH = Files::ProductsDir;
+static QString DEFAULT_NAME = QObject::tr("Current Screen");
 
 static const double SIZE_CONST = 40.00;
 static const int TABLE_SIZE_X= 70;
@@ -73,22 +74,22 @@ ProductScreenDesignWidget::ProductScreenDesignWidget(QWidget *parent, const QStr
     setupUi(this);
     setObjectName(name);
 
-    pix_label1->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/info.png"));
-    pix_label2->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/ktip.png"));
-    pix_label3->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/ktip.png"));
-    pix_label4->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/info.png"));
-    pix_label5->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/next.png"));
-    pix_label6->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/info.png"));
+    pix_label1->setPixmap(QPixmap("controls32:info.png"));
+    pix_label2->setPixmap(QPixmap("controls32:ktip.png"));
+    pix_label3->setPixmap(QPixmap("controls32:ktip.png"));
+    pix_label4->setPixmap(QPixmap("controls32:info.png"));
+    pix_label5->setPixmap(QPixmap("controls32:next.png"));
+    pix_label6->setPixmap(QPixmap("controls32:info.png"));
 
-    delete_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/trash.png"));
-    back_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/back.png"));
-    forward_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/forward.png"));
-    accept_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
+    delete_button->setIcon(QPixmap("controls48:trash.png"));
+    back_button->setIcon(QPixmap("controls48:back.png"));
+    forward_button->setIcon(QPixmap("controls48:forward.png"));
+    accept_button->setIcon(QPixmap("controls48:button_ok_48.png"));
 
-    next_screen_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/play_next.png"));
-    prev_screen_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/play_prev.png"));
-    down_icon_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    up_icon_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
+    next_screen_button->setIcon(QPixmap("controls48:play_next.png"));
+    prev_screen_button->setIcon(QPixmap("controls48:play_prev.png"));
+    down_icon_button->setIcon(QPixmap("controls32:down.png"));
+    up_icon_button->setIcon(QPixmap("controls32:up.png"));
 
     //compose and fill the iconview frame
     QHBoxLayout *layout{};
@@ -310,7 +311,7 @@ void ProductScreenDesignWidget::productReadedSlot(
     screen_name_label->setText(screen_name);
     product_name_label->setText(product_name);
     if (!logo.isEmpty())
-        product_logo_label->setPixmap(QPixmap(QString("/usr/share/ntpv/logos/"+logo)));
+        product_logo_label->setPixmap(QPixmap("products:"+logo));
     else
         product_logo_label->clear();
     qApp->processEvents();
@@ -728,8 +729,8 @@ void ProductScreenDesignWidget::startShowing(){
 
 void ProductScreenDesignWidget::showEvent(QShowEvent *e){
     QObject *object = this;
-    if (!object->inherits("BslScreenProductsDesignWidget")){
-        cerr << "Other BslScreenProductWidget sent the event" << endl;
+    if (!object->inherits("ProductScreenDesignWidget")){
+        cerr << "Other ProductScreenDesignWidget sent the event" << endl;
         QWidget::showEvent(e);
     }
 

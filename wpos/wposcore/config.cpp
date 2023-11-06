@@ -22,5 +22,13 @@ QMap<QString, QString> Files::files{
     {"lounges",         Files::LOUNGE_XML}
 };
 
-const QString Files::ConfigDirectory{"/etc/ntpv"};
-const QString Files::ImageDirectory{"/usr/share/ntpv/apps"};
+const QString Files::ConfigDir      {"/etc/ntpv"};
+const QString Files::RessourceDir   {"/usr/share/wpos/"};
+const QString Files::PicturesDir    {"/usr/share/wpos/wpos/pictures"};
+const QString Files::ProductsDir    {"/usr/share/wpos/wpos/products/"};
+const QString Files::ControlsDir    {"/usr/share/wpos/wpos/controls/"};
+const QString Files::Controls32Dir  {"/usr/share/wpos/wposbo/32x32/"};
+const QString Files::Controls48Dir  {"/usr/share/wpos/wposbo/48x48/"};
+const QString Files::Controls64Dir  {"/usr/share/wpos/wposbo/64x64/"};
+const QString Files::HandsDir       {"/usr/share/wpos/wposbo/hands/"};
+const QString Files::PaymentsDir    {"/usr/share/wpos/wpos/payments/"};

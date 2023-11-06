@@ -22,7 +22,7 @@ using std::cerr;
 using std::endl;
 
 static const QString& OFFERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
-static const QString& ICONS_PATH {"/usr/share/ntpv/apps/offers/"};
+static const QString& ICONS_PATH {"controls:offers/"};
 
 const QString& FIXED = QObject::tr("Offer Fixed Price");
 const QString& PERCENT = QObject::tr("Offer Percentage Rate");
@@ -44,8 +44,8 @@ OfferDeletionWidget::OfferDeletionWidget(
     offer_listview->setAllColumnsShowFocus(true);
     offer_listview->sortByColumn(Name);
 
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    pix_label1->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/galeon.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    pix_label1->setPixmap(QPixmap("controls48:galeon.png"));
 
     connect(offer_listbox, &QListWidget::itemSelectionChanged, this, &OfferDeletionWidget::handleOfferListSelected);
     connect(offer_listview,  &QTreeWidget::itemSelectionChanged, this, &OfferDeletionWidget::handleOfferTreeSelected);

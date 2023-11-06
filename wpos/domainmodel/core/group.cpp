@@ -34,10 +34,6 @@ SOFTWARE.
 namespace ws{
 namespace model{
 
-Group::Group()
-{
-
-}
 
 }
 }

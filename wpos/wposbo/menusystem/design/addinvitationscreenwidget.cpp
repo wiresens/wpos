@@ -34,7 +34,7 @@
 
 static const QString& INVITATION_XML = "/etc/ntpv_backoffice/invitations_description.xml";
 static const double ICON_SIZE = 32.00;
-static const QString ICON_PATH = "/usr/share/ntpv/apps/offers/";
+static const QString ICON_PATH = "controls:offers/";
 
 AddInvitationScreenWidget::AddInvitationScreenWidget(QWidget *parent, const QString& name):
     QMenu(parent)
@@ -49,12 +49,12 @@ AddInvitationScreenWidget::AddInvitationScreenWidget(QWidget *parent, const QStr
     up_button->setAutoRepeat(true);
     down_button->setAutoRepeat(true);
 
-    up_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    pix_label1->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/info.png"));
-    pix_label2->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/info.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_cancel.png"));
+    up_button->setIcon(QPixmap("controls32:up.png"));
+    down_button->setIcon(QPixmap("controls32:down.png"));
+    pix_label1->setPixmap(QPixmap("controls32:info.png"));
+    pix_label2->setPixmap(QPixmap("controls32:info.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
 
     connect(ok_button, SIGNAL(clicked()), this, SLOT(apply()));
     connect(cancel_button, SIGNAL(clicked()), this, SLOT(cancel()));

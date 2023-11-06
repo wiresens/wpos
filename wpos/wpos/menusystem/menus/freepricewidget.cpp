@@ -35,8 +35,8 @@ FreePriceWidget::FreePriceWidget(QWidget *parent, const QString& name) :
     key_pad = new FloatKeyboardBox(numpad_frame);
     numpad_frame_layout->addWidget(key_pad);
 
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls:button_ok_48.png"));
 
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::XCORE_SET_PRODUCT_PRICE,this);

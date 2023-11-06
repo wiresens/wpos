@@ -22,6 +22,7 @@
 #include "database/productsmoduledb.h"
 
 #include <libbslxml/xmlconfig.h>
+#include <wposcore/config.h>
 #include <wposwidget/toolkit.h>
 #include <wposwidget/dragobjects.h>
 #include <wposwidget/floatkeyboardbox.h>
@@ -76,15 +77,15 @@ static const QString& COMPOSED_PRODUCTS_TITLE {"Creacion de productos compuestos
 //static const QPixmap NULL_LOGO_PIXMAP = QPixmap();
 static const QString& NULL_LOGO_TEXT {"SIN LOGO"};
 
-static const QString& IS_DEFAULT_OPTION_LOGO {"/usr/share/ntpv_backoffice/apps/32x32/button_ok.png"};
-static const QString& NO_DEFAULT_OPTION_LOGO {"/usr/share/ntpv_backoffice/apps/32x32/cancel.png"};
+static const QString& IS_DEFAULT_OPTION_LOGO {"controls32:button_ok.png"};
+static const QString& NO_DEFAULT_OPTION_LOGO {"controls32:cancel.png"};
 
 static const QColor BUTTON_OFF = QColor(238, 238, 230);
 static const QColor BUTTON_ON = QColor(107, 181, 251);
 static const QString& DEFAULT_TAX {"iva16"};
 
 static const QString& DEFAULT_QUANTITY {"1.0"};
-static const QString& ICON_PATH {"/usr/share/ntpv/logos/"};
+static const QString& ICON_PATH {Files::ProductsDir};
 static const double ICON_BUTTON_SIZE  = 50.00;
 static const double ICON_SIZE = 32.00;
 
@@ -145,40 +146,40 @@ ProductInsertionWidget::ProductInsertionWidget(
     offer_listview->setColumnWidth(0,260);
     offer_listview->setColumnWidth(1,60);
 
-    //        pix_label1->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/package.png"));
-    pix_label2->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/xcalc.png"));
+    //        pix_label1->setPixmap(QPixmap("controls32:package.png"));
+    pix_label2->setPixmap(QPixmap("controls32:xcalc.png"));
 
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
 
-    up_table_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_table_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    up_unitary_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_unitary_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    delete_table_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/edittrash.png"));
+    up_table_button->setIcon(QPixmap("controls32:up.png"));
+    down_table_button->setIcon(QPixmap("controls32:down.png"));
+    up_unitary_button->setIcon(QPixmap("controls32:up.png"));
+    down_unitary_button->setIcon(QPixmap("controls32:down.png"));
+    delete_table_button->setIcon(QPixmap("controls32:edittrash.png"));
 
 
-    add_option_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/filesave.png"));
-    del_option_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/edittrash.png"));
-    add_option_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/filesave.png"));
-    del_option_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/edittrash.png"));
-    option_apply_price_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/filesave.png"));
+    add_option_type_button->setIcon(QPixmap("controls32:filesave.png"));
+    del_option_type_button->setIcon(QPixmap("controls32:edittrash.png"));
+    add_option_button->setIcon(QPixmap("controls32:filesave.png"));
+    del_option_button->setIcon(QPixmap("controls32:edittrash.png"));
+    option_apply_price_button->setIcon(QPixmap("controls32:filesave.png"));
 
-    add_offer_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/filesave.png"));
-    del_offer_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/edittrash.png"));
-    add_offer_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/filesave.png"));
-    del_offer_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/edittrash.png"));
-    offer_apply_price_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/filesave.png"));
+    add_offer_type_button->setIcon(QPixmap("controls32:filesave.png"));
+    del_offer_type_button->setIcon(QPixmap("controls32:edittrash.png"));
+    add_offer_button->setIcon(QPixmap("controls32:filesave.png"));
+    del_offer_button->setIcon(QPixmap("controls32:edittrash.png"));
+    offer_apply_price_button->setIcon(QPixmap("controls32:filesave.png"));
 
-    up_option_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_option_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    up_option_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_option_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
+    up_option_type_button->setIcon(QPixmap("controls32:up.png"));
+    down_option_type_button->setIcon(QPixmap("controls32:down.png"));
+    up_option_button->setIcon(QPixmap("controls32:up.png"));
+    down_option_button->setIcon(QPixmap("controls32:down.png"));
 
-    up_offer_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_offer_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    up_offer_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_offer_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
+    up_offer_type_button->setIcon(QPixmap("controls32:up.png"));
+    down_offer_type_button->setIcon(QPixmap("controls32:down.png"));
+    up_offer_button->setIcon(QPixmap("controls32:up.png"));
+    down_offer_button->setIcon(QPixmap("controls32:down.png"));
 
     QHBoxLayout *hlayout;
     if(!(hlayout =(QHBoxLayout *) ddtable_frame->layout()))

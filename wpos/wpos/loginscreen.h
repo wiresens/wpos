@@ -37,11 +37,11 @@
 #include "ui_loginwidget.h"
 #include "loginscreeninterface.h"
 #include <wposcore/hlist.h>
-#include <wposwidget/menupage.h>
 
 class AuthCoreDB;
 class QPushButton;
 class XmlConfig;
+class MenuPage;
 
 class LoginScreen :
         public QWidget,
@@ -53,7 +53,7 @@ class LoginScreen :
 
 public:
     static const QString DBusObject ;
-    static constexpr QSize BUTTON_FIXED_SIZE = QSize{100,100};
+    static constexpr QSize LOGIN_BUTTON_SIZE = QSize{100,70};
 
     LoginScreen(MenuPage* parent, const QString& name);
     ~LoginScreen();

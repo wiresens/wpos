@@ -22,7 +22,7 @@ class GenericSignalManager;
 class ReadConfigScreen;
 class QSplashScreen;
 
-class MainScreen : public MenuStack  {
+class MainScreen : public MenuStack{
     Q_OBJECT
 public: 
 
@@ -31,16 +31,16 @@ public:
     static const QString SALES_SCREEN;
     static const QString READ_CONFIG_SCREEN;
 
-    explicit MainScreen(QSplashScreen &splash_screen, const QString& name = QString());
+    explicit MainScreen(QSplashScreen &splash, const QString& name = QString());
 
 public slots:
     void genericSignalSlot(const QString& signal);
-    void genericDataSignalSlot(const QString& signal, XmlConfig *xml);
+    void genericDataSignalSlot(const QString& signal, XmlConfig* xml);
     
 private:
-    LoginScreen *login_screen;
-    SalesScreen *sales_screen;
-    ReadConfigScreen *config_screen;
+    LoginScreen* loginScreen;
+    SalesScreen* salesScreen;
+    ReadConfigScreen* configScreen;
 };
 
 #endif

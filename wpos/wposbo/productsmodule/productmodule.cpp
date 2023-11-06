@@ -16,6 +16,8 @@
 #include "database/productsmoduledb.h"
 #include "database/productoptionsmoduledb.h"
 
+#include <wposcore/config.h>
+
 #include <QSqlQuery>
 #include <QSqlError>
 
@@ -26,7 +28,6 @@ static const QString& DCOP_OBJECT_INTERFACE_NAME = "ProductsModule";
 
 const QString& XML_BAR_PATH = "/etc/ntpv/bar.xml";
 const QString& PRODUCT_PATH_FILE = "/etc/ntpv/bar_database.xml";
-const QString& PRODUCT_MODULE_ICON_PATH = "/usr/share/ntpv/logos/";
 const QString& PRODUCT_CONNECTION_NAME = "ProductModule";
 static const QString& PRODUCTS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
 static const QString& FAMILIES_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_familieslist.dtd";
@@ -1069,7 +1070,7 @@ void ProductModule::saveBarXml(){
             xml->createElementSetDomain("product");
             xml->createElement("name",ingredient->ingredient_code);
             if (!aux_product->logo.isEmpty())
-                xml->createElement("icon",PRODUCT_MODULE_ICON_PATH+aux_product->logo);
+                xml->createElement("icon", Files::ProductsDir + aux_product->logo);
             delete aux_product;
         }
         else{

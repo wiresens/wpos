@@ -32,6 +32,7 @@ class GenericButtonGroup;
 
 class SalesScreen : public QWidget,  private Ui::SalesWidget{
     Q_OBJECT
+
 public:
     static const QString PRODUCT_MENU;
     static const QString AUTH_MENU;
@@ -47,7 +48,7 @@ public:
     static const QString GENERIC_PRODUCT_MENU;
     static const QString PAY_MODE_MENU;
 
-    SalesScreen(QWidget *parent, QSplashScreen& splash_screen, const QString& name = QString(""));
+    SalesScreen(QWidget *parent, QSplashScreen& splash_screen, const QString& name = QString());
 
 public slots:
     void receiveProduct(XmlConfig *xml);
@@ -68,36 +69,36 @@ protected slots:
     void checkPendingEvents();
 
 protected:
-    void showEvent(QShowEvent *event);
-    void hideEvent(QHideEvent *event);
+    void showEvent(QShowEvent *event) override;
+    void hideEvent(QHideEvent *event) override;
     void setEnabledLateralWidgets(bool enabled);
     void setVisibleLateralWidgets(bool visible);
 
-    void createAuthenticationDialog();
-    void createFreepriceDialog();
-    void createBalanceCollectionDialog();
-    void createCashMovementDialog();
-    void createGenericProductDialog();
-    void createExitActionDialog();    
-    void createInvitationDialog();
+    virtual void createAuthenticationDialog();
+    virtual void createFreepriceDialog();
+    virtual void createBalanceCollectionDialog();
+    virtual void createCashMovementDialog();
+    virtual void createGenericProductDialog();
+    virtual void createExitActionDialog();
+    virtual void createInvitationDialog();
 
-    void createReportDialog();
-    void createTicketCancellationDialog();
-    void createReceiptRecoverDialog();
-    void createAdminDialog();
+    virtual void createReportDialog();
+    virtual void createTicketCancellationDialog();
+    virtual void createReceiptRecoverDialog();
+    virtual void createAdminDialog();
 
-    void createProductDialog();
-    void createShortcutButton();
-    void createPayByCashButton();
-    void createOpenCashDeviceButton();
-    void createPaySelectionDialog();
+    virtual void createProductDialog();
+    virtual void createShortcutButton();
+    virtual void createPayByCashButton();
+    virtual void createOpenCashDeviceButton();
+    virtual void createPaySelectionDialog();
 
-    OrderPickerView *orderManager{};
     MenuStack *menu_stack{};
-    ProductScreenStack *product_screen_stack{};
+    OrderPickerView *orderPicker{};
+    ProductScreenStack *productScreenStack{};
     AdminWidget *admin_panel{};
     GenericButtonGroup *shortcut_group{};
-    GenericButtonGroup *openbox_and_paymode_buttons_group{};
+    GenericButtonGroup *paymode_group{};
     NumKeyboardBox *numkey{};
     ButtonSetWidget *upper_buttons{};
 

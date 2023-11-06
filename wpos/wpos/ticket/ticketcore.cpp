@@ -28,10 +28,7 @@
 #include <iostream>
 #include <QMessageBox>
 
-namespace std{}
 using namespace std;
-
-
 
 #define TICKET_TMP "/tmp/ticketcore_tmp.xml"
 
@@ -41,14 +38,16 @@ TicketCore::TicketCore(QObject *parent, const QString& name):
     setObjectName(name);
     db = new TicketCoreDB("TicketCoreConnection", Files::configFilePath("database"));
     db->connect();
-    printer = new PrinterManager(this,"ticketPrinter");
+    printer = new PrinterManager(this, "ticketPrinter");
 
     auto gsm = GenericSignalManager::instance();
-    gsm->publishGenericDataSignal(GDATASIGNAL::X,this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::Z,this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::EVENTLOG,this);
-    gsm->subscribeToGenericSignal(GSIGNAL::X,this);
-    gsm->subscribeToGenericSignal(GSIGNAL::Z,this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::X, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::Z, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::EVENTLOG, this);
+
+    gsm->subscribeToGenericSignal(GSIGNAL::X, this);
+    gsm->subscribeToGenericSignal(GSIGNAL::Z, this);
+
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::TICKETCORE_PRINTING_STATE,this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::TICKETCORE_PRINTING_COPIES,this);
 }
@@ -266,7 +265,6 @@ bool TicketCore::stampTicket(XmlConfig *_xml){
 
     return ret;
 }
-
 
 QString TicketCore::getProductCode(XmlConfig *_xml){
     int count,i;

@@ -12,6 +12,7 @@
 #include "productsmodule/productmodule.h"
 
 #include <libbslxml/xmlconfig.h>
+#include <wposcore/config.h>
 
 #include <QTreeWidgetItem>
 #include <QLineEdit>
@@ -27,7 +28,6 @@
 using namespace std;
 
 static const QString& PRODUCTS_DTD {"/etc/ntpv_backoffice/dtds/products_productslist.dtd"};
-static const QString&  ICON_PATH {"/usr/share/ntpv/logos/"};
 static const int SCROLL_LENGTH {150};
 static const double ICON_SIZE = 40.0;
 
@@ -47,13 +47,13 @@ AdvancedProductEditionWidget::AdvancedProductEditionWidget(
     clear();
 
     stack->setCurrentWidget(progress_page);
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_cancel.png"));
-    up_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/up.png"));
-    down_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/down.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
+    up_button->setIcon(QPixmap("controls48:up.png"));
+    down_button->setIcon(QPixmap("controls48:down.png"));
 
-    ok_delete_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    cancel_delete_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_cancel.png"));
+    ok_delete_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    cancel_delete_button->setIcon(QPixmap("controls48:button_cancel.png"));
 
     connect(up_button,SIGNAL(clicked()),this,SLOT(upButtonSlot()));
     connect(down_button,SIGNAL(clicked()),this,SLOT(downButtonSlot()));
@@ -126,7 +126,7 @@ void AdvancedProductEditionWidget::loadList(){
 
         auto item = new QTreeWidgetItem(product_listview);
         if( !xml.readString("logo").isEmpty() ){
-            auto icon_path = ICON_PATH + xml.readString("logo");
+            auto icon_path = Files::ProductsDir + xml.readString("logo");
             item->setIcon(Icon, cropedIcon(icon_path, ICON_SIZE));
         }
         item->setText(Name, name);

@@ -24,6 +24,7 @@
 #include "database/productoffersmoduledb.h"
 #include "database/productsmoduledb.h"
 
+#include <wposcore/config.h>
 #include <wposwidget/dragobjects.h>
 #include <wposwidget/floatkeyboardbox.h>
 
@@ -83,7 +84,7 @@ static const QString TAX_DEFAULT = "iva16";
 static const QString& DEFAULT_QUANTITY = "1";
 
 static const QString XML_PRODUCTS_PATH = "/etc/ntpv/bar.xml";
-static const QString ICON_PATH = "/usr/share/ntpv/logos/";
+static const QString ICON_PATH = Files::ProductsDir;
 
 static const QString LOGO_BUTTON = "Logo";
 static const QString OPTION_BUTTON = "Option";

@@ -50,7 +50,7 @@ the code hasn't been modified.
 #define BUTTON_OFF QColor(238, 238, 230)
 #define BUTTON_ON QColor(107, 181, 251)
 
-#define USER_PIXMAP "/usr/share/ntpv_backoffice/apps/32x32/personal.png"
+#define USER_PIXMAP "controls32:personal.png"
 
 #define USERS_LIST_DTD  "/etc/ntpv_backoffice/dtds/users_userslist.dtd"
 #define USERS_DTD  "/etc/ntpv_backoffice/dtds/users_user.dtd"
@@ -86,20 +86,20 @@ NProfitReportWidget::~NProfitReportWidget(){
 void NProfitReportWidget::init(){
 
     //unique
-    interanual_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/package_network.png"));
-    anual_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/galeon.png"));
-    mensual_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/today.png"));
-    semanal_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/date.png"));
-    diario_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/clock.png"));
-    cierres_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/xcalc.png"));
+    interanual_button->setIcon(QPixmap("controls32:package_network.png"));
+    anual_button->setIcon(QPixmap("controls32:galeon.png"));
+    mensual_button->setIcon(QPixmap("controls32:today.png"));
+    semanal_button->setIcon(QPixmap("controls32:date.png"));
+    diario_button->setIcon(QPixmap("controls32:clock.png"));
+    cierres_button->setIcon(QPixmap("controls32:xcalc.png"));
 
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    up_employee_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_employee_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    advanced_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/run.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    up_employee_button->setIcon(QPixmap("controls32:up.png"));
+    down_employee_button->setIcon(QPixmap("controls32:down.png"));
+    advanced_button->setIcon(QPixmap("controls32:run.png"));
 
-    save_report_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/stick_48x48.png"));
-    exit_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_cancel.png"));
+    save_report_button->setIcon(QPixmap("controls48:stick_48x48.png"));
+    exit_button->setIcon(QPixmap("controls48:button_cancel.png"));
 
     employee_listview->sortByColumn(2);
     employee_listview->header()->hide();

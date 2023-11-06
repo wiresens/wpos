@@ -37,9 +37,10 @@ OrderPickerView::OrderPickerView(QWidget *parent, QString name):
 
     //attach signals
     auto gsm = GenericSignalManager::instance();
+    gsm->publishGenericSignal(GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT,this);
+
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::BARCORE_PRINT_ORDER_AT_SPECIAL_PRINTER,this);
-    gsm->publishGenericSignal(GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT,this);
 
     setSizePolicy(parent->sizePolicy());
     parseXmlDescription();

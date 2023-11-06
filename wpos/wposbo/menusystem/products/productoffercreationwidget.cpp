@@ -43,7 +43,7 @@ const QString& SELECT_OFFER_TYPE = QObject::tr("Select a type of offer");
 const QString& SELECT_OFFER = QObject::tr("Select an offer");
 const QString& OFFERS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_offerslist.dtd";
 
-const QString& OFFER_ICON_PATH = "/usr/share/ntpv_backoffice/apps/32x32/";
+const QString& OFFER_ICON_PATH = "controls32:";
 const double ICON_SIZE = 30.00;
 const int MAX_OFFER_TYPES = 10;
 

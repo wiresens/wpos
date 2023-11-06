@@ -31,9 +31,12 @@
 #include <iostream>
 using namespace std;
 
-PayModes::PayModes(QPushButton* _toggle_cash, BarCore *_core, QWidget *parent, const QString& name ):
-    QWidget(parent),
-    core{_core},
+PayModes::PayModes(
+    QPushButton* _toggle_cash,
+    BarCore *_core,
+    QWidget *parent,
+    const QString& name ):
+    QWidget(parent), core{_core},
     toggle_cash{_toggle_cash}
 {
     setupUi(this);
@@ -43,18 +46,34 @@ PayModes::PayModes(QPushButton* _toggle_cash, BarCore *_core, QWidget *parent, c
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
 
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
     //proteccion_civil_button->hide();
 
-    QVector<QPushButton*> paymode_buttons {mastercard_button, visa_button, amex_button, fourb_button,
-                 cash_button, gourmet_button, restaurant_button, sodexho_button, proteccion_civil_button};
+    QVector<QPushButton*> paymode_buttons {
+        mastercard_button,
+        visa_button,
+        amex_button,
+        fourb_button,
+        cash_button,
+        gourmet_button,
+        restaurant_button,
+        sodexho_button,
+        proteccion_civil_button
+    };
 
-    QVector<QString> paymode_pixmap { QString("master_card.png"), QString("visa.svg"), QString("american_express.svg"), QString("orange_money.png"),
-                QString("google_pay.png") , QString("airtel.svg"), QString("paypal.svg")};
+    QVector<QString> paymode_pixmap {
+        QString("master_card.png"),
+        QString("visa.svg"),
+        QString("american_express.svg"),
+        QString("orange_money.png"),
+        QString("google_pay.png") ,
+        QString("airtel.svg"),
+        QString("paypal.svg")
+    };
 
     for( auto i = 0; i < paymode_pixmap.size(); i++ ){
-        auto pixmap_str = QString("/usr/share/ntpv/payment/") + paymode_pixmap[i];
+        auto pixmap_str = QString("payments:") + paymode_pixmap[i];
         paymode_buttons[i]->setIcon(QPixmap(pixmap_str));
         paymode_buttons[i]->setIconSize(QSize{150, 100});
     }

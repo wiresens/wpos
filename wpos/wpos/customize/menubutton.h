@@ -25,10 +25,13 @@ class GenericMenuButton;
 
 class MenuButton : public QPushButton{
     Q_OBJECT
+
 public:
-    MenuButton(Qt::Orientation orientation,
-                  QWidget* parent,
-                  const QString& name);
+    MenuButton(
+        Qt::Orientation orientation,
+        QWidget* parent,
+        const QString& name);
+
     ~MenuButton();
 
     void setOrientation(Qt::Orientation orientation);
@@ -55,7 +58,7 @@ protected:
     QBoxLayout *frame_layout{};
     QGridLayout *grid_layout{};
     QButtonGroup *button_group{};
-    HList<QAbstractButton> *buttons{};
+    HList<QAbstractButton> buttons;
     Qt::Orientation popup_orientation{};
 };
 

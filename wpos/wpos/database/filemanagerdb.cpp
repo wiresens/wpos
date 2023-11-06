@@ -21,17 +21,18 @@
 #include <QDebug>
 
 
-QString PATH = Files::ConfigDirectory + "/";
+QString PATH = Files::ConfigDir + "/";
 
 #include <iostream>
 namespace std{}
 using namespace std;
 
-FileManagerDB::FileManagerDB(const QString& _connection_name,
-                             const QString& _hostname,
-                             const QString& _database,
-                             const QString& _username,
-                             const QString& _passwd):
+FileManagerDB::FileManagerDB(
+    const QString& _connection_name,
+    const QString& _hostname,
+    const QString& _database,
+    const QString& _username,
+    const QString& _passwd):
     BasicDatabase(_connection_name,_hostname,_database,_username,_passwd){}
 
 FileManagerDB::FileManagerDB(const QString& _connection_name,

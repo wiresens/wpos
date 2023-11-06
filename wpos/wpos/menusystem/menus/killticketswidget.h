@@ -62,9 +62,9 @@ protected:
 private:
     QAbstractButton* printer_button{printer_or_lounges_button};
 
-    QPixmap invoice_pixmap{"/usr/share/ntpv/apps/invoice.png"};
-    QPixmap trash_pixmap {"/usr/share/ntpv/apps/trashcan_empty.png"};
-    QPixmap printer_pixmap{"/usr/share/ntpv/apps/printer2.png"};
+    QPixmap invoice_pixmap{"controls:invoice.png"};
+    QPixmap trash_pixmap {"controls:trashcan_empty.png"};
+    QPixmap printer_pixmap{"controls:printer2.png"};
 };
 
 #endif

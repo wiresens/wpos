@@ -42,8 +42,8 @@ ExitActionsWidget::ExitActionsWidget(QWidget *parent, const QString& name) :
     gsm->publishGenericSignal(GDATASIGNAL::MAINWIDGET_SAVE_BUTTON_STATE,this);
 
 
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls:button_ok_48.png"));
     connect(ok_button, &QPushButton::clicked, this, &ExitActionsWidget::shutdownSlot);
     connect(cancel_button, &QPushButton::clicked, this, &ExitActionsWidget::returnToADMmenuSlot);
 }

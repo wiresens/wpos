@@ -50,10 +50,15 @@ XZWidget::XZWidget(QWidget *parent, const QString& name) :
 {
     setupUi(this);
     setObjectName(name);
-    down_button->setIcon(QPixmap("/usr/share/ntpv/apps/down_48.png"));
-    up_button->setIcon(QPixmap("/usr/share/ntpv/apps/up_48.png"));
-    print_button->setIcon(QPixmap("/usr/share/ntpv/apps/printer2.png"));
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
+    down_button->setIcon(QPixmap("controls:down_48.png"));
+    up_button->setIcon(QPixmap("controls:up_48.png"));
+    print_button->setIcon(QPixmap("controls:printer2.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
+
+    auto gsm = GenericSignalManager::instance();
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::Z, this);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::X, this);
 
     // Init printer
 
@@ -80,11 +85,6 @@ XZWidget::XZWidget(QWidget *parent, const QString& name) :
     html_page+="</head>";
 
     html_page+="<body>";
-
-    auto gsm = GenericSignalManager::instance();
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
-    gsm->subscribeToGenericDataSignal(GDATASIGNAL::Z,this);
-    gsm->subscribeToGenericDataSignal(GDATASIGNAL::X,this);
 
     // Prepare xmls needed to generic signal data connections
     up_button->setAutoRepeat(true);
@@ -212,7 +212,7 @@ void XZWidget::genericDataSignalSlot(const QString& signal_name, XmlConfig *xml)
         xSlot(xml);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &tmp_xml);
     }
-    if (signal_name == GDATASIGNAL::Z){
+    else if (signal_name == GDATASIGNAL::Z){
         operation = ZOperation;
         zSlot(xml);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &tmp_xml);

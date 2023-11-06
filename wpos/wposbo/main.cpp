@@ -16,11 +16,13 @@
  ***************************************************************************/
 
 #include "mainscreen.h"
+#include <wposcore/config.h>
 
 #include <QSplashScreen>
 #include <QApplication>
 #include <QString>
 #include <QFile>
+#include <QDir>
 #include <QFileInfo>
 
 #include <iostream>
@@ -33,8 +35,13 @@ static const QString& SPLASH_PIXMAP {"/usr/share/ntpv_backoffice/apps/ntpv_backo
 QSplashScreen *splash{};
 int main(int argc, char *argv[]){
 
-    bool has_splash = false;
     QApplication app{argc, argv};
+    QDir::setSearchPaths("controls32", QStringList(Files::Controls32Dir));
+    QDir::setSearchPaths("controls48", QStringList(Files::Controls48Dir));
+    QDir::setSearchPaths("controls64", QStringList(Files::Controls64Dir));
+    QDir::setSearchPaths("hands", QStringList(Files::HandsDir));
+    QDir::setSearchPaths("products", QStringList(Files::ProductsDir));
+
     app.setApplicationName(QFileInfo(QFile(argv[0]).fileName()).baseName());
 //    DCOPClient *client = a.dcopClient();
 
@@ -47,7 +54,8 @@ int main(int argc, char *argv[]){
     // Check if exists the file to be show at splash screen
     // If true create a splash screen
 
-    if (QFile(SPLASH_PIXMAP).exists()){
+    bool has_splash = false;
+    if (QFile::exists(SPLASH_PIXMAP)){
            splash = new QSplashScreen(QPixmap(SPLASH_PIXMAP));
            splash->show();
            has_splash = true;

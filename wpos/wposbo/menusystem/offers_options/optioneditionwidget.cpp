@@ -40,16 +40,16 @@ OptionEditionWidget::OptionEditionWidget(QWidget *parent, const QString& name ):
     option_listview->setAllColumnsShowFocus(true);
     option_listview->setColumnWidth(0,300);
 
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    add_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/filesave.png"));
-    add_option_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/filesave.png"));
-    del_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/edittrash.png"));
-    del_option_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/edittrash.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    add_type_button->setIcon(QPixmap("controls32:filesave.png"));
+    add_option_button->setIcon(QPixmap("controls32:filesave.png"));
+    del_type_button->setIcon(QPixmap("controls32:edittrash.png"));
+    del_option_button->setIcon(QPixmap("controls32:edittrash.png"));
 
-    up_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    up_option_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_option_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
+    up_type_button->setIcon(QPixmap("controls32:up.png"));
+    down_type_button->setIcon(QPixmap("controls32:down.png"));
+    up_option_button->setIcon(QPixmap("controls32:up.png"));
+    down_option_button->setIcon(QPixmap("controls32:down.png"));
 
     //connections.
     connect(up_type_button,SIGNAL(clicked()),this,SLOT(upTypeSlot()));

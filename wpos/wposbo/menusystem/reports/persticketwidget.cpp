@@ -61,13 +61,13 @@ PersTicketWidget::PersTicketWidget(QWidget *parent, const QString& name):
     up_type_button->setVisible(false);
     down_type_button->setVisible(false);
 
-    first_ticket_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/2uparrow.png"));
-    up_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_type_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    last_ticket_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/2downarrow.png"));
-    order_up_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/up.png"));
-    order_down_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/down.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/printer2.png"));
+    first_ticket_button->setIcon(QPixmap("controls32:2uparrow.png"));
+    up_type_button->setIcon(QPixmap("controls32:up.png"));
+    down_type_button->setIcon(QPixmap("controls32:down.png"));
+    last_ticket_button->setIcon(QPixmap("controls32:2downarrow.png"));
+    order_up_button->setIcon(QPixmap("controls48:up.png"));
+    order_down_button->setIcon(QPixmap("controls48:down.png"));
+    ok_button->setIcon(QPixmap("controls32:printer2.png"));
 
     // Create the connection to the database
     timer = new QTimer(this);

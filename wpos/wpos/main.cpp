@@ -41,8 +41,8 @@
 #include <iostream>
 using namespace std;
 
-static const QString SPLASH_SCREEN_PIXMAP{ "/usr/share/ntpv/apps/ntpv_splashscreen.png"};
 static const QString config_dir = "/etc/ntpv/";
+
 static const QString version{"2.0"};
 
 extern FileManager *file_manager;
@@ -51,14 +51,19 @@ extern QString PATH;
 extern QString CASHBOX_DEVICE;
 extern QString CASHBOX_TYPE;
 
-bool saveReportmanDeff(const QString& host,
-                       const QString& db_name,
-                       const QString& user,
-                       const QString& passwd);
+bool saveReportmanDeff(
+    const QString& host,
+    const QString& db_name,
+    const QString& user,
+    const QString& passwd);
 
 int main(int argc, char *argv[]){
 
     QApplication app(argc, argv);
+    QDir::setSearchPaths("controls", QStringList(Files::ControlsDir));
+    QDir::setSearchPaths("payments", QStringList(Files::PaymentsDir));
+    QDir::setSearchPaths("products", QStringList(Files::ProductsDir));
+
     app.setApplicationName(QFileInfo(QFile(argv[0]).fileName()).baseName());
     app.setApplicationVersion(version);
 
@@ -83,7 +88,7 @@ int main(int argc, char *argv[]){
     QString cashbox;
     if ( parser.isSet(cashboxOp) ){
         cashbox = parser.value(cashboxOp);
-        if (!cashbox.isEmpty() && QFile(cashbox).exists() )
+        if (!cashbox.isEmpty() && QFile::exists(cashbox) )
             CASHBOX_DEVICE = cashbox;
     }
 
@@ -209,7 +214,8 @@ int main(int argc, char *argv[]){
     // If true create a splash screen
     bool has_splash_screen {false};
 
-    QSplashScreen *splash_screen{};
+    QSplashScreen *splash_screen{};   
+    const QString SPLASH_SCREEN_PIXMAP{ "controls:splashscreen.png"};
     if ( QFile(SPLASH_SCREEN_PIXMAP).exists() ){
         splash_screen = new QSplashScreen(QPixmap(SPLASH_SCREEN_PIXMAP));
         splash_screen->show();
@@ -237,7 +243,7 @@ int main(int argc, char *argv[]){
 
     MainScreen wpos (*splash_screen, "MainScreen");
     wpos.setWindowTitle("wPOS");
-    //    wpos.setAttribute(Qt::WA_QuitOnClose, true);
+    wpos.setAttribute(Qt::WA_QuitOnClose, true);
     wpos.show();
 
     // If we have a splash screen, now it's time to switch off

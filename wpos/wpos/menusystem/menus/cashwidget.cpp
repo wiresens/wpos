@@ -36,9 +36,10 @@ using namespace std;
 #define LOOK_DELAY 3000
 #define DECIMALS 2
 
-CashWidget::CashWidget(BarCore *_core,
-                             QWidget *parent,
-                             const QString& name):
+CashWidget::CashWidget(
+    BarCore *_core,
+    QWidget *parent,
+    const QString& name):
     QWidget(parent),
     core  {_core}
 {
@@ -54,11 +55,11 @@ CashWidget::CashWidget(BarCore *_core,
     numpad_layout->addWidget(float_keyboard);
 
     // Initialize all images
-    auto pixmap = QPixmap("/usr/share/ntpv/payment/pay.jpeg");
+    auto pixmap = QPixmap("payments:pay.jpeg");
     ok_button->setIcon(pixmap);
 //    ok_button->setIconSize(pixmap.rect().size());
 //    ok_button->setFixedWidth(150);
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
     //generic signal connector
     auto gsm = GenericSignalManager::instance();
@@ -120,7 +121,7 @@ void CashWidget::accepSlot(){
     emit genericSignal(GSIGNAL::OPEN_CASHBOX);
     sendTicketSignal();
     cashing_completed = true;
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls:button_ok_48.png"));
     float_keyboard->setEnabled(false);
     ok_button->hide();
 }
@@ -159,7 +160,7 @@ void CashWidget::showEvent(QShowEvent *e){
     float_keyboard->clear();
     ok_button->setEnabled(false);
     ok_button->show();
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
     float_keyboard->setEnabled(true);
     cashing_completed = false;
 

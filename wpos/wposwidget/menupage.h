@@ -29,35 +29,34 @@
 
 class QLayout;
 
-class MenuPage : public QFrame  {
+class MenuPage : public QFrame{
     Q_OBJECT
+
 public:
 
-    enum LAYOUT_TYPE
+    enum LayoutType
     {
-        GRID=0,
+        GRID = 0,
         VBOX,
         HBOX
     };
 
-    explicit MenuPage(QWidget *parent, const QString name = QString());
-    ~MenuPage();
+    explicit MenuPage(QWidget *parent, const QString& name = QString());
+    ~MenuPage() = default;
 
-    void setLayoutType(LAYOUT_TYPE lay);
-    LAYOUT_TYPE currentLayoutType();
-    void addWidget(QWidget *w, QString name);
-    void addWidget(QWidget *w, QString name, int index);
-    void addWidget(QWidget *w, QString name, int row, int col);
+    void setLayoutType(LayoutType type);
+    LayoutType currentLayoutType();
+    void addWidget(QWidget *wdgt, QString name, int row=0, int col=0);
 
 private:
-    void setGridLayoutAsCurrent();
-    void setVBoxLayoutAsCurrent();
-    void setHBoxLayoutAsCurrent();
+    void layGrid();
+    void layVertical();
+    void layHorizontal();
 
-    LAYOUT_TYPE layout_type;
-    QLayout *page_layout;
+    QLayout *page_layout{};
     QList<QWidget*> widgetList;
     QMap<QString, QWidget*> widgetDict;
+    LayoutType layout_type;
 };
 
 #endif

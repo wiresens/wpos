@@ -41,12 +41,12 @@ using namespace std;
 extern AuthCore *auth;
 extern FileManager *file_manager;
 
-AdminWidget::AdminWidget(ProductScreenStack *stack,QWidget* parent, const QString& name):
+AdminWidget::AdminWidget(ProductScreenStack *stack, QWidget* parent, const QString& name):
     QWidget(parent)
 {
     setupUi(this);
     setObjectName(name);
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
@@ -56,7 +56,6 @@ AdminWidget::AdminWidget(ProductScreenStack *stack,QWidget* parent, const QStrin
     gsm->publishGenericSignal(GSIGNAL::LOAD_PRODUCTS,this);
     gsm->publishGenericSignal(GSIGNAL::LOAD_OFFERS,this);
     gsm->publishGenericSignal(GSIGNAL::LOAD_DEVICES,this);
-
 
     connect(cancel_button, &QPushButton::released, this, &AdminWidget::cancelSlot);
     connect(qApp, &QApplication::aboutToQuit, this, &AdminWidget::saveToggleButtonStatus);
@@ -220,9 +219,8 @@ void AdminWidget::cancelSlot(){
 }
 
 void AdminWidget::launchBackOffice(){
-//    process->setArguments( QStringList() << "~/Workspace/study/ntpv/ntpvbo/wposbo");
     connect(process, SIGNAL(finished(int)), this, SLOT(backOfficeEndSlot()));
-    process->setProgram("/home/benes/Workspace/study/ntpv/ntpvbo/wposbo");
+    process->setProgram("/home/benes/Workspace/projets/wpos/wpos/wposbo/wposbo");
     process->start();
 }
 

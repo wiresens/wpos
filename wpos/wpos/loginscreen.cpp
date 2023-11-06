@@ -13,18 +13,13 @@
 #include "loginscreen.h"
 #include "loginscreen_adaptor.h"
 
-
 #include "mainscreen.h"
 #include "database/authcoredb.h"
 
+#include <wposwidget/menupage.h>
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 #include <libbslxml/xmlconfig.h>
-
-//@BENES
-//#include <kapplication.h>
-//#include <dcopclient.h>
-//#include <dcopobject.h>
 
 #include <QDataStream>
 #include <QPushButton>
@@ -48,26 +43,25 @@ extern "C"{
 #include <iostream>
 using namespace std;
 
-const QString INTERFACE_NAME = "LoginScreen";
-const QString& BLACK_FINGERPRINT = "/usr/share/ntpv/apps/black_fingerprint.jpg";
-const QString& BAD_FINGERPRINT = "/usr/share/ntpv/apps/bad_fingerprint.png";
-const QString& LOGO_CORP="/usr/share/ntpv/apps/napsis_logo.png";
-const QString& DEFAULT_PICTURE = "/usr/share/ntpv/apps/fondo.png";
-const QString& DEFAULT_TEXT ="WireSens";
-const int SLEEP_TIME=1500;
+const QString& BLACK_FINGERPRINT    = "controls:black_fingerprint.jpg";
+const QString& BAD_FINGERPRINT      = "controls:bad_fingerprint.png";
+const QString& LOGO_CORP            = "controls:napsis_logo.png";
+const QString& DEFAULT_PICTURE      = "controls:fondo.png";
+const QString& DEFAULT_TEXT         = "WireSens";
 
-const int MAX_LAYOUT = 7;
-const int DEFAULT_FONT_SIZE = 11;
+const int SLEEP_TIME                = 1500;
+const int MAX_LAYOUT                = 5;
+const int DEFAULT_FONT_SIZE         = 12;
 
-const QString LoginScreen::DBusObject  = QString{"/wpos/wpos/Greeter"};
+const QString LoginScreen::DBusObject{"/wpos/wpos/Greeter"};
 
 LoginScreen::LoginScreen(MenuPage* parent, const QString& name):
     QWidget(parent),
     db  {new AuthCoreDB("LoginScreen", Files::configFilePath("database"))}
 {
     setupUi(this);
-    parent->addWidget(this, name);
     setObjectName(name);
+    parent->addWidget(this, name);
 
     new GreeterAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
@@ -87,7 +81,6 @@ LoginScreen::LoginScreen(MenuPage* parent, const QString& name):
 }
 
 LoginScreen::~LoginScreen(){
-    buttons.clear();
     delete db;
 }
 
@@ -99,7 +92,7 @@ void LoginScreen::loadPicture(){
     bool ok = false;
     int R,G,B;
     int BR,BG,BB;
-//    QStyle *st {};
+    //    QStyle *st {};
     QFont font;
     QString pixmap_file, company_name, app_style;
     XmlConfig xml(Files::configFilePath("buttons")) ;
@@ -185,16 +178,16 @@ void LoginScreen::showEvent(QShowEvent *e){
 void LoginScreen::createLoginButtons(){
 
     QGridLayout *layout{};
-    UserData *user = 0;
-    QPushButton *button= 0;
+    UserData *user {};
+    QPushButton *button{};
     HList<UserData> *ulist{} ;
 
     if ( !db->connect() ||
-         !( ulist = db->getUsers() ) ||
-         !db->disConnect() ) return;
+        !( ulist = db->getUsers() ) ||
+        !db->disConnect() ) return;
 
     buttons.clear();
-    if (  ( layout = qobject_cast<QGridLayout *> ( users_buttongroup->layout()) ) )
+    if ( (layout = qobject_cast<QGridLayout*>(users_buttongroup->layout())) )
         delete layout;
 
     int cols  {MAX_LAYOUT};
@@ -206,7 +199,6 @@ void LoginScreen::createLoginButtons(){
     layout->setMargin(10);
 
     for( auto i = 0; i < ulist->count(); i++){
-
         user = ulist->at(i);
         auto user_name = user->name.trimmed().replace(" ","\n");
         button = new QPushButton( user_name , users_buttongroup);
@@ -214,7 +206,7 @@ void LoginScreen::createLoginButtons(){
 
         if ( i==0 )  button->setIcon(QPixmap(LOGO_CORP));
 
-        button->setFixedSize(BUTTON_FIXED_SIZE);
+        button->setFixedSize(LOGIN_BUTTON_SIZE);
         button->setToolTip(QString("Connect to the system as %1").arg(user_name));
 
         buttons.append( button, button->objectName() );

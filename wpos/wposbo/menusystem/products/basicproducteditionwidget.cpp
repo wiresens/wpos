@@ -17,6 +17,7 @@
 #include "productsmodule/productmodule.h"
 #include "database/productsmoduledb.h"
 
+#include <wposcore/config.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QListView>
@@ -34,7 +35,7 @@ using namespace std;
 
 static const QString& PRODUCTS_DTD = "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
 static const QString& SELECT_PRODUCTS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
-static const QString ICON_PATH = "/usr/share/ntpv/logos/";
+static const QString ICON_PATH = Files::ProductsDir;
 
 static const QString& ORDER_ARTICLES_XML = "/etc/ntpv_backoffice/xml_order_articles.xml";
 static const QString& PRODUCTS_XML = "/etc/ntpv/bar.xml";

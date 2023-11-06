@@ -71,10 +71,10 @@ DevicesConfig::DevicesConfig(QWidget *parent, const QString& name ):
         {"/dev/ttyUSB3", USB3}
     };
 
-    cashbox_icon->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/64x64/ddbb.png"));
-    printer_icon->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/64x64/printer4.png"));
-    kitchen_icon->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/64x64/printer4.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
+    cashbox_icon->setPixmap(QPixmap("controls64::ddbb.png"));
+    printer_icon->setPixmap(QPixmap("controls64::printer4.png"));
+    kitchen_icon->setPixmap(QPixmap("controls64::printer4.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
 
     printer_lineedit->hide();
     kitchen_lineedit->hide();

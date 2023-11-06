@@ -101,9 +101,9 @@ private:
     QAbstractButton* lounge_button{printer_or_lounges_button};
     QAbstractButton* pay_button{trash_button};
 
-//    QPixmap pay_pixmap {"/usr/share/ntpv/apps/redo.png"};
-    QPixmap pay_pixmap {"/usr/share/ntpv/payment/mix_mobile_paymodes.png"};
-    QPixmap allusers_pixmap {"/usr/share/ntpv/apps/kuser.png"};
+//    QPixmap pay_pixmap {"controls:redo.png"};
+    QPixmap pay_pixmap {"payments:mix_mobile_paymodes.png"};
+    QPixmap allusers_pixmap {"controls:kuser.png"};
 
     QString input_text;
     bool use_lounges{false};

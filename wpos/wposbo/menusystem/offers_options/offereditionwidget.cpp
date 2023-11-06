@@ -27,7 +27,7 @@ using std::endl;
 static const int  ICON_SIZE = 32;
 static const QString& OFFERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
 
-static const QString& ICON_PATH = "/usr/share/ntpv/apps/offers/";
+static const QString& ICON_PATH = "controls:offers/";
 static const QString& ADVERTISE_FIXED = QObject::tr("Enter the fixed price of this offer");
 static const QString& ADVERTISE_PERCENT = QObject::tr("Enter a percentage (between 0 and 100)");
 
@@ -52,9 +52,9 @@ OfferEditionWidget::OfferEditionWidget(QWidget *parent, const QString& name):
 
     clear();
 
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    right_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/forward.png"));
-    left_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/back.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    right_button->setIcon(QPixmap("controls48:forward.png"));
+    left_button->setIcon(QPixmap("controls48:back.png"));
 
     connect(fixed_radiobutton, &QRadioButton::clicked, this, &OfferEditionWidget::radioButtonSlot);
     connect(percent_radiobutton, &QRadioButton::clicked, this, &OfferEditionWidget::radioButtonSlot);

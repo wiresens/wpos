@@ -19,108 +19,71 @@
 #include <wposwidget/global.h>
 #include <QLayout>
 
-MenuPage::MenuPage(QWidget *parent, const QString name):
+MenuPage::MenuPage(
+    QWidget *parent,
+    const QString &name):
     QFrame(parent)
 {
     setObjectName(name);
-    page_layout = nullptr;
-
     setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     setPalette(QPalette(QColor(Colors::MENU_PAGE_BG_COLOR)));
     setBackgroundRole(QPalette::Window);
 }
 
-MenuPage::~MenuPage(){}
-
-void MenuPage::setLayoutType(LAYOUT_TYPE lay){
-
-    switch(lay){
+void MenuPage::setLayoutType(LayoutType type){
+    switch(type){
     case GRID:
-        setGridLayoutAsCurrent();
+        layGrid();
         break;
     case VBOX:
-        setVBoxLayoutAsCurrent();
+        layVertical();
         break;
     case HBOX:
-        setHBoxLayoutAsCurrent();
+        layHorizontal();
         break;
     }
     page_layout->setContentsMargins(0,0,0,5);
 }
 
-MenuPage::LAYOUT_TYPE MenuPage::currentLayoutType(){
+MenuPage::LayoutType MenuPage::currentLayoutType(){
     return layout_type;
 }
 
-void MenuPage::addWidget(QWidget *w, QString name){
-
-    widgetList.append(w);
-    widgetDict.insert(name,w);
+void MenuPage::addWidget(
+    QWidget *wdgt,
+    QString name,
+    int row,
+    int col)
+{
+    widgetList.append(wdgt);
+    widgetDict.insert(name, wdgt);
 
     switch(layout_type){
     case GRID:
-        // Not applicable to this layout
+        ((QGridLayout *)page_layout)->addWidget(wdgt, row, col);
         break;
     case VBOX:
-        ((QBoxLayout *)page_layout)->addWidget(w);
+        ((QBoxLayout *)page_layout)->addWidget(wdgt);
         break;
     case HBOX:
-        ((QBoxLayout *)page_layout)->addWidget(w);
+        ((QBoxLayout *)page_layout)->addWidget(wdgt);
         break;
     }
 }
 
-void MenuPage::addWidget(QWidget *w, QString name, int index){
-
-    widgetList.append(w);
-    widgetDict.insert(name,w);
-
-    switch(layout_type){
-    case GRID:
-        // Not applicable to this layout
-        break;
-    case VBOX:
-        ((QBoxLayout *)page_layout)->insertWidget(index, w);
-        break;
-    case HBOX:
-        ((QBoxLayout *)page_layout)->insertWidget(index, w);
-    }
-}
-
-void MenuPage::addWidget(QWidget *w, QString name, int row, int col){
-
-    widgetList.append(w);
-    widgetDict.insert(name,w);
-
-    switch(layout_type){
-    case GRID:
-        ((QGridLayout *)page_layout)->addWidget(w,row,col);
-        break;
-    case VBOX:
-        // Not applicable to this layout
-        break;
-    case HBOX:
-        // Not applicable to this layout
-        break;
-    }
-}
-
-void MenuPage::setGridLayoutAsCurrent(){
-
+void MenuPage::layGrid(){
     layout_type = GRID;
     delete page_layout;
     page_layout = new QGridLayout(this);
 }
 
-void MenuPage::setVBoxLayoutAsCurrent(){
-
+void MenuPage::layVertical(){
     layout_type = VBOX;
     delete page_layout;
     page_layout = new QVBoxLayout(this);
 }
 
-void MenuPage::setHBoxLayoutAsCurrent(){
-
+void MenuPage::layHorizontal(){
     layout_type = HBOX;
     delete page_layout;
     page_layout = new QHBoxLayout(this);

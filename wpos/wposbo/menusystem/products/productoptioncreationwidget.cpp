@@ -16,6 +16,7 @@
 
 #include "database/productoptionsmoduledb.h"
 
+#include <wposcore/config.h>
 #include <wposwidget/floatkeyboardbox.h>
 #include <libbslxml/xmlconfig.h>
 
@@ -43,7 +44,7 @@ static const QString SELECT_OPTION_TYPE = QObject::tr("Select a type of option")
 static const QString SELECT_OPTION = QObject::tr("Select an option");
 static const QString& OPTIONS_LIST_DTD = "/etc/ntp_backoffice/dtds/products_optionslist.dtd";
 
-static const QString& OPTION_ICON_PATH = "/usr/share/ntp_backoffice/apps/32x32/";
+static const QString& OPTION_ICON_PATH = Files::Controls32Dir;
 static const double ICON_SIZE = 30.00;
 
 static const QString& XML_DESCRIPTION {"/etc/ntp_backoffice/mainscreen_description.xml"};

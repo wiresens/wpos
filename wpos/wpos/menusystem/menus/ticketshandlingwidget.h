@@ -31,9 +31,9 @@ protected:
     KillTicketsDB *ticket_db{};
     OrderView *order{};
 
-    QPixmap null_pixmap{"/usr/share/ntpv/apps/view_text.png"};
-    QPixmap error_pixmap{"/usr/share/ntpv/apps/stop.png"};
-    QPixmap anulation_pixmap{"/usr/share/ntpv/apps/view_text_red.png"};
+    QPixmap null_pixmap{"controls:view_text.png"};
+    QPixmap error_pixmap{"controls:stop.png"};
+    QPixmap anulation_pixmap{"controls:view_text_red.png"};
 };
 
 #endif // TICKETSHANDLINGWIDGET_H

@@ -26,22 +26,17 @@ MenuStack::MenuStack(QWidget *parent, QString name) :
     QStackedWidget(parent)
 {
     setObjectName(name);
-    init();
-}
-
-MenuStack::~MenuStack(){}
-
-void MenuStack::init(){
     setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     setPalette(QPalette(QColor(Colors::MENU_STACK_BG_COLOR)));
     setBackgroundRole(QPalette::Window);
 
     //gsignal attach signals
     auto gsm = GenericSignalManager::instance();
-    gsm->subscribeToGenericSignal(GSIGNAL::ENABLE_MAINSTACK,this);
-    gsm->subscribeToGenericSignal(GSIGNAL::DISABLE_MAINSTACK,this);
-
+    gsm->subscribeToGenericSignal(GSIGNAL::ENABLE_MAINSTACK, this);
+    gsm->subscribeToGenericSignal(GSIGNAL::DISABLE_MAINSTACK, this);
 }
+
+MenuStack::~MenuStack(){}
 
 int MenuStack::numPages(){
     return pages.count();
@@ -75,10 +70,10 @@ void MenuStack::setCurrentPage(QString name){
 }
 
 void MenuStack::setCurrentPage(int pageIndex){
-    if( pageIndex < 0 || pageIndex > pages.count() )
-        return;
-    setCurrentIndex(pageIndex);
-    setEnabled(true);
+    if( pageIndex >= 0 && pageIndex <= pages.count() ){
+        setCurrentIndex(pageIndex);
+        setEnabled(true);
+    }
 }
 
 void MenuStack::genericSignalSlot(const QString& signal_name){

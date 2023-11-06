@@ -13,6 +13,7 @@
 #include "productsmodule/optionsmodule/productoptionmodule.h"
 #include "productsmodule/offersmodule/productoffermodule.h"
 
+#include <wposcore/config.h>
 #include <wposwidget/dragobjects.h>
 #include <wposwidget/floatkeyboardbox.h>
 #include <wposwidget/basickeyboardbox.h>
@@ -45,7 +46,6 @@ static const QString& OFFERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/products_offe
 
 //static const QPixmap NULL_LOGO_PIXMAP = QPixmap();
 static const QString& WITHOUT_LOGO {"WITHOUT LOGO"};
-static const QString& ICON_PATH {"/usr/share/ntpv/logos/"};
 static const double ICON_BUTTON_SIZE  {50.00};
 static const double SIZE_ICON {32.00};
 
@@ -258,7 +258,7 @@ void AdvancedProductInsertionWidget::setLogo(const QString& _logo){
         return;
     }
 
-    logo_button->setIcon(cropedIcon(ICON_PATH + logo, ICON_BUTTON_SIZE ));
+    logo_button->setIcon(cropedIcon(Files::ProductsDir + logo, ICON_BUTTON_SIZE ));
 }
 
 void AdvancedProductInsertionWidget::showEvent(QShowEvent *e){

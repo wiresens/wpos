@@ -32,7 +32,6 @@ static const QString& TEMPLATES_LOCATION {"/etc/ntpv/templates/"};
 static const QString& MAIN_TICKET_FILE {"/etc/ntpv/printerhtml.xml"};
 static const QString& MAIN_INVOICE_FILE {"/etc/ntpv/invoice.xml"};
 static const QString& DCOPPRINTER_FILE {"/etc/ntpv/dcopprinter_config.xml"};
-static const QString& ICON_PATH {"/usr/share/ntpv_backoffice/apps/"};
 
 NTicketDesignWidget::NTicketDesignWidget(QWidget *parent, const QString& name ):
     QWidget(parent)
@@ -40,10 +39,10 @@ NTicketDesignWidget::NTicketDesignWidget(QWidget *parent, const QString& name ):
     setupUi(this);
     setObjectName(name);
     clear();
-    ok_button->setIcon(QPixmap(ICON_PATH + "48x48/button_ok_48.png"));
-    pix_label1->setPixmap(QPixmap(ICON_PATH + "32x32/galeon.png"));
-    pix_label2->setPixmap(QPixmap(ICON_PATH + "32x32/kmessedwords.png"));
-    pix_label3->setPixmap(QPixmap(ICON_PATH + "32x32/package_editors.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    pix_label1->setPixmap(QPixmap("controls32:galeon.png"));
+    pix_label2->setPixmap(QPixmap("controls32:kmessedwords.png"));
+    pix_label3->setPixmap(QPixmap("controls32:package_editors.png"));
 
     connect(ok_button,SIGNAL(clicked()),this,SLOT(acceptSlot()));
 

@@ -53,8 +53,8 @@ UserSelectWidget::UserSelectWidget(DatabaseModule *_db_mod, UserModule *_user_mo
     users_view->setColumnWidth(1,150);
     users_view->setColumnWidth(2,500);
 
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_cancel.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
 
     if (state == State::Updater){
         real_del_button->hide();
@@ -68,7 +68,7 @@ UserSelectWidget::UserSelectWidget(DatabaseModule *_db_mod, UserModule *_user_mo
         connect(users_view, &QTreeWidget::itemDoubleClicked, this, &UserSelectWidget::userSelected);
     }
     else{
-        real_del_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/trash.png"));
+        real_del_button->setIcon(QPixmap("controls48:trash.png"));
         real_del_button->setText(HARD_DELETE_BUTTON_TEXT);
         connect(real_del_button, &QPushButton::clicked, this, &UserSelectWidget::realDelSlot);
     }

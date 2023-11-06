@@ -307,7 +307,7 @@
           </widget>
          </item>
          <item>
-          <layout class="QHBoxLayout" name="collect_cash_layout">
+          <layout class="QHBoxLayout" name="cash_collection_layout">
            <property name="spacing">
             <number>0</number>
            </property>

@@ -46,31 +46,32 @@ private:
     ~GenericSignalManager() = default;
 
     static GenericSignalManager* gsm;
-    struct GenericSignalHub{
+    struct ObjectHub{
         QString shared_signal;
         HList<QObject> objs;
     };
 
 public slots:
-    bool publishGenericSignal(const QString& signal, QObject *publisher);
-    bool publishGenericDataSignal(const QString& signal, QObject *publisher);
-    bool unpublishGenericSignal(const QString& signal, QObject *publisher);
-    bool unpublishGenericDataSignal(const QString& signal, QObject *publisher);
+    void publishGenericSignal(const QString& signal, QObject *publisher);
+    void publishGenericDataSignal(const QString& signal, QObject *publisher);
+    void unpublishGenericSignal(const QString& signal, QObject *publisher);
+    void unpublishGenericDataSignal(const QString& signal, QObject *publisher);
 
-    bool subscribeToGenericSignal(const QString& signal, QObject *subscriber);
-    bool subscribeToGenericDataSignal(const QString& signal, QObject *subscriber);
-    bool unsubscribeToGenericSignal(const QString& signal, QObject *subscriber);
-    bool unsubscribeToGenericDataSignal(const QString& signal, QObject *subscriber);
+    void subscribeToGenericSignal(const QString& signal, QObject *subscriber);
+    void subscribeToGenericDataSignal(const QString& signal, QObject *subscriber);
+    void unsubscribeToGenericSignal(const QString& signal, QObject *subscriber);
+    void unsubscribeToGenericDataSignal(const QString& signal, QObject *subscriber);
 
 protected:    
-    int findObjectAtSignalName(QObject *object,
-                               const QString& signal,
-                               HList<GenericSignalHub> *cluster_list);
+    int findObjectAtSignalName(
+        QObject *object,
+        const QString& signal,
+        HList<ObjectHub> *cluster_list);
 
-    HList<GenericSignalHub> m_signal_publishers;
-    HList<GenericSignalHub> m_signal_subscribers;
-    HList<GenericSignalHub> m_data_signal_publishers;
-    HList<GenericSignalHub> m_data_signal_subscribers;
+    HList<ObjectHub> m_signal_publishers;
+    HList<ObjectHub> m_signal_subscribers;
+    HList<ObjectHub> m_data_signal_publishers;
+    HList<ObjectHub> m_data_signal_subscribers;
 };
 
 #endif

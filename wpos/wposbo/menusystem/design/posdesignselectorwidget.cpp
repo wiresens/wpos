@@ -35,7 +35,7 @@ POSDesignSelectorWidget::POSDesignSelectorWidget(QWidget *parent, const QString&
     action_stack->setCurrentWidget(select_action);
 
     //Initializations and default selections
-    QPixmap default_pixmap("/usr/share/ntpv_backoffice/apps/48x48/design1.png");
+    QPixmap default_pixmap("controls48:design1.png");
 
     actions_iconview->clear();
     // Item that raise <Comand Designer> menu

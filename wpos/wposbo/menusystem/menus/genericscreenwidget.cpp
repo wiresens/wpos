@@ -75,7 +75,7 @@ void GenericScreenWidget::initThis(){
     splitter->addWidget(actions_listview);
 
     // Create the widget which will held the menus (it is a stack widget)
-    menus_stack = new MenuStack(this,"STACK_WIDGET");
+    menus_stack = new MenuStack(this, "GENERIC_SCREEN_STACK_WIDGET");
 //    menus_stack->setFrameShape(QFrame::StyledPanel);
     splitter->addWidget(menus_stack);
     splitter->setStretchFactor(splitter->indexOf(actions_listview), 0);

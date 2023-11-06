@@ -48,8 +48,6 @@ public slots:
 	virtual void genericSignalSlot(const QString& signal_name);
 
 protected  :
-	void init();
-
     HList<QWidget> pages;
 };
 

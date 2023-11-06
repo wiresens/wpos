@@ -17,10 +17,10 @@
 #   * wposrpcd      : RPC Deamon for receit managemenet
 
 #Libraries
-#   * libbslxml     : xml parsing API
-#   * ntpvlib       : wPOS database access and management
-#   * ntpvlibwidget : Widget for the wPOS GUI.
-#   * libqutexr     : lightweight XML-RPC client and server implemantation
+#   * wposxml     : xml parsing API
+#   * wposcore       : wPOS database access and management
+#   * wposbwidget : Widget for the wPOS GUI.
+#   * wposqutexr     : lightweight XML-RPC client and server implemantation
 
 TEMPLATE = subdirs
 DISTFILES += AUTHORS \
@@ -29,7 +29,7 @@ DISTFILES += AUTHORS \
 #projects
 SUBDIRS += libbslxml \
            dbusreceipt \
-    domainmodel \
+           domainmodel \
            wposcore \
            wposwidget \
            libqutexr \
@@ -41,13 +41,13 @@ SUBDIRS += libbslxml \
 #           dcopstick \
 #           dcopreports \
 
-#define project dependencies to enable for astonishing build parrallelism
+#define project dependencies to enable for astonishing build parallelism
 wposcore.depends = libbslxml
 libqutexr.depends = libbslxml
 xmlmanage.depends = libbslxml
 wposrpcd.depends = libbslxml libqutexr
-wpos.depends = libbslxml wposcore wposwidget libqutexr
-wposbo.depends = libbslxml wposcore wposwidget
+wpos.depends = domainmodel libbslxml wposcore wposwidget libqutexr
+wposbo.depends = domainmodel libbslxml wposcore wposwidget
 wposwidget.depends = libbslxml wposcore dbusprinter
 
 #Left for later port because relying on DCOP(Desktop Communications Protocol)
@@ -62,6 +62,6 @@ message("----------------------------------------")
 message("Author : Carlos Manzanedo <carlos@napsis.com>")
 message("Author : Pedro Angel Gonzalez <pedro@napsis.com>")
 message("Homepage: http://www.napsis.com")
-message("License: GPL V2")
+message("License: MIT ")
 message("Improvement: Gilles Bene <gilles.benepougoue@gmail.com>")
 message("----------------------------------------")

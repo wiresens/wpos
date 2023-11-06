@@ -26,6 +26,7 @@
 #include <libbslxml/xmlconfig.h>
 #include <wposwidget/dragobjects.h>
 #include <wposcore/signals.h>
+#include <wposcore/config.h>
 
 #include <QTabWidget>
 #include <QPushButton>
@@ -58,8 +59,8 @@ static const QString& PRODUCTS_DTD {"/etc/ntpv_backoffice/dtds/products_products
 static const QString& OFFERS_DTD {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
 static const QString& OPTIONS_DTD {"/etc/ntpv_backoffice/dtds/products_optionslist.dtd"};
 static const QString& SHORTCUT_XML {"/etc/ntpv/ntpv_buttons.xml"};
-static const QString& ICON_PATH {"/usr/share/ntpv/logos/"};
-static const QString& OFFERS_ICON_PATH {"/usr/share/ntpv/apps/offers/"};
+static const QString& ICON_PATH {Files::ProductsDir};
+static const QString& OFFERS_ICON_PATH {"controls:offers/"};
 
 static const int SIZE_CONST = 50.00;
 static const int TABLE_SIZE_X = 70;
@@ -71,12 +72,12 @@ ShortcutButtonWidget::ShortcutButtonWidget(QWidget *parent, const QString& name)
     setupUi(this);
     setObjectName(name);
 
-    accept_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    reload_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/reload.png"));
-    first_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/2uparrow.png"));
-    up_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/up.png"));
-    down_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/down.png"));
-    last_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/2downarrow.png"));
+    accept_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    reload_button->setIcon(QPixmap("controls48:reload.png"));
+    first_button->setIcon(QPixmap("controls32:2uparrow.png"));
+    up_button->setIcon(QPixmap("controls32:up.png"));
+    down_button->setIcon(QPixmap("controls32:down.png"));
+    last_button->setIcon(QPixmap("controls32:2downarrow.png"));
 
     auto v_layout = new QVBoxLayout(buttons_frame);
     shortcut_button_table = new BslDDTable(buttons_frame,"button_table");

@@ -22,39 +22,38 @@
 #include <QStringList>
 #include <QDebug>
 
-GenericSignalManager* GenericSignalManager::gsm = nullptr;
+GenericSignalManager* GenericSignalManager::gsm { nullptr };
 
 GenericSignalManager* GenericSignalManager::instance(){
-    if( ! gsm ) gsm = new GenericSignalManager();
+    if( !gsm ) gsm = new GenericSignalManager();
     return gsm;
 }
 
-bool GenericSignalManager::publishGenericSignal(const QString& signal, QObject *publisher){
+void GenericSignalManager::publishGenericSignal(
+    const QString& signal,
+    QObject *publisher)
+{
 
-    if (!publisher) return false;
+    if (!publisher) return;
 
-    GenericSignalHub* publisher_hub  { m_signal_publishers.find(signal) };
-    bool result{false};
+    ObjectHub* publisher_hub  { m_signal_publishers.find(signal) };
 
     if (publisher_hub){    //the signal already registered by another object
         publisher_hub->objs.append(publisher, publisher->objectName());
         qDebug() << "Publication of SIGNAL  : ** " << signal << "** of " << publisher->objectName() << Qt::endl;
-        result = false;
     }
     else{       //the signal is not yet registered by any object
-        publisher_hub = new GenericSignalHub;
-        publisher_hub->objs.setAutoDelete(false);
+        publisher_hub = new ObjectHub;
         publisher_hub->shared_signal = signal;
         publisher_hub->objs.append(publisher, publisher->objectName());
         m_signal_publishers.append(publisher_hub, publisher_hub->shared_signal);
         qDebug() << "New Publication of SIGNAL : ** " << signal << "** of " << publisher->objectName() << Qt::endl;
-        result = true;
     }
 
     //connect with all the sloted_objs
-    GenericSignalHub* subscriber_hub = m_data_signal_subscribers.find(signal);
+    ObjectHub* subscriber_hub = m_signal_subscribers.find(signal);
 
-    if (!subscriber_hub) return result;
+    if (!subscriber_hub) return;
 
     for (auto& subscriber : subscriber_hub->objs){
         connect(publisher, SIGNAL(genericSignal(const QString&)),
@@ -65,34 +64,33 @@ bool GenericSignalManager::publishGenericSignal(const QString& signal, QObject *
                  << " subscriber : " << subscriber->objectName()
                  << Qt::endl;
     }
-    return result;
 }
 
-bool GenericSignalManager::publishGenericDataSignal(const QString& signal, QObject *publisher){
+void GenericSignalManager::publishGenericDataSignal(
+    const QString& signal,
+    QObject *publisher)
+{
 
-    if (!publisher)  return false;
+    if (!publisher)  return;
 
-    bool result {false};
-    GenericSignalHub* publisher_hub = m_data_signal_publishers.find(signal);
+    ObjectHub* publisher_hub = m_data_signal_publishers.find(signal);
 
     if (publisher_hub){     //the signal already exists
         publisher_hub->objs.append(publisher, publisher->objectName());
         qDebug() << "Publication of DATA SIGNAL : ** " << signal << "** of " << publisher->objectName() << Qt::endl;
-        result = false;
     }
     else{     //the signal does not exists
-        publisher_hub = new GenericSignalHub;
+        publisher_hub = new ObjectHub;
         publisher_hub->objs.setAutoDelete(false);
         publisher_hub->shared_signal = signal;
         publisher_hub->objs.append(publisher, publisher->objectName());
         m_data_signal_publishers.append(publisher_hub, publisher_hub->shared_signal);
         qDebug() << "New Publication of DATA SIGNAL : ** " << signal << "** of " << publisher->objectName() << Qt::endl;
-        result = true;
     }
 
     //connect with all the attached_list
-    GenericSignalHub* subs_hub = m_data_signal_subscribers.find(signal);
-    if (!subs_hub)  return result;
+    ObjectHub* subs_hub = m_data_signal_subscribers.find(signal);
+    if (!subs_hub)  return;
 
     for (auto &subscriber : subs_hub->objs){
 
@@ -104,14 +102,16 @@ bool GenericSignalManager::publishGenericDataSignal(const QString& signal, QObje
                  << " subscriber : " << subscriber->objectName()
                  << Qt::endl;
     }
-    return result;
 }
 
-bool GenericSignalManager::unpublishGenericSignal(const QString& signal, QObject *publisher){
+void GenericSignalManager::unpublishGenericSignal(
+    const QString& signal,
+    QObject *publisher)
+{
 
     //we need the postition to remove at the end
-    GenericSignalHub* publisher_hub = m_signal_publishers.find(signal);
-    if (!publisher_hub)  return false;
+    ObjectHub* publisher_hub = m_signal_publishers.find(signal);
+    if (!publisher_hub)  return;
 
     auto tmp_publisher = publisher_hub->objs[publisher->objectName()];
     if (tmp_publisher){
@@ -127,15 +127,16 @@ bool GenericSignalManager::unpublishGenericSignal(const QString& signal, QObject
         m_signal_publishers.remove(signal);
         qDebug() << "Last Node, removing SIGNAL **" << signal << "**" << Qt::endl;
     }
-
-    return true;
 }
 
-bool GenericSignalManager::unpublishGenericDataSignal(const QString& signal, QObject *publisher){
+void GenericSignalManager::unpublishGenericDataSignal(
+    const QString& signal,
+    QObject *publisher)
+{
 
     //the position is needed to remove at the end
-    GenericSignalHub *publisher_hub = m_data_signal_publishers.find(signal);
-    if (!publisher_hub) return false;
+    ObjectHub *publisher_hub = m_data_signal_publishers.find(signal);
+    if (!publisher_hub) return;
 
     auto tmp_publisher = publisher_hub->objs[publisher->objectName()];
     if (tmp_publisher){
@@ -153,20 +154,21 @@ bool GenericSignalManager::unpublishGenericDataSignal(const QString& signal, QOb
         m_data_signal_publishers.remove(signal);
         qDebug() << "Last Node, removing DATA SIGNAL **" << signal << "**" << Qt::endl;
     }
-
-    return true;
 }
 
-bool GenericSignalManager::subscribeToGenericSignal(const QString& signal, QObject *subscriber){
+void GenericSignalManager::subscribeToGenericSignal(
+    const QString& signal,
+    QObject *subscriber)
+{
 
-    if (!subscriber) return false;
+    if (!subscriber) return;
 
     //working with attached_list;
-    GenericSignalHub *subscriber_hub = m_signal_subscribers.find(signal);
+    ObjectHub *subscriber_hub = m_signal_subscribers.find(signal);
 
     if (!subscriber_hub){
         //there was no attached node
-        subscriber_hub = new GenericSignalHub;
+        subscriber_hub = new ObjectHub;
         subscriber_hub->shared_signal = signal;
         subscriber_hub->objs.append(subscriber, subscriber->objectName());
         m_signal_subscribers.append(subscriber_hub, subscriber_hub->shared_signal);
@@ -179,29 +181,31 @@ bool GenericSignalManager::subscribeToGenericSignal(const QString& signal, QObje
     }
 
     subscriber_hub = m_signal_publishers.find(signal);
-    if (!subscriber_hub)  return true;
+    if (!subscriber_hub)  return;
 
     for(auto* publisher : subscriber_hub->objs){
         connect(publisher, SIGNAL(genericSignal(const QString&)),
-                subscriber,     SLOT(genericSignalSlot(const QString&)));
+                subscriber, SLOT(genericSignalSlot(const QString&)));
 
         qDebug() << "Connect SIGNAL via Subscription : **" << signal
                  << "** publisher : " << publisher->objectName()
                  << " subscriber : " << subscriber->objectName()
                  << Qt::endl;
     }
-    return true;
 }
 
-bool GenericSignalManager::subscribeToGenericDataSignal(const QString& signal, QObject *subscriber){
+void GenericSignalManager::subscribeToGenericDataSignal(
+    const QString& signal,
+    QObject *subscriber)
+{
 
-    if (!subscriber) return false;
+    if (!subscriber) return;
 
     //working with attached_list;
-    GenericSignalHub *subscriber_hub = m_data_signal_subscribers.find(signal);
+    ObjectHub *subscriber_hub = m_data_signal_subscribers.find(signal);
     if (!subscriber_hub){
         //there was no attached node
-        subscriber_hub = new GenericSignalHub;
+        subscriber_hub = new ObjectHub;
         subscriber_hub->shared_signal = signal;
         subscriber_hub->objs.append(subscriber, subscriber->objectName());
         m_data_signal_subscribers.append(subscriber_hub, subscriber_hub->shared_signal);
@@ -213,72 +217,74 @@ bool GenericSignalManager::subscribeToGenericDataSignal(const QString& signal, Q
     }
 
     subscriber_hub = m_data_signal_publishers.find(signal);
-    if (!subscriber_hub)  return true;
+    if (!subscriber_hub)  return;
 
     for(auto* publisher : subscriber_hub->objs){
-        connect(publisher, SIGNAL(genericDataSignal(const QString&, XmlConfig *)),
-                subscriber, SLOT(genericDataSignalSlot(const QString&,XmlConfig *)));
+        connect(publisher, SIGNAL(genericDataSignal(const QString&, XmlConfig*)),
+                subscriber, SLOT(genericDataSignalSlot(const QString&, XmlConfig*)));
 
         qDebug() << "Connect DATA SIGNAL via Subscription : **" << signal
                  << "** publisher : " << publisher->objectName()
                  << " subscriber : " << subscriber->objectName()
                  << Qt::endl;
     }
-    return true;
 }
 
-bool GenericSignalManager::unsubscribeToGenericSignal(const QString& signal, QObject *subscriber){
+void GenericSignalManager::unsubscribeToGenericSignal(
+    const QString& signal,
+    QObject *subscriber)
+{
 
-    GenericSignalHub *subscriber_hub =  m_signal_subscribers.find(signal);
-    if (!subscriber || !subscriber_hub ) return false;
+    ObjectHub *subscriber_hub =  m_signal_subscribers.find(signal);
+    if (!subscriber || !subscriber_hub ) return;
 
     int i{};
     if ( (i = findObjectAtSignalName(subscriber, signal, &m_signal_subscribers) ) == -1 )
-        return false;
+        return ;
 
     //delete object from subscribers list
     subscriber_hub->objs.remove(i);
 
     auto publisher_hub = m_signal_publishers.find(signal);
-    if (!publisher_hub)  return false;
+    if (!publisher_hub)  return;
 
     for(auto* publisher : publisher_hub->objs){
         subscriber->disconnect(publisher, SIGNAL(genericSignal(const QString&)));
         qDebug() << "Disconnect SIGNAL via subscription **" << signal
                  << "** publisher : " << publisher->objectName() << Qt::endl;
     }
-
-    return true;
 }
 
-bool GenericSignalManager::unsubscribeToGenericDataSignal(const QString& signal, QObject *subscriber){
+void GenericSignalManager::unsubscribeToGenericDataSignal(
+    const QString& signal,
+    QObject *subscriber)
+{
 
-    GenericSignalHub *subscriber_hub = m_signal_subscribers.find(signal);
-    if ( !subscriber || !subscriber_hub )  return false;
+    ObjectHub *subscriber_hub = m_signal_subscribers.find(signal);
+    if ( !subscriber || !subscriber_hub )  return;
 
     int i{};
     if ( (i = findObjectAtSignalName(subscriber, signal,   &m_signal_subscribers)) == -1 )
-        return false;
+        return;
 
     //delete object from attached list
     subscriber_hub->objs.remove(i);
 
     auto publisher_hub = m_data_signal_publishers.find(signal);
-    if (!publisher_hub)   return false;
+    if (!publisher_hub)   return;
     for(auto* publisher : publisher_hub->objs){
         subscriber->disconnect(publisher, SIGNAL(genericDataSignal(const QString&, XmlConfig *)) );
         qDebug() << "Disconnect DATA SIGNAL via subscription **" << signal
                  << "** publisher : " << publisher->objectName() << Qt::endl;
     }
-
-    return true;
 }
 
-int GenericSignalManager::findObjectAtSignalName(QObject *obj,
-                                                 const QString& signal,
-                                                 HList<GenericSignalHub> *cluster_list)
+int GenericSignalManager::findObjectAtSignalName(
+    QObject *obj,
+    const QString& signal,
+    HList<ObjectHub> *cluster_list)
 {
-    GenericSignalHub *registered_hub{};
+    ObjectHub *registered_hub{};
     if ( !cluster_list || !( registered_hub = cluster_list->find(signal) ) ) return -1;
     return  registered_hub->objs.indexOf(obj);
 }

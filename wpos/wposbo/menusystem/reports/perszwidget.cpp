@@ -59,8 +59,6 @@ const uint TIMER_TIME = 2;
 //const QString &offers_graph="/tmp/ntpv_x_offers_graph.png";
 //const QString &options_graph="/tmp/ntpv_x_options_graph.png";
 
-static const QString& RESOURCE_PATH{"/usr/share/ntpv_backoffice/apps"};
-
 const uint PersZWidget::DEFAULT_WIDTH{200};
 const uint PersZWidget::DEFAULT_HEIGHT{250};
 
@@ -78,15 +76,15 @@ PersZWidget::PersZWidget(QWidget *parent, const QString& name ):
 }
 
 void PersZWidget::setupButtons(){
-    first_z_button->setIcon(QPixmap(RESOURCE_PATH + "/32x32/2uparrow.png"));
-    up_z_button->setIcon(QPixmap(RESOURCE_PATH + "/32x32/up.png"));
-    down_z_button->setIcon(QPixmap(RESOURCE_PATH + "/32x32/down.png"));
-    last_z_button->setIcon(QPixmap(RESOURCE_PATH + "/32x32/2downarrow.png"));
-    ok_button->setIcon(QPixmap(RESOURCE_PATH + "/48x48/button_ok_48.png"));
-    print_button->setIcon(QPixmap(RESOURCE_PATH + "/32x32/printer2.png"));
-    down_button->setIcon(QPixmap(RESOURCE_PATH + "/48x48/down.png"));
-    up_button->setIcon(QPixmap(RESOURCE_PATH + "/48x48/up.png"));
-    exit_button->setIcon(QPixmap(RESOURCE_PATH + "/48x48/button_cancel.png"));
+    first_z_button->setIcon(QPixmap("controls32:2uparrow.png"));
+    up_z_button->setIcon(QPixmap("controls32:up.png"));
+    down_z_button->setIcon(QPixmap("controls32:down.png"));
+    last_z_button->setIcon(QPixmap("controls32:2downarrow.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    print_button->setIcon(QPixmap("controls32:printer2.png"));
+    down_button->setIcon(QPixmap("controls48:down.png"));
+    up_button->setIcon(QPixmap("controls48:up.png"));
+    exit_button->setIcon(QPixmap("controls48:button_cancel.png"));
 }
 
 void PersZWidget::setupSections(){
@@ -205,7 +203,7 @@ void PersZWidget::getZ(const QDateTime& start, const QDateTime& end){
 
     for (const auto* data : *resumes){
         auto item = new QTreeWidgetItem(z_treeview);
-        item->setIcon(Icon, QPixmap("/usr/share/ntpv/apps/view_text.png"));
+        item->setIcon(Icon, QPixmap("controls:view_text.png"));
         item->setText(StartDate, data->start_date);
         item->setText(EndDate, data->end_date);
         (aux = data->cash.toDouble(&aux_bool));

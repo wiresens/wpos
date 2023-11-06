@@ -58,7 +58,7 @@ constexpr QSize ICON_VIEW_SIZE = QSize(270,480);
 constexpr QSize ICON_VIEW_GRID_SIZE = QSize(70,50);
 
 const double ICON_SIZE = 30.00;
-const QString ICON_PATH = "/usr/share/ntpv/apps/offers/";
+const QString ICON_PATH = "controls:offers/";
 
 const int OFFER_GROUP = 0;
 const int SCREEN_GROUP = 1;
@@ -115,10 +115,10 @@ InvitationScreenDesignWidget::InvitationScreenDesignWidget(QWidget *parent, cons
     hlayout->addWidget(screens_view);
     scroll_screen->setWidget(screens_view);
 
-    left_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/back.png"));
-    right_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/next.png"));
-    ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/reload.png"));
+    left_button->setIcon(QPixmap("controls32:back.png"));
+    right_button->setIcon(QPixmap("controls32:next.png"));
+    ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    cancel_button->setIcon(QPixmap("controls48:reload.png"));
 
     /*  Popups */
     /* Add new screen */

@@ -429,9 +429,9 @@ void NKeyboard::init(){
     connect(kb_button, SIGNAL(clicked()), this, SLOT(kbButtonClicked()));
 
     lounge_button->setObjectName("button_group");
-    lounge_button->setIcon(QPixmap("/usr/share/ntpv/apps/lounge.png"));
-    exit_button->setIcon(QPixmap("/usr/share/ntpv/apps/gexit.png"));
-    kb_button->setIcon(QPixmap("/usr/share/ntpv/apps/keyboard.png"));
+    lounge_button->setIcon(QPixmap("controls:lounge.png"));
+    exit_button->setIcon(QPixmap("controls:gexit.png"));
+    kb_button->setIcon(QPixmap("controls:keyboard.png"));
     tables_exit_button->setIcon(exit_button->icon());
 
     output_line->setFocus();

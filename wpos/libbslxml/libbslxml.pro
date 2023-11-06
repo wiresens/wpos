@@ -23,6 +23,7 @@ CONFIG += debug -Wall warn_on qt
 #CONFIG += release warn_off qt dll
 VERSION = 0.2
 TEMPLATE = lib
+
 DISTFILES += API/a.ps \
              API/full-list-Sector.html \
              API/full-list-XmlConfig.html \
@@ -34,13 +35,14 @@ DISTFILES += API/a.ps \
              COPYING \
              README \
              AUTHORS
+
 HEADERS += comp.h \
            utils.h \
            xmlconfig.h \
            xmlconfigio.h
+
 SOURCES += utils.cpp \
            xmlconfig.cpp \
            xmlconfigio.cpp
-
 
 QMAKE_UIC = $(QTDIR)/bin/uic -tr tr2i18n -pch klocale.h

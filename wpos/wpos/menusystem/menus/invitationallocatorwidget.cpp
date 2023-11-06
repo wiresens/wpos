@@ -35,10 +35,10 @@ InvitationAllocatorWidget::InvitationAllocatorWidget(QWidget *parent, const QStr
     setObjectName(name);
 
     // Initialize all images
-    cancel_button->setIcon(QPixmap("/usr/share/ntpv/apps/button_cancel.png"));
-    back_button->setIcon(QPixmap("/usr/share/ntpv/apps/back_48.png"));
+    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
+    back_button->setIcon(QPixmap("controls:back_48.png"));
     back_button->hide();
-    forward_button->setIcon(QPixmap("/usr/share/ntpv/apps/forward_48.png"));
+    forward_button->setIcon(QPixmap("controls:forward_48.png"));
     forward_button->hide();
 
     // Default profile for order is obtained from the description XML. <PART 2> extracting values from XML
