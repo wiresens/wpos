@@ -27,11 +27,11 @@
 #include <QFile>
 
 extern "C"{
-#include <gdc.h>
-#include <gdchart.h>
-#include <gdcpie.h>
-#include <stdio.h>
-#include <stdlib.h>
+    #include <gdc.h>
+    #include <gdchart.h>
+    #include <gdcpie.h>
+    #include <stdio.h>
+    #include <stdlib.h>
 }
 
 #include <iostream>

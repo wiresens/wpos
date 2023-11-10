@@ -4,7 +4,7 @@
 
 namespace ws{
 namespace model{
-    Database Persistable::db{ nullptr };
+    DatabasePtr Persistable::db{ nullptr };
 
 }
 }

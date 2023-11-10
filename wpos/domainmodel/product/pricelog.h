@@ -57,30 +57,31 @@ public:
         return effectivity_;
     }
 
-    static void newPrice(ProductPtr product_ptr, double price);
-    static PriceLogPtr checkPrice(ConstProductPtr product_ptr, const TimeStamp& stamp  = nowLocal());
+    static void logPrice(ProductPtr product_ptr);
+    static PriceLogPtr priceAsOf(ConstProductPtr product_ptr, const TimeStamp& stamp = nowLocal());
 //    static double price(const Product& product, const TimeStamp& stamp = nowLocal());
 
 private:
     PriceLog() = default;
 
-    explicit PriceLog(ConstProductPtr product, double price = std::numeric_limits<double>::max())
+    explicit PriceLog(ConstProductPtr product, double price)
         : product_{ product}, price_{price}{}
 
     PriceLog(ConstProductPtr product_ptr, const DateRange& range, double price )
         : PriceLog{product_ptr, price}{ effectivity_ = range;}
 
-    void close(const TimeStamp& stamp){
-        effectivity_= DateRange(effectivity_.startDate(), stamp);
+    void close(){
+        if( effectivity_.endDate() >= pt::pos_infin )
+            effectivity_= DateRange(effectivity_.startDate(), nowLocal());
     }
 
 private:
     ulong id_{0};
-    DateRange effectivity_;
+    DateRange effectivity_{ nowLocal(), pt::pos_infin};
 
 public:
     ConstProductPtr product_;
-    const double price_{std::numeric_limits<double>::max()};
+    const double price_{};
     Product::PriceType type_;
 };
 

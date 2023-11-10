@@ -1,0 +1,242 @@
+project(wpos VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+
+set(MAIN_TARGET wpos)
+#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--copy-dt-needed-entries")
+
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(WS_SERVICE com.wiresens)
+
+find_package(Qt5 REQUIRED COMPONENTS
+    Widgets
+    Network
+    Sql
+    DBus
+    WebEngineWidgets
+)
+
+set(DBUS_XML_INTERFACE_DIR dbusprinter dbusreceipt)
+set(DBUS_INTERFACE_BASE1 dbusprinter)
+set(DBUS_INTERFACE_BASE2 dbusreceiptprimitive dbusreceiptmediator)
+
+set(i 0)
+foreach(dirItem IN LISTS DBUS_XML_INTERFACE_DIR)
+    set(DBUS_DEPENDENCY_DIR "${CMAKE_CURRENT_BINARY_DIR}/../${dirItem}")
+    math(EXPR i "(${i} + 1)")
+    foreach(dbus_spec IN LISTS DBUS_INTERFACE_BASE${i})
+        qt_add_dbus_interface(
+            DBUS_XML2CPP_FILES
+            "${DBUS_DEPENDENCY_DIR}/${WS_SERVICE}.${dbus_spec}.xml"
+            ${dbus_spec}_interface
+        )
+    endforeach()
+endforeach()
+
+set(DBUS_ADAPTOR_FILES
+    barcore/FileAlterationWatcher.h
+    menusystem/menus/ReceiptRecoverWidget.h
+    menusystem/menus/NumCodeWidget.h
+    LoginScreen.h
+)
+
+foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
+    string(TOLOWER ${filePathUpper} filePathLower)
+    get_filename_component(fileBase ${filePathLower} NAME_WE)
+    qt5_generate_dbus_interface(
+        ${filePathLower}
+        "${WS_SERVICE}.${fileBase}.xml"
+        OPTIONS -m  #export all Scriptable Public Slot
+    )
+    get_filename_component(parentClass ${filePathUpper} NAME_WE)
+
+    qt_add_dbus_adaptor(
+        DBUS_XML2CPP_FILES
+        "${CMAKE_CURRENT_BINARY_DIR}/${WS_SERVICE}.${fileBase}.xml"
+        ${filePathLower}
+        ${parentClass}
+        "${fileBase}_adaptor"
+    )
+endforeach()
+
+include_directories(
+    /usr/include
+    /usr/include/libxml2
+    ../libbslxml
+    ../wposcore
+    ../libqutexr
+    ../wposwidget
+    ..
+    .
+)
+
+set(HEADER_FILES
+    auth/authcore.h
+    barcore/cashdevice.h
+    barcore/dbusreceiptquerier.h
+    barcore/extracore.h
+    barcore/filemanager.h
+    barcore/filealterationwatcher.h
+    barcore/filealterationwatcherinterface.h
+    barcore/eventlogcore.h
+    barcore/barcore.h
+    customize/buttonsetwidget.h
+    customize/menubutton.h
+    customize/nkeyboard.h
+    customize/npopupkeyboard.h
+    customize/genericmenubutton.h
+    customize/genericbuttongroup.h
+    customize/genericbutton.h
+    database/barcoredb.h
+    database/changemoneywidgetdb.h
+    database/filemanagerdb.h
+    database/authcoredb.h
+    database/killticketsdb.h
+    database/ticketcoredb.h
+    database/auxdb.h
+    database/eventlogcoredb.h
+    menusystem/menus/adminwidget.h
+    menusystem/menus/cashwidget.h
+    menusystem/menus/changemoneywidget.h
+    menusystem/menus/exitactionswidget.h
+    menusystem/menus/freepricewidget.h
+    menusystem/menus/genericproduct.h
+    menusystem/menus/invitationallocatorwidget.h
+    menusystem/menus/killticketswidget.h
+    menusystem/menus/numcodewidget.h
+    menusystem/menus/receiptinterface.h
+    menusystem/menus/receiptrecoverwidget.h
+    menusystem/menus/xzwidget.h
+    menusystem/menus/paymodeswidget.h
+    menusystem/menus/ticketshandlingwidget.h
+    printer/printerticket.h
+    printer/printermanager.h
+    printer/printersamsungsrp350.h
+    printer/printer.h
+    prodselect/product.h
+    prodselect/productscreen.h
+    prodselect/productscreenstack.h
+    prodselect/productdata.h
+    ticket/ticketcore.h
+    loginscreen.h
+    loginscreeninterface.h
+    main.h
+    mainscreen.h
+    salesscreen.h
+    readconfigscreen.h
+)
+
+set(SOURCES_FILES
+    auth/authcore.cpp
+    barcore/barcore.cpp
+    barcore/cashdevice.cpp
+    barcore/dbusreceiptquerier.cpp
+    barcore/filemanager.cpp
+    barcore/filealterationwatcher.cpp
+    barcore/eventlogcore.cpp
+    barcore/extracore.cpp
+    customize/buttonsetwidget.cpp
+    customize/genericmenubutton.cpp
+    customize/genericbuttongroup.cpp
+    customize/menubutton.cpp
+    customize/nkeyboard.cpp
+    customize/genericbutton.cpp
+    customize/npopupkeyboard.cpp
+    database/changemoneywidgetdb.cpp
+    database/killticketsdb.cpp
+    database/ticketcoredb.cpp
+    database/auxdb.cpp
+    database/barcoredb.cpp
+    database/filemanagerdb.cpp
+    database/eventlogcoredb.cpp
+    database/authcoredb.cpp
+    menusystem/menus/adminwidget.cpp
+    menusystem/menus/cashwidget.cpp
+    menusystem/menus/changemoneywidget.cpp
+    menusystem/menus/exitactionswidget.cpp
+    menusystem/menus/freepricewidget.cpp
+    menusystem/menus/genericproduct.cpp
+    menusystem/menus/invitationallocatorwidget.cpp
+    menusystem/menus/killticketswidget.cpp
+    menusystem/menus/numcodewidget.cpp
+    menusystem/menus/receiptrecoverwidget.cpp
+    menusystem/menus/xzwidget.cpp
+    printer/printermanager.cpp
+    printer/printer.cpp
+    printer/printerticket.cpp
+    printer/printersamsungsrp350.cpp
+    prodselect/product.cpp
+    prodselect/productdata.cpp
+    ticket/ticketcore.cpp
+    main.cpp
+    mainscreen.cpp
+    salesscreen.cpp
+    prodselect/productscreen.cpp
+    prodselect/productscreenstack.cpp
+    loginscreen.cpp
+    readconfigscreen.cpp
+    menusystem/menus/paymodeswidget.cpp
+    menusystem/menus/ticketshandlingwidget.cpp
+)
+
+set(UIC_FILES
+    customize/nkeyboardwidget.ui
+    customize/buttonsetwidget.ui
+    menusystem/menus/adminwidget.ui
+    menusystem/menus/cashwidget.ui
+    menusystem/menus/changemoneywidget.ui
+    menusystem/menus/exitactionswidget.ui
+    menusystem/menus/freepricewidget.ui
+    menusystem/menus/invitationallocatorwidget.ui
+    menusystem/menus/killticketswidget.ui
+    menusystem/menus/numcodewidget.ui
+    menusystem/menus/xzwidget.ui
+    menusystem/menus/paymodeswidget.ui
+    saleswidget.ui
+    loginwidget.ui
+    readconfigwidget.ui
+)
+
+add_executable(
+    ${MAIN_TARGET}
+    ${HEADER_FILES}
+    ${SOURCES_FILES}
+    ${DBUS_XML2CPP_FILES}
+    ${UIC_FILES}
+)
+
+target_compile_definitions(${MAIN_TARGET}
+    PRIVATE HAVE_LIBFREETYPE
+)
+
+target_include_directories(${MAIN_TARGET}
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+target_link_libraries(${MAIN_TARGET}
+    PRIVATE
+#    wposmodel
+    wposxml
+    wposcore
+    wposrpc
+    wposwidget
+    xml2
+    crypt
+    jpeg
+    png
+    gdc
+    gd
+    z
+)
+
+target_link_libraries(${MAIN_TARGET} PRIVATE
+    Qt5::Widgets
+    Qt5::Network
+    Qt5::Sql
+    Qt5::DBus
+    Qt5::WebEngineWidgets
+)
+
+install(TARGETS ${MAIN_TARGET}
+    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+)

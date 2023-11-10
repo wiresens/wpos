@@ -29,7 +29,7 @@ class OptionNode;
 class QSignalMapper;
 
 struct LoungeData {
-    LoungeData(){}
+    LoungeData() = default;
     ~LoungeData(){
         table_buttons->clear();
         if (option_nodes){
@@ -51,15 +51,22 @@ struct LoungeData {
     uint tables{};
 };
 
-class NKeyboard : public QMenu , private Ui::NKeyboardWidget  {
+class NKeyboard :
+    public QMenu,
+    private Ui::NKeyboardWidget
+{
     Q_OBJECT
 public:
-    explicit NKeyboard(QWidget *parent=0,
-                       const QString& name = QString());
+    explicit NKeyboard(
+        QWidget *parent=0,
+        const QString& name = QString()
+    );
 
-    explicit NKeyboard(const QString& text,
-                       QWidget *parent=0,
-                       const QString& name = QString());
+    explicit NKeyboard(
+        const QString& text,
+        QWidget *parent=0,
+        const QString& name = QString()
+    );
 
     ~NKeyboard();
 
@@ -102,8 +109,8 @@ signals:
 protected:
     void loadLounges(XmlConfig *xml);
 
-    HList<QPushButton> *keyboard_buttons{};
-    HList<LoungeData> *lounges{};
+    HList<QPushButton> keyboard_buttons{};
+    HList<LoungeData> lounges{};
 
     QSignalMapper *signal_mapper{};
     QButtonGroup *lounge_buttongroup{};

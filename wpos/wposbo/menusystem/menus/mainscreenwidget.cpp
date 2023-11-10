@@ -74,7 +74,7 @@ MainScreenWidget::MainScreenWidget(
 
 void MainScreenWidget::buildMenus(XmlConfig& xml){
     // Create the main screen iconview which holds all access icons
-    auto page = new MenuPage(menus_stack);
+    auto page = new MenuPage(menus_stack, "MAIN_MENU");
     page->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     mainmenu_iconview = new QListWidget(page);
     mainmenu_iconview->setWordWrap(true);

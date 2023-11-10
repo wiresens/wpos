@@ -3,47 +3,49 @@
 # Subdirectory relative to the main directory of the project: ./xmlmanage
 # Destination is an application: xmlmanage
 
-QT -= gui
+QT              -= gui
 
-QMAKE_CXXFLAGS += -std=c++20
-QMAKE_CXXFLAGS += -Wno-deprecated-copy  -Wno-narrowing
-
-INSTALLS += target
-
-target.path = /usr/bin
-TARGETDEPS += ../libbslxml/libbslxml.so
-
-LIBS += -lbslxml
-
-INCLUDEPATH += ../libbslxml \
-               /usr/include/libxml2
-
-QMAKE_LIBDIR = ../libbslxml
-
-TARGET = xmlmanage
+QMAKE_CXXFLAGS  += -std=c++20
+QMAKE_CXXFLAGS  += -Wno-deprecated-copy  -Wno-narrowing
 
 #CONFIG += release warn_on qt
 CONFIG += debug -Wall warn_on qt dll
 TEMPLATE = app
+TARGET = xmlmanage
 
-DISTFILES += AUTHORS \
-             COPYING \
-             README
+INSTALLS        += target
 
-HEADERS += comon.h \
-           fileutils.h \
-           helpclass.h \
-           xmldelete.h \
-           xmllist.h \
-           xmlread.h \
-           xmlwrite.h
+target.path      = /usr/bin
+TARGETDEPS      += ../libbslxml/libbslxml.so
 
-SOURCES += fileutils.cpp \
-           helpclass.cpp \
-           main.cpp \
-           xmldelete.cpp \
-           xmllist.cpp \
-           xmlread.cpp \
-           xmlwrite.cpp
+LIBS            += -lbslxml
 
-QMAKE_UIC = $(QTDIR)/bin/uic -tr tr2i18n -pch klocale.h
+INCLUDEPATH     += \
+    /usr/include/libxml2 \
+    ../libbslxml
+
+QMAKE_LIBDIR     = \
+    ../libbslxml
+
+DISTFILES       += \
+    AUTHORS \
+    COPYING \
+    README
+
+HEADERS += \
+    comon.h \
+    fileutils.h \
+    helpclass.h \
+    xmldelete.h \
+    xmllist.h \
+    xmlread.h \
+    xmlwrite.h
+
+SOURCES += \
+    fileutils.cpp \
+    helpclass.cpp \
+    main.cpp \
+    xmldelete.cpp \
+    xmllist.cpp \
+    xmlread.cpp \
+    xmlwrite.cpp

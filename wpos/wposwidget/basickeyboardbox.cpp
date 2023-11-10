@@ -24,32 +24,12 @@
 #include <iostream>
 using namespace std;
 
-BasicKeyboardBox::BasicKeyboardBox(QWidget *parent):
-    QWidget(parent),
-    init_mode(false)
+BasicKeyboardBox::BasicKeyboardBox(QWidget *parent)
+    : QWidget{parent}
 {
-    //     signal_mapper = new QSignalMapper(this,"mapper");
-    setupUi(this);
-    signalMapper = new QSignalMapper(this);
-    signalMapper->setObjectName(QString("mapper"));
+    setupUi(this);    
     setFocusPolicy(Qt::StrongFocus);
     setMouseTracking(true);
-    initMapping();
-}
-
-BasicKeyboardBox::~BasicKeyboardBox(){}
-
-void BasicKeyboardBox::clear(){
-    lcd->display((int)0);
-}
-
-void BasicKeyboardBox::hideNumber(bool state){
-    if (!state) number_frame->show();
-    else number_frame->hide();
-}
-
-void BasicKeyboardBox::initMapping(){
-    //assign mapping
 
     button_0->setFocusProxy(this);
     button_1->setFocusProxy(this);
@@ -64,6 +44,8 @@ void BasicKeyboardBox::initMapping(){
     button_ce->setFocusProxy(this);
     button_dot->setFocusProxy(this);
 
+    signalMapper = new QSignalMapper(this);
+
     signalMapper->setMapping(button_0,NUMBER_0);
     signalMapper->setMapping(button_1,NUMBER_1);
     signalMapper->setMapping(button_2,NUMBER_2);
@@ -77,7 +59,7 @@ void BasicKeyboardBox::initMapping(){
     signalMapper->setMapping(button_ce,NUMBER_CE);
     signalMapper->setMapping(button_dot,NUMBER_DOT);
 
-    //connect buttons with the signal_mapper
+    //connect buttons with the QSignalMapper
     connect(button_0,SIGNAL(released()),signalMapper,SLOT(map()));
     connect(button_1,SIGNAL(released()),signalMapper,SLOT(map()));
     connect(button_2,SIGNAL(released()),signalMapper,SLOT(map()));
@@ -93,6 +75,16 @@ void BasicKeyboardBox::initMapping(){
     connect(button_dot,SIGNAL(released()),signalMapper,SLOT(map()));
 }
 
+BasicKeyboardBox::~BasicKeyboardBox(){}
+
+void BasicKeyboardBox::clear(){
+    display->display((int)0);
+}
+
+void BasicKeyboardBox::hideNumber(bool state){
+    if (!state) number_frame->show();
+    else number_frame->hide();
+}
 
 void BasicKeyboardBox::enterEvent(QEvent*){
     setFocus();

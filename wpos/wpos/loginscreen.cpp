@@ -61,7 +61,7 @@ LoginScreen::LoginScreen(MenuPage* parent, const QString& name):
 {
     setupUi(this);
     setObjectName(name);
-    parent->addWidget(this, name);
+    parent->addWidget(this, objectName());
 
     new GreeterAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();

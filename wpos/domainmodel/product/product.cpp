@@ -2,21 +2,37 @@
 #include "pricelog.h"
 
 #include "product-odb.hxx"
-#include "producttemplate-odb.hxx"
 
 namespace ws{
 namespace model{
 
-void Product::setPrice(double price, PriceType){
-    PriceLog::newPrice(shared_from_this(), price);
+Product::Product(
+    ProductTemplatePtr tpl, const string& name,
+    double price, const string& code)
+    : tpl_{tpl}, name_{name}, price_{price}, code_{code}
+{
+    if(name.empty()) throw EmptyNameException{};
+    if( ! ( price_ > 0.0 || price_ < 0.0) ) throw ZeroPriceException{};
+    db->persist(shared_from_this());
+    savePrice();
 }
 
-double Product::price(PriceType) const {
-    if( price_ >= std::numeric_limits<double>::max() ){
-        auto current_pricelog = PriceLog::checkPrice(shared_from_this());
-        if(current_pricelog) price_ = current_pricelog->price_;
+void Product::setPrice(double newPrice, PriceType){
+    if( price_ != newPrice && ( newPrice > 0.0 || newPrice < 0.0) ){
+//        logPrice();
+        price_ = newPrice;
     }
-    return price_;
+}
+
+void Product::logPrice(){
+    PriceLog::logPrice(shared_from_this());
+}
+
+double Product::priceAsOf(const TimeStamp& stamp, PriceType) const
+{
+    auto current_pricelog = PriceLog::priceAsOf(shared_from_this(), stamp);
+    if(current_pricelog) return current_pricelog->price_;
+    throw NotFoundException{};
 }
 
 }

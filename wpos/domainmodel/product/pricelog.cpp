@@ -49,33 +49,38 @@ using result = odb::result<PriceLog>;
 //    if (pricelog ) return pricelog->price_;
 //}
 
-PriceLogPtr PriceLog::checkPrice(ConstProductPtr product_ptr, const TimeStamp& stamp){
-    PriceLogPtr loggedPrice  = db->query_one<PriceLog>(
+PriceLogPtr PriceLog::priceAsOf(
+    ConstProductPtr product_ptr,
+    const TimeStamp& stamp)
+{
+    PriceLogPtr loggedPrice = db->query_one<PriceLog>(
         query::product->id == product_ptr->getId()
         && query::effectivity.start_date <= stamp
-        && stamp < query::effectivity.end_date );
-
+        && stamp < query::effectivity.end_date
+    );
     return loggedPrice;
 }
 
-void PriceLog::newPrice(ProductPtr product_ptr, double price){
-    auto current_pricelog  = db->query_one<PriceLog>(
-        query::product->id == product_ptr->getId()
-        && query::effectivity.end_date >= pt::pos_infin);
+void PriceLog::logPrice(ProductPtr productPtr)
+{
+    auto current_pricelog = db->query_one<PriceLog>(
+        query::product->id == productPtr->getId()
+        && query::effectivity.end_date >= pt::pos_infin
+    );
 
+    auto price = productPtr->price();
     if (current_pricelog){
-        if( current_pricelog->price_ >= price || current_pricelog->price_ <= price ) // pricelog->price_ != price
+        if( current_pricelog->price_ > price || current_pricelog->price_ < price ) // pricelog->price_ != price
         {
-            DateRange newrange(current_pricelog->effectivity_.endDate());
-            current_pricelog->close(nowLocal());
+            current_pricelog->close();
+            DateRange newrange(current_pricelog->effectivity_.endDate(), pt::pos_infin);
             auto new_pricelog = PriceLog(current_pricelog->product_, newrange, price);
             db->persist(new_pricelog);
             db->update(current_pricelog);
         }
     }
     else{
-
-        auto new_pricelog = PriceLog(product_ptr, price);
+        auto new_pricelog = PriceLog(productPtr, price);
         db->persist(new_pricelog);
     }
 }

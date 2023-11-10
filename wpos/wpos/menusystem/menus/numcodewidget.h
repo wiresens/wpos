@@ -30,8 +30,8 @@ class NumCodeWidget :
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wpos.Authenticator")
-public: 
 
+public: 
     static const QString DBusObject ;
 
     explicit NumCodeWidget(QWidget *parent=0, const QString& name = QString());
@@ -57,7 +57,7 @@ protected slots:
 protected:
     void showEvent(QShowEvent *e);
 
-    QSignalMapper *smap;
+    QSignalMapper *signalMapper;
     QString passwd;
 };
 

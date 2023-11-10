@@ -83,7 +83,7 @@ void MainScreen::buildMenuStack(){
 
 void MainScreen::buildMainScreen(){
     // Add it to a page of menus_stack
-    auto *page = new MenuPage(menus_stack);
+    auto *page = new MenuPage(menus_stack, Menus::MAIN_MENU);
     page->setLayoutType(MenuPage::VBOX);
 
     // Create authentification widget

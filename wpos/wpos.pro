@@ -23,31 +23,35 @@
 #   * wposqutexr     : lightweight XML-RPC client and server implemantation
 
 TEMPLATE = subdirs
-DISTFILES += AUTHORS \
-             COPYING \
-             README
+DISTFILES += \
+    AUTHORS \
+    COPYING \
+    README
+
 #projects
-SUBDIRS += libbslxml \
-           dbusreceipt \
-           domainmodel \
-           wposcore \
-           wposwidget \
-           libqutexr \
-           xmlmanage  \
-           dbusprinter \
-           wpos \
-           wposbo \
-#           wposrpcd \
-#           dcopstick \
-#           dcopreports \
+SUBDIRS += \
+    libbslxml \
+    dbusreceipt \
+    domainmodel \
+    wposcore \
+    wposwidget \
+    libqutexr \
+    xmlmanage  \
+    dbusprinter \
+    wpos \
+    wposbo \
+    test \
+#    wposrpcd \
+#    dcopstick \
+#    dcopreports \
 
 #define project dependencies to enable for astonishing build parallelism
-wposcore.depends = libbslxml
-libqutexr.depends = libbslxml
-xmlmanage.depends = libbslxml
-wposrpcd.depends = libbslxml libqutexr
-wpos.depends = domainmodel libbslxml wposcore wposwidget libqutexr
-wposbo.depends = domainmodel libbslxml wposcore wposwidget
+wposcore.depends   = libbslxml
+libqutexr.depends  = libbslxml
+xmlmanage.depends  = libbslxml
+wposrpcd.depends   = libbslxml libqutexr
+wpos.depends       = domainmodel libbslxml wposcore wposwidget libqutexr
+wposbo.depends     = domainmodel libbslxml wposcore wposwidget
 wposwidget.depends = libbslxml wposcore dbusprinter
 
 #Left for later port because relying on DCOP(Desktop Communications Protocol)

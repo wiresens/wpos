@@ -57,11 +57,10 @@ public slots:
 protected:
     void enterEvent(QEvent*);
     void leaveEvent(QEvent*);
-    virtual void initMapping();
 
     QSignalMapper* signalMapper;
     QVector<QWidget*> buttons;
-    bool init_mode;
+    bool init_mode{false};
 };
 
 #endif

@@ -23,49 +23,54 @@ usr.path = /usr/share/dcopprinter
 etc.files += etc/*
 etc.path = /etc/ntpv
 
-TARGETDEPS += ../libqutexr/libqutexr.so \
-              ../wposcore/libwposcore.so \
-              ../libbslxml/libbslxml.so
+TARGETDEPS += \
+    ../libqutexr/libqutexr.so \
+    ../wposcore/libwposcore.so \
+    ../libbslxml/libbslxml.so
 
-LIBS += -lqutexr \
-        -lwposcore \
-        -lbslxml \
-        -lcups
+INCLUDEPATH += \
+    ../libqutexr \
+    ../wposcore \
+    ../libbslxml \
+    /usr/include/libxml2 \
+    ..
 
-INCLUDEPATH += ../libqutexr \
-               ../wposcore \
-               ../libbslxml \
-               /usr/include/libxml2 \
-               ..
+QMAKE_LIBDIR = \
+    ../libqutexr \
+    ../wposcore \
+    ../libbslxml
 
-QMAKE_LIBDIR = ../libqutexr \
-               ../wposcore \
-               ../libbslxml
+LIBS += \
+    -lqutexr \
+    -lwposcore \
+    -lbslxml \
+    -lcups
 
-DISTFILES += etc/dtds/dcopprinter_config.dtd \
-             etc/dcopprinter_config.xml \
-             usr/replace.pl \
-             AUTHORS \
-             COPYING
+DISTFILES += \
+    etc/dtds/dcopprinter_config.dtd \
+    etc/dcopprinter_config.xml \
+    usr/replace.pl \
+    AUTHORS \
+    COPYING
 
 HEADERS += \
-           dbusprinter.h \
-           dbusprinterinterface.h \
-           main.h \
-           printer.h \
-           printermanager.h \
-           printersamsungsrp350.h \
-           printerticket.h \
-           xmlrpcprinter.h
+    dbusprinter.h \
+    dbusprinterinterface.h \
+    main.h \
+    printer.h \
+    printermanager.h \
+    printersamsungsrp350.h \
+    printerticket.h \
+    xmlrpcprinter.h
 
 SOURCES += \
-           dbusprinter.cpp \
-           main.cpp \
-           printer.cpp \
-           printermanager.cpp \
-           printersamsungsrp350.cpp \
-           printerticket.cpp \
-           xmlrpcprinter.cpp
+    dbusprinter.cpp \
+    main.cpp \
+    printer.cpp \
+    printermanager.cpp \
+    printersamsungsrp350.cpp \
+    printerticket.cpp \
+    xmlrpcprinter.cpp
 
 DBUS_ADAPTORS += com.wiresens.dbusprinter.xml
 DBUS_HEADER_FILES += dbusprinter.h
@@ -82,8 +87,6 @@ for(file, DBUS_HEADER_FILES) {
   DBUS_PWD_FILES += $$PWD/$${file}
 }
 
-DBUS_SRV += com.wiresens
-
 qdbuscpp2xml.name = qdbuscpp2xml ${QMAKE_FILE_IN}
 qdbuscpp2xml.input = DBUS_PWD_FILES
 qdbuscpp2xml.output = com.wiresens.${QMAKE_FILE_BASE}.xml
@@ -93,4 +96,11 @@ qdbuscpp2xml.depends = $$DBUS_HEADER_FILES
 qdbuscpp2xml.clean = com.wiresens.${QMAKE_FILE_BASE}.xml
 QMAKE_EXTRA_COMPILERS += qdbuscpp2xml
 
-QMAKE_UIC = $(QTDIR)/bin/uic -tr tr2i18n -pch klocale.h
+#include(../platform.pri)
+#include(../destination.pri)
+
+#DESTDIR     = $$PWD/../bin/$$DESTINATION_PATH
+#OBJECTS_DIR = $$PWD/build/$$DESTINATION_PATH/.obj
+#MOC_DIR     = $$PWD/build/$$DESTINATION_PATH/.moc
+#message(wpostest project dir : $${PWD})
+#message(wpostest output dir : $${DESTDIR})

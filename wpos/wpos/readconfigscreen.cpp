@@ -11,7 +11,7 @@
  ***************************************************************************/
 #include "readconfigscreen.h"
 
-
+#include <wposwidget/menupage.h>
 #include <wposcore/genericsignalmanager.h>
 #include <xmlconfig.h>
 
@@ -21,17 +21,19 @@
 #include <QProgressBar>
 #include <QScreen>
 
-ReadConfigScreen::ReadConfigScreen(QWidget *parent, const QString& name ):
+ReadConfigScreen::ReadConfigScreen(
+    MenuPage *parent,
+    const QString& name ):
     QWidget(parent)
 {
     setupUi(this);
     setObjectName(name);
+    parent->addWidget(this, objectName());
+
     auto gsm = GenericSignalManager::instance();
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::REREAD_CONFIG, this);
     setWindowFlag(Qt::Popup);
 }
-
-ReadConfigScreen::~ReadConfigScreen(){}
 
 void ReadConfigScreen::showEvent(QShowEvent *e){
     progress->setValue(0);

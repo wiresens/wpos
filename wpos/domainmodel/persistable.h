@@ -8,7 +8,7 @@
 #include <chrono>
 #include <exception>
 
-using Database = std::unique_ptr<odb::database>;
+using DatabasePtr = std::unique_ptr<odb::database>;
 
 namespace ws{
 namespace model{
@@ -35,7 +35,7 @@ public :
     virtual void persist(){}
 
 protected:
-    static Database db;
+    static DatabasePtr db;
 
     Persistable() = default;
 
@@ -50,19 +50,31 @@ private:
 
 //using Persist = Persistable<std::string>;
 
-struct EmptyNameException : public std::exception{
+struct PersistableException : std::exception{};
+
+struct EmptyNameException : PersistableException{
     virtual const char*
     what() const noexcept { return "Fatal : Empty Name Supplied"; }
 };
 
-struct BadGenderException : public std::exception{
+struct BadGenderException : PersistableException{
     virtual const char*
     what() const noexcept { return "Fatal : Invalid Gender Supplied"; }
 };
 
-struct DuplicateAuthTokenException : public std::exception{
+struct DuplicateAuthTokenException : PersistableException{
     virtual const char*
     what() const noexcept { return "Error : Duplicate Authentication Token Supplied"; }
+};
+
+struct ZeroPriceException : PersistableException{
+    virtual const char*
+    what() const noexcept { return "Error : Zero Price Supplied"; }
+};
+
+struct NotFoundException : PersistableException{
+    virtual const char*
+    what() const noexcept { return "Error : Item not Found"; }
 };
 
 }

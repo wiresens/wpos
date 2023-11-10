@@ -20,50 +20,55 @@ target.path = /usr/bin
 etc.files += etc/*
 etc.path = /etc/ntpv
 
-TARGETDEPS += ../libqutexr/libqutexr.so \
-              ../wposcore/libwposcore.so \
-              ../libbslxml/libbslxml.so
+TARGETDEPS += \
+    ../libqutexr/libqutexr.so \
+    ../wposcore/libwposcore.so \
+    ../libbslxml/libbslxml.so
 
-LIBS += -lqutexr \
-        -lwposcore \
-        -lbslxml
+LIBS += \
+    -lqutexr \
+    -lwposcore \
+    -lbslxml
 
-INCLUDEPATH += ../libqutexr \
-               ../wposcore \
-               ../libbslxml \
-               /usr/include/libxml2 \
-               ..
+INCLUDEPATH += \
+    ../libqutexr \
+    ../wposcore \
+    ../libbslxml \
+    /usr/include/libxml2 \
+    ..
 
-QMAKE_LIBDIR = ../libqutexr \
-               ../wposcore \
-               ../libbslxml
+QMAKE_LIBDIR = \
+    ../libqutexr \
+    ../wposcore \
+    ../libbslxml
 
-DISTFILES += etc/dcopreceipt_config.xml \
-             etc/dtds/dcopreceipt_config.dtd \
-             AUTHORS \
-             COPYING \
-             README
+DISTFILES += \
+    etc/dcopreceipt_config.xml \
+    etc/dtds/dcopreceipt_config.dtd \
+    AUTHORS \
+    COPYING \
+    README
 
 HEADERS += \
-           dbusreceiptmanager.h \
-           dbusreceiptmediator.h \
-           dbusreceiptprimitive.h \
-           receiptchangenotifiyer.h \
-           receiptclient.h \
-           receiptclientmediator.h \
-           receiptdb.h \
-           receiptmediatorinterface.h \
-           receiptprimitiveinterface.h
+    dbusreceiptmanager.h \
+    dbusreceiptmediator.h \
+    dbusreceiptprimitive.h \
+    receiptchangenotifiyer.h \
+    receiptclient.h \
+    receiptclientmediator.h \
+    receiptdb.h \
+    receiptmediatorinterface.h \
+    receiptprimitiveinterface.h
 
 SOURCES += \
-           dbusreceiptmanager.cpp \
-           dbusreceiptmediator.cpp \
-           dbusreceiptprimitive.cpp \
-           receiptchangenotifiyer.cpp \
-           receiptclient.cpp \
-           receiptclientmediator.cpp \
-           receiptdb.cpp \
-           main.cpp
+    dbusreceiptmanager.cpp \
+    dbusreceiptmediator.cpp \
+    dbusreceiptprimitive.cpp \
+    receiptchangenotifiyer.cpp \
+    receiptclient.cpp \
+    receiptclientmediator.cpp \
+    receiptdb.cpp \
+    main.cpp
 
 DBUS_ADAPTORS += com.wiresens.dbusreceiptprimitive.xml com.wiresens.dbusreceiptmediator.xml
 DBUS_HEADER_FILES += dbusreceiptprimitive.h dbusreceiptmediator.h
@@ -90,5 +95,3 @@ qdbuscpp2xml.CONFIG = no_link
 qdbuscpp2xml.depends = $$DBUS_HEADER_FILES
 qdbuscpp2xml.clean = com.wiresens.${QMAKE_FILE_BASE}.xml
 QMAKE_EXTRA_COMPILERS += qdbuscpp2xml
-
-QMAKE_UIC = $(QTDIR)/bin/uic -tr tr2i18n -pch klocale.h

@@ -48,7 +48,7 @@ FloatKeyboardBox::~FloatKeyboardBox(){}
 void FloatKeyboardBox::clear(){
     string_number="";
     number = 0.0;
-    lcd->display(number);
+    display->display(number);
     emit numChanged(number);
 }
 
@@ -59,7 +59,7 @@ double FloatKeyboardBox::getNumber(){
 void FloatKeyboardBox::setNumber(const double num){
     string_number = QString::number(num,'f',2);
     number = num;
-    lcd->display(number);
+    display->display(number);
     emit numChanged(number);
 }
 
@@ -86,7 +86,7 @@ void FloatKeyboardBox::receivedNum(int num){
         if (aux_d < MAX_DOUBLE){
             string_number = aux_string_number;
             number= aux_d;
-            lcd->display(number);
+            display->display(number);
             emit numChanged(number);
         }
     }
@@ -99,7 +99,7 @@ void FloatKeyboardBox::receivedNum(int num){
         if (aux_d < MAX_DOUBLE){
             string_number = aux_string_number;
             number= aux_d;
-            lcd->display(number);
+            display->display(number);
             emit numChanged(number);
         }
     }
@@ -111,8 +111,8 @@ void FloatKeyboardBox::initAspect(){
     button_dot->setFont(font);
     button_dot->setText(" 0 0 ");
 
-    lcd->setSegmentStyle(QLCDNumber::Filled);
-    lcd->setDigitCount(7);
+    display->setSegmentStyle(QLCDNumber::Filled);
+    display->setDigitCount(7);
 }
 
 void FloatKeyboardBox::keyPressEvent(QKeyEvent *e){

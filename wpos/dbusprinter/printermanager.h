@@ -11,7 +11,6 @@ modified by Carlos Manzanedo Rueda
 %LICENCIA%
  ***************************************************************************/
 
-
 #ifndef PRINTERMANAGER_H
 #define PRINTERMANAGER_H
 

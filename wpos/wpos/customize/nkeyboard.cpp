@@ -128,12 +128,12 @@ static const uint GRID_ROW = 3;
 static const uint GRID_COL = 10;
 
 NKeyboard::NKeyboard(
-        QWidget *parent,
-        const QString& name ):
+    QWidget *parent,
+    const QString& name ):
 
     QMenu(parent),
-    keyboard_buttons  {new HList<QPushButton>},
-    lounges {new HList<LoungeData>},
+//    keyboard_buttons  {new HList<QPushButton>},
+//    lounges {new HList<LoungeData>},
     o_parent{ parent }
 {
     setupUi(this);
@@ -143,9 +143,9 @@ NKeyboard::NKeyboard(
 }
 
 NKeyboard::NKeyboard(
-        const QString& text,
-        QWidget *parent,
-        const QString& name):
+    const QString& text,
+    QWidget *parent,
+    const QString& name):
 
     NKeyboard(parent, name)
 {
@@ -161,90 +161,90 @@ void NKeyboard::init(){
     signal_mapper = new QSignalMapper(this);
     signal_mapper->setObjectName("keyboard_signal_mapper");
 
-    keyboard_buttons->append(esc,QString::number(ESC));
-    keyboard_buttons->append(f1,QString::number(F1));
-    keyboard_buttons->append(f2,QString::number(F2));
-    keyboard_buttons->append(f3,QString::number(F3));
-    keyboard_buttons->append(f4,QString::number(F4));
-    keyboard_buttons->append(f5,QString::number(F5));
-    keyboard_buttons->append(f6,QString::number(F6));
-    keyboard_buttons->append(f7,QString::number(F7));
-    keyboard_buttons->append(f8,QString::number(F8));
-    keyboard_buttons->append(f9,QString::number(F9));
-    keyboard_buttons->append(f10,QString::number(F10));
-    keyboard_buttons->append(f11,QString::number(F11));
-    keyboard_buttons->append(f12,QString::number(F12));
-    keyboard_buttons->append(oa,QString::number(OA_ASCII));
-    keyboard_buttons->append(b1,QString::number(B1));
-    keyboard_buttons->append(b2,QString::number(B2));
-    keyboard_buttons->append(b3,QString::number(B3));
-    keyboard_buttons->append(b4,QString::number(B4));
-    keyboard_buttons->append(b5,QString::number(B5));
-    keyboard_buttons->append(b6,QString::number(B6));
-    keyboard_buttons->append(b7,QString::number(B7));
-    keyboard_buttons->append(b8,QString::number(B8));
-    keyboard_buttons->append(b9,QString::number(B9));
-    keyboard_buttons->append(b0,QString::number(B0));
-    keyboard_buttons->append(bint,QString::number(BINT));
-    keyboard_buttons->append(bdel,QString::number(DEL));
-    keyboard_buttons->append(btab,QString::number(BTAB));
-    keyboard_buttons->append(bq,QString::number(BQ));
-    keyboard_buttons->append(bw,QString::number(BW));
-    keyboard_buttons->append(be,QString::number(BE));
-    keyboard_buttons->append(br,QString::number(BR));
-    keyboard_buttons->append(bt,QString::number(BT));
-    keyboard_buttons->append(by,QString::number(BY));
-    keyboard_buttons->append(bu,QString::number(BU));
-    keyboard_buttons->append(bi,QString::number(BI));
-    keyboard_buttons->append(bo,QString::number(BO));
-    keyboard_buttons->append(bp,QString::number(BP));
-    keyboard_buttons->append(benter,QString::number(ENTER));
-    keyboard_buttons->append(bmay,QString::number(MAY));
-    keyboard_buttons->append(ba,QString::number(BA));
-    keyboard_buttons->append(bs,QString::number(BS));
-    keyboard_buttons->append(bd,QString::number(BD));
-    keyboard_buttons->append(bf,QString::number(BF));
-    keyboard_buttons->append(bg,QString::number(BG));
-    keyboard_buttons->append(bh,QString::number(BH));
-    keyboard_buttons->append(bj,QString::number(BJ));
-    keyboard_buttons->append(bk,QString::number(BK));
-    keyboard_buttons->append(bl,QString::number(BL));
-    keyboard_buttons->append(ben,QString::number(BEN_ASCII));
-    keyboard_buttons->append(blsh,QString::number(SHIFT));
-    keyboard_buttons->append(bmsg,QString::number(BMSG));
-    keyboard_buttons->append(bz,QString::number(BZ));
-    keyboard_buttons->append(bx,QString::number(BX));
-    keyboard_buttons->append(bc,QString::number(BC));
-    keyboard_buttons->append(bv,QString::number(BV));
-    keyboard_buttons->append(bb,QString::number(BB));
-    keyboard_buttons->append(bn,QString::number(BN));
-    keyboard_buttons->append(bm,QString::number(BM));
-    keyboard_buttons->append(bcut,QString::number(BCUT));
-    keyboard_buttons->append(bdot,QString::number(BDOT));
-    keyboard_buttons->append(blmi,QString::number(MIN));
-    keyboard_buttons->append(brsh,QString::number(SHIFT));
-    keyboard_buttons->append(blctrl,QString::number(CTRL));
-    keyboard_buttons->append(blalt,QString::number(ALT));
-    keyboard_buttons->append(bspace,QString::number(SPACE));
-    keyboard_buttons->append(bralt,QString::number(ALT));
-    keyboard_buttons->append(brctrl,QString::number(CTRL));
-    keyboard_buttons->append(bbloq,QString::number(BLOQ));
-    keyboard_buttons->append(bdiv,QString::number(BDIV));
-    keyboard_buttons->append(bprod,QString::number(BPROD));
-    keyboard_buttons->append(brmin,QString::number(MIN));
-    keyboard_buttons->append(brplus,QString::number(BRPLUS));
-    keyboard_buttons->append(brenter,QString::number(INTRO));
-    keyboard_buttons->append(brdot,QString::number(BDOT));
-    keyboard_buttons->append(br0,QString::number(B0));
-    keyboard_buttons->append(br1,QString::number(B1));
-    keyboard_buttons->append(br2,QString::number(B2));
-    keyboard_buttons->append(br3,QString::number(B3));
-    keyboard_buttons->append(br4,QString::number(B4));
-    keyboard_buttons->append(br5,QString::number(B5));
-    keyboard_buttons->append(br6,QString::number(B6));
-    keyboard_buttons->append(br7,QString::number(B7));
-    keyboard_buttons->append(br8,QString::number(B8));
-    keyboard_buttons->append(br9,QString::number(B9));
+    keyboard_buttons.append(esc,QString::number(ESC));
+    keyboard_buttons.append(f1,QString::number(F1));
+    keyboard_buttons.append(f2,QString::number(F2));
+    keyboard_buttons.append(f3,QString::number(F3));
+    keyboard_buttons.append(f4,QString::number(F4));
+    keyboard_buttons.append(f5,QString::number(F5));
+    keyboard_buttons.append(f6,QString::number(F6));
+    keyboard_buttons.append(f7,QString::number(F7));
+    keyboard_buttons.append(f8,QString::number(F8));
+    keyboard_buttons.append(f9,QString::number(F9));
+    keyboard_buttons.append(f10,QString::number(F10));
+    keyboard_buttons.append(f11,QString::number(F11));
+    keyboard_buttons.append(f12,QString::number(F12));
+    keyboard_buttons.append(oa,QString::number(OA_ASCII));
+    keyboard_buttons.append(b1,QString::number(B1));
+    keyboard_buttons.append(b2,QString::number(B2));
+    keyboard_buttons.append(b3,QString::number(B3));
+    keyboard_buttons.append(b4,QString::number(B4));
+    keyboard_buttons.append(b5,QString::number(B5));
+    keyboard_buttons.append(b6,QString::number(B6));
+    keyboard_buttons.append(b7,QString::number(B7));
+    keyboard_buttons.append(b8,QString::number(B8));
+    keyboard_buttons.append(b9,QString::number(B9));
+    keyboard_buttons.append(b0,QString::number(B0));
+    keyboard_buttons.append(bint,QString::number(BINT));
+    keyboard_buttons.append(bdel,QString::number(DEL));
+    keyboard_buttons.append(btab,QString::number(BTAB));
+    keyboard_buttons.append(bq,QString::number(BQ));
+    keyboard_buttons.append(bw,QString::number(BW));
+    keyboard_buttons.append(be,QString::number(BE));
+    keyboard_buttons.append(br,QString::number(BR));
+    keyboard_buttons.append(bt,QString::number(BT));
+    keyboard_buttons.append(by,QString::number(BY));
+    keyboard_buttons.append(bu,QString::number(BU));
+    keyboard_buttons.append(bi,QString::number(BI));
+    keyboard_buttons.append(bo,QString::number(BO));
+    keyboard_buttons.append(bp,QString::number(BP));
+    keyboard_buttons.append(benter,QString::number(ENTER));
+    keyboard_buttons.append(bmay,QString::number(MAY));
+    keyboard_buttons.append(ba,QString::number(BA));
+    keyboard_buttons.append(bs,QString::number(BS));
+    keyboard_buttons.append(bd,QString::number(BD));
+    keyboard_buttons.append(bf,QString::number(BF));
+    keyboard_buttons.append(bg,QString::number(BG));
+    keyboard_buttons.append(bh,QString::number(BH));
+    keyboard_buttons.append(bj,QString::number(BJ));
+    keyboard_buttons.append(bk,QString::number(BK));
+    keyboard_buttons.append(bl,QString::number(BL));
+    keyboard_buttons.append(ben,QString::number(BEN_ASCII));
+    keyboard_buttons.append(blsh,QString::number(SHIFT));
+    keyboard_buttons.append(bmsg,QString::number(BMSG));
+    keyboard_buttons.append(bz,QString::number(BZ));
+    keyboard_buttons.append(bx,QString::number(BX));
+    keyboard_buttons.append(bc,QString::number(BC));
+    keyboard_buttons.append(bv,QString::number(BV));
+    keyboard_buttons.append(bb,QString::number(BB));
+    keyboard_buttons.append(bn,QString::number(BN));
+    keyboard_buttons.append(bm,QString::number(BM));
+    keyboard_buttons.append(bcut,QString::number(BCUT));
+    keyboard_buttons.append(bdot,QString::number(BDOT));
+    keyboard_buttons.append(blmi,QString::number(MIN));
+    keyboard_buttons.append(brsh,QString::number(SHIFT));
+    keyboard_buttons.append(blctrl,QString::number(CTRL));
+    keyboard_buttons.append(blalt,QString::number(ALT));
+    keyboard_buttons.append(bspace,QString::number(SPACE));
+    keyboard_buttons.append(bralt,QString::number(ALT));
+    keyboard_buttons.append(brctrl,QString::number(CTRL));
+    keyboard_buttons.append(bbloq,QString::number(BLOQ));
+    keyboard_buttons.append(bdiv,QString::number(BDIV));
+    keyboard_buttons.append(bprod,QString::number(BPROD));
+    keyboard_buttons.append(brmin,QString::number(MIN));
+    keyboard_buttons.append(brplus,QString::number(BRPLUS));
+    keyboard_buttons.append(brenter,QString::number(INTRO));
+    keyboard_buttons.append(brdot,QString::number(BDOT));
+    keyboard_buttons.append(br0,QString::number(B0));
+    keyboard_buttons.append(br1,QString::number(B1));
+    keyboard_buttons.append(br2,QString::number(B2));
+    keyboard_buttons.append(br3,QString::number(B3));
+    keyboard_buttons.append(br4,QString::number(B4));
+    keyboard_buttons.append(br5,QString::number(B5));
+    keyboard_buttons.append(br6,QString::number(B6));
+    keyboard_buttons.append(br7,QString::number(B7));
+    keyboard_buttons.append(br8,QString::number(B8));
+    keyboard_buttons.append(br9,QString::number(B9));
 
     signal_mapper->setMapping(esc,ESC);
     signal_mapper->setMapping(f1,F1);
@@ -436,7 +436,7 @@ void NKeyboard::init(){
 
     output_line->setFocus();
 
-    for(auto button : *keyboard_buttons){
+    for(auto button : keyboard_buttons){
         button->setFocusProxy(this);
         button->setFocusPolicy(Qt::NoFocus);
     }
@@ -484,7 +484,7 @@ void NKeyboard::loadLounges(XmlConfig *xml){
     QGridLayout *glayout = 0;
     QButtonGroup *lounge_stack_buttongroup = 0;
 
-    lounges->clear();
+    lounges.clear();
     while(lounge_stack->currentWidget())
         lounge_stack->removeWidget(lounge_stack->currentWidget());
 
@@ -578,15 +578,15 @@ void NKeyboard::loadLounges(XmlConfig *xml){
             lounge_stack_buttongroup->addButton(lounge_table_button);
             lounge->table_buttons->append(lounge_table_button, lounge_table_button->objectName());
         }
-        lounges->append(lounge, lounge->name);
+        lounges.append(lounge, lounge->name);
         xml->releaseDomain("lounge");
     }
 
     if (lounge_count){
-        lounges->at(0)->button->setChecked(true);
-        lounges->at(0)->button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
-        lounges->at(0)->button->setBackgroundRole(QPalette::Button);
-        lounge_stack->setCurrentIndex(lounges->at(0)->stack_index);
+        lounges.at(0)->button->setChecked(true);
+        lounges.at(0)->button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
+        lounges.at(0)->button->setBackgroundRole(QPalette::Button);
+        lounge_stack->setCurrentIndex(lounges.at(0)->stack_index);
     }
 
 }
@@ -602,7 +602,7 @@ void NKeyboard::loungeButtonClicked(bool checked){
         if (button->isDown()){
             button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
             button->setBackgroundRole(QPalette::Button);
-            lounge = lounges->find(button->objectName());
+            lounge = lounges.find(button->objectName());
             lounge_stack->setCurrentIndex(lounge->stack_index);
         }
         else{
@@ -628,13 +628,13 @@ void NKeyboard::tableButtonClicked(bool checked){
         if (button->isDown()){
             button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
             button->setBackgroundRole(QPalette::Window);
-            lounge = lounges->find(button->objectName());
+            lounge = lounges.find(button->objectName());
         }
     }
 
-    count = lounges->count();
+    count = lounges.count();
     for(i=0;i<count;i++){
-        aux_lounge = lounges->at(i);
+        aux_lounge = lounges.at(i);
         if (aux_lounge != lounge){
             clearLoungeStack(aux_lounge->name);
         }
@@ -657,7 +657,6 @@ void NKeyboard::tableButtonClicked(bool checked){
         }
     }
     output_line->setText(aux);
-
 }
 
 void NKeyboard::tableButtonClicked(QAbstractButton* button){
@@ -665,7 +664,7 @@ void NKeyboard::tableButtonClicked(QAbstractButton* button){
     button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
     auto lounge_stack_buttongroup = qobject_cast<QButtonGroup*>(sender());
 
-    for( auto lounge : *lounges){
+    for( auto lounge : lounges){
         if( lounge->button_group != lounge_stack_buttongroup)
             clearLoungeStack(lounge->name);
         else output_line->setText( lounge->name + " " + button->objectName() );
@@ -683,9 +682,8 @@ void NKeyboard::clearLoungeStack(const QString &name, bool clear_enabled){
     LoungeData *lounge{};
     QPushButton *button=0;
 
-    lounge = lounges->find(name);
-    if (!lounge)
-        return;
+    lounge = lounges.find(name);
+    if (!lounge) return;
 
     count = lounge->table_buttons->count();
     for(i=0;i<count;i++){
@@ -710,10 +708,10 @@ void NKeyboard::clearAllStacks(bool clear_enabled){
     int i,count;
     LoungeData *lounge{};
 
-    count = lounges->count();
+    count = lounges.count();
     for(i=0;i<count;i++){
-        lounge = lounges->at(i);
-        clearLoungeStack(lounge->name,clear_enabled);
+        lounge = lounges.at(i);
+        clearLoungeStack(lounge->name, clear_enabled);
     }
 }
 
@@ -734,9 +732,9 @@ void NKeyboard::setTableButtonSelected(const QString& name){
     if ((!ok)&&(real_int>=0))
         return;
 
-    count = lounges->count();
+    count = lounges.count();
     for (i=0;i<count;i++){
-        lounge = lounges->at(i);
+        lounge = lounges.at(i);
         button = lounge->button;
         button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_OFF_COLOR));
         button->setBackgroundRole(QPalette::Window);
@@ -775,9 +773,9 @@ void NKeyboard::setTableButtonUsed(const QString& name){
     if ((!ok)&&(real_int>=0))
         return;
 
-    count = lounges->count();
+    count = lounges.count();
     for (i=0;i<count;i++){
-        lounge = lounges->at(i);
+        lounge = lounges.at(i);
         if (lounge->name.contains(aux_name)){
             if ((real_int-1)>lounge->tables)
                 return;
@@ -812,9 +810,9 @@ QString NKeyboard::getLounge(){
     QString aux="";
     LoungeData *lounge{} ;
     aux = output_line->text();
-    count = lounges->count();
+    count = lounges.count();
     for(i=0;i<count;i++){
-        lounge = lounges->at(i);
+        lounge = lounges.at(i);
         if (lounge->regex.exactMatch(aux)){
             return lounge->name;
         }
@@ -830,9 +828,9 @@ int NKeyboard::getTable(){
     QString aux_int;
     LoungeData *lounge{} ;
     aux = output_line->text();
-    count = lounges->count();
+    count = lounges.count();
     for(i=0;i<count;i++){
-        lounge = lounges->at(i);
+        lounge = lounges.at(i);
         if (lounge->regex.exactMatch(aux)){
             pos = aux.indexOf(' ');
             aux_int = aux.mid(pos+1,aux.length()-(pos+1));
@@ -846,7 +844,7 @@ int NKeyboard::getTable(){
 
 HList<OptionNode>* NKeyboard::getOptionsFromLounge(const QString& lounge){
     LoungeData *lounge_data{} ;
-    lounge_data  = lounges->find(lounge);
+    lounge_data  = lounges.find(lounge);
     if (lounge_data)
         return lounge_data->option_nodes;
 
@@ -882,137 +880,137 @@ void NKeyboard::keyClicked(int num){
     QString texto;
     //Presently, this does not support event passing
     switch (num){
-        case ESC:
-            if ( has_send_events && o_parent ){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress, ESC, ESC_ASCII ,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,ESC,ESC_ASCII, state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            this->exitSlot();
-            break;
-        case F1:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F1,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F1,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F2:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F2,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F2,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F3:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F3,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F3,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F4:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F4,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F4,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F5:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F5,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F5,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F6:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F6,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F6,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F7:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F7,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F7,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F8:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F8,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F8,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F9:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress, F9, 0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease, F9, 0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F10 :
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress,F10,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F10,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F11:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress, F11,0,state);
-                ker = new QKeyEvent(QEvent::KeyRelease,F11,0,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
-        case F12:
-            if ((has_send_events)&&(o_parent)){
-                QKeyEvent *kep = 0;
-                QKeyEvent *ker = 0;
-                kep = new QKeyEvent(QEvent::KeyPress, Qt::Key_F12 ,0, state);
-                ker = new QKeyEvent(QEvent::KeyRelease, F12, 0 ,state);
-                qApp->postEvent(o_parent,(QEvent *) kep);
-                qApp->postEvent(o_parent,(QEvent *) ker);
-            }
-            break;
+    case ESC:
+        if ( has_send_events && o_parent ){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress, ESC, ESC_ASCII ,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,ESC,ESC_ASCII, state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        this->exitSlot();
+        break;
+    case F1:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F1,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F1,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F2:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F2,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F2,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F3:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F3,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F3,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F4:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F4,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F4,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F5:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F5,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F5,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F6:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F6,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F6,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F7:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F7,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F7,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F8:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F8,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F8,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F9:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress, F9, 0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease, F9, 0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F10 :
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress,F10,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F10,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F11:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress, F11,0,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F11,0,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
+    case F12:
+        if ((has_send_events)&&(o_parent)){
+            QKeyEvent *kep = 0;
+            QKeyEvent *ker = 0;
+            kep = new QKeyEvent(QEvent::KeyPress, Qt::Key_F12 ,0, state);
+            ker = new QKeyEvent(QEvent::KeyRelease, F12, 0 ,state);
+            qApp->postEvent(o_parent,(QEvent *) kep);
+            qApp->postEvent(o_parent,(QEvent *) ker);
+        }
+        break;
     case OA_ASCII :
         break;
     case B1:

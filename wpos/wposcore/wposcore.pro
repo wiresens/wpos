@@ -3,36 +3,43 @@
 # Subdirectory relative to the main directory of the project: ./ntpvlib
 # The target is a library: ntpvlib
 
-greaterThan(QT_MAJOR_VERSION, 4): QT -= gui
+QT -= gui
 QT += sql
-
 
 QMAKE_CXXFLAGS += -std=c++20
 QMAKE_CXXFLAGS += -Wno-deprecated-copy  -Wno-narrowing
 
-INSTALLS += target
+INSTALLS    += target
+
 target.path = /usr/lib
 TARGETDEPS += ../libbslxml/libbslxml.so
-LIBS += -lbslxml
-INCLUDEPATH += ../libbslxml \
-                /usr/include/libxml2
+
+LIBS        += -lbslxml
+
+INCLUDEPATH += \
+    ../libbslxml \
+    /usr/include/libxml2
+
 QMAKE_LIBDIR = ../libbslxml
-TARGET = wposcore
-CONFIG += debug warn_on qt dll
-VERSION = 0.4
-TEMPLATE = lib
-HEADERS += basicdatabase.h \
+TARGET       = wposcore
+CONFIG      += debug warn_on qt dll
+VERSION      = 0.4
+TEMPLATE     = lib
+
+HEADERS += \
+    basicdatabase.h \
     config.h \
-           genericsignalmanager.h \
-           hlist.h \
+    genericsignalmanager.h \
+    hlist.h \
     optionnode.h \
     signals.h \
     utility.h
-SOURCES += basicdatabase.cpp \
-           config.cpp \
-           genericsignalmanager.cpp \
-           optionnode.cpp \
-           signals.cpp \
-           utility.cpp
 
-QMAKE_UIC = $(QTDIR)/bin/uic -tr tr2i18n -pch klocale.h
+SOURCES += \
+    basicdatabase.cpp \
+    config.cpp \
+    genericsignalmanager.cpp \
+    optionnode.cpp \
+    signals.cpp \
+    utility.cpp
+

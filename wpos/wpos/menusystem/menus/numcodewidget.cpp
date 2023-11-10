@@ -72,32 +72,32 @@ NumCodeWidget::NumCodeWidget(QWidget *parent, const QString& name) :
     shutdown_button->setIcon(QPixmap("controls:exit.png"));
     shutdown_button->setText(tr("Shutdown"));
 
-    smap = new QSignalMapper(this);
-    smap->setObjectName(QString("mapper"));
-    smap->setMapping(numkey_0,"0");
-    smap->setMapping(numkey_1,"1");
-    smap->setMapping(numkey_2,"2");
-    smap->setMapping(numkey_3,"3");
-    smap->setMapping(numkey_4,"4");
-    smap->setMapping(numkey_5,"5");
-    smap->setMapping(numkey_6,"6");
-    smap->setMapping(numkey_7,"7");
-    smap->setMapping(numkey_8,"8");
-    smap->setMapping(numkey_9,"9");
+    signalMapper = new QSignalMapper(this);
 
-    //connect buttons with the mapper
-    connect(numkey_0,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_1,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_2,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_3,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_4,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_5,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_6,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_7,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_8,SIGNAL(released()),smap,SLOT(map()));
-    connect(numkey_9,SIGNAL(released()),smap,SLOT(map()));
+    signalMapper->setMapping(numkey_0,"0");
+    signalMapper->setMapping(numkey_1,"1");
+    signalMapper->setMapping(numkey_2,"2");
+    signalMapper->setMapping(numkey_3,"3");
+    signalMapper->setMapping(numkey_4,"4");
+    signalMapper->setMapping(numkey_5,"5");
+    signalMapper->setMapping(numkey_6,"6");
+    signalMapper->setMapping(numkey_7,"7");
+    signalMapper->setMapping(numkey_8,"8");
+    signalMapper->setMapping(numkey_9,"9");
 
-    connect(smap,SIGNAL(mapped(const QString &)),this,SLOT(mapperSlot(const QString &)));
+    //connect buttons with the QSignalMapper
+    connect(numkey_0,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_1,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_2,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_3,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_4,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_5,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_6,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_7,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_8,SIGNAL(released()),signalMapper,SLOT(map()));
+    connect(numkey_9,SIGNAL(released()),signalMapper,SLOT(map()));
+
+    connect(signalMapper,SIGNAL(mapped(const QString &)),this,SLOT(mapperSlot(const QString &)));
     connect(aquire_button,SIGNAL(released()),this,SLOT(aquireButtonSlot()));
     connect(ce_button,SIGNAL(released()),this,SLOT(ceButtonSlot()));
     connect(ok_button,SIGNAL(released()),this,SLOT(accept()));
@@ -106,7 +106,7 @@ NumCodeWidget::NumCodeWidget(QWidget *parent, const QString& name) :
 }
 
 NumCodeWidget::~NumCodeWidget(){
-    delete smap;
+    delete signalMapper;
 }
 
 //We disable finger print fonctionality because we don't yet have the dcopfx2000 module.
@@ -152,7 +152,7 @@ void NumCodeWidget::getMatchResults(QString _xml_match_data){
 
     if ( identity == auth->getUserId() ){
         QTimer::singleShot(AUTH_TIME_SLEEP, this,  SLOT(authOk()) );
-        similarity_progressbar->setValue( (int) (  similarity.toFloat()*100) );
+        similarity_progressbar->setValue( (int) ( similarity.toFloat()*100) );
         fingerprint_label->setPixmap(QPixmap(fingerprint_path));
     }
     else{
@@ -178,12 +178,12 @@ void NumCodeWidget::ceButtonSlot(){
     similarity_progressbar->setValue(0);
     fingerprint_label->setPixmap(QPixmap(nullptr_FINGERPRINT));
     passwd_label->setText("");
-    passwd = "";
+    passwd.clear();
 }
 
 void NumCodeWidget::accept(){
 
-    if ((passwd_label->text()).length() !=  NUM_DIGITS_FOR_PASSWD){
+    if (passwd_label->text().length() !=  NUM_DIGITS_FOR_PASSWD){
         authSlot(false);
         return;
     }
@@ -192,7 +192,8 @@ void NumCodeWidget::accept(){
     p_file.open(QIODevice::ReadOnly);
     auto r_passwd = p_file.readLine(14);
     p_file.close();
-    auto c_passwd = QString (crypt(passwd.toLatin1(), "YY"));
+
+    auto c_passwd = QString ( crypt(passwd.toLatin1(), "YY"));
     if( c_passwd == r_passwd )
         authSlot(true);
     else
@@ -225,7 +226,7 @@ void NumCodeWidget::authSlot(bool use_auth){
         xml.createElement("name", SalesScreen::ADMIN_MENU);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
         xml.deleteElement("name");
-        xml.createElement("event_type","admin_widget");
+        xml.createElement("event_type", "admin_widget");
         emit genericDataSignal(GDATASIGNAL::EVENTLOG, &xml);
     }
 }

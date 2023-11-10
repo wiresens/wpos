@@ -16,17 +16,19 @@
 #include "ui_cashwidget.h"
 #include <QWidget>
 
-
 class FloatKeyboardBox;
 class BarCore;
 class XmlConfig;
 
-class CashWidget : public QWidget, private Ui::CashWidget  {
+class CashWidget :
+    public QWidget,
+    private Ui::CashWidget  {
     Q_OBJECT
 public:
-    CashWidget(BarCore *_core,
-                  QWidget *parent, 
-                  const QString& name = QString());
+    CashWidget(
+        BarCore *_core,
+        QWidget *parent,
+        const QString& name = QString());
     ~CashWidget();
 
     void setNewPrice(double price);

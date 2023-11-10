@@ -39,7 +39,7 @@ NumKeyboardBox::~NumKeyboardBox(){
 
 void NumKeyboardBox::clear(){
     number = 0;
-    lcd->display((int) number);
+    display->display((int) number);
     emit numChanged(number);
 }
 
@@ -56,24 +56,24 @@ void NumKeyboardBox::receivedNum(int num){
     //set the number to 0
     if (num == NUMBER_CE){
         number = 0;
-        lcd->display(number);
+        display->display(number);
     }
     else if (num == NUMBER_DOT){
         number = 0;
-        lcd->display(number);
+        display->display(number);
     }
     else{
         result = (number * 10) + num;
         if (result>MAXNUMBER)
             return;
         number = result;
-        lcd->display(number);
+        display->display(number);
     }
     emit numChanged(number);
 }
 
 void NumKeyboardBox::initialize(){
-    lcd->setSegmentStyle(QLCDNumber::Flat);
+    display->setSegmentStyle(QLCDNumber::Flat);
 //    button_dot->hide();
 //    button_ce->hide();
 

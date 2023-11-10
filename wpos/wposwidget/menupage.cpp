@@ -21,8 +21,8 @@
 
 MenuPage::MenuPage(
     QWidget *parent,
-    const QString &name):
-    QFrame(parent)
+    const QString &name)
+    :QFrame(parent)
 {
     setObjectName(name);
     setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));

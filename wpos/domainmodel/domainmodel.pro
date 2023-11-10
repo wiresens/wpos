@@ -1,6 +1,7 @@
 CONFIG -= qt
 
 TEMPLATE = lib
+TARGET   = wposmodel
 DEFINES += DOMAINMODEL_LIBRARY
 
 CONFIG += c++20

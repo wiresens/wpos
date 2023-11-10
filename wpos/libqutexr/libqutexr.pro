@@ -9,113 +9,117 @@ QT -= gui
 QMAKE_CXXFLAGS += -std=c++20
 QMAKE_CXXFLAGS += -Wno-deprecated-copy  -Wno-narrowing
 
-INSTALLS += doc \
-            examples \
-            target
-target.path = /usr/lib
+INSTALLS += \
+    doc \
+    examples \
+    target
+
+target.path     = /usr/lib
 examples.files += examples/*
-examples.path = /usr/share/doc/libqutexr/examples
-doc.files += html/*
-doc.path = /usr/share/doc/libqutexr
-TARGETDEPS += ../libbslxml/libbslxml.so
-LIBS += -lbslxml
-INCLUDEPATH += ../libbslxml
+examples.path   = /usr/share/doc/libqutexr/examples
+doc.files      += html/*
+doc.path        = /usr/share/doc/libqutexr
+TARGETDEPS     += ../libbslxml/libbslxml.so
 
-QMAKE_LIBDIR = ../libbslxml
-TARGET = qutexr
-CONFIG += debug -Wall warn_on qt dll
+LIBS           += -lbslxml
+INCLUDEPATH    += ../libbslxml
+
+QMAKE_LIBDIR    = ../libbslxml
+TARGET          = qutexr
+CONFIG         += debug -Wall warn_on qt dll
 #CONFIG += release warn_off qt dll
-VERSION     = 1.0
-TEMPLATE    = lib
+VERSION         = 1.0
+TEMPLATE        = lib
 
-HEADERS += xrbase64.h \
-           xrclient.h \
-           xrfaultcodes.h \
-           xrmethodcall.h \
-           xrmethodresponse.h \
-           xrvariant.h \
-           rpcserver.h \
-           rpcserverimp.h \
-           xmlrpcserver.h \
-           rpcsocket.h \
-           tcprpcserver.h \
+HEADERS += \
+    xrbase64.h \
+    xrclient.h \
+    xrfaultcodes.h \
+    xrmethodcall.h \
+    xrmethodresponse.h \
+    xrvariant.h \
+    rpcserver.h \
+    rpcserverimp.h \
+    xmlrpcserver.h \
+    rpcsocket.h \
+    tcprpcserver.h \
     rpcencoder.h
-#           websocketrpcserver.h
+    #websocketrpcserver.h
 
-SOURCES += xrbase64.cpp \
-           xrclient.cpp \
-           xrmethodcall.cpp \
-           xrmethodresponse.cpp \
-           xrvariant.cpp \
-           rpcserver.cpp \
-           rpcserverimp.cpp \
-           xmlrpcserver.cpp \
-           rpcsocket.cpp \
-           tcprpcserver.cpp \
+SOURCES += \
+    xrbase64.cpp \
+    xrclient.cpp \
+    xrmethodcall.cpp \
+    xrmethodresponse.cpp \
+    xrvariant.cpp \
+    rpcserver.cpp \
+    rpcserverimp.cpp \
+    xmlrpcserver.cpp \
+    rpcsocket.cpp \
+    tcprpcserver.cpp \
     rpcencoder.cpp
-#           websocketrpcserver.cpp
+    #websocketrpcserver.cpp
 
-DISTFILES  += html/httpmessage_8h-source.html \
-             html/classXRMethodCall-members.html \
-             html/classHTTPSocket-members.html \
-             html/classXRClient-members.html \
-             html/httpsocket_8h-source.html \
-             html/xrmethodcall_8h-source.html \
-             html/xrvariant_8h-source.html \
-             html/classXRMethodResponse-members.html \
-             html/classXRVariant-members.html \
-             html/hierarchy.html \
-             html/xrclient_8h-source.html \
-             html/classXRBase64-members.html \
-             html/doxygen.css \
-             html/doxygen.png \
-             html/functions.html \
-             html/xrmethodresponse_8h-source.html \
-             html/classXRValidationServer.png \
-             html/index.html \
-             html/classXRServer.png \
-             html/classXRClient.html \
-             html/classXRServer.html \
-             html/classXRServer-members.html \
-             html/files.html \
-             html/classHTTPMessage.png \
-             html/xrserver_8h-source.html \
-             html/classHTTPRequest-members.html \
-             html/httprequest_8h-source.html \
-             html/xrclient__test_8h-source.html \
-             html/validationserver_8h-source.html \
-             html/classXRValidationServer-members.html \
-             html/classHTTPServer.html \
-             html/classXRMethodResponse.html \
-             html/classHTTPRequest.html \
-             html/client_8h-source.html \
-             html/classHTTPMessage.html \
-             html/clientimpl_8h-source.html \
-             html/classXRBase64.html \
-             html/classHTTPServer-members.html \
-             html/xrbase64_8h-source.html \
-             html/classXRMethodCall.html \
-             html/httpresponse_8h-source.html \
-             html/annotated.html \
-             html/classHTTPMessage-members.html \
-             html/classXRVariant.html \
-             html/classHTTPRequest.png \
-             html/classXRValidationServer.html \
-             html/classHTTPSocket.html \
-             html/xrfaultcodes_8h-source.html \
-             html/httpserver_8h-source.html \
-             examples/validationserver/validationserver.cpp \
-             examples/validationserver/validationserver.pro \
-             examples/validationserver/test.cpp \
-             examples/validationserver/validationserver.h \
-             examples/client/clientimpl.h \
-             examples/client/test.cpp \
-             examples/client/client.pro \
-             examples/client/client.ui \
-             examples/client/clientimpl.cpp \
-             copyright \
-             copyright_es \
-             README \
-             README_ES
-
-QMAKE_UIC = $(QTDIR)/bin/uic -tr tr2i18n -pch klocale.h
+DISTFILES  += \
+    html/httpmessage_8h-source.html \
+    html/classXRMethodCall-members.html \
+    html/classHTTPSocket-members.html \
+    html/classXRClient-members.html \
+    html/httpsocket_8h-source.html \
+    html/xrmethodcall_8h-source.html \
+    html/xrvariant_8h-source.html \
+    html/classXRMethodResponse-members.html \
+    html/classXRVariant-members.html \
+    html/hierarchy.html \
+    html/xrclient_8h-source.html \
+    html/classXRBase64-members.html \
+    html/doxygen.css \
+    html/doxygen.png \
+    html/functions.html \
+    html/xrmethodresponse_8h-source.html \
+    html/classXRValidationServer.png \
+    html/index.html \
+    html/classXRServer.png \
+    html/classXRClient.html \
+    html/classXRServer.html \
+    html/classXRServer-members.html \
+    html/files.html \
+    html/classHTTPMessage.png \
+    html/xrserver_8h-source.html \
+    html/classHTTPRequest-members.html \
+    html/httprequest_8h-source.html \
+    html/xrclient__test_8h-source.html \
+    html/validationserver_8h-source.html \
+    html/classXRValidationServer-members.html \
+    html/classHTTPServer.html \
+    html/classXRMethodResponse.html \
+    html/classHTTPRequest.html \
+    html/client_8h-source.html \
+    html/classHTTPMessage.html \
+    html/clientimpl_8h-source.html \
+    html/classXRBase64.html \
+    html/classHTTPServer-members.html \
+    html/xrbase64_8h-source.html \
+    html/classXRMethodCall.html \
+    html/httpresponse_8h-source.html \
+    html/annotated.html \
+    html/classHTTPMessage-members.html \
+    html/classXRVariant.html \
+    html/classHTTPRequest.png \
+    html/classXRValidationServer.html \
+    html/classHTTPSocket.html \
+    html/xrfaultcodes_8h-source.html \
+    html/httpserver_8h-source.html \
+    examples/validationserver/validationserver.cpp \
+    examples/validationserver/validationserver.pro \
+    examples/validationserver/test.cpp \
+    examples/validationserver/validationserver.h \
+    examples/client/clientimpl.h \
+    examples/client/test.cpp \
+    examples/client/client.pro \
+    examples/client/client.ui \
+    examples/client/clientimpl.cpp \
+    copyright \
+    copyright_es \
+    README \
+    README_ES

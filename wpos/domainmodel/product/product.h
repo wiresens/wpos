@@ -15,7 +15,10 @@ using ProductPtr = std::shared_ptr<Product>;
 using ConstProductPtr = std::shared_ptr<const Product>;
 
 //class Product:  public Persistable<Product>{
-class Product:  public Persistable, public std::enable_shared_from_this<Product>{
+class Product:
+    public Persistable,
+    public std::enable_shared_from_this<Product>
+{
     friend class odb::access;
 
 public:
@@ -24,20 +27,30 @@ public:
         ListPrice = 1
     };
 
-    using Template = std::shared_ptr<ProductTemplate>;
+    using ProductTemplatePtr = std::shared_ptr<ProductTemplate>;
     Product(const Product&) = delete;
     Product& operator=(const Product&) = delete;
     virtual ~Product() = default;
 
-    Product(Template tpl, const string& code, const string& name)
-        : tpl_{tpl}, code_{code}, name_{name}
+    Product(
+        ProductTemplatePtr tpl,
+        const string& name,
+        double price,
+        const string& code = std::string()
+    );
+
+    Product(
+        ProductTemplatePtr tpl,
+        const string& name,
+        const string& code = std::string())
+        : tpl_{tpl}, name_{name}, code_{code}
     {
         if(name.empty()) throw EmptyNameException{};
     }
 
     ulong getId() const{ return id_ ;}
-    void setCode(const string& code){ code_ = code ;}
-    const string& getCode() const { return code_ ; }
+    virtual void setCode(const string& code){ code_ = code ;}
+    virtual const string& getCode() const { return code_ ; }
 
     void setName(const string& name){ if( !name.empty()) name_ = name ;}
     const string& getName() const { return name_ ; }
@@ -47,12 +60,16 @@ public:
 
     void enable(){ setActive(true); }
     void disable(){ setActive(false); }
-
     bool isEnabled() const { return getActive() ; }
-    virtual double price(PriceType = ListPrice) const;
-    virtual void setPrice(double price, PriceType = ListPrice );
+
+    void setPrice(double newPrice, PriceType = ListPrice );
+    double price(PriceType = ListPrice) const{ return price_ ; }
+    double priceAsOf(const TimeStamp& stamp, PriceType = ListPrice) const;
 
 protected:
+    void logPrice();
+    void savePrice();
+
     Product() = default;
     void setId(ulong id){  if(id) id_ = id ;}
     void setActive(bool active){ active_ = active ; }
@@ -60,22 +77,20 @@ protected:
 
 private:
     ulong id_{0};
-    Template tpl_;
+    ProductTemplatePtr tpl_;
 
-    string code_;
     string name_;
+    string code_;
+    mutable double price_{std::numeric_limits<double>::max()};
     string imageFile_;
-    mutable double price_{ std::numeric_limits<double>::max()};
     bool active_{true};
-
 };
 
 struct ProductView{
-    std::shared_ptr<Product> products;
+    ProductPtr products;
 };
 
 }
 }
-
 
 #endif // PRODUCT_H

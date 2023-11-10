@@ -94,13 +94,14 @@ const QString SalesScreen::GENERIC_PRODUCT_MENU {"GENERIC_PRODUCT_MENU"};
 const QString SalesScreen::PAY_MODE_MENU {"PAY_MODE_MENU"};
 
 SalesScreen::SalesScreen(
-    QWidget *parent,
+    MenuPage *parent,
     QSplashScreen& splash_screen,
     const QString& name ):
     QWidget(parent)
 {
     setupUi(this);
     setObjectName(name);
+    parent->addWidget(this, objectName());
     setSizePolicy(parent->sizePolicy());
 
     auto gsm = GenericSignalManager::instance();
@@ -246,9 +247,11 @@ void SalesScreen::createProductDialog(){
     page->setLayoutType(MenuPage::VBOX);
     page->layout()->setContentsMargins(0,0,0,0);
     productScreenStack = new ProductScreenStack(page, "ProductScreenStack");
+
     connect(productScreenStack, &ProductScreenStack::splashRequested, this, &SalesScreen::splashRequested);
-    productScreenStack->initScreenStack(Files::configFilePath("bar"));
+        productScreenStack->initScreenStack(Files::configFilePath("bar"));
     disconnect(productScreenStack, &ProductScreenStack::splashRequested, this, &SalesScreen::splashRequested);
+
     page->addWidget(productScreenStack, "ProductScreenStack");
     menu_stack->addPage(page, PRODUCT_MENU);
 }
@@ -257,7 +260,7 @@ void SalesScreen::createAuthenticationDialog(){
     auto page = new MenuPage(menu_stack, AUTH_MENU);
     page->setLayoutType(MenuPage::VBOX);
     NumCodeWidget *numCode = new NumCodeWidget(page, "NumCodeWidget");
-    page->addWidget(numCode,"NumCodeWidget");
+    page->addWidget(numCode, "NumCodeWidget");
     menu_stack->addPage(page, AUTH_MENU);
 }
 
@@ -312,8 +315,8 @@ void SalesScreen::createFreepriceDialog(){
 void SalesScreen::createTicketCancellationDialog(){
     auto page = new MenuPage(menu_stack, KILL_TICKETS_MENU);
     page->setLayoutType(MenuPage::VBOX);
-    KillTicketsWidget *killTickets = new KillTicketsWidget(page,"KillTicketsWidget");
-    page->addWidget(killTickets,"KillTicketsWidget");
+    KillTicketsWidget *killTickets = new KillTicketsWidget(page, "KillTicketsWidget");
+    page->addWidget(killTickets, "KillTicketsWidget");
     menu_stack->addPage(page, KILL_TICKETS_MENU);
 }
 
@@ -336,9 +339,9 @@ void SalesScreen::createPaySelectionDialog(){
 void SalesScreen::createInvitationDialog(){
     auto page = new MenuPage(menu_stack, INVITATION_MENU);
     page->setLayoutType(MenuPage::VBOX);
-    auto invitation = new InvitationAllocatorWidget(page,"InvitationAllocatorWidget");
+    auto invitation = new InvitationAllocatorWidget(page, "InvitationAllocatorWidget");
     page->addWidget(invitation, invitation->objectName());
-    menu_stack->addPage(page,INVITATION_MENU);
+    menu_stack->addPage(page, INVITATION_MENU);
 }
 
 void SalesScreen::createAdminDialog(){
@@ -487,11 +490,11 @@ void SalesScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *x
         xml->delDomain();
         auto enabled =  ( xml->readString("enabled") == "true");
         setEnabledLateralWidgets(enabled);
-//        setVisibleLateralWidgets(enabled);
+        setVisibleLateralWidgets(enabled);
     }
     else if ( signal_name == GDATASIGNAL::LATERALWIDGET_SET_VISIBLE){
         xml->delDomain();
-        auto tmp_str = xml->readString("visible");
-//        setVisibleLateralWidgets(tmp_str == "true");
+        auto visible = ( xml->readString("visible") == "true" );
+        setVisibleLateralWidgets( visible);
     }
 }

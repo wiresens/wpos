@@ -8,15 +8,18 @@ QT -= gui
 QMAKE_CXXFLAGS += -std=c++20
 QMAKE_CXXFLAGS += -Wno-deprecated-copy  -Wno-narrowing
 
-INSTALLS += doc \
-            target
+INSTALLS += doc target
+
 target.path = /usr/lib
 doc.files += API/*
 doc.path = /usr/share/doc/libbslxml
+
 LIBS += -lxml2
-INCLUDEPATH += /usr/include/libxml2 \
-               /usr/include/libxml2/libxml \
-               /usr/include/c++/9
+
+INCLUDEPATH += \
+    /usr/include/libxml2 \
+    /usr/include/libxml2/libxml \
+    /usr/include/c++/9
 
 TARGET = bslxml
 CONFIG += debug -Wall warn_on qt
@@ -24,25 +27,26 @@ CONFIG += debug -Wall warn_on qt
 VERSION = 0.2
 TEMPLATE = lib
 
-DISTFILES += API/a.ps \
-             API/full-list-Sector.html \
-             API/full-list-XmlConfig.html \
-             API/Sector.html \
-             API/sector.pdf \
-             API/sector.ps \
-             API/XmlConfig.html \
-             API/xmlconfig.pdf \
-             COPYING \
-             README \
-             AUTHORS
+DISTFILES += \
+    API/a.ps \
+    API/full-list-Sector.html \
+    API/full-list-XmlConfig.html \
+    API/Sector.html \
+    API/sector.pdf \
+    API/sector.ps \
+    API/XmlConfig.html \
+    API/xmlconfig.pdf \
+    COPYING \
+    README \
+    AUTHORS
 
-HEADERS += comp.h \
-           utils.h \
-           xmlconfig.h \
-           xmlconfigio.h
+HEADERS += \
+    comp.h \
+    utils.h \
+    xmlconfig.h \
+    xmlconfigio.h
 
-SOURCES += utils.cpp \
-           xmlconfig.cpp \
-           xmlconfigio.cpp
-
-QMAKE_UIC = $(QTDIR)/bin/uic -tr tr2i18n -pch klocale.h
+SOURCES += \
+    utils.cpp \
+    xmlconfig.cpp \
+    xmlconfigio.cpp

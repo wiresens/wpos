@@ -41,7 +41,7 @@ public:
         HBOX
     };
 
-    explicit MenuPage(QWidget *parent, const QString& name = QString());
+    explicit MenuPage(QWidget *parent, const QString& name);
     ~MenuPage() = default;
 
     void setLayoutType(LayoutType type);

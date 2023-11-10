@@ -27,11 +27,12 @@
 #include <wposcore/genericsignalmanager.h>
 
 class XmlConfig;
+class MenuPage;
 
 class MenuStack : public QStackedWidget  {
 	Q_OBJECT
 public:
-    explicit MenuStack(QWidget *parent=nullptr, QString name =QString());
+    explicit MenuStack(QWidget *parent=nullptr, const QString &name =QString());
     ~MenuStack();
 
 	virtual void addPage(QWidget *page, QString name);

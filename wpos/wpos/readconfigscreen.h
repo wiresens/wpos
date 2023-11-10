@@ -17,12 +17,14 @@
 #include "ui_readconfigwidget.h"
 
 class XmlConfig;
+class MenuPage;
 
-class ReadConfigScreen : public QWidget, private Ui::ReadConfigWidget {
+class ReadConfigScreen : public QWidget, private Ui::ReadConfigWidget
+{
     Q_OBJECT
+
 public:
-    explicit ReadConfigScreen(QWidget *parent, const QString& name = QString(""));
-    ~ReadConfigScreen();
+    explicit ReadConfigScreen(MenuPage *parent, const QString& name = QString());
 
 public slots:
     void genericDataSignalSlot(const QString& signal_name, XmlConfig* xml);

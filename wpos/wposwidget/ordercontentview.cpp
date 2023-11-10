@@ -35,9 +35,10 @@ using IDBusReceiptPrinter = com::wiresens::wpos::dbusprinter::DBusReceiptPrinter
 static const QString dbus_service = "com.wiresens.wpos.dbusprinter";
 static const QString dbus_object = "/wpos/dbusprinter/DBusReceiptPrinter";
 
-OrderContentView::OrderContentView(XmlConfig *xml,
-                                         QWidget *parent,
-                                         QString name) :
+OrderContentView::OrderContentView(
+    XmlConfig *xml,
+    QWidget *parent,
+    QString name) :
     QTableWidget(parent),
     products  {new HList<VisualProduct>},
     column_positions { new HList<int>{} }
@@ -68,7 +69,6 @@ OrderContentView::~OrderContentView(){
 }
 
 void OrderContentView::printTicket(){
-
     auto bus = QDBusConnection::sessionBus();
     IDBusReceiptPrinter *iface;
     iface = new IDBusReceiptPrinter(dbus_service, dbus_object, bus, this);
@@ -81,7 +81,6 @@ void OrderContentView::printTicket(){
     }
 
     iface->printTicket(local_products_xml->toString(), 1);
-
 }
 
 void OrderContentView::parseXmlDescription(XmlConfig *xml){

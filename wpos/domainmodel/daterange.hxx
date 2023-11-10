@@ -40,13 +40,4 @@ using namespace ws;
 #pragma db member(DateRange::start_date_) not_null
 //#pragma db value(DateRange) options ("CHECK DateRange::end_date_ > DateRange::start_date_")
 
-//#pragma db value(Money) definition
-//#pragma db member(Money::currency_) not_null
-
-//#pragma db object(Currency) definition
-//#pragma db member(Currency::id_) id auto
-//#pragma db member(Currency::Name) unique not_null
-//#pragma db member(Currency::Symbol) not_null
-//#pragma db member(Currency::Digits) not_null
-
 #endif // DATERANGE_HXX

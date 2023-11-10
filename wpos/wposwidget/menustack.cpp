@@ -22,7 +22,7 @@
 
 #include <wposcore/genericsignalmanager.h>
 
-MenuStack::MenuStack(QWidget *parent, QString name) :
+MenuStack::MenuStack(QWidget *parent, const QString& name) :
     QStackedWidget(parent)
 {
     setObjectName(name);

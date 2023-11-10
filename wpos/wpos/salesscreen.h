@@ -25,6 +25,7 @@ class TicketCore;
 class QShowEvent;
 class QHBoxLayout;
 class MenuStack;
+class MenuPage;
 class ButtonSetWidget;
 class EventLogCore;
 class AdminWidget;
@@ -48,7 +49,7 @@ public:
     static const QString GENERIC_PRODUCT_MENU;
     static const QString PAY_MODE_MENU;
 
-    SalesScreen(QWidget *parent, QSplashScreen& splash_screen, const QString& name = QString());
+    SalesScreen(MenuPage *parent, QSplashScreen& splash_screen, const QString& name = QString());
 
 public slots:
     void receiveProduct(XmlConfig *xml);
