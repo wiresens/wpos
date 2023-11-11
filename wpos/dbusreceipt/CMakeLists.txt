@@ -11,26 +11,30 @@ include_directories(
 
 find_package(Qt5 REQUIRED COMPONENTS Core DBus Sql)
 
+#Invoke qdbuscpp2xml to generate .xml spec files form .h
 qt5_generate_dbus_interface(
     dbusreceiptprimitive.h
     "${WS_SERVICE}.dbusreceiptprimitive.xml"
     OPTIONS -M  #export all Public Slot
 )
 
+#Invoke qdbuscpp2xml to generate .xml spec files form .h
 qt5_generate_dbus_interface(
     dbusreceiptmediator.h
     "${WS_SERVICE}.dbusreceiptmediator.xml"
     OPTIONS -M  #export all Public Slot
 )
 
-qt_add_dbus_adaptor(DBUS_CPP2XML_FILES
+#Invoke qdbusxml2cpp to generate *_adaptor.{h,cpp} from .xml spec files
+qt_add_dbus_adaptor(DBUS_XML2CPP_FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${WS_SERVICE}.dbusreceiptprimitive.xml"
     dbusreceiptprimitive.h
     DBusReceiptPrimitive
     dbusreceiptprimitive_adaptor
 )
 
-qt_add_dbus_adaptor(DBUS_CPP2XML_FILES
+#Invoke qdbusxml2cpp to generate *_adaptor.{h,cpp} from .xml spec files
+qt_add_dbus_adaptor(DBUS_XML2CPP_FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${WS_SERVICE}.dbusreceiptmediator.xml"
     dbusreceiptmediator.h
     DBusReceiptMediator
@@ -64,7 +68,7 @@ add_executable(
     ${MAIN_TARGET}
     ${HEADER_FILES}
     ${SOURCES_FILES}
-    ${DBUS_CPP2XML_FILES}
+    ${DBUS_XML2CPP_FILES}
 )
 
 target_include_directories(${MAIN_TARGET}  PRIVATE

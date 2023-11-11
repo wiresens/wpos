@@ -15,6 +15,9 @@ find_package(Qt5 REQUIRED COMPONENTS
     Xml
 )
 
+# This is just a hack. We had to capitalized file names according
+# to class names to make qt_add_dbus_adaptor() work as it require
+# parent class name as it argument.
 set(DBUS_ADAPTOR_FILES
     databasemodule/DatabaseModule.h
     menusystem/offers_options/OptionCreationWidget.h
@@ -32,6 +35,8 @@ set(DBUS_ADAPTOR_FILES
 foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
     string(TOLOWER ${filePathUpper} filePathLower)
     get_filename_component(fileBase ${filePathLower} NAME_WE)
+
+    #Invoke qdbuscpp2xml to generate .xml spec files form .h
     qt5_generate_dbus_interface(
         ${filePathLower}
         "${WS_SERVICE}.${fileBase}.xml"
@@ -42,6 +47,7 @@ foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
     message("fileBase       : ${fileBase}  ")
     get_filename_component(parentClass ${filePathUpper} NAME_WE)
 
+    #Invoke qdbusxml2cpp to generate *_adaptor.{h,cpp} from .xml spec files
     qt_add_dbus_adaptor(
         DBUS_XML2CPP_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/${WS_SERVICE}.${fileBase}.xml"

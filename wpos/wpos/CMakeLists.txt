@@ -15,15 +15,33 @@ find_package(Qt5 REQUIRED COMPONENTS
     WebEngineWidgets
 )
 
+#QtDbus stuff : not yet robbust, because depending on hardcoded directories and
+#file name. Any refactoring that changes those names will breack build process
+#We should find a way to make it more robbust
+#Concerned folders : dbusprinter dbusreceipt
+#Concerned files and classes:
+    # barcore/FileAlterationWatcher.h
+    # menusystem/menus/ReceiptRecoverWidget.h
+    # menusystem/menus/NumCodeWidget.h
+    # LoginScreen.h
+
 set(DBUS_XML_INTERFACE_DIR dbusprinter dbusreceipt)
 set(DBUS_INTERFACE_BASE1 dbusprinter)
 set(DBUS_INTERFACE_BASE2 dbusreceiptprimitive dbusreceiptmediator)
 
+# We need to fecth the corresponding .xml files from their directories
+# were their respectives target generated them.
+# Which are in their target CMAKE_CURRENT_BINARY_DIR
+# Since all the target have the same CMAKE_BINARY_DIR we go CMAKE_BINARY_DIR/target
+# to fetch the files
+
 set(i 0)
 foreach(dirItem IN LISTS DBUS_XML_INTERFACE_DIR)
-    set(DBUS_DEPENDENCY_DIR "${CMAKE_CURRENT_BINARY_DIR}/../${dirItem}")
+    set(DBUS_DEPENDENCY_DIR "${CMAKE_BINARY_DIR}/${dirItem}")
     math(EXPR i "(${i} + 1)")
     foreach(dbus_spec IN LISTS DBUS_INTERFACE_BASE${i})
+
+        # Invocke qdbusxml2cpp to generate *_interface.{h,cpp} from .xml specs
         qt_add_dbus_interface(
             DBUS_XML2CPP_FILES
             "${DBUS_DEPENDENCY_DIR}/${WS_SERVICE}.${dbus_spec}.xml"
@@ -32,6 +50,9 @@ foreach(dirItem IN LISTS DBUS_XML_INTERFACE_DIR)
     endforeach()
 endforeach()
 
+# This is just a hack. We had to capitalized file names according
+# to class names to make qt_add_dbus_adaptor() work as it require
+# parent class name as it argument.
 set(DBUS_ADAPTOR_FILES
     barcore/FileAlterationWatcher.h
     menusystem/menus/ReceiptRecoverWidget.h
@@ -42,13 +63,16 @@ set(DBUS_ADAPTOR_FILES
 foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
     string(TOLOWER ${filePathUpper} filePathLower)
     get_filename_component(fileBase ${filePathLower} NAME_WE)
+
+    # Invoke qdbuscpp2xml to generate .xml spec files form .h
     qt5_generate_dbus_interface(
         ${filePathLower}
         "${WS_SERVICE}.${fileBase}.xml"
-        OPTIONS -m  #export all Scriptable Public Slot
+        OPTIONS -m  # export all Scriptable Public Slot
     )
     get_filename_component(parentClass ${filePathUpper} NAME_WE)
 
+    # Invoke qdbusxml2cpp to generate *_adaptor.{h,cpp} from .xml spec files
     qt_add_dbus_adaptor(
         DBUS_XML2CPP_FILES
         "${CMAKE_CURRENT_BINARY_DIR}/${WS_SERVICE}.${fileBase}.xml"

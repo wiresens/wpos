@@ -16,13 +16,15 @@ set(DBUS_HEADER_FILE
     dbusprinter
 )
 
+#Invoke qdbuscpp2xml to generate .xml spec files form .h
 qt5_generate_dbus_interface(
     "${DBUS_HEADER_FILE}.h"
     "${WS_SERVICE}.${DBUS_HEADER_FILE}.xml"
     OPTIONS -M  #export all Public Slot
 )
 
-qt_add_dbus_adaptor(DBUS_CPP2XML_FILES
+#Invoke qdbusxml2cpp to generate *_adaptor.{h,cpp} from .xml spec files
+qt_add_dbus_adaptor(DBUS_XML2CPP_FILES
     "${CMAKE_CURRENT_BINARY_DIR}/${WS_SERVICE}.${DBUS_HEADER_FILE}.xml"
     "${DBUS_HEADER_FILE}.h"
     DBusPrinter
@@ -54,7 +56,7 @@ add_executable(
     ${MAIN_TARGET}
     ${HEADER_FILES}
     ${SOURCES_FILES}
-    ${DBUS_CPP2XML_FILES}
+    ${DBUS_XML2CPP_FILES}
 )
 
 target_include_directories(${MAIN_TARGET}  PRIVATE

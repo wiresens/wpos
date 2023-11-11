@@ -11,9 +11,16 @@ set(WS_SERVICE com.wiresens)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets DBus Pdf PdfWidgets)
 
-set(DBUS_HEADER_FILE dbusprinter)
-set(DBUS_DEPENDENCY_DIR "${CMAKE_CURRENT_BINARY_DIR}/../dbusprinter")
+# We need to fecth the corresponding .xml files from their directories
+# were their respectives target generated them.
+# Which are in their target CMAKE_CURRENT_BINARY_DIR
+# Since all the target have the same CMAKE_BINARY_DIR we go CMAKE_BINARY_DIR/target
+# to fetch the files
 
+set(DBUS_HEADER_FILE dbusprinter)
+set(DBUS_DEPENDENCY_DIR "${CMAKE_BINARY_DIR}/dbusprinter")
+
+# Invocke qdbusxml2cpp to generate *_interface.{h,cpp} from .xml specs
 qt_add_dbus_interface(
     DBUS_XML2CPP_FILES
     "${DBUS_DEPENDENCY_DIR}/${WS_SERVICE}.${DBUS_HEADER_FILE}.xml"
