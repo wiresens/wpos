@@ -4,19 +4,20 @@ FIXME
 module:libbslxml
 file:ntpv/libbslxml/xmlconfig.cpp:346
 
-//There is a problem here. The xml->readInt(tag)  calls
-//readString(tag).toInt() which may fail to convert the tag value ( if tag was not a string convertible to and integer)
-//into an integer. The function will just return the result without
-// alerting the user about the error.
-//and the resultant value will be 0, the  default of QString::toInt() which the user may not know This is a potential bug
+There is a problem here. The xml->readInt(tag)  calls
+readString(tag).toInt() which may fail to convert the 
+tag value (if tag was not a string convertible to an integer)
+into an integer. The function will just return the result 
+without alerting the user about the error and the resultant 
+value will be 0, the  default of QString::toInt() which the 
+user may not know. This is a potential bug
 
 int XmlConfig::readInt(const QString& tag){
     return readString(tag).toInt();
 }
-This must take a second parameter that will tell whether the conversion was succesfull or not
+This must take a second parameter that will tells whether the conversion was succesfull or not
 
 int XmlConfig::readInt(const QString& tag, bool* ok)
-
 
 /*************************************************
 Possible out of sync of XML configuration files

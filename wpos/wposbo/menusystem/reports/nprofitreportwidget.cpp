@@ -428,7 +428,7 @@ void NProfitReportWidget::timerSlot(){
 }
 
 void NProfitReportWidget::reportSlot(QString file){
-    file = "/home/benes/Workspace/study/wpos/gitops.pdf";
+    file = "/home/benes/Workspace/projets/wpos/wpos/doc/ntpv.pdf";
     QObject::disconnect(timer,SIGNAL(timeout()),this,SLOT(timerSlot()));
     progress_bar->setValue(0);
     timer->stop();

@@ -2,17 +2,23 @@
 # -------------------------------------------
 # Subdirectory relative to the main directory of the project: ./bslxml
 # The target is a library: bslxml
-QT += xml
-QT -= gui
 
-QMAKE_CXXFLAGS += -std=c++20
-QMAKE_CXXFLAGS += -Wno-deprecated-copy  -Wno-narrowing
+QT              -= gui
+QT              += xml
 
-INSTALLS += doc target
+CONFIG          += debug -Wall warn_on qt dll
+#CONFIG         += release warn_off qt dll
+TARGET          = bslxml
+TEMPLATE        = lib
+VERSION         = 0.2
 
-target.path = /usr/lib
-doc.files += API/*
-doc.path = /usr/share/doc/libbslxml
+QMAKE_CXXFLAGS  += -std=c++20
+QMAKE_CXXFLAGS  += -Wno-deprecated-copy  -Wno-narrowing
+
+INSTALLS        += doc target
+target.path      = /usr/lib
+doc.files       += API/*
+doc.path         = /usr/share/doc/libbslxml
 
 LIBS += -lxml2
 
@@ -21,11 +27,16 @@ INCLUDEPATH += \
     /usr/include/libxml2/libxml \
     /usr/include/c++/9
 
-TARGET = bslxml
-CONFIG += debug -Wall warn_on qt
-#CONFIG += release warn_off qt dll
-VERSION = 0.2
-TEMPLATE = lib
+HEADERS += \
+    comp.h \
+    utils.h \
+    xmlconfig.h \
+    xmlconfigio.h
+
+SOURCES += \
+    utils.cpp \
+    xmlconfig.cpp \
+    xmlconfigio.cpp
 
 DISTFILES += \
     API/a.ps \
@@ -39,14 +50,3 @@ DISTFILES += \
     COPYING \
     README \
     AUTHORS
-
-HEADERS += \
-    comp.h \
-    utils.h \
-    xmlconfig.h \
-    xmlconfigio.h
-
-SOURCES += \
-    utils.cpp \
-    xmlconfig.cpp \
-    xmlconfigio.cpp

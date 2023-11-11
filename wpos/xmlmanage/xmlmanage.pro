@@ -20,17 +20,12 @@ TARGETDEPS      += ../libbslxml/libbslxml.so
 
 LIBS            += -lbslxml
 
-INCLUDEPATH     += \
-    /usr/include/libxml2 \
-    ../libbslxml
-
 QMAKE_LIBDIR     = \
     ../libbslxml
 
-DISTFILES       += \
-    AUTHORS \
-    COPYING \
-    README
+INCLUDEPATH     += \
+    /usr/include/libxml2 \
+    ../libbslxml
 
 HEADERS += \
     comon.h \
@@ -49,3 +44,8 @@ SOURCES += \
     xmllist.cpp \
     xmlread.cpp \
     xmlwrite.cpp
+
+DISTFILES += \
+    AUTHORS \
+    COPYING \
+    README

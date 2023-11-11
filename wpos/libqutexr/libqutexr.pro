@@ -3,13 +3,19 @@
 # Subdirectory relative to the main directory of the project: ./libqutexr
 # The target is a library: libqutexr
 
-QT += network xml websockets
-QT -= gui
+QT             -= gui
+QT             += network xml websockets
+
+CONFIG         += debug -Wall warn_on qt dll
+#CONFIG += release warn_off qt dll
+TARGET          = qutexr
+TEMPLATE        = lib
+VERSION         = 1.0
 
 QMAKE_CXXFLAGS += -std=c++20
 QMAKE_CXXFLAGS += -Wno-deprecated-copy  -Wno-narrowing
 
-INSTALLS += \
+INSTALLS       += \
     doc \
     examples \
     target
@@ -22,14 +28,9 @@ doc.path        = /usr/share/doc/libqutexr
 TARGETDEPS     += ../libbslxml/libbslxml.so
 
 LIBS           += -lbslxml
-INCLUDEPATH    += ../libbslxml
-
 QMAKE_LIBDIR    = ../libbslxml
-TARGET          = qutexr
-CONFIG         += debug -Wall warn_on qt dll
-#CONFIG += release warn_off qt dll
-VERSION         = 1.0
-TEMPLATE        = lib
+
+INCLUDEPATH    += ../libbslxml
 
 HEADERS += \
     xrbase64.h \

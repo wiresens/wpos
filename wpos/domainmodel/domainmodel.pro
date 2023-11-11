@@ -1,10 +1,18 @@
-CONFIG -= qt
+CONFIG  -= qt
+CONFIG  += c++20
 
-TEMPLATE = lib
 TARGET   = wposmodel
+TEMPLATE = lib
+#VERSION  = 0.1  with no version, qmake automatically assign version 1.0.0
 DEFINES += DOMAINMODEL_LIBRARY
 
-CONFIG += c++20
+# You can make your code fail to compile if it uses deprecated APIs.
+# In order to do so, uncomment the following line.
+#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
+
+# Suppress unknown pragmas GCC warnings needed by odb compiler
+QMAKE_CXXFLAGS_WARN_ON += -Wall -pedantic -Wno-unknown-pragmas -Wno-deprecated-declarations
+#QMAKE_CXXFLAGS_WARN_ON += -Werror -pedantic-errors
 
 INCLUDEPATH += \
     ./product \
@@ -12,21 +20,11 @@ INCLUDEPATH += \
     . \
     ..\
 
-#OBJECTS_DIR = .obj
-
 # Default rules for deployment.
 unix {
     target.path = /usr/lib
 }
 !isEmpty(target.path): INSTALLS += target
-
-# Suppress unknown pragmas GCC warnings.
-QMAKE_CXXFLAGS_WARN_ON += -Wno-unknown-pragmas -Wno-deprecated-declarations
-#QMAKE_CXXFLAGS_WARN_ON += -Wall -Werror -pedantic -pedantic-errors
-
-# You can make your code fail to compile if it uses deprecated APIs.
-# In order to do so, uncomment the following line.
-#DEFINES += QT_DISABLE_DEPRECATED_BEFORE=0x060000    # disables all the APIs deprecated before Qt 6.0.0
 
 SOURCES += \
     daterange.cpp \
@@ -101,27 +99,27 @@ for(file, ODB_FILES) {
 #  ODB_PWD_FILES += $${file}
 #}
 
-odb.name = odb ${QMAKE_FILE_IN}
-odb.input = ODB_PWD_FILES
-odb.output = ${QMAKE_FILE_BASE}-odb.cxx
-odb.commands = odb $$ODB_FLAGS ${QMAKE_FILE_IN}
-odb.depends = $$ODB_PWD_FILES
-odb.variable_out = SOURCES
-odb.clean = ${QMAKE_FILE_BASE}-odb.cxx ${QMAKE_FILE_BASE}-odb.hxx ${QMAKE_FILE_BASE}-odb.ixx ${QMAKE_FILE_BASE}.sql ${QMAKE_FILE_BASE}.xml
-QMAKE_EXTRA_COMPILERS += odb
+odb.name                = odb ${QMAKE_FILE_IN}
+odb.input               = ODB_PWD_FILES
+odb.output              = ${QMAKE_FILE_BASE}-odb.cxx
+odb.commands            = odb $$ODB_FLAGS ${QMAKE_FILE_IN}
+odb.depends             = $$ODB_PWD_FILES
+odb.variable_out        = SOURCES
+odb.clean               = ${QMAKE_FILE_BASE}-odb.cxx ${QMAKE_FILE_BASE}-odb.hxx ${QMAKE_FILE_BASE}-odb.ixx ${QMAKE_FILE_BASE}.sql ${QMAKE_FILE_BASE}.xml
+QMAKE_EXTRA_COMPILERS   += odb
 
-odbh.name = odb ${QMAKE_FILE_IN}
-odbh.input = ODB_PWD_FILES
-odbh.output = ${QMAKE_FILE_BASE}-odb.hxx
-odbh.commands = @true
-odbh.CONFIG = no_link
-odbh.depends = ${QMAKE_FILE_BASE}-odb.cxx
-QMAKE_EXTRA_COMPILERS += odbh
+odbh.name               = odb ${QMAKE_FILE_IN}
+odbh.input              = ODB_PWD_FILES
+odbh.output             = ${QMAKE_FILE_BASE}-odb.hxx
+odbh.commands           = @true
+odbh.CONFIG             = no_link
+odbh.depends            = ${QMAKE_FILE_BASE}-odb.cxx
+QMAKE_EXTRA_COMPILERS   += odbh
 
-odbi.name = odb ${QMAKE_FILE_IN}
-odbi.input = ODB_PWD_FILES
-odbi.output = ${QMAKE_FILE_BASE}-odb.ixx
-odbi.commands = @true
-odbi.CONFIG = no_link
-odbi.depends = ${QMAKE_FILE_BASE}-odb.cxx
-QMAKE_EXTRA_COMPILERS += odbi
+odbi.name               = odb ${QMAKE_FILE_IN}
+odbi.input              = ODB_PWD_FILES
+odbi.output             = ${QMAKE_FILE_BASE}-odb.ixx
+odbi.commands           = @true
+odbi.CONFIG             = no_link
+odbi.depends            = ${QMAKE_FILE_BASE}-odb.cxx
+QMAKE_EXTRA_COMPILERS   += odbi

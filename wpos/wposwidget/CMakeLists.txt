@@ -6,6 +6,7 @@ set(PLUGIN_TARGET wposviewer)  #wposviewer.so
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
 set(WS_SERVICE com.wiresens)
 
 find_package(Qt5 REQUIRED COMPONENTS Widgets DBus Pdf PdfWidgets)

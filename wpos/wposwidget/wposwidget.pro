@@ -3,11 +3,18 @@
 # Subdirectory relative to the main directory of the project: ./ntpvlibwidget
 # The target is a library: ntpvlibwidget
 
-QT += widgets dbus pdf pdfwidgets
+QT              += widgets dbus pdf pdfwidgets
+
+CONFIG          += debug -Wall warn_on qt dll
+#CONFIG         += release warn_off qt dll
+TARGET          = wposwidget
+TEMPLATE        = lib
+VERSION         = 0.4
+
 QMAKE_CXXFLAGS  += -std=c++20
 QMAKE_CXXFLAGS  += -Wno-deprecated-copy  -Wno-narrowing
-INSTALLS        += target
 
+INSTALLS        += target
 target.path     = /usr/lib
 
 TARGETDEPS     += \
@@ -18,6 +25,10 @@ LIBS  += \
     -lwposcore \
     -lbslxml
 
+QMAKE_LIBDIR = \
+    ../wposcore \
+    ../libbslxml
+
 INCLUDEPATH += \
     /usr/include/libxml2 \
     ../wposcore \
@@ -25,28 +36,9 @@ INCLUDEPATH += \
     ..\
     .
 
-QMAKE_LIBDIR = \
-    ../wposcore \
-    ../libbslxml
-
-TARGET = wposwidget
-#CONFIG += release warn_off qt dll
-CONFIG += debug -Wall warn_on qt dll
-VERSION = 0.4
-TEMPLATE = lib
-
+# Input of qdbusxml2cpp to generate *_interface.{h,cpp},
+# qdbusxml2cpp is automatically invoqued by qmake
 DBUS_INTERFACES   += ../dbusprinter/com.wiresens.dbusprinter.xml
-
-FORMS += \
-    keyboardwidget.ui \
-    loungewidget.ui \
-    menusmanager.ui \
-    numkeyboard.ui \
-    pdfviewer/pdfviewer.ui \
-    spkeyboardwidget.ui
-
-RESOURCES += \
-    pdfviewer/pdfviewer.qrc
 
 HEADERS += \
     basickeyboardbox.h \
@@ -106,6 +98,17 @@ SOURCES += \
     visualproduct.cpp \
     toolkit.cpp \
     poslabel.cpp
+
+FORMS += \
+    keyboardwidget.ui \
+    loungewidget.ui \
+    menusmanager.ui \
+    numkeyboard.ui \
+    pdfviewer/pdfviewer.ui \
+    spkeyboardwidget.ui
+
+RESOURCES += \
+    pdfviewer/pdfviewer.qrc
 
 DISTFILES += \
     pdfviewer/images/busy.png \
