@@ -16,6 +16,7 @@
  ***************************************************************************/
 
 #include "numkeyboardbox.h"
+#include "ui_numkeyboard.h"
 #include <QSignalMapper>
 #include <QPushButton>
 #include <QLCDNumber>
@@ -39,7 +40,7 @@ NumKeyboardBox::~NumKeyboardBox(){
 
 void NumKeyboardBox::clear(){
     number = 0;
-    display->display((int) number);
+    ui->display->display((int) number);
     emit numChanged(number);
 }
 
@@ -56,33 +57,33 @@ void NumKeyboardBox::receivedNum(int num){
     //set the number to 0
     if (num == NUMBER_CE){
         number = 0;
-        display->display(number);
+        ui->display->display(number);
     }
     else if (num == NUMBER_DOT){
         number = 0;
-        display->display(number);
+        ui->display->display(number);
     }
     else{
         result = (number * 10) + num;
         if (result>MAXNUMBER)
             return;
         number = result;
-        display->display(number);
+        ui->display->display(number);
     }
     emit numChanged(number);
 }
 
 void NumKeyboardBox::initialize(){
-    display->setSegmentStyle(QLCDNumber::Flat);
+    ui->display->setSegmentStyle(QLCDNumber::Flat);
 //    button_dot->hide();
 //    button_ce->hide();
 
-    QGridLayout *layout = qobject_cast<QGridLayout *>( frame15->layout() );
+    QGridLayout *layout = qobject_cast<QGridLayout *>( ui->frame15->layout() );
 
-    layout->removeWidget(button_dot);
-    button_dot->hide();
-    layout->removeWidget(button_ce);
-    layout->addWidget(button_ce,3,1,1,2);
+    layout->removeWidget(ui->button_dot);
+    ui->button_dot->hide();
+    layout->removeWidget(ui->button_ce);
+    layout->addWidget(ui->button_ce,3,1,1,2);
 }
 
 void NumKeyboardBox::keyPressEvent(QKeyEvent *e){

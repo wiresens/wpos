@@ -18,7 +18,8 @@
 #ifndef BASICKEYBOARDBOX_H
 #define BASICKEYBOARDBOX_H
 
-#include "ui_numkeyboard.h"
+#include <QVector>
+#include <QWidget>
 /**
   *@author Carlos Manzanedo
   */
@@ -36,10 +37,15 @@ const int NUMBER_CE=-1;
 const int NUMBER_DOT=-2;
 
 class QSignalMapper;
+class NumKeyboard;
+
+namespace Ui {
+class NumKeyboard;
+} // namespace Ui
 
 class BasicKeyboardBox :
-    public QWidget,
-    protected Ui::NumKeyboard
+    public QWidget/*,
+    protected Ui::NumKeyboard*/
 {
     Q_OBJECT
 public:
@@ -61,6 +67,7 @@ protected:
     QSignalMapper* signalMapper;
     QVector<QWidget*> buttons;
     bool init_mode{false};
+    Ui::NumKeyboard* ui;
 };
 
 #endif

@@ -3,6 +3,8 @@ project(xmlmanage VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 set(MAIN_TARGET xmlmanage)
 set(CMAKE_AUTOMOC ON)
 
+#find_package(Qt5 REQUIRED COMPONENTS Core)
+#qt_standard_project_setup() // >= Qt6.3
 find_package(Qt5 REQUIRED COMPONENTS Core)
 
 include_directories(

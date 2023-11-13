@@ -13,13 +13,16 @@
 #ifndef MENUSMANAGER_H
 #define MENUSMANAGER_H
 
-#include "ui_menusmanager.h"
 #include <QList>
 #include <QMap>
 #include <QWidget>
 #include <QStackedWidget>
 
-class MenusManager : public QWidget , private Ui::MenusManager {
+namespace Ui {
+class MenusManager;
+}
+
+class MenusManager : public QWidget/* , private Ui::MenusManager*/ {
     Q_OBJECT
 public:
     explicit  MenusManager(QWidget *parent=0, const QString& name = QString());
@@ -40,6 +43,7 @@ signals:
 private:
     QList<QWidget*> menusList{};
     QMap<QString, QWidget*> menusDict{};
+    Ui::MenusManager* ui;
 };
 
 #endif

@@ -22,6 +22,8 @@ doc.path         = /usr/share/doc/libbslxml
 
 LIBS += -lxml2
 
+OBJECTS_DIR      = obj
+
 INCLUDEPATH += \
     /usr/include/libxml2 \
     /usr/include/libxml2/libxml \
@@ -50,3 +52,5 @@ DISTFILES += \
     COPYING \
     README \
     AUTHORS
+
+message("OUT_PWD: $$OUT_PWD")

@@ -56,9 +56,9 @@ QMAKE_LIBDIR = \
     ../wposcore \
     ../libbslxml
 
-MOC_DIR      = .moc
-UI_DIR       = .ui
-OBJECTS_DIR  = .obj
+MOC_DIR      = moc
+UI_DIR       = ui
+OBJECTS_DIR  = obj
 
 INCLUDEPATH += \
     ../libqutexr \
@@ -111,7 +111,7 @@ qdbuscpp2xml.input      = DBUS_PWD_FILES
 qdbuscpp2xml.output     = com.wiresens.${QMAKE_FILE_BASE}.xml
 qdbuscpp2xml.commands   = qdbuscpp2xml $$DBUS_FLAGS ${QMAKE_FILE_IN} $$DBUS_OUT_FLAGS com.wiresens.${QMAKE_FILE_BASE}.xml
 qdbuscpp2xml.CONFIG     = no_link
-qdbuscpp2xml.depends    = $$DBUS_ADAPTOR_FILES
+#qdbuscpp2xml.depends    = $$DBUS_ADAPTOR_FILES
 qdbuscpp2xml.clean      = com.wiresens.${QMAKE_FILE_BASE}.xml
 QMAKE_EXTRA_COMPILERS  += qdbuscpp2xml
 
@@ -167,7 +167,7 @@ HEADERS += \
     loginscreeninterface.h \
     main.h \
     mainscreen.h \
-    salesscreen.h \    
+    salesscreen.h \
     readconfigscreen.h
 
 SOURCES += \

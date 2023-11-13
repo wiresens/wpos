@@ -32,7 +32,14 @@ function(odb_compile outvar)
 		message(FATAL_ERROR: "no input files to odb_compile")
 	endif()
 
-        set(ODB_ARGS)
+#	set(ODB_ARGS)
+        set(ODB_ARGS
+            -x -fPIC
+            -x --std=c++20
+            --sql-name-case lower
+            --default-pointer std::shared_ptr
+            --profile boost/date-time/posix-time
+        )
 
 	if(PARAM_MULTI_DATABASE)
 		list(APPEND ODB_ARGS --multi-database "${PARAM_MULTI_DATABASE}")

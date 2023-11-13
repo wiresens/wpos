@@ -1,5 +1,5 @@
 /***************************************************************************
-                          dcopprinter.h  -  description
+                          dbusprinter.h  -  description
                              -------------------
     begin                : lun may 10 17:37:01 CEST 2004
     copyright            : (C) 2004 by Carlos Manzanedo

@@ -25,14 +25,14 @@ TEMPLATE = subdirs
 
 #projects
 SUBDIRS += \
-    libbslxml \
-    dbusreceipt \
     domainmodel \
+    libbslxml \
     wposcore \
-    wposwidget \
     libqutexr \
     xmlmanage  \
     dbusprinter \
+    dbusreceipt \
+    wposwidget \
     wpos \
     wposbo \
     test \

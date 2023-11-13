@@ -29,6 +29,10 @@ QMAKE_LIBDIR = \
     ../wposcore \
     ../libbslxml
 
+MOC_DIR      = moc
+UI_DIR       = ui
+OBJECTS_DIR  = obj
+
 INCLUDEPATH += \
     /usr/include/libxml2 \
     ../wposcore \

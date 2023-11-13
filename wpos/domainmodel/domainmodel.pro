@@ -26,18 +26,6 @@ unix {
 }
 !isEmpty(target.path): INSTALLS += target
 
-SOURCES += \
-    daterange.cpp \
-    core/group.cpp \
-    core/party.cpp \
-    core/user.cpp \
-    monetary.cpp \
-    persistable.cpp \
-    product/pricelog.cpp \
-    product/product.cpp \
-    product/producttemplate.cpp \
-    product/uom.cpp
-
 HEADERS += \
     daterange.h \
     core/group.h \
@@ -52,6 +40,18 @@ HEADERS += \
     product/uom.h \
     default_ptr.hxx \
     version.hxx
+
+SOURCES += \
+    daterange.cpp \
+    core/group.cpp \
+    core/party.cpp \
+    core/user.cpp \
+    monetary.cpp \
+    persistable.cpp \
+    product/pricelog.cpp \
+    product/product.cpp \
+    product/producttemplate.cpp \
+    product/uom.cpp
 
 ODB_FILES += \
     core/party.hxx \

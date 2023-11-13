@@ -21,6 +21,9 @@ TARGETDEPS      += ../libbslxml/libbslxml.so
 LIBS            += -lbslxml
 QMAKE_LIBDIR     = ../libbslxml
 
+MOC_DIR      = moc
+OBJECTS_DIR  = obj
+
 INCLUDEPATH += \
     ../libbslxml \
     /usr/include/libxml2

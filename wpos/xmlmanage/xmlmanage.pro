@@ -23,6 +23,8 @@ LIBS            += -lbslxml
 QMAKE_LIBDIR     = \
     ../libbslxml
 
+OBJECTS_DIR  = obj
+
 INCLUDEPATH     += \
     /usr/include/libxml2 \
     ../libbslxml

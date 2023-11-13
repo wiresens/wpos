@@ -11,6 +11,7 @@
  ***************************************************************************/
 
 #include "menusmanager.h"
+#include "ui_menusmanager.h"
 //#include "prodselect/productscreenstack.h"
 #include <QFrame>
 #include <QLayout>
@@ -22,29 +23,33 @@ using namespace std;
 MenusManager::MenusManager(QWidget *parent, const QString &name ) :
     QWidget(parent)
 {
+    ui = new Ui::MenusManager();
+    ui->setupUi(this);
     setSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding);
     setObjectName(name);
 }
 
-MenusManager::~MenusManager(){}
+MenusManager::~MenusManager(){
+    delete ui;
+}
 
 void MenusManager::addMenu(const QString &name, QWidget *w){
     menusList.append(w);
     menusDict.insert(name,w);
-    menuStack->addWidget(w);
-    menuStack->setCurrentWidget(w);
+    ui->menuStack->addWidget(w);
+    ui->menuStack->setCurrentWidget(w);
 }
 
 QWidget *MenusManager::getCurrentMenu(){
-    return menuStack->currentWidget();
+    return ui->menuStack->currentWidget();
 }
 
 void MenusManager::setMenu(QWidget *w){
-    menuStack->setCurrentWidget(w);
+    ui->menuStack->setCurrentWidget(w);
 }
 
 void MenusManager::setMenu(int id){
-    menuStack->setCurrentIndex(id);
+    ui->menuStack->setCurrentIndex(id);
 }
 
 void MenusManager::setMenu(QString name){

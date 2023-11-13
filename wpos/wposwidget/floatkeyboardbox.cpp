@@ -15,6 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 
+#include "ui_numkeyboard.h"
 #include "floatkeyboardbox.h"
 #include "floatkeyboardbox.h"
 #include <QSignalMapper>
@@ -48,7 +49,7 @@ FloatKeyboardBox::~FloatKeyboardBox(){}
 void FloatKeyboardBox::clear(){
     string_number="";
     number = 0.0;
-    display->display(number);
+    ui->display->display(number);
     emit numChanged(number);
 }
 
@@ -59,7 +60,7 @@ double FloatKeyboardBox::getNumber(){
 void FloatKeyboardBox::setNumber(const double num){
     string_number = QString::number(num,'f',2);
     number = num;
-    display->display(number);
+    ui->display->display(number);
     emit numChanged(number);
 }
 
@@ -86,7 +87,7 @@ void FloatKeyboardBox::receivedNum(int num){
         if (aux_d < MAX_DOUBLE){
             string_number = aux_string_number;
             number= aux_d;
-            display->display(number);
+            ui->display->display(number);
             emit numChanged(number);
         }
     }
@@ -99,7 +100,7 @@ void FloatKeyboardBox::receivedNum(int num){
         if (aux_d < MAX_DOUBLE){
             string_number = aux_string_number;
             number= aux_d;
-            display->display(number);
+            ui->display->display(number);
             emit numChanged(number);
         }
     }
@@ -107,12 +108,12 @@ void FloatKeyboardBox::receivedNum(int num){
 
 void FloatKeyboardBox::initAspect(){
     QFont font;
-    font = button_ce->font();
-    button_dot->setFont(font);
-    button_dot->setText(" 0 0 ");
+    font = ui->button_ce->font();
+    ui->button_dot->setFont(font);
+    ui->button_dot->setText(" 0 0 ");
 
-    display->setSegmentStyle(QLCDNumber::Filled);
-    display->setDigitCount(7);
+    ui->display->setSegmentStyle(QLCDNumber::Filled);
+    ui->display->setDigitCount(7);
 }
 
 void FloatKeyboardBox::keyPressEvent(QKeyEvent *e){
