@@ -82,7 +82,8 @@ qdbuscpp2xml.input      = DBUS_PWD_FILES
 qdbuscpp2xml.output     = com.wiresens.${QMAKE_FILE_BASE}.xml
 qdbuscpp2xml.commands   = qdbuscpp2xml $$DBUS_FLAGS ${QMAKE_FILE_IN} $$DBUS_OUT_FLAGS com.wiresens.${QMAKE_FILE_BASE}.xml
 qdbuscpp2xml.CONFIG     = no_link
-#qdbuscpp2xml.depends    = $$DBUS_ADAPTOR_FILES
+#qdbuscpp2xml.depends    = $$DBUS_ADAPTOR_FILES # Was making DBUS_ADAPTOR_FILES a dependency target
+                                                # With error: No rule to make target 'dbusprinter.h', needed by 'com.wiresens.dbusprinter.xml'
 qdbuscpp2xml.clean      = com.wiresens.${QMAKE_FILE_BASE}.xml
 QMAKE_EXTRA_COMPILERS   += qdbuscpp2xml
 QMAKE_EXTRA_TARGETS     += qdbuscpp2xml dbus_adaptors
