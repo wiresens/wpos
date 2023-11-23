@@ -26,16 +26,17 @@ TEMPLATE = subdirs
 #projects
 SUBDIRS += \
     domainmodel \
-    libbslxml \
-    wposcore \
-    libqutexr \
-    xmlmanage  \
-    dbusprinter \
-    dbusreceipt \
-    wposwidget \
-    wpos \
-    wposbo \
-    test \
+#    wposmodel \
+#    libbslxml \
+#    wposcore \
+#    libqutexr \
+#    xmlmanage  \
+#    dbusprinter \
+#    dbusreceipt \
+#    wposwidget \
+#    wpos \
+#    wposbo \
+#    test \
 #    wposrpcd \
 #    dcopstick \
 #    dcopreports \
@@ -45,8 +46,12 @@ wposcore.depends    = libbslxml
 libqutexr.depends   = libbslxml
 xmlmanage.depends   = libbslxml
 wposrpcd.depends    = libbslxml libqutexr
+
+wpos.depends        = wposmodel libbslxml wposcore wposwidget libqutexr
+wposbo.depends      = wposmodel libbslxml wposcore wposwidget
 wpos.depends        = domainmodel libbslxml wposcore wposwidget libqutexr
 wposbo.depends      = domainmodel libbslxml wposcore wposwidget
+
 wposwidget.depends  = libbslxml wposcore dbusprinter
 
 dbusprinter.depends = libbslxml wposcore libqutexr

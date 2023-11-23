@@ -24,9 +24,15 @@
 
 GenericSignalManager* GenericSignalManager::gsm { nullptr };
 
+//GenericSignalManager* GenericSignalManager::instance(){
+//    if( !gsm ) gsm = new GenericSignalManager();
+//    return gsm;
+//}
+
+// Simple alternative using C++11
 GenericSignalManager* GenericSignalManager::instance(){
-    if( !gsm ) gsm = new GenericSignalManager();
-    return gsm;
+    static GenericSignalManager gsm;
+    return &gsm;
 }
 
 void GenericSignalManager::publishGenericSignal(

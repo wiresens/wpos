@@ -28,6 +28,9 @@ set(SOURCES_FILES
     utility.cpp
 )
 
+# Make the project root directory the working directory when we run
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../lib)
+
 add_library(
     ${MAIN_TARGET} SHARED
     ${HEADER_FILES}

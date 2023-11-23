@@ -108,7 +108,7 @@
    </item>
    <item>
     <widget class="QStackedWidget" name="lounge_stack">
-     <widget class="QWidget" name="WStackPage"/>
+     <widget class="QWidget" name="page"/>
     </widget>
    </item>
   </layout>

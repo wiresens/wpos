@@ -24,10 +24,11 @@
 QString BasicDatabase::SQL_DRIVER {"QPSQL"};
 int BasicDatabase::SQL_PORT {5432};
 
-BasicDatabase::BasicDatabase(const QString& _connection_name,
-                             const QString& _hostname,const QString& _database,
-                             const QString& _username,const QString& _passwd,
-                             int _port):
+BasicDatabase::BasicDatabase(
+    const QString& _connection_name,
+    const QString& _hostname,const QString& _database,
+    const QString& _username,const QString& _passwd,
+    int _port):
     connection_name { _connection_name},
     hostname { _hostname},
     dbname { _database},
@@ -73,7 +74,6 @@ void BasicDatabase::loadDBSettings(XmlConfig *xml){
 }
 
 void BasicDatabase::initDB(){
-
     database = QSqlDatabase::addDatabase(SQL_DRIVER, connection_name);
     database.setHostName(hostname);
     database.setDatabaseName(dbname);
@@ -104,7 +104,7 @@ void BasicDatabase::delConnection(){
 
     if (database.isOpen()){
         database.close();
-//        QSqlDatabase::removeDatabase(connection_name);
+        //        QSqlDatabase::removeDatabase(connection_name);
     }
 }
 

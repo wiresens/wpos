@@ -19,6 +19,7 @@ INCLUDEPATH += \
     ./core \
     . \
     ..\
+    $$OUT_PWD
 
 # Default rules for deployment.
 unix {

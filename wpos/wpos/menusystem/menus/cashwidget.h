@@ -51,11 +51,11 @@ protected:
     void sendTicketSignal();
 
     FloatKeyboardBox *float_keyboard;
-    BarCore *core;
-    double cash;
-    double actual_price;
+    BarCore *core{};
+    double cash{};
+    double actual_price{};
     bool fast_cashing{ true }; // Controls whether clicking the ok_button continue the sales operation
-    bool cashing_completed;
+    bool cashing_completed{};
 };
 
 #endif

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef GENERICSIGNALMANAGER_H
-#define GENERICSIGNALMANAGER_H
+#ifndef GENERIC_SIGNAL_MANAGER_H
+#define GENERIC_SIGNAL_MANAGER_H
 
 /**
 *    Generic signal manager Class tries to provide a flexible way to connect objects with generic signals.
@@ -68,10 +68,11 @@ protected:
         const QString& signal,
         HList<ObjectHub> *cluster_list);
 
+private:
     HList<ObjectHub> m_signal_publishers;
     HList<ObjectHub> m_signal_subscribers;
     HList<ObjectHub> m_data_signal_publishers;
     HList<ObjectHub> m_data_signal_subscribers;
 };
 
-#endif
+#endif // GENERIC_SIGNAL_MANAGER_H

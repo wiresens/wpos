@@ -52,6 +52,9 @@ set(SOURCES_FILES
     xmlrpcprinter.cpp
 )
 
+# Make the project root directory the working directory when we run
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
+
 add_executable(
     ${MAIN_TARGET}
     ${HEADER_FILES}

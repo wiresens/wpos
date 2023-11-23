@@ -554,6 +554,7 @@ QPdfWriter
 ----------------
 On ODB C++ ORM : 
 ----------------
+libmysqlclient-dev libodb-mysql-dev libsqlite3-dev
 **ODB 2.5.0-b.23 support for the --std c++20  and GCC 12:
 We've published ODB 2.5.0-b.23 to cppget.org which adds support for GCC 12. : 
 Besides that, this beta also adds support for the --std c++20 option value

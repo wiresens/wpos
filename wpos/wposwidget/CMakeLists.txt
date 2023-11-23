@@ -106,6 +106,9 @@ set(QRC_FILES
     pdfviewer/pdfviewer.qrc
 )
 
+# Make the project root directory the working directory when we run
+set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../lib)
+
 #Consider adding target to build pdfviewer as a librarypluging and a standalone executable
 add_library(
     ${MAIN_TARGET} SHARED

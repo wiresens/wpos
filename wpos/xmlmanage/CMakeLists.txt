@@ -1,6 +1,6 @@
 project(xmlmanage VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
-set(MAIN_TARGET xmlmanage)
+set(MAIN_TARGET wposxmlmanage)
 set(CMAKE_AUTOMOC ON)
 
 #find_package(Qt5 REQUIRED COMPONENTS Core)
@@ -30,6 +30,9 @@ set(SOURCES_FILES
     xmlread.cpp
     xmlwrite.cpp
 )
+
+# Make the project root directory the working directory when we run
+set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../bin)
 
 add_executable(
     ${MAIN_TARGET}
