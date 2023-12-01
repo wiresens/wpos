@@ -44,6 +44,9 @@ this should be at an XML with all the definitions
 
 struct Menus{
     static const  QString MAIN_MENU;
+    static const  QString MAIN_SCREEN_MENU;
+    static const  QString MAIN_MENU_ITEMS;
+    static const  QString SUB_MENU_TREE;
     static const  QString AUTH_MENU;
     static const  QString SELECT_USER_MENU;
     static const  QString ADD_USER_MENU;

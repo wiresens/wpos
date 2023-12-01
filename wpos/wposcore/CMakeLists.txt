@@ -14,7 +14,7 @@ set(HEADER_FILES
     config.h
     genericsignalmanager.h
     hlist.h
-    optionnode.h
+    productextrainfo.h
     signals.h
     utility.h
 )
@@ -23,7 +23,7 @@ set(SOURCES_FILES
     basicdatabase.cpp
     config.cpp
     genericsignalmanager.cpp
-    optionnode.cpp
+    productextrainfo.cpp
     signals.cpp
     utility.cpp
 )

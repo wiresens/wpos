@@ -44,7 +44,7 @@ using namespace wpos::model;
 #pragma db member(Party::address_) null
 
 #pragma db object(Person) definition
-#pragma db member(Person::id_) id auto
+#pragma db member(Person::id) id auto
 #pragma db member(Person::first_name_) not_null
 #pragma db member(Person::gender_) not_null
 

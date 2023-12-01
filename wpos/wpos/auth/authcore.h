@@ -10,9 +10,10 @@
 %LICENCIA%
  ***************************************************************************/
 
-#ifndef _AUTHCORE_H_
-#define _AUTHCORE_H_
+#ifndef AUTHCORE_H_
+#define AUTHCORE_H_
 
+#include "database/authcoredb.h"
 #include <QObject>
 #include <xmlconfig.h>
 
@@ -23,34 +24,40 @@ class XmlConfig;
 
 class AuthCore: public QObject{
     Q_OBJECT
+
 public:
-    explicit AuthCore(QObject *parent = nullptr, QString name = QString{});
+    explicit AuthCore(
+        QObject *parent = nullptr,
+        QString name = QString()
+    );
+
     ~AuthCore();
 
-    QString getUserId();
-    QString getUserName();
-    QString getUserLastName();
-    QString getFullName();
-    bool getAdmin();
+    const QString& userId() const;
+    const QString& userName() const;
+    const QString& userLastName() const;
+    QString userFullName() const;
+    bool isRootUser() const;
 
-    bool setUserName(QString name);
-    bool setUserId(QString id);
-    bool setUserLastName(QString last_name);
+    bool loadUserById(QString id);
 
-    bool clearUser();
+    //Potential bug : Name and Last are not unique identifiers
+    bool loadUserByName(QString name);
+    bool loadUserByLastName(QString last_name);
 
 public slots:
-    void genericDataSignalSlot(const QString& signal_name, XmlConfig *_xml);
+    void genericDataSignalSlot(const QString& signal, XmlConfig *xml);
 
 signals:
     void genericDataSignal(const QString& signal_name, XmlConfig *xml);
 
 protected:
-    void emitUserChanged();
-    void processXml(XmlConfig *_xml);
+    void notifyUserChanged();
+    void processXml(XmlConfig& xml);
 
-    AuthCoreDB *db{};
-    UserData *user_data_ptr{};
+private:
+    static AuthCoreDB db;
+    UserData user;
 };
 
 #endif

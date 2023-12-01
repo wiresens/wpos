@@ -216,7 +216,7 @@ void XmlWrite::getXml(QString file_name){
 
     //try to create the XML
     xml = new XmlConfig(arg, QIODevice::ReadWrite);
-    if (!xml->isValid()){
+    if (!xml->wellFormed()){
         cerr << "the file " << arg.toStdString() <<" is not a valid XML file." << endl;
         cerr << "or it has no read permissions."<< endl;
         delete xml;

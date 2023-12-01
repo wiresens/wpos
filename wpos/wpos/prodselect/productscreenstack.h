@@ -19,36 +19,38 @@
 #include "productscreen.h"
 #include "product.h"
 
-
 #include <QMap>
 
 class XmlConfig;
-class KDirWatch;
 
-class ProductScreenStack : public QStackedWidget  {
+class ProductScreenStack:
+    public QStackedWidget
+{
     Q_OBJECT
 
 public:
-    explicit ProductScreenStack(const QString& file_name,
-                                QWidget *parent=0,
-                                const QString& name = QString());
+    explicit ProductScreenStack(
+        const QString& xmlDescriptionFile,
+        QWidget *parent=0,
+        const QString& name = QString());
 
-    explicit ProductScreenStack(XmlConfig *xml,
-                                QWidget *parent=0,
-                                const QString& name = QString());
+    explicit ProductScreenStack(
+        XmlConfig *xml,
+        QWidget *parent=0,
+        const QString& name = QString());
 
-    explicit ProductScreenStack(QWidget *parent=0,
-                                const QString& name = QString());
+    explicit ProductScreenStack(
+        QWidget *parent=0,
+        const QString& name = QString());
 
     ~ProductScreenStack();
 
     virtual bool initScreenStack(XmlConfig *xml);
-    virtual bool initScreenStack(const QString& file_name);
-    virtual QString visibleScreenName();
+    virtual bool initScreenStack(const QString& xmlDescriptionFile);
+    QString visibleScreenName();
 
-    virtual void setDefaultScreenName(const QString &name);
-    virtual QString defaultScreenName();
-
+    void setDefaultScreenName(const QString &name);
+    QString defaultScreenName();
 
     int getDefaultSize();
     int getDefaultTextSize();
@@ -56,10 +58,15 @@ public:
     QString getDefaultTextFamily();
     QString getTextBackgroundColor();
 
+signals:
+    void productDefinition(XmlConfig *xml);
+    void defaultValue();
+    void splashRequested(const QString &message, int aligment, const QColor &color);
+
 public slots:
     bool reset();
     bool remove(const QString& screen_name);
-    bool addScreen(const QString& screen_name, XmlConfig *xml);
+    void addScreen(const QString& screen_name, XmlConfig *xml);
     bool setScreen(const QString& screen_name);
     bool setDefaultScreen();
 
@@ -78,11 +85,6 @@ public slots:
 
     void genericDataSignalSlot(const QString& signal_name,XmlConfig *xml);
     void genericSignalSlot(const QString& signal_name);
-
-signals:
-    void productDefinition(XmlConfig *xml);
-    void defaultValue();
-    void splashRequested(const QString &message, int aligment, const QColor &color);
 
 protected:
     Product *selected_product {};

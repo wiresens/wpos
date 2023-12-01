@@ -17,7 +17,7 @@
    <item>
     <widget class="QStackedWidget" name="stack">
      <property name="currentIndex">
-      <number>0</number>
+      <number>2</number>
      </property>
      <widget class="QWidget" name="main_page">
       <layout class="QVBoxLayout">
@@ -66,7 +66,6 @@
              <font>
               <family>Nimbus Sans l [Urw]</family>
               <pointsize>18</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -545,7 +544,6 @@ Database</string>
              <font>
               <family>Nimbus Sans l [Urw]</family>
               <pointsize>18</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -733,12 +731,24 @@ This operation can take a few minutes....</string>
            <number>11</number>
           </property>
           <item>
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>0</width>
+              <height>16</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item>
            <widget class="QLabel" name="title_generacion_2">
             <property name="font">
              <font>
               <family>Nimbus Sans l [Urw]</family>
               <pointsize>18</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -760,7 +770,7 @@ This operation can take a few minutes....</string>
             </property>
             <property name="sizeHint" stdset="0">
              <size>
-              <width>312</width>
+              <width>0</width>
               <height>16</height>
              </size>
             </property>
@@ -807,12 +817,15 @@ This operation can take a few minutes....</string>
           <layout class="QVBoxLayout">
            <item>
             <widget class="QLabel" name="error_label">
+             <property name="font">
+              <font>
+               <pointsize>12</pointsize>
+              </font>
+             </property>
              <property name="text">
               <string>Your wPOS installation does not have the Operations Module with Memory Stick
-                            This module is necessary to be able to make backup copies of the database.
-                            data, icon insertion, export database to CSV format and copy
-                            report to memory stick.
-
+     This module is necessary to be able to make backup copies of the database data
+ Icon insertion, export database to CSV format and copy  report to memory stick.
 Please contact Wiresens, if you are interested in purchasing it..</string>
              </property>
              <property name="alignment">
@@ -911,7 +924,6 @@ Please contact Wiresens, if you are interested in purchasing it..</string>
              <font>
               <family>Nimbus Sans l [Urw]</family>
               <pointsize>18</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>
@@ -1095,13 +1107,18 @@ Please contact Wiresens, if you are interested in purchasing it..</string>
           </spacer>
          </item>
          <item>
-          <widget class="QListView" name="db_listview">
+          <widget class="QTreeWidget" name="db_listview">
            <property name="minimumSize">
             <size>
              <width>500</width>
              <height>0</height>
             </size>
            </property>
+           <column>
+            <property name="text">
+             <string notr="true">1</string>
+            </property>
+           </column>
           </widget>
          </item>
          <item>
@@ -1243,7 +1260,6 @@ Please contact Wiresens, if you are interested in purchasing it..</string>
              <font>
               <family>Nimbus Sans l [Urw]</family>
               <pointsize>18</pointsize>
-              <weight>75</weight>
               <bold>true</bold>
              </font>
             </property>

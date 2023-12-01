@@ -27,7 +27,7 @@
 #include <wposcore/config.h>
 
 
-#include <optionnode.h>
+#include <productextrainfo.h>
 #include <xmlconfig.h>
 
 #include <QWidget>
@@ -71,7 +71,7 @@ void GenericButtonGroup::clear(){
 bool GenericButtonGroup::readConfigFrom(const QString& section, const QString& xml_path){
 
     XmlConfig xml (xml_path);
-    if (!QFile(xml_path).exists() || !xml.isValid())
+    if (!QFile(xml_path).exists() || !xml.wellFormed())
         return false;
 
     return readConfigFrom(section, &xml);
@@ -211,14 +211,15 @@ QPushButton* GenericButtonGroup::readProductConfig(XmlConfig *xml, QWidget *pare
     auto product = new Product(aux, Files::configFilePath("bar"), parent_wgt);
     product->setDefaultFontSize(9);
     product->setTextInPixmap(true);
-    connect(product, SIGNAL(productClicked(Product *)), stack, SLOT(productClickedSlot(Product *)));
-    connect(stack, SIGNAL(defaultValue()), product, SLOT(defaultValues()));
+
+    connect(product, &Product::productClicked, stack, &ProductScreenStack::productClickedSlot);
+    connect(stack, &ProductScreenStack::defaultValue, product, &Product::defaultValues);
     xml->popDomain();
     return ((QPushButton *) product);
 }
 
 QPushButton* GenericButtonGroup::readGenericButton(XmlConfig *xml, QWidget *parent_wgt){
-    int r_count,j,r_content,k;
+    int r_count, j, r_content,k;
     QString iconset, pixmap, toggle;
     bool is_toggle{false};
 
@@ -424,7 +425,7 @@ QPushButton* GenericButtonGroup::defaultScreenButton(XmlConfig *xml, QWidget *pa
 QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *parent_wgt){
     int i,j, v_count ,count;
 
-    OptionNode *option= 0;
+    ProductExtraInfo *option= 0;
     QString aux;
     MenuButton *menu = 0;
     MenuButton *menu_v = 0;
@@ -432,7 +433,7 @@ QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *parent_w
 
     std::unique_ptr<AuxDB> db  {new AuxDB("option_check", Files::configFilePath("database"))};
     db->connect();
-    HList<OptionNode>* option_nodes = db->getOptionNodes();
+    HList<ProductExtraInfo>* option_nodes = db->getOptionNodes();
     db->disConnect();
 
     if (!option_nodes)
@@ -483,7 +484,6 @@ QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *parent_w
         }
     }
 
-    option_nodes->setAutoDelete(true);
     option_nodes->clear();
     delete option_nodes;
 

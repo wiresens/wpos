@@ -63,6 +63,8 @@ const QString ICON_PATH = "controls:offers/";
 const int OFFER_GROUP = 0;
 const int SCREEN_GROUP = 1;
 
+static const uint TIME_OUT {10};
+
 #include <iostream>
 using namespace std;
 
@@ -158,33 +160,32 @@ InvitationScreenDesignWidget::InvitationScreenDesignWidget(QWidget *parent, cons
     right_button->setAutoRepeat(true);
 
     /* Connections*/
-    connect(ok_button, SIGNAL(released()), this, SLOT(acceptSlot()));
-    connect(cancel_button, SIGNAL(released()), this, SLOT(cancelSlot()));
+    connect(ok_button, &QPushButton::released, this, &InvitationScreenDesignWidget::acceptSlot);
+    connect(cancel_button, &QPushButton::released, this, &InvitationScreenDesignWidget::cancelSlot);
 
 //@benes    connect(screen_selected, SIGNAL(dropped(QDropEvent *, const QList<QIconDragItem>&)), this, SLOT(offerDropped(QDropEvent *, const  QList<QIconDragItem>&)));
     connect(screens_view, &QListWidget::currentItemChanged,
             this, &InvitationScreenDesignWidget::screenChanged);
     connect(this, &InvitationScreenDesignWidget::offerReaded, &InvitationScreenDesignWidget::offerReadedSlot);
 
-    connect(left_button, SIGNAL(released()), this, SLOT(leftButtonClicked()));
-    connect(right_button, SIGNAL(released()), this, SLOT(rightButtonClicked()));
+    connect(left_button, &QPushButton::released, this, &InvitationScreenDesignWidget::leftButtonClicked);
+    connect(right_button, &QPushButton::released, this, &InvitationScreenDesignWidget::rightButtonClicked);
+    connect(delete_offer_from_screen, &QPushButton::released, this, &InvitationScreenDesignWidget::deleteOfferFromScreen);
+    connect(delete_screen_button, &QPushButton::released, this, &InvitationScreenDesignWidget::deleteScreenClicked);
 
-    connect(delete_offer_from_screen,SIGNAL(released()),this,SLOT(deleteOfferFromScreen()));
+    connect(delete_invitations_widget, &DeleteInvitationScreenWidget::screenDeleted, this, &InvitationScreenDesignWidget::screenDeletedSlot);
+    connect(delete_invitations_menu, &QMenu::aboutToShow, this, &InvitationScreenDesignWidget::showPopDeleteScreen);
+    connect(delete_invitations_menu, &QMenu::aboutToHide, this, &InvitationScreenDesignWidget::hidePopDeleteScreen);
 
-    connect(delete_screen_button, SIGNAL(released()), this, SLOT(deleteScreenClicked()));
-    connect(delete_invitations_widget, SIGNAL(screenDeleted(bool)), this, SLOT(screenDeletedSlot(bool)));
-    connect(delete_invitations_menu, SIGNAL(aboutToShow()), this, SLOT(showPopDeleteScreen()));
-    connect(delete_invitations_menu, SIGNAL(aboutToHide()), this, SLOT(hidePopDeleteScreen()));
+    connect(new_screen_button, &QPushButton::released, this, &InvitationScreenDesignWidget::newScreenClicked);
+    connect(invitations_menu_item, &AddInvitationScreenWidget::screenCreated, this, &InvitationScreenDesignWidget::screenCreatedSlot);
+    connect(invitations_menu, &QMenu::aboutToShow, this, &InvitationScreenDesignWidget::showPopNewScreen);
+    connect(invitations_menu, &QMenu::aboutToHide, this, &InvitationScreenDesignWidget::hidePopNewScreen);
 
-    connect(new_screen_button, SIGNAL(released()), this, SLOT(newScreenClicked()));
-    connect(invitations_menu_item, SIGNAL(screenCreated(ProductOfferScreenData *)), this, SLOT(screenCreatedSlot(ProductOfferScreenData *)));
-    connect(invitations_menu, SIGNAL(aboutToShow()), this, SLOT(showPopNewScreen()));
-    connect(invitations_menu, SIGNAL(aboutToHide()), this, SLOT(hidePopNewScreen()));
-
-    connect(update_screen_button, SIGNAL(released()), this, SLOT(updateScreenClicked()));
-    connect(update_invitations_menu_item, SIGNAL(screenUpdated(ProductOfferScreenData *,const QString&)), this, SLOT(screenUpdatedSlot(ProductOfferScreenData *,const QString&)));
-    connect(update_invitations_menu, SIGNAL(aboutToShow()), this, SLOT(showPopUpdateScreen()));
-    connect(update_invitations_menu, SIGNAL(aboutToHide()), this, SLOT(hidePopUpdateScreen()));
+    connect(update_screen_button, &QPushButton::released, this, &InvitationScreenDesignWidget::updateScreenClicked);
+    connect(update_invitations_menu_item, &AddInvitationScreenWidget::screenUpdated, this, &InvitationScreenDesignWidget::screenUpdatedSlot);
+    connect(update_invitations_menu, &QMenu::aboutToShow, this, &InvitationScreenDesignWidget::showPopUpdateScreen);
+    connect(update_invitations_menu, &QMenu::aboutToHide, this, &InvitationScreenDesignWidget::hidePopUpdateScreen);
 
     screen_stack->setCurrentWidget(reading_page);
 }
@@ -608,7 +609,7 @@ void InvitationScreenDesignWidget::readXml(){
     if ( !QFile(INVITATION_OFFERS_XML).exists() ) return;
 
     XmlConfig xml(INVITATION_OFFERS_XML);
-    if (!xml.isValid())  return;
+    if (!xml.wellFormed())  return;
 
     auto default_screen = xml.readString("defaultentry");
     if (!xml.setDomain("menuentries")) return;
@@ -717,7 +718,7 @@ void InvitationScreenDesignWidget::showEvent(QShowEvent *e){
         if (first_show)
             first_show = false;
         else
-            QTimer::singleShot(10,this,SLOT(startShowing()));
+            QTimer::singleShot(TIME_OUT, this, &InvitationScreenDesignWidget::startShowing);
     }
     QWidget::showEvent(e);
 }

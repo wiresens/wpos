@@ -16,7 +16,7 @@
 #include <wposwidget/menustack.h>
 
 class XmlConfig;
-class LoginScreen;
+class Greeter;
 class SalesScreen;
 class GenericSignalManager;
 class ReadConfigScreen;
@@ -38,7 +38,7 @@ public slots:
     void genericDataSignalSlot(const QString& signal, XmlConfig* xml);
     
 private:
-    LoginScreen* loginScreen;
+    Greeter* loginScreen;
     SalesScreen* salesScreen;
     ReadConfigScreen* configScreen;
 };

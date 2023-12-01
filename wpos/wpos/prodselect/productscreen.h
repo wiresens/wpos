@@ -24,38 +24,40 @@ class QGridLayout;
 class Product;
 class XmlConfig;
 
-class ProductScreen : public QWidget  {
+class ProductScreen:
+    public QWidget
+{
     Q_OBJECT
-public: 
 
-//    static const QColor PRODUCT_SCREEN_BG_COLOR         = QColor{170,170,170};
-//    static const QColor PRODUCT_SCREEN_ESPECIAL_COLOR   = QColor(239,224,59);
-//    static const QColor PRODUCT_SCREEN_DEFAULT_OFFER    = QColor(237,173,128);
-//    static const QColor PRODUCT_SCREEN_ANULATION_COLOR  = QColor(250,75,75);
-
+public:
     enum ModeColor{
-        Normal = 0,
-        Invitation = 1,
-        Product_anulation = 2,
-        Default_offer = 3
+        Normal             = 0,
+        Invitation         = 1,
+        ProductAnulation   = 2,
+        DefaultOffer       = 3
     };
 
-    ProductScreen(const QString& screen_name, XmlConfig *xml,
-                  QWidget *_parent, const QString& name = QString());
+    ProductScreen(
+        const QString& screenName,
+        XmlConfig *xmlDescription,
+        QWidget *parent,
+        const QString& name = QString());
 
-    ProductScreen(const QString& screen_name, const QString& file_name,
-                  QWidget *_parent, const QString& name = QString());
+    ProductScreen(
+        const QString& screenName,
+        const QString& xmlDescriptionFile,
+        QWidget *parent,
+        const QString& name = QString());
 
     ~ProductScreen();
 
-    virtual bool initScreen(const QString& screen_name, XmlConfig *xml);
-    virtual bool resetScreen();
+    bool initScreen(const QString& screen_name, XmlConfig *xml);
+    bool resetScreen();
 
-    virtual QString screenName();
-    virtual void setScreenName(const QString& screen_name);
-    virtual QString nextPreferredScreenName();
+    QString screenName();
+    QString nextPreferredScreenName();
 
-    virtual void showAll();
+    void showAll();
 
 public slots:
     void disableAll();
@@ -71,24 +73,26 @@ public slots:
 signals:
     void productDefinition(XmlConfig *xml);
     void defaultValue();
+
 protected:
     void prepareConnects(Product *prod);
 
-    QString name;
-    int cols {DEFAULT_COLS}, rows{DEFAULT_ROWS};
+    QString screenName_;
+    QString next_preferred_screen;
 
     Product *selected_product{};
 
-    QString next_preferred_screen;
+    int cols {DEFAULT_COLS};
+    int rows {DEFAULT_ROWS};
 
-    QList<Product*> *product_list {new QList<Product*>};
-    QMap<QString, Product*> *product_dict {new QMap<QString,Product*>};
+    QList<Product*> *productList {new QList<Product*>};
+    QMap<QString, Product*> *productMap {new QMap<QString, Product*>};
     QGridLayout *layout;
 
-    int default_fontsize{ 8 };
-    int default_text_fontsize { 10 };
     QString default_fontfamily{"Arial"};
     QString default_text_fontfamily {"Arial Black"};
+    int default_fontsize{ 8 };
+    int default_text_fontsize { 10 };
 
     static int SCREEN_PRODUCT_SPACING;
 };

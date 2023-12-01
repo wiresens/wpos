@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1024</width>
-    <height>768</height>
+    <width>694</width>
+    <height>388</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -88,7 +88,7 @@
         </layout>
        </item>
        <item>
-        <widget class="QGroupBox" name="users_buttongroup">
+        <widget class="QGroupBox" name="userGroupBox">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>

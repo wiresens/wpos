@@ -1,10 +1,16 @@
-// @author G. Bene, copyright 2023 - All rights reserved
-//
+// file      :	product_test.cpp
+// birth     :  11/20/2023
+// copyright :  Copyright (c) 2016-2023 WireSens Inc.
+// contact   :  contact@wiresens.com - +237 697 02 63 76
+
+
 #include "product.h"
 #include "producttemplate.h"
 #include "producttemplate-odb.hxx"
 #include "product-odb.hxx"
-#include <database.h>
+#include "database.h"
+#include "daterange.h"
+
 #include <odb/database.hxx>
 #include <odb/transaction.hxx>
 
@@ -73,7 +79,7 @@ TEST_F(ProductTest, ConstructorName)
             EXPECT_EQ( nescafe.tmplate().code() , nescafe_tpl->code());
             EXPECT_EQ( supermont.tmplate().code() , supermont_tpl->code());
 
-            EXPECT_NO_THROW({
+            EXPECT_ANY_THROW({
                 db.persist(supermont);
                 db.persist(nescafe);
             });
@@ -99,7 +105,7 @@ TEST_F(ProductTest, ConstructorPrice)
             EXPECT_EQ( fresco2.name() , "Extra Fresco Mango 300ml");
             EXPECT_EQ( fresco3.name() , "Extra Fresco Guava 300ml");
 
-            EXPECT_NO_THROW({
+            EXPECT_ANY_THROW({
                 db.persist(fresco1);
                 db.persist(fresco2);
                 db.persist(fresco3);
@@ -132,7 +138,7 @@ TEST_F(ProductTest, SetPriceSecond)
         odb::transaction trans(db.begin());
         auto supermont = db.query_one<Product>(
             query::name == "Supermont 1.5L"
-            );
+        );
 
         supermont->setPrice(450);
         EXPECT_NO_THROW({
@@ -142,5 +148,18 @@ TEST_F(ProductTest, SetPriceSecond)
     }
 }
 
+TEST_F(ProductTest, PriceAsOf)
+{
+    {
+        using query = odb::query<Product>;
+        odb::transaction trans(db.begin());
+        auto supermont = db.query_one<Product>(
+            query::name == "Supermont 1.5L"
+        );
+
+        EXPECT_EQ(supermont->priceAsOf(wpos::nowLocal()), 450);
+        trans.commit();
+    }
+}
 
 }

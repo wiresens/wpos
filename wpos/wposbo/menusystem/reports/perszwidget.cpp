@@ -246,7 +246,7 @@ void PersZWidget::acceptSlot(){
     stack->setCurrentWidget(viewer_page);
     XmlConfig xml;
     getCurrentZ(xml);
-    if(xml.isValid()) showHtml(xmlToHtml(&xml));
+    if(xml.wellFormed()) showHtml(xmlToHtml(&xml));
 }
 
 void PersZWidget::exitSlot(){
@@ -274,7 +274,7 @@ void PersZWidget::exitSlot(){
 void PersZWidget::printSlot(){
     XmlConfig xml;
     getCurrentZ(xml);
-    if ( xml.isValid() ){
+    if ( xml.wellFormed() ){
         auto xml_str = xml.toString();
         printZ(xml_str);
         printTicketTotal(xml_str);

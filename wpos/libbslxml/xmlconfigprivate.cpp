@@ -1,0 +1,200 @@
+/***************************************************************************
+                          xmlconfigio.cpp  -  description
+                             -------------------
+    begin                : mar oct 8 2002
+    copyright            : (C) 2002 by Napsis S.L.
+    email                : support@napsis.com
+ ***************************************************************************/
+
+/***************************************************************************
+ *                                                                         *
+ *   This program is free software; you can redistribute it and/or modify  *
+ *   it under the terms of the GNU General Public License as published by  *
+ *   the Free Software Foundation; either version 2 of the License, or     *
+ *   (at your option) any later version.                                   *
+ *                                                                         *
+ ***************************************************************************/
+#include "comp.h"
+#include "xmlconfigprivate.h"
+#include "utils.h"
+
+#include <QtXml/QtXml>
+#include <QFile>
+#include <QString>
+#include <QTextStream>
+
+using namespace std;
+
+const uint XmlConfigPrivate::XML_TAG_IDENTATION  {4};
+
+XmlConfigPrivate::XmlConfigPrivate(
+    const QString& file_name,
+    QIODevice::OpenMode mode)
+{
+    QString errorMsg;
+    int errorLine;
+    int errorColumn;
+
+    if ( init(file_name, mode) == -1 ){ //there's no opened file, no point continuing with the constructor
+        cerr << "Errors happened in the constructor, exiting without xml loaded" <<endl;
+
+            dev.close();
+        return;
+    }
+
+    m_domDocument = new QDomDocument();
+    if (m_domDocument)
+        if ( !(is_xml_file_parsed_succesfully = m_domDocument->setContent( &dev, &errorMsg, &errorLine, &errorColumn )) ) {
+            cerr << "Parse error in XML file : " << file_name.toStdString() << endl;
+            cerr <<  errorMsg.toStdString() << " Line: " << errorLine << ", Col: " << errorColumn << endl;
+        }
+    dev.close();
+}
+
+XmlConfigPrivate::XmlConfigPrivate(
+    QDomDocument* document,
+    const QString& file_name,
+    QIODevice::OpenMode mode):
+    XmlConfigPrivate(file_name, mode)
+{
+    QDomDocument domDoc  { document->cloneNode(true).toDocument() };
+    m_domDocument = new QDomDocument();
+    m_domDocument->setContent( domDoc.toString());
+}
+
+//XmlConfigIO::XmlConfigIO(QDomDocument* document,
+//                         const QString& file_name,
+//                         QIODevice::OpenMode mode)
+//{
+
+//    if ( init(file_name, mode) == -1 ){
+//        cerr << "Errors happened in the constructor, exiting" <<endl;
+//        return;
+//    }
+
+//    QDomDocument domDoc  { document->cloneNode(true).toDocument() };
+//    m_domDocument = new QDomDocument();
+
+//    QString errorMsg;
+//    int errorLine;
+//    int errorColumn;
+//    if( !( is_xml_file_parsed_succesfully = m_domDocument->setContent( domDoc.toString(), &errorMsg, &errorLine, &errorColumn ) ) ){
+//        cerr << "Parse error in XML file : " << file_name.toStdString() << endl;
+//        cerr <<  errorMsg.toStdString() << " Line: " << errorLine << ", Col: " << errorColumn << endl;
+//    }
+//    dev.close();
+//}
+
+//the private shared constructor
+int XmlConfigPrivate::init(const QString& file_name, QIODevice::OpenMode mode){
+
+    //if we open in writeonly mode , bad things (tmp) will happen
+    if (mode == QIODevice::WriteOnly)
+        mode = QIODevice::ReadWrite;
+
+    //the file really don't exist, we'll use a tempory file instead
+    if ( file_name.isNull() || file_name.isEmpty() ){
+        tmp_fd = tmpfile();
+        if (!tmp_fd){
+            perror("XML initialisation: Problems while trying to create a tempory file");
+            exit(-1);
+        }
+
+        if ( ! dev.open(tmp_fd , mode | QIODevice::Text) ){
+            cerr << "XML initialisation: Unable to open the tempory file" << endl;
+            exit(-1);
+        }
+
+        setXmlHeaderAndFooter(dev);
+        has_tempory_file = true;
+    }
+    else{ //a file name has been given.
+        dev.setFileName(file_name);
+        if (!dev.exists()){    //the file with path to file does not exists
+            if(!dev.open(QIODevice::ReadWrite | QIODevice::Text)){
+                cerr << "XML initialisation: Unable to create a new file " << file_name.toStdString()
+                     << " in the mode "
+                     << QFlags<QIODevice::OpenModeFlag>(mode) << endl;
+                return -1;
+            }
+            setXmlHeaderAndFooter(dev);
+        }
+        else{ // the file exists, so we'll try to open it in the mode specified
+            if ( !dev.open( mode | QIODevice::Text) ){
+                cerr << "XML initialisation: Unable to create a new file " << file_name.toStdString() \
+                     << " in the mode " \
+                     << QFlags<QIODevice::OpenModeFlag>(mode) << endl;
+                return -1;
+            }
+        }
+    }
+    return 0;
+}
+
+XmlConfigPrivate::~XmlConfigPrivate(){
+    delete m_domDocument;
+    if (has_tempory_file) fclose(tmp_fd);
+    else dev.close();
+}
+
+bool XmlConfigPrivate::ok(){
+    return is_xml_file_parsed_succesfully;
+}
+
+bool XmlConfigPrivate::save(const QString& file_name){
+    if (!file_name.isEmpty()) dev.setFileName(file_name);
+
+    if (has_tempory_file){
+        fclose(tmp_fd);
+        has_tempory_file = false; //now there's no a tempory file but a real one
+        tmp_fd = nullptr;
+    }
+
+    if( !dev.open(QIODevice::WriteOnly )){
+        cerr << "Unable to save XML file. We can't open " << dev.fileName().toStdString() << " in write mode\n" ;
+        return false;
+    }
+
+    QTextStream stream(&dev);
+    m_domDocument->save(stream, XML_TAG_IDENTATION);
+    dev.close();
+    return true;
+}
+
+QString XmlConfigPrivate::fileName() const{
+    return dev.fileName();
+}
+
+QString XmlConfigPrivate::toString() const{
+    if (m_domDocument)
+        return m_domDocument->toString();
+    else
+        return QString("");
+}
+
+void XmlConfigPrivate::debug(const QDomNode& section, uint ident) const{
+
+    uint identation{XML_TAG_IDENTATION};
+    if (ident )  identation = ident;
+
+    QTextStream stream(stdout, QIODevice::WriteOnly);
+    section.save(stream, identation);
+    cout << endl;
+}
+
+QDomDocument *XmlConfigPrivate::domDocument()const {
+    return m_domDocument;
+}
+
+QIODevice::OpenMode XmlConfigPrivate::openedMode() const{
+    return mode;
+}
+
+void XmlConfigPrivate::setXmlHeaderAndFooter(QFile &dev){
+    QTextStream stream(&dev);
+    stream << "<?xml version = '1.0' encoding='UTF-8'?> \n<AUTOMATICALLY_GENERATED_XML>\n\n" ; // xml header
+    stream << "</AUTOMATICALLY_GENERATED_XML>"; // xml footer
+
+    if(!stream.seek(0)) //rewind the file to the initial pos so the info just written can be read
+        cerr << "We can't get to the beggining of the file" << endl;
+}

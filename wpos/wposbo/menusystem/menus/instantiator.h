@@ -29,15 +29,15 @@ public:
     explicit Instantiator(QWidget* parent=0, const QString & name= QString());
     ~Instantiator() = default;
 
-    bool hasMenu(const QString& menu_name);
+    bool hasMenu(const QString& menuName);
 
 public slots:
-    QWidget *getMenu(QWidget *parent, const QString &menu_name); //@benes , maybe getSubMenu
-    void showMenu(const QString& page_name);
+    QWidget *getMenu(QWidget *parent, const QString& menuName); //@benes , maybe getSubMenu
+    void showMenu(const QString& pageName);
 
 signals:
-    void showPageMenu(const QString& page_name);
-    void splashRequested(const QString &str, int flags, const QColor &color);
+    void showPageMenu(const QString& pageName);
+    void splashRequested(const QString& msg, int flags, const QColor &color);
 
 protected:
     void initDcopModules();
@@ -51,15 +51,15 @@ protected:
     void initSupportMenu();
     void initStickMenu();
     
-    //   XmlConfig *xml_description;
-    HList<QWidget> *menus{};
+    HList<QWidget> menus;
     QWidget *parent{};
+
     UserModule *user_mod{};
     DatabaseModule *db_mod{};
     ProductModule *product_mod{};
 
-    Qt::Alignment splash_align {Qt::AlignBottom | Qt::AlignRight};
-    Qt::GlobalColor splash_color = Qt::darkBlue;
+    Qt::Alignment splash_align   {Qt::AlignBottom | Qt::AlignRight};
+    Qt::GlobalColor splash_color {Qt::darkBlue};
 };
 
 #endif

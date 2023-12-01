@@ -1,5 +1,5 @@
 /***************************************************************************
-                          bslorderwidget.h  -  description
+                          ordercontentview.h  -  description
                              -------------------
     begin                 : mon Jun 2 2003
     copyright          : (C) 2003 by Napsis S.L.
@@ -20,21 +20,28 @@ Modified by Carlos Manzanedo Rueda.
 
 
 //  Order has the following initial appearance
-//  ---------------------------------------------------------------------
+//  ------------------------------------------------------
 //  | UNITS | DESCRIPTION | PRIORITY | TIMESTAMP | TOTAL |
-//  ---------------------------------------------------------------------
+//  ------------------------------------------------------
 //  |       |             |          |           |       |
 //
-//  Columns should be movables and its position is saved in the xml that comtains order
-//  description
+//  Columns should be movables and their positions are saved
+//  in the xml that comtains order description
 
 class XmlConfig;
 class VisualProduct;
 
-class OrderContentView : public QTableWidget  {
+class OrderContentView :
+    public QTableWidget
+{
     Q_OBJECT
 public:
-    OrderContentView(XmlConfig *xml, QWidget *parent, QString name);
+    OrderContentView(
+        XmlConfig *xml,
+        QWidget *parent,
+        QString name
+    );
+
     ~OrderContentView();
 
     void usePartialSumsByRow(bool use_it);
@@ -42,18 +49,22 @@ public:
     XmlConfig* getLocalXml();
 
 public slots:
-    void genericSignalSlot(const QString& signal_name);
-    void genericDataSignalSlot(const QString& signal_name, XmlConfig *xml);
+    void genericSignalSlot(const QString& signal);
+    void genericDataSignalSlot(const QString& signal, XmlConfig *xml);
+
     void setDefaultColor();
+
     void selectUp();
     void selectDown();
     void selectFirst();
     void selectLast();
+
     void clearOrder();
     void reset();
     void delRow();
     void incrementQuantity();
     void decrementQuantity();
+
     // This slot is used to load an order given in an XML definition file
     //void loadProductsInfo(XmlConfig *xml);
     // Called each time a new product is clicked
@@ -77,6 +88,7 @@ protected:
     void debugVProductList();
     void debug();
 
+private:
     // This XML is received each time a product change in the CORE
     XmlConfig *local_products_xml{};
 
@@ -91,7 +103,8 @@ protected:
     uint color_state{0};
 
     uint row_height{Sizes::ROW_HEIGTH};
-    // Allow to use a partial total for each row which currently means quantity*price
+
+    // For partial total of each row , quantity*price
     bool use_partial_sums{false};
 };
 

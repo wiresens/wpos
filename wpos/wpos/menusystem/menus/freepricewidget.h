@@ -17,7 +17,7 @@
 #include <QWidget>
 
 class XmlConfig;
-class FloatKeyboardBox;
+class FloatKeyboard;
 class QString;
 
 class FreePriceWidget : public QWidget, private Ui::FreePriceWidget  {
@@ -35,7 +35,7 @@ protected slots:
     void toggleButtonsState();
 
 protected:
-    FloatKeyboardBox *key_pad;
+    FloatKeyboard *key_pad;
 };
 
 #endif

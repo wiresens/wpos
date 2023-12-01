@@ -61,8 +61,8 @@ MenuButton::MenuButton(
     frame->installEventFilter(this);
     installEventFilter(this);
 
-    connect(this, SIGNAL(clicked(bool)), this, SLOT(openPopUp()));
-    connect(button_group, SIGNAL(buttonPressed(QAbstractButton*)), this, SLOT(toggleMenuButtonColor(QAbstractButton*)));
+    connect(this, &MenuButton::clicked, this, &MenuButton::openPopUp);
+    connect(button_group, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonPressed), this, &MenuButton::toggleMenuButtonColor);
 }
 
 MenuButton::~MenuButton(){

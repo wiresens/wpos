@@ -254,7 +254,7 @@ void UserModule::enrollUserData(const QString& _xml){
     //validate the string to XML and the XML with a DTD
     xml = new XmlConfig();
     xml->readXmlFromString(_xml);
-    if (!xml->isValid()){
+    if (!xml->wellFormed()){
         delete xml;
         return;
     }

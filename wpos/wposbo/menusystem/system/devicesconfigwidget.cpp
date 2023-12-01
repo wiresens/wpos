@@ -80,21 +80,20 @@ DevicesConfig::DevicesConfig(QWidget *parent, const QString& name ):
     kitchen_lineedit->hide();
 
     //connection between buttons
-    connect(printer_type_combobox,SIGNAL(activated(int)),this,SLOT(printerTypeChanged(int)));
-    connect(kitchen_type_combobox,SIGNAL(activated(int)),this,SLOT(kitchenTypeChanged(int)));
-
-    connect(printer_device_combobox,SIGNAL(activated(int)),this,SLOT(printerDeviceChanged(int)));
-    connect(kitchen_device_combobox,SIGNAL(activated(int)),this,SLOT(kitchenDeviceChanged(int)));
+    connect(printer_type_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DevicesConfig::printerDeviceChanged);
+    connect(kitchen_type_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DevicesConfig::kitchenTypeChanged);
+    connect(printer_device_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DevicesConfig::printerDeviceChanged);
+    connect(kitchen_device_combobox, QOverload<int>::of(&QComboBox::currentIndexChanged), this, &DevicesConfig::kitchenDeviceChanged);
 
     connect(cashbox_type_combobox, QOverload<int>::of(&QComboBox::activated),this, QOverload<int>::of(&DevicesConfig::somethingChanged));
     connect(cashbox_device_combobox, QOverload<int>::of(&QComboBox::activated), this,  QOverload<int>::of(&DevicesConfig::somethingChanged));
     connect(printer_chars_groupbox, &QGroupBox::clicked, this, QOverload<bool>::of(&DevicesConfig::somethingChanged));
     connect(kitchen_chars_groupbox, &QGroupBox::clicked,this, QOverload<bool>::of(&DevicesConfig::somethingChanged));
 
-    connect(printer_lineedit,SIGNAL(textChanged(const QString&)),this,SLOT(printerIppDeviceChanged(const QString &)));
-    connect(kitchen_lineedit,SIGNAL(textChanged(const QString&)),this,SLOT(kitchenIppDeviceChanged(const QString &)));
+    connect(printer_lineedit, &QLineEdit::textChanged, this, &DevicesConfig::printerIppDeviceChanged);
+    connect(kitchen_lineedit, &QLineEdit::textChanged, this, &DevicesConfig::kitchenIppDeviceChanged);
 
-    connect(ok_button,SIGNAL(released()),this,SLOT(acceptSlot()));
+    connect(ok_button, &QPushButton::released, this, &DevicesConfig::acceptSlot);
 
 }
 
@@ -106,7 +105,7 @@ void DevicesConfig::readDevicesConfig(){
 void DevicesConfig::readCashboxConfig(){
 
     XmlConfig xml(DEVICES_CONFIG);
-    if ( !xml.isValid() ) return;
+    if ( !xml.wellFormed() ) return;
 
     bool writexml = false;
     if ( !xml.setDomain("cashbox") ){
@@ -154,7 +153,7 @@ void DevicesConfig::readPrinterConfig(){
     int kitchen_char_length;
 
     XmlConfig xml(DCOPPRINTER_CONFIG);
-    if ( !xml.isValid() ) return;
+    if ( !xml.wellFormed() ) return;
 
     if (!xml.setDomain("main")){
         xml.createElementSetDomain("main");
@@ -471,7 +470,7 @@ void DevicesConfig::writePrinterConfig(){
     //write dcopprinter_config.xml configuration
 
     xml = new XmlConfig(DCOPPRINTER_CONFIG);
-    if (!xml->isValid()){
+    if (!xml->wellFormed()){
         delete xml;
         return;
     }
@@ -589,7 +588,7 @@ void DevicesConfig::prepareMainTickets(const QString& text){
 
     xml = new XmlConfig();
     xml->readXmlFromString(xml_string);
-    if (xml->isValid()){
+    if (xml->wellFormed()){
         xml->save(MAIN_TICKET_FILE);
     }
     delete xml;
@@ -634,7 +633,7 @@ void DevicesConfig::prepareMainTickets(const QString& text){
 
     xml = new XmlConfig();
     xml->readXmlFromString(xml_string);
-    if (xml->isValid()){
+    if (xml->wellFormed()){
         xml->save(MAIN_INVOICE_FILE);
     }
     delete xml;
@@ -716,7 +715,7 @@ void DevicesConfig::writeCashboxConfig(){
 
 
     xml = new XmlConfig(DEVICES_CONFIG);
-    if (!xml->isValid()){
+    if (!xml->wellFormed()){
         delete xml;
         return;
     }

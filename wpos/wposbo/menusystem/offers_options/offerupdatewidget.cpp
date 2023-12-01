@@ -20,8 +20,8 @@
 #include "productsmodule/offersmodule/productoffermodule.h"
 #include "database/productoffersmoduledb.h"
 
-#include <wposwidget/numkeyboardbox.h>
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/numkeyboard.h>
+#include <wposwidget/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QMessageBox>
@@ -118,10 +118,10 @@ void OfferUpdateWidget::acceptSlot(){
 
         QString value;
         if (fixed_radiobutton->isChecked()){
-            value = QString::number(float_kb->getNumber(),'f',2);
+            value = QString::number(float_kb->value(),'f',2);
         }
         else if (percent_radiobutton->isChecked()){
-            double percentage = double (100 - num_kb->getNumber()) /100;
+            double percentage = double (100 - num_kb->value()) /100;
             value = QString::number(percentage,'f', 2);
         }
         mod.updateAllProductOfferValue(offer_combobox->currentText(), offer_name_combobox->currentText(),value);

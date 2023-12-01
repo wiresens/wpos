@@ -16,28 +16,26 @@
  ***************************************************************************/
 
 #include "nkeyboard.h"
+#include <libbslxml/xmlconfig.h>
+#include <wposcore/productextrainfo.h>
 #include <wposwidget/global.h>
 
 #include <QSignalMapper>
-#include <QLayout>
-#include <QLineEdit>
+//#include <QLayout>
+//#include <QLineEdit>
 #include <QKeyEvent>
-#include <QApplication>
+//#include <QApplication>
+//#include <QButtonGroup>
+//#include <QString>
+//#include <QStackedWidget>
 #include <QButtonGroup>
-#include <QString>
-#include <QStackedWidget>
-#include <QButtonGroup>
-#include <QAbstractButton>
-#include <QRegExp>
-#include <QPixmap>
-#include <QIcon>
-
-#include <xmlconfig.h>
-#include <optionnode.h>
-#include <QFile>
+//#include <QAbstractButton>
+//#include <QRegExp>
+//#include <QPixmap>
+//#include <QIcon>
+//#include <QFile>
 
 #include <iostream>
-using namespace std;
 
 #define BTAB         0
 
@@ -128,38 +126,33 @@ static const uint GRID_ROW = 3;
 static const uint GRID_COL = 10;
 
 NKeyboard::NKeyboard(
-    QWidget *parent,
-    const QString& name ):
-
-    QMenu(parent),
-//    keyboard_buttons  {new HList<QPushButton>},
-//    lounges {new HList<LoungeData>},
+    QWidget* parent,
+    const QString& name
+)
+    :QMenu(parent),
     o_parent{ parent }
 {
     setupUi(this);
     setObjectName(name);
     setFocusPolicy(Qt::NoFocus);
-    init();
+
+    signalMapper = new QSignalMapper(this);
+    signalMapper->setObjectName("KeyboardSignalMapper");
+    setMapping(signalMapper);
 }
 
 NKeyboard::NKeyboard(
     const QString& text,
-    QWidget *parent,
-    const QString& name):
-
-    NKeyboard(parent, name)
+    QWidget* parent,
+    const QString& name
+)
+    :NKeyboard(parent, name)
 {
     output_line->setText(text);
 }
 
-NKeyboard::~NKeyboard(){
-    delete signal_mapper;
-}
-
-void NKeyboard::init(){
-
-    signal_mapper = new QSignalMapper(this);
-    signal_mapper->setObjectName("keyboard_signal_mapper");
+void NKeyboard::setMapping(QSignalMapper *signalMapper){
+    connect(signalMapper, &QSignalMapper::mappedInt, this, &NKeyboard::keyClicked);
 
     keyboard_buttons.append(esc,QString::number(ESC));
     keyboard_buttons.append(f1,QString::number(F1));
@@ -246,187 +239,185 @@ void NKeyboard::init(){
     keyboard_buttons.append(br8,QString::number(B8));
     keyboard_buttons.append(br9,QString::number(B9));
 
-    signal_mapper->setMapping(esc,ESC);
-    signal_mapper->setMapping(f1,F1);
-    signal_mapper->setMapping(f2,F2);
-    signal_mapper->setMapping(f3,F3);
-    signal_mapper->setMapping(f4,F4);
-    signal_mapper->setMapping(f5,F5);
-    signal_mapper->setMapping(f6,F6);
-    signal_mapper->setMapping(f7,F7);
-    signal_mapper->setMapping(f8,F8);
-    signal_mapper->setMapping(f9,F9);
-    signal_mapper->setMapping(f10,F10);
-    signal_mapper->setMapping(f11,F11);
-    signal_mapper->setMapping(f12,F12);
-    signal_mapper->setMapping(oa,OA_ASCII);
-    signal_mapper->setMapping(b1,B1);
-    signal_mapper->setMapping(b2,B2);
-    signal_mapper->setMapping(b3,B3);
-    signal_mapper->setMapping(b4,B4);
-    signal_mapper->setMapping(b5,B5);
-    signal_mapper->setMapping(b6,B6);
-    signal_mapper->setMapping(b7,B7);
-    signal_mapper->setMapping(b8,B8);
-    signal_mapper->setMapping(b9,B9);
-    signal_mapper->setMapping(b0,B0);
-    signal_mapper->setMapping(bint,BINT);
-    signal_mapper->setMapping(bdel,DEL);
-    signal_mapper->setMapping(btab,BTAB);
-    signal_mapper->setMapping(bq,BQ);
-    signal_mapper->setMapping(bw,BW);
-    signal_mapper->setMapping(be,BE);
-    signal_mapper->setMapping(br,BR);
-    signal_mapper->setMapping(bt,BT);
-    signal_mapper->setMapping(by,BY);
-    signal_mapper->setMapping(bu,BU);
-    signal_mapper->setMapping(bi,BI);
-    signal_mapper->setMapping(bo,BO);
-    signal_mapper->setMapping(bp,BP);
-    signal_mapper->setMapping(benter,ENTER);
-    signal_mapper->setMapping(bmay,MAY);
-    signal_mapper->setMapping(ba,BA);
-    signal_mapper->setMapping(bs,BS);
-    signal_mapper->setMapping(bd,BD);
-    signal_mapper->setMapping(bf,BF);
-    signal_mapper->setMapping(bg,BG);
-    signal_mapper->setMapping(bh,BH);
-    signal_mapper->setMapping(bj,BJ);
-    signal_mapper->setMapping(bk,BK);
-    signal_mapper->setMapping(bl,BL);
-    signal_mapper->setMapping(ben,BEN_ASCII);
-    signal_mapper->setMapping(blsh,SHIFT);
-    signal_mapper->setMapping(bmsg,BMSG);
-    signal_mapper->setMapping(bz,BZ);
-    signal_mapper->setMapping(bx,BX);
-    signal_mapper->setMapping(bc,BC);
-    signal_mapper->setMapping(bv,BV);
-    signal_mapper->setMapping(bb,BB);
-    signal_mapper->setMapping(bn,BN);
-    signal_mapper->setMapping(bm,BM);
-    signal_mapper->setMapping(bcut,BCUT);
-    signal_mapper->setMapping(bdot,BDOT);
-    signal_mapper->setMapping(blmi,MIN);
-    signal_mapper->setMapping(brsh,SHIFT);
-    signal_mapper->setMapping(blctrl,CTRL);
-    signal_mapper->setMapping(blalt,ALT);
-    signal_mapper->setMapping(bspace,SPACE);
-    signal_mapper->setMapping(bralt,ALT);
-    signal_mapper->setMapping(brctrl,CTRL);
-    signal_mapper->setMapping(bbloq,BLOQ);
-    signal_mapper->setMapping(bdiv,BDIV);
-    signal_mapper->setMapping(bprod,BPROD);
-    signal_mapper->setMapping(brmin,MIN);
-    signal_mapper->setMapping(brplus,BRPLUS);
-    signal_mapper->setMapping(brenter,INTRO);
-    signal_mapper->setMapping(brdot,BDOT);
-    signal_mapper->setMapping(br0,B0);
-    signal_mapper->setMapping(br1,B1);
-    signal_mapper->setMapping(br2,B2);
-    signal_mapper->setMapping(br3,B3);
-    signal_mapper->setMapping(br4,B4);
-    signal_mapper->setMapping(br5,B5);
-    signal_mapper->setMapping(br6,B6);
-    signal_mapper->setMapping(br7,B7);
-    signal_mapper->setMapping(br8,B8);
-    signal_mapper->setMapping(br9,B9);
+    signalMapper->setMapping(esc,ESC);
+    signalMapper->setMapping(f1,F1);
+    signalMapper->setMapping(f2,F2);
+    signalMapper->setMapping(f3,F3);
+    signalMapper->setMapping(f4,F4);
+    signalMapper->setMapping(f5,F5);
+    signalMapper->setMapping(f6,F6);
+    signalMapper->setMapping(f7,F7);
+    signalMapper->setMapping(f8,F8);
+    signalMapper->setMapping(f9,F9);
+    signalMapper->setMapping(f10,F10);
+    signalMapper->setMapping(f11,F11);
+    signalMapper->setMapping(f12,F12);
+    signalMapper->setMapping(oa,OA_ASCII);
+    signalMapper->setMapping(b1,B1);
+    signalMapper->setMapping(b2,B2);
+    signalMapper->setMapping(b3,B3);
+    signalMapper->setMapping(b4,B4);
+    signalMapper->setMapping(b5,B5);
+    signalMapper->setMapping(b6,B6);
+    signalMapper->setMapping(b7,B7);
+    signalMapper->setMapping(b8,B8);
+    signalMapper->setMapping(b9,B9);
+    signalMapper->setMapping(b0,B0);
+    signalMapper->setMapping(bint,BINT);
+    signalMapper->setMapping(bdel,DEL);
+    signalMapper->setMapping(btab,BTAB);
+    signalMapper->setMapping(bq,BQ);
+    signalMapper->setMapping(bw,BW);
+    signalMapper->setMapping(be,BE);
+    signalMapper->setMapping(br,BR);
+    signalMapper->setMapping(bt,BT);
+    signalMapper->setMapping(by,BY);
+    signalMapper->setMapping(bu,BU);
+    signalMapper->setMapping(bi,BI);
+    signalMapper->setMapping(bo,BO);
+    signalMapper->setMapping(bp,BP);
+    signalMapper->setMapping(benter,ENTER);
+    signalMapper->setMapping(bmay,MAY);
+    signalMapper->setMapping(ba,BA);
+    signalMapper->setMapping(bs,BS);
+    signalMapper->setMapping(bd,BD);
+    signalMapper->setMapping(bf,BF);
+    signalMapper->setMapping(bg,BG);
+    signalMapper->setMapping(bh,BH);
+    signalMapper->setMapping(bj,BJ);
+    signalMapper->setMapping(bk,BK);
+    signalMapper->setMapping(bl,BL);
+    signalMapper->setMapping(ben,BEN_ASCII);
+    signalMapper->setMapping(blsh,SHIFT);
+    signalMapper->setMapping(bmsg,BMSG);
+    signalMapper->setMapping(bz,BZ);
+    signalMapper->setMapping(bx,BX);
+    signalMapper->setMapping(bc,BC);
+    signalMapper->setMapping(bv,BV);
+    signalMapper->setMapping(bb,BB);
+    signalMapper->setMapping(bn,BN);
+    signalMapper->setMapping(bm,BM);
+    signalMapper->setMapping(bcut,BCUT);
+    signalMapper->setMapping(bdot,BDOT);
+    signalMapper->setMapping(blmi,MIN);
+    signalMapper->setMapping(brsh,SHIFT);
+    signalMapper->setMapping(blctrl,CTRL);
+    signalMapper->setMapping(blalt,ALT);
+    signalMapper->setMapping(bspace,SPACE);
+    signalMapper->setMapping(bralt,ALT);
+    signalMapper->setMapping(brctrl,CTRL);
+    signalMapper->setMapping(bbloq,BLOQ);
+    signalMapper->setMapping(bdiv,BDIV);
+    signalMapper->setMapping(bprod,BPROD);
+    signalMapper->setMapping(brmin,MIN);
+    signalMapper->setMapping(brplus,BRPLUS);
+    signalMapper->setMapping(brenter,INTRO);
+    signalMapper->setMapping(brdot,BDOT);
+    signalMapper->setMapping(br0,B0);
+    signalMapper->setMapping(br1,B1);
+    signalMapper->setMapping(br2,B2);
+    signalMapper->setMapping(br3,B3);
+    signalMapper->setMapping(br4,B4);
+    signalMapper->setMapping(br5,B5);
+    signalMapper->setMapping(br6,B6);
+    signalMapper->setMapping(br7,B7);
+    signalMapper->setMapping(br8,B8);
+    signalMapper->setMapping(br9,B9);
 
-    connect(f1,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f2,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f3,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f4,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f5,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f6,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f7,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f8,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f9,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f10,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f11,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(f12,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(oa,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b1,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b2,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b3,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b4,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b5,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b6,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b7,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b8,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b9,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(b0,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bint,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bdel,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(btab,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bq,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bw,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(be,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bt,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(by,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bu,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bi ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bo,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bp,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(benter,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bmay ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(ba,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bs ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bd,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bf ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bg,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bh,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bj ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bk,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bl ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(ben,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(blsh,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bmsg,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bz,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bx,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bc,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bv,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bb,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bn,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bm,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bcut,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bdot,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(blmi,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(brsh,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(blctrl,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(blalt ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bspace,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bralt,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(brctrl,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bbloq,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bdiv ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(bprod,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(brmin,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(brplus,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(brenter,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(brdot,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br0 ,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br1,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br2,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br3,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br4,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br5,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br6,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br7,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br8,SIGNAL(released()),signal_mapper,SLOT(map()));
-    connect(br9,SIGNAL(released()),signal_mapper,SLOT(map()));
 
-    connect(signal_mapper, SIGNAL(mapped(int)), this, SLOT(keyClicked(int)));
 
-    connect(tables_exit_button, SIGNAL(released()), this, SLOT(exitSlot()));
-    connect(exit_button, SIGNAL(released()), this, SLOT(exitSlot()));
+    connect(f1, &QPushButton::released,signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f2, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f3, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f4, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f5, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f6, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f7, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f8, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f9, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f10, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f11, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(f12, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(oa, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b1, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b2, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b3, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b4, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b5, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b6, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b7, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b8, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b9, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(b0, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bint, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bdel, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(btab, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bq, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bw, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(be, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bt, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(by, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bu, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bi , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bo, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bp, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(benter, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bmay , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(ba, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bs , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bd, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bf , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bg, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bh, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bj , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bk, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bl , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(ben, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(blsh, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bmsg, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bz, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bx, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bc, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bv, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bb, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bn, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bm, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bcut, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bdot, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(blmi, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(brsh, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(blctrl, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(blalt , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bspace, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bralt, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(brctrl, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bbloq, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bdiv , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(bprod, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(brmin, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(brplus, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(brenter, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(brdot, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br0 , &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br1, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br2, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br3, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br4, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br5, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br6, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br7, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br8, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
+    connect(br9, &QPushButton::released, signalMapper, QOverload<>::of(&QSignalMapper::map));
 
-    connect(exit_button, SIGNAL(released()), this, SIGNAL(exitClicked()));
+    connect(tables_exit_button,  &QPushButton::released, this, &NKeyboard::exitSlot);
+    connect(exit_button,  &QPushButton::released, this, &NKeyboard::exitSlot);
+    connect(exit_button,  &QPushButton::released, this, &NKeyboard::exitClicked);
+    connect(clear_button,  &QPushButton::released,this, &NKeyboard::clearSlot);
+    connect(output_line, &QLineEdit::textChanged, this, &NKeyboard::textChanged);
 
-    connect(clear_button, SIGNAL(released()),this, SLOT(clearSlot()));
-    connect(output_line, SIGNAL(textChanged(const QString &)), this, SIGNAL(textChanged(const QString &)));
-
-    connect(lounge_button, SIGNAL(clicked()), this,SLOT(loungeButtonClicked()));
-    connect(kb_button, SIGNAL(clicked()), this, SLOT(kbButtonClicked()));
+    connect(lounge_button, &QPushButton::clicked, this, &NKeyboard::loungeButtonClicked);
+    connect(kb_button, &QPushButton::clicked, this, &NKeyboard::kbButtonClicked);
 
     lounge_button->setObjectName("button_group");
     lounge_button->setIcon(QPixmap("controls:lounge.png"));
@@ -443,20 +434,20 @@ void NKeyboard::init(){
 
     lounge_buttongroup = new QButtonGroup(lounge_page);
     lounge_buttongroup->setExclusive(true);
-    connect(lounge_buttongroup, SIGNAL(buttonClicked(QAbstractButton*)),
-            this , SLOT(switchLounge(QAbstractButton*)) );
+    connect(lounge_buttongroup, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
+            this , &NKeyboard::switchLounge);
 
     main_stack->setCurrentWidget(keyboard_page);
 
     if ( !QFile(LOUNGES_FILE).exists() ) lounge_button->hide();
     else{
         XmlConfig xml (LOUNGES_FILE);
-        if (xml.isValid()) loadLounges(&xml);
+        if (xml.wellFormed()) loadLounges(&xml);
     }
 }
 
 void NKeyboard::switchLounge(QAbstractButton* button){
-    cout <<"Lounge : "<< lounge_buttongroup->buttons().indexOf(button) << endl;
+    std::cout <<"Lounge : "<< lounge_buttongroup->buttons().indexOf(button) << '\n';
     lounge_stack->setCurrentIndex(lounge_buttongroup->buttons().indexOf(button));
     button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
 
@@ -467,7 +458,7 @@ void NKeyboard::switchLounge(QAbstractButton* button){
     }
 }
 
-void NKeyboard::loungeButtonClicked(){
+void NKeyboard::showLounge(){
     main_stack->setCurrentWidget(lounge_page);
     emit loungeSignal(true);
 }
@@ -527,13 +518,13 @@ void NKeyboard::loadLounges(XmlConfig *xml){
 
         if (xml->setDomain("options")){
             for( auto j = 0 ; j < xml->howManyTags("option"); j++){
-                if ( j == 0 )  lounge->option_nodes = new HList<OptionNode>;
+                if ( j == 0 )  lounge->option_nodes = new HList<ProductExtraInfo>;
                 auto option_type = xml->readString("option["+QString::number(j)+"].type");
                 auto option_value = xml->readString("option["+QString::number(j)+"].value");
                 if ((option_type.isEmpty()) || (option_value.isEmpty()))  continue;
                 auto option = lounge->option_nodes->find(option_value);
                 if ( !option ){
-                    option = new OptionNode(option_type);
+                    option = new ProductExtraInfo(option_type);
                     lounge->option_nodes->append(option, option_type);
                 }
                 option->addOption(option_value, true);
@@ -556,8 +547,8 @@ void NKeyboard::loadLounges(XmlConfig *xml){
         glayout = new QGridLayout(lounge_stack_page);
         lounge->button_group = lounge_stack_buttongroup;
 
-        connect(lounge_stack_buttongroup, SIGNAL(buttonClicked(QAbstractButton*)),
-                this, SLOT(tableButtonClicked(QAbstractButton*)));
+        connect(lounge_stack_buttongroup, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
+                this, QOverload<QAbstractButton*>::of(&NKeyboard::tableButtonClicked));
 
         lounge->stack_index = lounge_stack->addWidget(lounge_stack_page);
 
@@ -610,53 +601,6 @@ void NKeyboard::loungeButtonClicked(bool checked){
             button->setBackgroundRole(QPalette::Button);
         }
     }
-}
-
-void NKeyboard::tableButtonClicked(bool checked){
-    int i,count;
-    (void) checked;
-    LoungeData *lounge{};
-    LoungeData *aux_lounge = 0;
-    QString aux;
-    QPushButton *button=0;
-
-    for( auto child : lounge_buttongroup->children() ){
-
-        button = qobject_cast<QPushButton*>(child);
-        if( !button ) continue;
-
-        if (button->isDown()){
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
-            button->setBackgroundRole(QPalette::Window);
-            lounge = lounges.find(button->objectName());
-        }
-    }
-
-    count = lounges.count();
-    for(i=0;i<count;i++){
-        aux_lounge = lounges.at(i);
-        if (aux_lounge != lounge){
-            clearLoungeStack(aux_lounge->name);
-        }
-    }
-
-    aux = lounge->name+ " ";
-    count = lounge->table_buttons->count();
-    for(i=0;i<count;i++){
-        button = lounge->table_buttons->at(i);
-        if (!button->isEnabled())
-            continue;
-        if (button->isDown()){
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
-            button->setBackgroundRole(QPalette::Window);
-            aux += button->objectName();
-        }
-        else{
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_OFF_COLOR));
-            button->setBackgroundRole(QPalette::Window);
-        }
-    }
-    output_line->setText(aux);
 }
 
 void NKeyboard::tableButtonClicked(QAbstractButton* button){
@@ -842,7 +786,7 @@ int NKeyboard::getTable(){
     return -1;
 }
 
-HList<OptionNode>* NKeyboard::getOptionsFromLounge(const QString& lounge){
+HList<ProductExtraInfo>* NKeyboard::getOptionsFromLounge(const QString& lounge){
     LoungeData *lounge_data{} ;
     lounge_data  = lounges.find(lounge);
     if (lounge_data)

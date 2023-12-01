@@ -23,7 +23,7 @@
 #include "prodselect/product.h"
 
 #include <xmlconfig.h>
-#include <optionnode.h>
+#include <productextrainfo.h>
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 

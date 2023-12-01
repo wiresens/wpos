@@ -118,7 +118,7 @@ void UserCreationWidget::fingerprintAcquireSlot(){
     }
 
     setExpectingEnrollMent(true);
-    QTimer::singleShot(ENROLMENT_TIMEOUT, this, SLOT(flushExpectingData()));
+    QTimer::singleShot(ENROLMENT_TIMEOUT, this, &UserCreationWidget::flushExpectingData);
     if (!enroll()){
         QString text = msg.arg(userFullName()).arg(userId());
         QMessageBox::warning(this, caption, text, QMessageBox::Ok);

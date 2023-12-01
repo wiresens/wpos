@@ -40,7 +40,7 @@ public:
     void mouseMoveEvent(QMouseEvent * evt);
 
 signals:
-     void textEnter(const QString& name);
+    void textEnter(const QString& name);
 private:
     bool dragging;
 };
@@ -48,10 +48,10 @@ private:
 class BslDDIconViewItem : public QListWidgetItem{
 public:
     BslDDIconViewItem( QListWidget* parent, const QString& text, const QPixmap& icon ):
-                       QListWidgetItem( icon, text, parent ){}
+        QListWidgetItem( icon, text, parent ){}
 
     BslDDIconViewItem(QListWidget* parent, const QString &text ):
-                      QListWidgetItem( text, parent ){}
+        QListWidgetItem( text, parent ){}
 
     // High-level drag and drop
     bool acceptDrop(const QMimeData *mime ) const;
@@ -62,13 +62,18 @@ class BslDDIconView : public QListWidget
 {
     Q_OBJECT
 public:
-    explicit BslDDIconView( QWidget * parent = nullptr, const QString& name = QString() ) :
-    QListWidget( parent ) {
+    explicit BslDDIconView(
+        QWidget * parent = nullptr,
+        const QString& name = QString()
+        ) : QListWidget( parent )
+    {
         setObjectName(name);
         setViewMode(QListView::IconMode);
     }
+
     // High-level drag and drop
     QDrag *dragObject();
+
 public slots:
     void slotNewItem(QDropEvent *evt);
 };
@@ -88,9 +93,9 @@ public:
 
 signals:
     void textEnter(const QString& name);
-	void textEnter(int x, int y, const QString& name);
-	void textEnter(int x, int y);
-     
+    void textEnter(int x, int y, const QString& name);
+    void textEnter(int x, int y);
+
 private:
     bool dragging;
 };

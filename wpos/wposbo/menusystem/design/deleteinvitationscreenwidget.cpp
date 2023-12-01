@@ -23,9 +23,9 @@ DeleteInvitationScreenWidget::DeleteInvitationScreenWidget(
     setupUi(this);
     setObjectName(name);
     screen_name_label->clear();
-    connect(accept_button, SIGNAL(released()), this, SLOT(acceptSlot()));
-    connect(cancel_button, SIGNAL(released()), this, SLOT(cancelSlot()));
-    connect(delete_button, SIGNAL(released()), this, SLOT(deleteSlot()));
+    connect(accept_button, &QPushButton::released, this, &DeleteInvitationScreenWidget::acceptSlot);
+    connect(cancel_button, &QPushButton::released, this, &DeleteInvitationScreenWidget::cancelSlot);
+    connect(delete_button, &QPushButton::released, this, &DeleteInvitationScreenWidget::deleteSlot);
 }
 
 void DeleteInvitationScreenWidget::setScreen(const QString& screen){

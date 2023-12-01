@@ -39,7 +39,7 @@ signals:
     void reportCreated(const QString& name);
 
 public slots:
-    virtual void reportSlot(QString) override; //ASYNC
+    Q_SCRIPTABLE void reportSlot(QString) override; //ASYNC
 
 protected slots: //@benes
     void clear();

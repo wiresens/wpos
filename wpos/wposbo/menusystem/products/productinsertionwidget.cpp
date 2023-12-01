@@ -25,8 +25,8 @@
 #include <wposcore/config.h>
 #include <wposwidget/toolkit.h>
 #include <wposwidget/dragobjects.h>
-#include <wposwidget/floatkeyboardbox.h>
-#include <wposwidget/numkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
+#include <wposwidget/numkeyboard.h>
 
 #include <QDataStream>
 #include <QLineEdit>
@@ -88,6 +88,7 @@ static const QString& DEFAULT_QUANTITY {"1.0"};
 static const QString& ICON_PATH {Files::ProductsDir};
 static const double ICON_BUTTON_SIZE  = 50.00;
 static const double ICON_SIZE = 32.00;
+static const uint TIME_OUT {10};
 
 ProductInsertionWidget::ProductInsertionWidget(
         ProductModule *product_module ,
@@ -214,19 +215,19 @@ ProductInsertionWidget::ProductInsertionWidget(
     if(!(hlayout = (QHBoxLayout *) numblock_product_frame->layout()))
         hlayout = new QHBoxLayout(numblock_product_frame);
 
-    float_kb = new FloatKeyboardBox(numblock_product_frame);
-    float_kb->hideNumber(true);
+    float_kb = new FloatKeyboard(numblock_product_frame);
+    float_kb->hideDisplay();
     hlayout->addWidget(float_kb);
 
     QVBoxLayout *vlayout;
     if(!(vlayout = (QVBoxLayout *) box_frame_offers->layout()))
         vlayout = new QVBoxLayout(box_frame_offers);
 
-    float_kb_offers = new FloatKeyboardBox(box_frame_offers);
-    float_kb_offers->hideNumber(true);
+    float_kb_offers = new FloatKeyboard(box_frame_offers);
+    float_kb_offers->hideDisplay();
     vlayout->addWidget(float_kb_offers);
-    num_kb_offers = new NumKeyboardBox(box_frame_offers);
-    num_kb_offers->hideNumber(true);
+    num_kb_offers = new NumKeyboard(box_frame_offers);
+    num_kb_offers->hideDisplay();
     vlayout->addWidget(num_kb_offers);
     num_kb_offers->hide();
     price_label_offers_percent->hide();
@@ -235,8 +236,8 @@ ProductInsertionWidget::ProductInsertionWidget(
     if(!(hlayout = (QHBoxLayout *) box_frame_options->layout())){
         hlayout = new QHBoxLayout(box_frame_options);
     }
-    float_kb_options = new FloatKeyboardBox(box_frame_options);
-    float_kb_options->hideNumber(true);
+    float_kb_options = new FloatKeyboard(box_frame_options);
+    float_kb_options->hideDisplay();
     hlayout->addWidget(float_kb_options);
 
     pop_logo = new QMenu(this);
@@ -257,48 +258,47 @@ ProductInsertionWidget::ProductInsertionWidget(
 
     kitchen_checkbox_button->setChecked(false);
 
-    connect(product_name_lineedit, SIGNAL(textChanged(const QString &)),this, SLOT(nameChangedSlot(const QString &)));
-    connect(this, SIGNAL(progressSignal(int, const QString&)),this,SLOT(setProgressSlot(int, const QString&)));
+    connect(product_name_lineedit, &QLineEdit::textChanged, this, &ProductInsertionWidget::nameChangedSlot);
+    connect(this, &ProductInsertionWidget::progressSignal, this, &ProductInsertionWidget::setProgressSlot);
     connect(tab, &QTabWidget::currentChanged, this, &ProductInsertionWidget::tabChangedSlot);
 
-    connect(float_kb,SIGNAL(numChanged(double)),this,SLOT(numkeyChangedSlot(double)));
-    connect(float_kb_options,SIGNAL(numChanged(double)),this,SLOT(optionNumkeyChangedSlot(double)));
-    connect(float_kb_offers,SIGNAL(numChanged(double)),this,SLOT(offerNumkeyChangedSlot(double)));
-    connect(num_kb_offers,SIGNAL(numChanged(int)),this,SLOT(offerNumkeyChangedSlot(int)));
+    connect(float_kb, &FloatKeyboard::valueChanged, this, &ProductInsertionWidget::numkeyChangedSlot);
+    connect(float_kb_options, &FloatKeyboard::valueChanged, this, &ProductInsertionWidget::optionNumkeyChangedSlot);
+    connect(float_kb_offers, &FloatKeyboard::valueChanged, this, QOverload<double>::of(&ProductInsertionWidget::offerNumkeyChangedSlot));
+    connect(num_kb_offers, &NumKeyboard::valueChanged, this,  QOverload<int>::of(&ProductInsertionWidget::offerNumkeyChangedSlot));
 
-    connect(logo_button, SIGNAL(clicked()), this, SLOT(logoButtonClicked()));
-    connect(pop_logo, SIGNAL(aboutToShow()), this, SLOT(showPopLogo()));
-    connect(pop_logo, SIGNAL(aboutToHide()), this, SLOT(hidePopLogo()));
+    connect(logo_button, &QPushButton::clicked, this, &ProductInsertionWidget::logoButtonClicked);
+    connect(pop_logo, &QMenu::aboutToShow, this, &ProductInsertionWidget::showPopLogo);
+    connect(pop_logo, &QMenu::aboutToHide, this, &ProductInsertionWidget::hidePopLogo);
     connect(logo_view, &BslDDIconView::itemClicked, this, &ProductInsertionWidget::logoClickedSlot);
 
-    connect(search_button, SIGNAL(clicked()), this, SLOT(searchButtonClickedSlot()));
-    connect(search_lineedit, SIGNAL(textChanged(const QString &)),this, SLOT(searchEditChangedSlot(const QString &)));
-    connect(up_unitary_button,SIGNAL(clicked()),this,SLOT(upScrollUnitaryViewSlot()));
-    connect(down_unitary_button,SIGNAL(clicked()),this,SLOT(downScrollUnitaryViewSlot()));
-    connect(table,SIGNAL(textEnter(int, int, const QString&)),this,SLOT(draggedText(int, int, const QString&)));
-    connect(up_table_button, SIGNAL(clicked()), this, SLOT(upTableButtonClicked()));
-    connect(down_table_button, SIGNAL(clicked()), this, SLOT(downTableButtonClicked()));
-    connect(delete_table_button, SIGNAL(clicked()), this, SLOT(deleteTableButtonClicked()));
+    connect(search_button, &QPushButton::clicked, this, &ProductInsertionWidget::searchButtonClickedSlot);
+    connect(search_lineedit, &QLineEdit::textChanged, this, &ProductInsertionWidget::searchEditChangedSlot);
+    connect(up_unitary_button, &QPushButton::clicked, this, &ProductInsertionWidget::upScrollUnitaryViewSlot);
+    connect(down_unitary_button, &QPushButton::clicked, this, &ProductInsertionWidget::downScrollUnitaryViewSlot);
+    connect(table, QOverload<int, int, const QString&>::of(&BslDDTable::textEnter), this, &ProductInsertionWidget::draggedText);
+    connect(up_table_button, &QPushButton::clicked, this, &ProductInsertionWidget::upTableButtonClicked);
+    connect(down_table_button, &QPushButton::clicked, this, &ProductInsertionWidget::downTableButtonClicked);
+    connect(delete_table_button, &QPushButton::clicked, this, &ProductInsertionWidget::deleteTableButtonClicked);
 
+    connect(up_option_type_button, &QPushButton::clicked, this, &ProductInsertionWidget::upOptionTypeSlot);
+    connect(down_option_type_button, &QPushButton::clicked, this, &ProductInsertionWidget::downOptionTypeSlot);
+    connect(up_option_button, &QPushButton::clicked, this, &ProductInsertionWidget::upOptionSlot);
+    connect(down_option_button, &QPushButton::clicked, this, &ProductInsertionWidget::downOptionSlot);
+    connect(up_offer_type_button, &QPushButton::clicked, this, &ProductInsertionWidget::upOfferTypeSlot);
+    connect(down_offer_type_button, &QPushButton::clicked, this, &ProductInsertionWidget::downOfferTypeSlot);
+    connect(up_offer_button, &QPushButton::clicked, this, &ProductInsertionWidget::upOfferSlot);
+    connect(down_offer_button, &QPushButton::clicked, this, &ProductInsertionWidget::downOfferSlot);
 
-    connect(up_option_type_button,SIGNAL(clicked()),this,SLOT(upOptionTypeSlot()));
-    connect(down_option_type_button,SIGNAL(clicked()),this,SLOT(downOptionTypeSlot()));
-    connect(up_option_button,SIGNAL(clicked()),this,SLOT(upOptionSlot()));
-    connect(down_option_button,SIGNAL(clicked()),this,SLOT(downOptionSlot()));
-    connect(up_offer_type_button,SIGNAL(clicked()),this,SLOT(upOfferTypeSlot()));
-    connect(down_offer_type_button,SIGNAL(clicked()),this,SLOT(downOfferTypeSlot()));
-    connect(up_offer_button,SIGNAL(clicked()),this,SLOT(upOfferSlot()));
-    connect(down_offer_button,SIGNAL(clicked()),this,SLOT(downOfferSlot()));
+    connect(add_option_type_button, &QPushButton::clicked, this, &ProductInsertionWidget::addOptionTypeSlot);
+    connect(del_option_type_button, &QPushButton::clicked, this, &ProductInsertionWidget::delOptionTypeSlot);
+    connect(add_offer_type_button, &QPushButton::clicked, this, &ProductInsertionWidget::addOfferTypeSlot);
+    connect(del_offer_type_button, &QPushButton::clicked, this, &ProductInsertionWidget::delOfferTypeSlot);
 
-    connect(add_option_type_button,SIGNAL(clicked()),this,SLOT(addOptionTypeSlot()));
-    connect(del_option_type_button,SIGNAL(clicked()),this,SLOT(delOptionTypeSlot()));
-    connect(add_offer_type_button,SIGNAL(clicked()),this,SLOT(addOfferTypeSlot()));
-    connect(del_offer_type_button,SIGNAL(clicked()),this,SLOT(delOfferTypeSlot()));
-
-    connect(add_option_button,SIGNAL(clicked()),this,SLOT(addOptionSlot()));
-    connect(del_option_button,SIGNAL(clicked()),this,SLOT(delOptionSlot()));
-    connect(add_offer_button,SIGNAL(clicked()),this,SLOT(addOfferSlot()));
-    connect(del_offer_button,SIGNAL(clicked()),this,SLOT(delOfferSlot()));
+    connect(add_option_button, &QPushButton::clicked, this, &ProductInsertionWidget::addOptionSlot);
+    connect(del_option_button, &QPushButton::clicked, this, &ProductInsertionWidget::delOptionSlot);
+    connect(add_offer_button, &QPushButton::clicked, this, &ProductInsertionWidget::addOfferSlot);
+    connect(del_offer_button, &QPushButton::clicked, this, &ProductInsertionWidget::delOfferSlot);
 
     connect(option_type_listview, &QTreeWidget::itemSelectionChanged,
             this, &ProductInsertionWidget::optionTypeSelectionChangedSlot);
@@ -312,11 +312,11 @@ ProductInsertionWidget::ProductInsertionWidget(
     connect(offer_listview, &QTreeWidget::itemSelectionChanged,
             this, &ProductInsertionWidget::offerSelectionChangedSlot);
 
-    connect(option_apply_price_button,SIGNAL(clicked()),this,SLOT(applyOptionPriceSlot()));
-    connect(offer_apply_price_button,SIGNAL(clicked()),this,SLOT(applyOfferPriceSlot()));
+    connect(option_apply_price_button, &QPushButton::clicked, this, &ProductInsertionWidget::applyOptionPriceSlot);
+    connect(offer_apply_price_button, &QPushButton::clicked, this, &ProductInsertionWidget::applyOfferPriceSlot);
 
-    connect(ok_button,SIGNAL(clicked()),this,SLOT(acceptSlot()));
-    connect(cancel_button,SIGNAL(clicked()),this,SLOT(cancelSlot()));
+    connect(ok_button, &QPushButton::clicked, this, &ProductInsertionWidget::acceptSlot);
+    connect(cancel_button, &QPushButton::clicked, this, &ProductInsertionWidget::cancelSlot);
 
 }
 
@@ -333,7 +333,7 @@ void ProductInsertionWidget::showEvent(QShowEvent *e){
     main_stack->setCurrentWidget(progress);
     clear();
     if (mode == ProductInsertionWidget::Composed)
-        QTimer::singleShot(10,this,SLOT(showAction()));
+        QTimer::singleShot( TIME_OUT, this, &ProductInsertionWidget::showAction);
     else
         main_stack->setCurrentWidget(main);
     QWidget::showEvent(e);
@@ -492,7 +492,7 @@ void ProductInsertionWidget::getTaxesButtons(){
             button->setChecked(false);
         }
         button->setVisible(true);
-        connect(button, SIGNAL(clicked()),this,SLOT(taxChanged()));
+        connect(button, &QPushButton::clicked, this, &ProductInsertionWidget::taxChanged);
         vlayout->addWidget(button);
         tax_button_group->addButton(button);
     }
@@ -935,7 +935,7 @@ void ProductInsertionWidget::addOptionSlot(){
 
     no_data = new NOData();
     no_data->name = option_combobox->currentText();
-    no_data->value = QString::number(float_kb->getNumber(),'f',2);
+    no_data->value = QString::number(float_kb->value(),'f',2);
     no_data->state = NOData::New;
     no_data->is_default = false;
     no_type->list.append(no_data,no_data->name);
@@ -1131,7 +1131,7 @@ void ProductInsertionWidget::applyOptionPriceSlot(){
 
     if (no_data->state == NOData::Original)
         no_data->state = NOData::Modified;
-    no_data->value = QString::number(float_kb_options->getNumber(),'f',2);
+    no_data->value = QString::number(float_kb_options->value(),'f',2);
     showOptionsFromType(no_type->type);
 }
 
@@ -1149,8 +1149,8 @@ void ProductInsertionWidget::applyOfferPriceSlot(){
     if (no_data->state == NOData::Original) no_data->state = NOData::Modified;
     cpp_operator = getCurrentCppOperator();
 
-    if (cpp_operator == "x")  no_data->value = QString::number(num_kb_offers->getNumber());
-    else if (cpp_operator == "=") no_data->value = QString::number(float_kb_offers->getNumber(),'f', 2);
+    if (cpp_operator == "x")  no_data->value = QString::number(num_kb_offers->value());
+    else if (cpp_operator == "=") no_data->value = QString::number(float_kb_offers->value(),'f', 2);
     showOffersFromType(no_type->type);
 }
 
@@ -1204,7 +1204,7 @@ bool ProductInsertionWidget::saveProduct(){
     xml.createElementSetDomain("product");
     xml.createElement("code", product_code);
     xml.createElement("name",product_name_lineedit->text());
-    xml.createElement("price", QString::number(float_kb->getNumber(),'f',2));
+    xml.createElement("price", QString::number(float_kb->value(),'f',2));
     xml.createElement("tax", getActualTax());
     xml.createElement("logo", logo);
     if (!mode)
@@ -1269,7 +1269,7 @@ bool ProductInsertionWidget::saveOptions(){
                 xml.createElement("description_type", no_type->type+"_option_type");
                 xml.createElement("option_name", no_data->name);
                 xml.createElement("description_option", no_data->name+"option");
-                aux_value = (double) ((no_data->value).toDouble() -  float_kb->getNumber());
+                aux_value = (double) ((no_data->value).toDouble() -  float_kb->value());
                 xml.createElement("value", QString::number(aux_value,'f',2));
 
                 if(no_data->is_default) xml.createElement("default", "t");
@@ -1293,7 +1293,7 @@ bool ProductInsertionWidget::saveOptions(){
                 xml.createElement("description_type", no_type->type+"_option_type");
                 xml.createElement("option_name", no_data->name);
                 xml.createElement("description_option", no_data->name+"option");
-                aux_value = (double) ((no_data->value).toDouble() -  float_kb->getNumber());
+                aux_value = (double) ((no_data->value).toDouble() -  float_kb->value());
                 xml.createElement("value", QString::number(aux_value,'f',2));
 
                 if(no_data->is_default)
@@ -1451,16 +1451,16 @@ void ProductInsertionWidget::acceptSlot(){
     aux_counter = 0;
     progress_bar->setValue(0);
     qApp->processEvents();
-    connect(timer, SIGNAL(timeout()), this,SLOT(timerSlot()));
+    connect(timer, &QTimer::timeout, this, &ProductInsertionWidget::timerSlot);
     timer->start(5);
     save();
     clear();
     timer->stop();
-    disconnect(timer, SIGNAL(timeout()), this,SLOT(timerSlot()));
+    disconnect(timer, &QTimer::timeout, this, &ProductInsertionWidget::timerSlot);
     progress_title_label->setText(tr("Loading logos of unitary products"));
 
     if (mode == ProductInsertionWidget::Composed)
-        QTimer::singleShot(10,this,SLOT(showAction()));
+        QTimer::singleShot(TIME_OUT, this, &ProductInsertionWidget::showAction);
     else
         main_stack->setCurrentWidget(main);
     emit acceptSignal();
@@ -1469,7 +1469,7 @@ void ProductInsertionWidget::acceptSlot(){
 void ProductInsertionWidget::cancelSlot(){
     clear();
     if (mode == ProductInsertionWidget::Composed)
-        QTimer::singleShot(10,this,SLOT(showAction()));
+        QTimer::singleShot(TIME_OUT, this, &ProductInsertionWidget::showAction);
     else
         main_stack->setCurrentWidget(main);
     emit cancelSignal();

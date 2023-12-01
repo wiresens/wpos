@@ -1,5 +1,9 @@
-// @author G. Bene, copyright 2023 - All rights reserved
-//
+// file      :	uom_test.cpp
+// birth     :  11/20/2023
+// copyright :  Copyright (c) 2016-2023 WireSens Inc.
+// contact   :  contact@wiresens.com - +237 697 02 63 76
+
+
 #include "uom.h"
 #include "uom-odb.hxx"
 #include <database.h>
@@ -76,7 +80,6 @@ TEST_F(UomTypeTest, LoadAndPersist)
 // The fixture for testing Uom class.
 class UomTest : public ::testing::Test {
 protected:
-
     odb::database& db{database::instance()};
 
     UomType* uom_type = new UomType{"Volume"};

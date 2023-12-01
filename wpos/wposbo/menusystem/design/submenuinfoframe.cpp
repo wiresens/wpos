@@ -16,21 +16,26 @@
 #include <QLayout>
 #include <QEvent>
 
-SubMenuInfoFrame::SubMenuInfoFrame(QWidget* parent, const QString& name) :
-    QFrame(parent){
+SubMenuInfoFrame::SubMenuInfoFrame(
+    QWidget* parent,
+    const QString& name):
+    QFrame(parent)
+{
     setObjectName(name);
-    layout = new QVBoxLayout(this);
+
+    layout  = new QVBoxLayout(this);
     browser = new QWebEngineView(this);
-    setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
+
+//@benes    setSizePolicy(parentWidget()->sizePolicy());
     setFrameStyle(QFrame::NoFrame | QFrame::Plain);
     layout->addWidget(browser);
 }
 
-void SubMenuInfoFrame::load(const QString &info_file){
-    browser->setHtml(info_file, QUrl("file://"));
+void SubMenuInfoFrame::load(const QString &infoFile){
+    browser->setHtml(infoFile, QUrl("file://"));
 }
 
-void SubMenuInfoFrame::showEvent(QShowEvent *e){
+void SubMenuInfoFrame::showEvent(QShowEvent *event){
     browser->resize(width(), height());
-    QWidget::showEvent(e);
+    QWidget::showEvent(event);
 }

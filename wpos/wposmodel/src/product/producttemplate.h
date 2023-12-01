@@ -29,10 +29,8 @@ public:
         name_{name},
         consumable_{consumable}
     {
-        if( name.empty() ) throw EmptyNameException{};
+        if( name.empty() ) throw EmptyValueException{};
     }
-
-    ulong getId() const{ return id_; }
 
     void setCode(const string& code){ code_ = code; }
     const string& getCode() const { return code_; }
@@ -54,7 +52,6 @@ public:
 
 private:
     ProductTemplate() = default;
-    inline void setId(ulong id){  if(id) id_ = id ;}
 
     void setActive(bool active){ active_ = active ; }
     bool getActive() const { return active_ ;}
@@ -62,8 +59,10 @@ private:
     void setConsumable(bool consumable) { consumable_ = consumable ;}
     bool getConsumable() const { return consumable_ ;}
 
+public:
+    const ulong id{0};
+
 private:
-    ulong id_{0};
     DefaultUom uom_;
 
     string code_{'\0'};

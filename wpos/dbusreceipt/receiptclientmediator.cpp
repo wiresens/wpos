@@ -41,8 +41,8 @@ ReceiptClientMediator::ReceiptClientMediator(QObject *parent, QString name):
     file_watcher->addPath(file_path);
     file_watcher->addPath(CONFIG_FILE_DTD);
 
-    connect(file_watcher, SIGNAL(fileChanged(const QString&)),
-            this, SLOT(fileDirtySlot(const QString&)));
+    connect(file_watcher, &QFileSystemWatcher::fileChanged,
+            this, &ReceiptClientMediator::fileDirtySlot);
 
     readConfig(file_path);
 }
@@ -63,7 +63,7 @@ bool ReceiptClientMediator::readConfig(const QString& path){
 
    XmlConfig xml (path);
 
-    if ( !xml.isValid()
+    if ( !xml.wellFormed()
          || !xml.validateXmlWithDTD(CONFIG_FILE_DTD, true))
         return false;
 
@@ -126,7 +126,6 @@ void ReceiptClientMediator::fileDirtySlot(const QString& file){
 
     if (file == file_path){
         qDebug() << "ReceiptClientMediator::fileDirtySlot() :" << QDateTime::currentDateTime().toString() << ": File "+ file +" has changed. Rereading configuration ...";
-        rpc_clients.setAutoDelete(true);
         rpc_clients.clear();
         if( readConfig(file_path))
             qDebug() << "File "+ file +" configuration reloaded succesfully.";

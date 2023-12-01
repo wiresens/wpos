@@ -14,7 +14,7 @@
 #include "salesscreen.h"
 
 #include <wposwidget/global.h>
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <wposcore/genericsignalmanager.h>
 #include <libbslxml/xmlconfig.h>
 
@@ -32,7 +32,7 @@ FreePriceWidget::FreePriceWidget(QWidget *parent, const QString& name) :
     setupUi(this);
     setObjectName(name);
     QVBoxLayout *numpad_frame_layout = new QVBoxLayout(numpad_frame);
-    key_pad = new FloatKeyboardBox(numpad_frame);
+    key_pad = new FloatKeyboard(numpad_frame);
     numpad_frame_layout->addWidget(key_pad);
 
     cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
@@ -44,18 +44,16 @@ FreePriceWidget::FreePriceWidget(QWidget *parent, const QString& name) :
     gsm->publishGenericDataSignal(GDATASIGNAL::PRODSELECT_COLOR_MODE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
 
-
     // At firts sight, this dialog should have tax_16 as default option
     tax_16_button->setDown(true);
     toggleButtonsState();
 
     // Standart connections
-
-    connect(ok_button,SIGNAL(released()),this,SLOT(handleAccepted()));
-    connect(cancel_button,SIGNAL(released()),this,SLOT(handleCancelled()));
-    connect(tax_16_button,SIGNAL(released()),this,SLOT(toggleButtonsState()));
-    connect(tax_7_button,SIGNAL(released()),this,SLOT(toggleButtonsState()));
-    connect(tax_4_button,SIGNAL(released()),this,SLOT(toggleButtonsState()));
+    connect(ok_button, &QPushButton::released, this, &FreePriceWidget::handleAccepted);
+    connect(cancel_button, &QPushButton::released, this, &FreePriceWidget::handleCancelled);
+    connect(tax_16_button, &QPushButton::released, this, &FreePriceWidget::toggleButtonsState);
+    connect(tax_7_button, &QPushButton::released, this, &FreePriceWidget::toggleButtonsState);
+    connect(tax_4_button, &QPushButton::released, this, &FreePriceWidget::toggleButtonsState);
 }
 
 FreePriceWidget::~FreePriceWidget(){
@@ -70,7 +68,7 @@ void FreePriceWidget::handleAccepted(){
     emit genericDataSignal(GDATASIGNAL::PRODSELECT_COLOR_MODE, &xml);
 
     xml.deleteElement("mode");
-    xml.createElement("price", QString::number(key_pad->getNumber()));
+    xml.createElement("price", QString::number(key_pad->value()));
 
     if (tax_16_button->isDown()){
         xml.createElement("tax_type","iva16");

@@ -18,7 +18,7 @@
 
 class XmlConfig;
 class QString;
-class OptionNode;
+class ProductExtraInfo;
 
 class QStringList;
 class ProductPriceData;
@@ -68,8 +68,8 @@ signals:
     void genericDataSignal(const QString& signal_name,XmlConfig *xml);
 
 protected:
-    HList<OptionNode> options;
-    HList<OptionNode> fixed_options;
+    HList<ProductExtraInfo> options;
+    HList<ProductExtraInfo> fixed_options;
     ProductPriceData *custom_price{};
     OfferData *custom_offer{};
     OfferData *default_offer{};

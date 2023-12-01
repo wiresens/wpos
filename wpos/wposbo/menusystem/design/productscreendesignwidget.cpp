@@ -51,6 +51,7 @@ static QString DEFAULT_NAME = QObject::tr("Current Screen");
 static const double SIZE_CONST = 40.00;
 static const int TABLE_SIZE_X= 70;
 static const int TABLE_SIZE_Y= 70;
+static const uint TIME_OUT {10};
 
 struct ProductNode{
     ProductData product;
@@ -124,23 +125,23 @@ ProductScreenDesignWidget::ProductScreenDesignWidget(QWidget *parent, const QStr
     screens->setDuplicatesEnabled(false);
     name_screen->setDuplicatesEnabled(false);
 
-    connect(name_screen, &QComboBox::currentTextChanged,
-            this, &ProductScreenDesignWidget::nameScreenChanged);
-    connect(num_rows, SIGNAL(valueChanged(int)), this, SLOT(numRowsChanged(int)));
-    connect(num_cols, SIGNAL(valueChanged(int)), this, SLOT(numColumnsChanged(int)));
+    connect(name_screen, &QComboBox::currentTextChanged, this, &ProductScreenDesignWidget::nameScreenChanged);
 
-    connect(accept_button, SIGNAL(clicked()), this, SLOT(acceptReleased()));
-    connect(forward_button, SIGNAL(clicked()), this, SLOT(forwardReleased()));
-    connect(back_button, SIGNAL(clicked()), this, SLOT(backReleased()));
-    connect(delete_button,SIGNAL(clicked()),this,SLOT(deleteSlot()));
-    connect(next_screen_button , SIGNAL(clicked()), this, SLOT(nextScreenSlot()));
-    connect(prev_screen_button, SIGNAL(clicked()), this, SLOT(prevScreenSlot()));
-    connect(this,SIGNAL(productReaded(int,const QString&,const QString&,const QString&)),this,SLOT(productReadedSlot(int,const QString&,const QString&,const QString&)));
+    connect(num_rows, QOverload<int>::of(&QSpinBox::valueChanged), this, &ProductScreenDesignWidget::numRowsChanged);
+    connect(num_cols, QOverload<int>::of(&QSpinBox::valueChanged), this, &ProductScreenDesignWidget::numColumnsChanged);
 
-    connect(up_icon_button,SIGNAL(clicked()),this,SLOT(upSlot()));
-    connect(down_icon_button,SIGNAL(clicked()),this,SLOT(downSlot()));
+    connect(accept_button, &QPushButton::clicked, this, &ProductScreenDesignWidget::acceptReleased);
+    connect(forward_button, &QPushButton::clicked, this, &ProductScreenDesignWidget::forwardReleased);
+    connect(back_button, &QPushButton::clicked, this, &ProductScreenDesignWidget::backReleased);
+    connect(delete_button, &QPushButton::clicked, this, &ProductScreenDesignWidget::deleteSlot);
+    connect(next_screen_button , &QPushButton::clicked, this, &ProductScreenDesignWidget::nextScreenSlot);
+    connect(prev_screen_button, &QPushButton::clicked, this, &ProductScreenDesignWidget::prevScreenSlot);
+    connect(up_icon_button, &QPushButton::clicked, this, &ProductScreenDesignWidget::upSlot);
+    connect(down_icon_button, &QPushButton::clicked, this, &ProductScreenDesignWidget::downSlot);
 
-    connect(screen, SIGNAL(textEnter(int, int, const QString&)), this, SLOT(draggedText(int, int, const QString&)));
+    connect(this, &ProductScreenDesignWidget::productReaded, this, &ProductScreenDesignWidget::productReadedSlot);
+
+    connect(screen, QOverload<int,int, const QString&>::of(&BslDDTable::textEnter), this, &ProductScreenDesignWidget::draggedText);
 }
 
 void ProductScreenDesignWidget::clear(){
@@ -335,7 +336,6 @@ void ProductScreenDesignWidget::getScreens(){
     for ( auto i=0; i< xml.howManyTags("screen"); i++){
 
         if ( !isVisible() ){
-            screen_list->setAutoDelete(true);
             screen_list->clear();
             return;
         }
@@ -358,7 +358,6 @@ void ProductScreenDesignWidget::getScreens(){
         ProductData *product{};
         for( auto j=0; j< xml.howManyTags("product"); j++){
             if ( !isVisible() ){
-                screen_list->setAutoDelete(true);
                 screen_list->clear();
                 return;
             }
@@ -515,7 +514,7 @@ void ProductScreenDesignWidget::numRowsChanged(int value){
 
 void ProductScreenDesignWidget::initScreens(){
 
-    disconnect(name_screen, SIGNAL(textChanged(const QString&)), this, SLOT(nameScreenChanged(const QString&)));
+    disconnect(name_screen, &QComboBox::currentTextChanged, this, &ProductScreenDesignWidget::nameScreenChanged);
     screens->setDuplicatesEnabled(false);
     name_screen->setDuplicatesEnabled(false);
 
@@ -533,10 +532,14 @@ void ProductScreenDesignWidget::initScreens(){
     num_rows->setValue(1);
     screen_default->setChecked(false);
     showtext_checkbox->setChecked(false);
-    connect(name_screen, SIGNAL(textChanged(const QString&)), this, SLOT(nameScreenChanged(const QString&)));
+    connect(name_screen, &QComboBox::currentTextChanged, this, &ProductScreenDesignWidget::nameScreenChanged);
 }
 
-void ProductScreenDesignWidget::draggedText(int x, int y, const QString& text){
+void ProductScreenDesignWidget::draggedText(
+    int x,
+    int y,
+    const QString& text)
+{
 
     double size = SIZE_CONST;
     auto header_view = screen->verticalHeader();
@@ -735,12 +738,11 @@ void ProductScreenDesignWidget::showEvent(QShowEvent *e){
     }
 
     screen_stack->setCurrentWidget(reading_page);
-    QTimer::singleShot(10,this,SLOT(startShowing()));
+    QTimer::singleShot(TIME_OUT, this, &ProductScreenDesignWidget::startShowing);
     QWidget::showEvent(e);
 }
 
 void ProductScreenDesignWidget::hideEvent(QHideEvent *e){
-    screen_list->setAutoDelete(true);
     screen_list->clear();
     QWidget::hideEvent(e);
 }

@@ -86,16 +86,15 @@ DatabaseConfigWidget::DatabaseConfigWidget(DatabaseModule *dbmod,  QWidget *pare
     cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
     ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
 
-    connect(user_name_ledit, SIGNAL(textChanged(const QString &)), this, SLOT(userNameChanged(const QString &)));
-
+    connect(user_name_ledit, &QLineEdit::textChanged, this, &DatabaseConfigWidget::userNameChanged);
     connect(hostnames_list_wgt, &QListWidget::itemSelectionChanged, this, &DatabaseConfigWidget::findDatabases);
     connect(dbname_list_wgt, &QListWidget::itemSelectionChanged, this, &DatabaseConfigWidget::dbNameChanged);
 
     connect(db_mod, &DatabaseModule::configChanged, this, &DatabaseConfigWidget::dbConfigChanged);
 
-    connect(scan_button, SIGNAL(clicked()), this, SLOT(scanButtonPressed()));
-    connect(ok_button, SIGNAL(clicked()), this, SLOT(accept()));
-    connect(cancel_button, SIGNAL(clicked()), this, SLOT(cancel()));
+    connect(scan_button, &QPushButton::clicked, this, &DatabaseConfigWidget::scanButtonPressed);
+    connect(ok_button, &QPushButton::clicked, this, &DatabaseConfigWidget::accept);
+    connect(cancel_button, &QPushButton::clicked, this, &DatabaseConfigWidget::cancel);
 }
 
 void DatabaseConfigWidget::clear(){
@@ -219,7 +218,7 @@ void DatabaseConfigWidget::findServers(){
     worker->setArguments(QStringList(NMAP_RESULT_XML));
 
     connect(worker, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &DatabaseConfigWidget::endFindServers);
-    connect(timer, SIGNAL(timeout()),this, SLOT(setProgressBar()));
+    connect(timer, &QTimer::timeout,this, &DatabaseConfigWidget::setProgressBar);
     prog_int = 0;
     timer->start(TIME_INTERVAL);
     worker->start();
@@ -233,10 +232,10 @@ void DatabaseConfigWidget::endFindServers(int exitCode, QProcess::ExitStatus exi
     if( exitStatus != QProcess::NormalExit || exitCode == 255) return;
 
     disconnect(worker, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &DatabaseConfigWidget::endFindServers);
-    disconnect(timer, SIGNAL(timeout()), this, SLOT(setProgressBar()));
+    disconnect(timer, &QTimer::timeout, this, &DatabaseConfigWidget::setProgressBar);
 
     XmlConfig xml (NMAP_RESULT_XML);
-    if (!xml.isValid()) return;
+    if (!xml.wellFormed()) return;
 
     QStringList hostnames;
     for ( auto i=0; i < xml.howManyTags("host"); i++){
@@ -286,7 +285,7 @@ void DatabaseConfigWidget::findDatabases(){
     worker->setArguments(args);
 
     connect(worker, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &DatabaseConfigWidget::endFindDatabases);
-    connect(timer, SIGNAL(timeout()), this, SLOT(setProgressBar()));
+    connect(timer, &QTimer::timeout, this, &DatabaseConfigWidget::setProgressBar);
 
     stack->setCurrentWidget(wait);
     progress_bar->setValue(0);
@@ -302,10 +301,10 @@ void DatabaseConfigWidget::endFindDatabases(int exitCode, QProcess::ExitStatus e
     if( exitStatus != QProcess::NormalExit || exitCode == 255) return;
 
     disconnect(worker, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished), this, &DatabaseConfigWidget::endFindDatabases);
-    disconnect(timer, SIGNAL(timeout()),this, SLOT(setProgressBar()));
+    disconnect(timer, &QTimer::timeout, this,  &DatabaseConfigWidget::setProgressBar);
 
     XmlConfig xml (NMAP_RESULT_XML);
-    if (!xml.isValid()) return;
+    if (!xml.wellFormed()) return;
 
     QStringList hostnames;
     for ( auto i=0; i <  xml.howManyTags("name") ; i++)
@@ -340,7 +339,7 @@ bool DatabaseConfigWidget::getHostConfig(){
 
     XmlConfig xml;
     xml.readXmlFromString(db_mod->getConfig());
-    if ( !xml.isValid() || !xml.validateXmlWithDTD(DDBB_CONFIGURATION_DTD))  return false;
+    if ( !xml.wellFormed() || !xml.validateXmlWithDTD(DDBB_CONFIGURATION_DTD))  return false;
 
     stack->setCurrentWidget(servers);
     user_name_ledit->setText(xml.readString("database.user"));

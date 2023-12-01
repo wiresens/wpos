@@ -16,8 +16,8 @@
 #include "ui_offereditionwidgetbase.h"
 #include "productsmodule/offersmodule/productoffermodule.h"
 
-class NumKeyboardBox;
-class FloatKeyboardBox;
+class NumKeyboard;
+class FloatKeyboard;
 class QListWidgetItem;
 
 class OfferEditionWidget :
@@ -51,8 +51,8 @@ protected:
     void getOfferTypes();
 
 protected:
-    FloatKeyboardBox *float_kb;
-    NumKeyboardBox *num_kb;
+    FloatKeyboard *float_kb;
+    NumKeyboard *num_kb;
     ProductOfferModule mod;
 };
 

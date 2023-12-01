@@ -30,51 +30,53 @@
 using namespace std;
 
 int ProductScreen::SCREEN_PRODUCT_SPACING{0};
-ProductScreen::ProductScreen(const QString& screen_name,
-                             XmlConfig *xml,
-                             QWidget *_parent,
-                             const QString& name):
-    QWidget(_parent)
-  //    parent{_parent}
+
+//the products should be deleted in the list and only cleared from the dict
+//the layout should be defined in the init method
+ProductScreen::ProductScreen(
+    const QString& screenName,
+    XmlConfig *xmlDescription,
+    QWidget *parent,
+    const QString& name):
+    QWidget(parent)
 {
     setObjectName(name);
-    //the products should be deleted at the list an only cleared from the dict
-    //the layout should be defined at the init method
     layout = new QGridLayout(this);
-    initScreen(screen_name, xml);
+    initScreen(screenName, xmlDescription);
 }
 
-ProductScreen::ProductScreen(const QString& screen_name,
-                             const QString& file_name,
-                             QWidget *_parent,
-                             const QString& name):
-    QWidget(_parent)
-  //    parent{_parent}
+ProductScreen::ProductScreen(
+    const QString& screenName,
+    const QString& xmlDescriptionFile,
+    QWidget *parent,
+    const QString& name):
+    QWidget(parent)
 {
     setObjectName(name);
-    //the layout will be defined in the initScreen method
-    layout = new QGridLayout(this);
+    layout = new QGridLayout(this); //the layout will be defined in the initScreen method
 
-
-    XmlConfig xml(file_name);
-    if ( !QFile::exists(file_name) || !xml.isValid() ){
-        setScreenName(SCREEN_DEFAULT_NAME);
+    XmlConfig xml(xmlDescriptionFile);
+    if ( !QFile::exists(xmlDescriptionFile) || !xml.wellFormed() ){
+        screenName_ = SCREEN_DEFAULT_NAME;
         return;
     }
 
-    initScreen(screen_name, &xml);
+    initScreen(screenName, &xml);
 }
 
 ProductScreen::~ProductScreen(){
     resetScreen();
     delete layout;
-    delete product_list;
+    delete productList;
+    delete productMap;
 }
 
-bool ProductScreen::initScreen(const QString& screen_name, XmlConfig *xml){
-
+bool ProductScreen::initScreen(
+    const QString& screen_name,
+    XmlConfig *xml)
+{
     setSpecialModeColor(ProductScreen::Normal);
-    setScreenName(screen_name);
+    screenName_ = screen_name;
 
     xml->pushDomain();
     xml->delDomain();
@@ -87,7 +89,7 @@ bool ProductScreen::initScreen(const QString& screen_name, XmlConfig *xml){
     bool tag_found {false};
     for ( auto i = 0; i <  xml->howManyTags("screen") ; i++){
         aux_string = xml->readString("screen["+QString::number(i)+"].name");
-        if ( aux_string == screenName() ){
+        if ( aux_string == screenName_ ){
             xml->setDomain("screen["+QString::number(i)+"]");
             tag_found = true;
             break;
@@ -103,7 +105,7 @@ bool ProductScreen::initScreen(const QString& screen_name, XmlConfig *xml){
     //so first get the cols and rows
     resetScreen();
 
-    next_preferred_screen = screenName();
+    next_preferred_screen = screenName_;
     if ( xml->howManyTags("nextscreen") ){
         aux_string = xml->readString("nextscreen");
         if ( !aux_string.isEmpty() )
@@ -121,36 +123,35 @@ bool ProductScreen::initScreen(const QString& screen_name, XmlConfig *xml){
 
     //The fact that we don't check the pointer before using, means that the parent
     //of ProdcutScreen will always be a ScreenStack. We need to update that in the design diagram.
-    ProductScreenStack *screen_stack = qobject_cast<ProductScreenStack *>( parent() );
+    auto productScreenStack = qobject_cast<ProductScreenStack *>( parent() );
 
     auto font_family = xml->readString("fontfamily");
     if ( font_family.isEmpty() )
-        font_family = screen_stack->getDefaultFamily();
+        font_family = productScreenStack->getDefaultFamily();
 
     auto text_font_family = xml->readString("textfontfamily");
     if (text_font_family.isEmpty())
-        text_font_family = screen_stack->getDefaultTextFamily();
+        text_font_family = productScreenStack->getDefaultTextFamily();
 
     auto text_background_color = xml->readString("textbackgroundcolor");
     if (text_background_color.isEmpty())
-        text_background_color = screen_stack->getTextBackgroundColor();
+        text_background_color = productScreenStack->getTextBackgroundColor();
 
     bool converted {false};
     aux_string = xml->readString("fontsize");
     auto font_size = aux_string.toInt(&converted);
 
     if ( !converted ) font_size = -1;
-    if (font_size ==-1 ) font_size = screen_stack->getDefaultSize();
+    if (font_size ==-1 ) font_size = productScreenStack->getDefaultSize();
 
     aux_string = xml->readString("textfontsize");
     auto text_font_size = aux_string.toInt(&converted);
 
     if ( !converted ) text_font_size = -1;
-    if (text_font_size == -1) text_font_size = screen_stack->getDefaultTextSize();
-
-    delete layout;
+    if (text_font_size == -1) text_font_size = productScreenStack->getDefaultTextSize();
 
     /*************   LAYOUT PROPERTIES   ***************/
+    delete layout;
     layout = new QGridLayout(this);
     layout->setContentsMargins(0,0,0,0);
     layout->setSpacing(ProductScreen::SCREEN_PRODUCT_SPACING);
@@ -160,6 +161,7 @@ bool ProductScreen::initScreen(const QString& screen_name, XmlConfig *xml){
     //The number of product is fixed and determine at this place. We should find a way to adjust that
     //to fit the entire screen as it's size changes. This implies also that the product image size should
     //be able to resize automatically. Maybe we should override the resizeEvent and see how to do that.
+
     for( auto i=0;  i < xml->howManyTags("product"); i++){
 
         //get the col and row where the product should be.
@@ -179,42 +181,42 @@ bool ProductScreen::initScreen(const QString& screen_name, XmlConfig *xml){
         }
 
         //prepare the construction of the product.
-        aux_string = xml->readString("product["+QString::number(i)+"].name");
+        auto productName = xml->readString("product["+QString::number(i)+"].name");
 
         //do not accept empty named products.
-        if (aux_string.isEmpty()) continue;//prepare the reread of the product
+        if (productName.isEmpty()) continue; //prepare the reread of the product
 
         xml->pushDomain();
-        Product *prod = new Product(aux_string, xml, this);
+        Product *product = new Product(productName, xml, this);
         if ( !font_family.isEmpty() )
-            prod->setDefaultFontFamily(font_family);
+            product->setDefaultFontFamily(font_family);
 
-        if (font_size!=-1)
-            prod->setDefaultFontSize(font_size);
+        if (font_size !=-1 )
+            product->setDefaultFontSize(font_size);
 
         if (!text_font_family.isEmpty())
-            prod->setDefaultTextFontFamily(text_font_family);
+            product->setDefaultTextFontFamily(text_font_family);
 
         if ( text_font_size !=-1 )
-            prod->setDefaultTextFontSize(text_font_size);
+            product->setDefaultTextFontSize(text_font_size);
 
         if ( !text_background_color.isEmpty() ){
             //@benes  prod->setPaletteBackgroundColor(QColor(text_background_color));
             //we thought the folliwing fixed the pb , but it didn't.
-//            QPalette palette(QPalette(QColor(text_background_color) , QPalette::WindowText));
-//            prod->setPalette(palette);
+            //            QPalette palette(QPalette(QColor(text_background_color) , QPalette::WindowText));
+            //            prod->setPalette(palette);
         }
 
-        if (show_text)  prod->setTextInPixmap(true);
+        if (show_text)  product->setTextInPixmap(true);
 
         xml->popDomain();
 
         //connect of all signals
-        prepareConnects(prod);
+        prepareConnects(product);
 
-        layout->addWidget(prod, row, col);
-        product_list->append(prod);
-        product_dict->insert(prod->getProductName(), prod);
+        layout->addWidget(product, row, col);
+        productList->append(product);
+        productMap->insert(product->baseName(), product);
     }
     xml->delDomain();
     xml->popDomain();
@@ -223,8 +225,8 @@ bool ProductScreen::initScreen(const QString& screen_name, XmlConfig *xml){
 
 bool ProductScreen::resetScreen(){
     setSpecialModeColor(ProductScreen::Normal);
-    product_list->clear();
-    product_dict->clear();
+    productList->clear();
+    productMap->clear();
     delete layout;
     cols = DEFAULT_COLS;
     rows = DEFAULT_ROWS;
@@ -234,30 +236,26 @@ bool ProductScreen::resetScreen(){
 }
 
 QString ProductScreen::screenName(){
-    return name;
-}
-
-void ProductScreen::setScreenName(const QString& screen_name){
-    name = screen_name;
+    return screenName_;
 }
 
 void ProductScreen::showAll(){
 
-    for( auto product : *product_list)
+    for( auto product : *productList)
         product->show();
 
 }
 
 void ProductScreen::disableAll(){
 
-    for( auto prod : *product_list)
+    for( auto prod : *productList)
         prod->disableProduct();
 
 }
 
 void ProductScreen::defaultValuesAll(){
 
-    for(auto prod : *product_list )
+    for(auto prod : *productList )
         prod->defaultValues();
 
     emit defaultValue();
@@ -273,7 +271,7 @@ void ProductScreen::combineWithSlot(QStringList list){
     count = list.count();
     for (i=0;i<count;i++){
         //search at the dict
-        prod = product_dict->operator [](list[i]);
+        prod = productMap->operator [](list[i]);
         if (prod)
             prod->enableProduct();
     }
@@ -293,10 +291,10 @@ void ProductScreen::productClickedSlot(Product *prod){
     if (!selected_product){
         selected_product = prod;
         //prepare the new connections
-        connect(selected_product,SIGNAL(combineWith(QStringList )),
-                this,SLOT(combineWithSlot(QStringList *)));
-        connect(selected_product,SIGNAL(productDefinition(XmlConfig *)),
-                this,SLOT(productDefinitionSlot(XmlConfig *)));
+        connect(selected_product, &Product::combineWith,
+                this, &ProductScreen::combineWithSlot);
+        connect(selected_product, &Product::productDefinition,
+                this, &ProductScreen::productDefinitionSlot);
         selected_product->lead();
     }
     else{
@@ -312,10 +310,10 @@ void ProductScreen::setSpecialModeColor(ModeColor mode){
     case ProductScreen::Invitation:
         setPalette(QPalette(Colors::PRODUCT_SCREEN_SPECIAL_COLOR));;
         break;
-    case ProductScreen::Product_anulation:
+    case ProductScreen::ProductAnulation:
         setPalette(QPalette(Colors::PRODUCT_SCREEN_ANULATION_COLOR));
         break;
-    case ProductScreen::Default_offer:
+    case ProductScreen::DefaultOffer:
         setPalette(QPalette(Colors::PRODUCT_SCREEN_DEFAULT_COLOR));
         break;
     }
@@ -333,7 +331,7 @@ void ProductScreen::prepareConnects(Product *prod){
 
     if ( !prod )  return;
 
-    ProductScreenStack * stack = qobject_cast<ProductScreenStack *>( parent() );
+    ProductScreenStack * stack = qobject_cast<ProductScreenStack*>( parent() );
     //check if the parent is a ScreenStack
     //     if ( QString(parent()->metaObject()->className()) == "ScreenStack"){
     if (stack){

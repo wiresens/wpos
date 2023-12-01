@@ -47,7 +47,7 @@ protected:
     Party(AddressPtr address, string code, string name, string pictureFile = "")
         :address_{address},code_{code}, name_{name}, pictureFile_{pictureFile}
     {
-        if( name.empty() || code.empty() ) throw EmptyNameException{};
+        if( name.empty() || code.empty() ) throw EmptyValueException{};
     }
 
 protected:
@@ -73,10 +73,10 @@ public:
         if ( gender_ != Male && gender_ != Female ) throw BadGenderException{};
     }
 
-    void setFirstName(string name){ first_name_ = name ;}
+    void setFirstName(const string& name){ first_name_ = name ;}
     const string& firstName() const { return first_name_ ;}
 
-    void setFamilyName(string name){ name_ = name ;}
+    void setFamilyName(const string& name){ name_ = name ;}
     const string& familyName() const { return name_;}
 
     virtual  string name() const override { return name_ + " " + first_name_;}
@@ -88,8 +88,11 @@ public:
 private:
     Person() = default;
 
+public:
+    const ulong id{0};
+
 private:
-    ulong id_{0};
+
     string first_name_;
     char gender_;
 };

@@ -107,7 +107,7 @@ void XmlList::getXml(QString arg){
      }
 
      xml = new XmlConfig(arg);
-     if (!xml->isValid()){
+     if (!xml->wellFormed()){
           cerr << "the file " << arg.toStdString() <<" is not a valid XML file." << endl;
           delete xml;
           exit(EXIT_NOT_XML);

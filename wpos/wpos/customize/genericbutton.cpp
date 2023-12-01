@@ -65,10 +65,10 @@ void GenericButton::init(const QString& text){
     setText(aux_text);
 
     //connect each signal
-    connect(this, SIGNAL(released()), this, SLOT(releasedSlot()));
-    connect(this, SIGNAL(clicked()), this, SLOT(clickedSlot()));
-    connect(this, SIGNAL(pressed()), this, SLOT(pressedSlot()));
-    connect(this, SIGNAL(toggled(bool)), this, SLOT(toggleSlot(bool)));
+    connect(this, &GenericButton::released, this, &GenericButton::releasedSlot);
+    connect(this, &GenericButton::clicked, this, &GenericButton::clickedSlot);
+    connect(this, &GenericButton::pressed, this, &GenericButton::pressedSlot);
+    connect(this, &GenericButton::toggled, this, &GenericButton::toggleSlot);
 
 //    resize(Product::MIN_WIDTH,Product::MIN_HEIGHT);
 //    setPalette(QPalette(PRODUCT_BG_COLOR));
@@ -89,7 +89,6 @@ void GenericButton::resetEventList(){
     for( auto name : event_names){
         event = new GenericButtonEvent;
         event->data_relations = new HList<GenericDataRelations>;
-        event->data_relations->setAutoDelete(true);
         event->event_name = name;
         event_list->append(event, event->event_name);
     }
@@ -293,7 +292,6 @@ void GenericButton::clearDataRelationship(EventType event, const QString& signal
             gsm->unpublishGenericDataSignal(aux,this);
         }
         //clear the list
-        e->data_relations->setAutoDelete(true);
         e->data_relations->clear();
     }
     else{//only "signal_name" should be removed

@@ -33,9 +33,9 @@ DeleteOfferWidget::DeleteOfferWidget(QWidget *parent, const QString& name):
     setObjectName(name);
 
     delete_stack->setCurrentWidget(delete_offer_page);
-    connect(delete_button, SIGNAL(released()), this, SLOT(deleteSlot()));
-    connect(cancel_button, SIGNAL(released()), this, SLOT(cancelSlot()));
-    connect(accept_button, SIGNAL(released()), this, SLOT(acceptSlot()));
+    connect(delete_button, &QPushButton::released, this, &DeleteOfferWidget::deleteSlot);
+    connect(cancel_button, &QPushButton::released, this, &DeleteOfferWidget::cancelSlot);
+    connect(accept_button, &QPushButton::released, this, &DeleteOfferWidget::acceptSlot);
 }
 
 void DeleteOfferWidget::setOffer(const QString& type, const QString& name){

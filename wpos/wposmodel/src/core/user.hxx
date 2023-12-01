@@ -38,8 +38,11 @@ SOFTWARE.
 using namespace wpos::model;
 
 #pragma db object(User) definition
-#pragma db member(User::id_) id auto
+#pragma db member(User::id) id auto
 #pragma db member(User::employee_) not_null
+#pragma db member(User::login_) not_null
+#pragma db member(User::password_) not_null
+#pragma db index(User::"user_i") unique members(login_, password_)
 
 #ifdef ODB_COMPILER
     #include "../persistable.hxx"

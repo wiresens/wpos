@@ -24,10 +24,6 @@
 #include <QtWidgets/QWidget>
 #include <wposcore/hlist.h>
 
-/**
-  *@author Carlos Manzanedo Rueda
-  */
-
 class QSignalMapper;
 class QPushButton;
 

@@ -50,7 +50,7 @@ class GenericMenuButton : public QPushButton  {
     Q_OBJECT
 public:
     explicit GenericMenuButton(const QString& text, QWidget *parent=0, const QString& name = QString());
-    ~GenericMenuButton();
+    ~GenericMenuButton(){ delete xml; }
 
     void createRelationship(const QString& signal_name, const QString& _data);
 

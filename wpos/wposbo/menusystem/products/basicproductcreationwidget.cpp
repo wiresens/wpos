@@ -26,7 +26,7 @@
 
 #include <wposcore/config.h>
 #include <wposwidget/dragobjects.h>
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 
 #include "productsmodule/productmodule.h"
 
@@ -131,7 +131,7 @@ BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_m
 
     icon_view->setGridSize(QSize(70,70));
 
-    float_keyboard_product = new FloatKeyboardBox(numblock_product_frame);
+    float_keyboard_product = new FloatKeyboard(numblock_product_frame);
     float_keyboard_product->setObjectName("float_keyboard_product");
     if( !( layout = qobject_cast<QHBoxLayout *> (numblock_product_frame->layout())))
         layout = new QHBoxLayout(numblock_product_frame);
@@ -155,7 +155,7 @@ BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_m
     logo_view->setGridSize(QSize(60,60));
     //@benes    logo_view->setFixedHeight(475);
 
-    connect(logo_view, SIGNAL(currentChanged(QListWidgetItem *)), this, SLOT(getLogo(QListWidgetItem *)));
+    connect(logo_view, &QListWidget::itemChanged, this, QOverload<QListWidgetItem*>::of(&BasicProductCreationWidget::getLogo));
     //@benes    pop_logo->insertItem(logo_view, 0);
 //@benes    pop_logo_menu->addAction(QString(), logo_view, logo_view->objectName());
 
@@ -190,40 +190,40 @@ BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_m
     }
     layout->addWidget(offer_widget);
     //@benes    pop_offer_menu->insertItem(offer_widget);
-//@benes    pop_offer_menu->addAction(QString(), offer_widget, offer_widget->objectName());
+    //@benes    pop_offer_menu->addAction(QString(), offer_widget, offer_widget->objectName());
     //offer_widget    pop_offer_menu->setLineWidth(0);
 
     //prepare the connections
-    connect(accept_button,SIGNAL(released()),this,SLOT(acceptSlot()));
-    connect(cancel_button,SIGNAL(released()),this,SLOT(cancelSlot()));
-    connect(previous_button, SIGNAL(released()), this, SLOT(previousSlot()));
-    connect(next_button, SIGNAL(released()), this, SLOT(nextSlot()));
+    connect(accept_button,   &QPushButton::released, this, &BasicProductCreationWidget::acceptSlot);
+    connect(cancel_button,  &QPushButton::released, this, &BasicProductCreationWidget::cancelSlot);
+    connect(previous_button,  &QPushButton::released, this, &BasicProductCreationWidget::previousSlot);
+    connect(next_button,  &QPushButton::released, this, &BasicProductCreationWidget::nextSlot);
 
     //product
-    connect(product_name,SIGNAL(textChanged(const QString&)),this,SLOT(productNameChanged(const QString&)));
-    connect(logo_button, SIGNAL(clicked()), this, SLOT(logoButtonClicked()));
-    connect(float_keyboard_product, SIGNAL(numChanged(double)), this, SLOT(productPriceChanged(double)));
+    connect(product_name, &QLineEdit::textChanged, this, &BasicProductCreationWidget::productNameChanged);
+    connect(logo_button, &QPushButton::clicked, this, &BasicProductCreationWidget::logoButtonClicked);
+    connect(float_keyboard_product, &FloatKeyboard::valueChanged, this, &BasicProductCreationWidget::productPriceChanged);
 
-    connect(table,SIGNAL(textEnter(int, int, const QString&)),this,SLOT(draggedText(int, int, const QString&)));
+    connect(table, QOverload<int, int, const QString&>::of(&BslDDTable::textEnter), this, &BasicProductCreationWidget::draggedText);
 
-    connect(search_button, SIGNAL(clicked()), this, SLOT(searchButtonClicked()));
-    connect(search_edit, SIGNAL(textChanged(const QString &)),this, SLOT(searchEditChanged(const QString &)));
+    connect(search_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::searchButtonClicked);
+    connect(search_edit, &QLineEdit::textChanged, this, &BasicProductCreationWidget::searchEditChanged);
 
-    connect(up_button, SIGNAL(clicked()), this, SLOT(upButtonClicked()));
-    connect(down_button, SIGNAL(clicked()), this, SLOT(downButtonClicked()));
-    connect(delete_button, SIGNAL(clicked()), this, SLOT(deleteButtonClicked()));
+    connect(up_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::upButtonClicked);
+    connect(down_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::downButtonClicked);
+    connect(delete_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::deleteButtonClicked);
 
-    connect(new_option_button, SIGNAL(clicked()), this, SLOT(newOptionClicked()));
-    connect(new_offer_button, SIGNAL(clicked()), this, SLOT(newOfferClicked()));
+    connect(new_option_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::newOptionClicked);
+    connect(new_offer_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::newOfferClicked);
 
-    connect(pop_option_menu, SIGNAL(aboutToShow()), this, SLOT(showPopOption()));
-    connect(pop_option_menu, SIGNAL(aboutToHide()), this, SLOT(hidePopOption()));
+    connect(pop_option_menu, &QMenu::aboutToShow, this, &BasicProductCreationWidget::showPopOption);
+    connect(pop_option_menu, &QMenu::aboutToHide, this, &BasicProductCreationWidget::hidePopOption);
 
-    connect(pop_offer_menu, SIGNAL(aboutToShow()), this, SLOT(showPopOffer()));
-    connect(pop_offer_menu, SIGNAL(aboutToHide()), this, SLOT(hidePopOffer()));
+    connect(pop_offer_menu,  &QMenu::aboutToShow, this, &BasicProductCreationWidget::showPopOffer);
+    connect(pop_offer_menu, &QMenu::aboutToHide, this, &BasicProductCreationWidget::hidePopOffer);
 
-    connect(pop_logo_menu, SIGNAL(aboutToShow()), this, SLOT(showPopLogo()));
-    connect(pop_logo_menu, SIGNAL(aboutToHide()), this, SLOT(hidePopLogo()));
+    connect(pop_logo_menu,  &QMenu::aboutToShow, this, &BasicProductCreationWidget::showPopLogo);
+    connect(pop_logo_menu, &QMenu::aboutToHide, this, &BasicProductCreationWidget::hidePopLogo);
 }
 
 void BasicProductCreationWidget::init(){
@@ -318,7 +318,7 @@ void BasicProductCreationWidget::initTaxes(){
             button->setDown(false);
         }
 
-        connect(button,SIGNAL(clicked()),this,SLOT(taxChanged()));
+        connect(button, &QPushButton::clicked, this, &BasicProductCreationWidget::taxChanged);
         layout->addWidget(button);
     }
 }
@@ -434,7 +434,7 @@ bool BasicProductCreationWidget::insertNewProduct(){
 
     product->code = code_aux;
     product->name = product_name->text();
-    product->price = float_keyboard_product->getNumber();
+    product->price = float_keyboard_product->value();
     product->tax = getTax();
     product->description = description_text->text();
 
@@ -610,7 +610,7 @@ bool BasicProductCreationWidget::insertNewComposition(){
     product = new ProductData;
     product->code = product_code;
     product->name = product_name->text();
-    product->price = float_keyboard_product->getNumber();
+    product->price = float_keyboard_product->value();
     product->tax = getTax();
 
     QListWidgetItem *item = logo_view->currentItem();

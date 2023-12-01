@@ -59,8 +59,6 @@ public:
     friend class odb::access;
     struct DateRangeException : std::exception{};
 
-
-
     DateRange( const pt::ptime& start_date, const pt::ptime& end_date)
         : start_date_{start_date}, end_date_{end_date}
     {

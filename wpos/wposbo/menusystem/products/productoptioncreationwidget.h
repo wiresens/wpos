@@ -20,7 +20,7 @@
 #include <QWidget>
 #include <QStringList>
 
-class FloatKeyboardBox;
+class FloatKeyboard;
 
 class ProductOptionCreationWidget :
         public QWidget,
@@ -49,7 +49,7 @@ protected:
     void initLogos();
 
 private:
-    FloatKeyboardBox *float_keyboard_option{};
+    FloatKeyboard *float_keyboard_option{};
     ProductOptionModule model;
     QList<ProductOptionData> options;
     double product_price;

@@ -1,7 +1,8 @@
 // file      :	party_test.cpp
 // birth     :  11/23/2023
-// copiright :  Copyright (c) 2016-2023 WireSens Inc.
+// copyright :  Copyright (c) 2016-2023 WireSens Inc.
 // contact   :  contact@wiresens.com - +237 697 02 63 76
+
 
 #include "party.h"
 #include "party-odb.hxx"
@@ -12,7 +13,7 @@
 #include <gtest/gtest.h>
 
 namespace {
-// The fixture for testing ProductTemplate class.
+// The fixture for testing Address class.
 class AddressTest : public ::testing::Test {
 protected:
     odb::database& db{database::instance()};
@@ -76,6 +77,3 @@ TEST_F(PersonTest, ConstructorPersist)
 }
 
 }
-
-
-

@@ -19,7 +19,7 @@
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 #include <wposcore/hlist.h>
-#include <optionnode.h>
+#include <productextrainfo.h>
 #include <wposwidget/effects.h>
 
 #include <QApplication>
@@ -32,51 +32,61 @@
 #include <iostream>
 
 const QString& END_METAPRODUCT = "solo";
+const QString UNKNOWN {"STRANGER"};
 
 using namespace std;
-
-
 
 /**
 *    this constructor create a list with id, and empty lists.
 */
 
-Product::Product(const QString& product_name,
-                 QWidget *parent):
+BarCoreDB Product::db{"ProductConnection", Files::configFilePath("database")};
 
-    QToolButton(parent),
-    product_list { new QList<Product*>},
-    options_list {new HList<OptionNode>}
+Product::Product(
+    const QString& name,
+    QWidget *parent):
+    QToolButton(parent)
 {
-    setObjectName(product_name);
-    setProductName(product_name);
+    setObjectName(name);
+    setProductName(name);
+
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::REREAD_CONFIG, this);
 
-    options_list->setAutoDelete(false);
+    toggle_filter = true;
+
+    resize(MAX_SIZE);
+    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+    setPalette(QPalette(Colors::PRODUCT_BG_COLOR));
+    setBackgroundRole(QPalette::Button);
+    setCheckable(true);
+
+    connect(this, &Product::toggled, this, &Product::toggleChanged);
 }
 
-Product::Product(const QString& product_name,
-                 XmlConfig *xml,
-                 QWidget *parent):
+Product::Product(
+    const QString& name,
+    XmlConfig *xmlDescription,
+    QWidget *parent):
 
-    Product(product_name, parent)
+    Product(name, parent)
 {
-    initProduct(product_name , xml);
+    initProduct(name , xmlDescription);
 }
 
-Product::Product(const QString& product_name,
-                 const QString& file_name,
-                 QWidget *parent):
+Product::Product(
+    const QString& name,
+    const QString& xmlDescriptionFile,
+    QWidget *parent):
 
-    Product(product_name, parent)
+    Product(name, parent)
 {
     //check if the file exists
-    XmlConfig xml (file_name);
-    if ( !QFile::exists(file_name) || !xml.isValid() )
+    XmlConfig xml (xmlDescriptionFile);
+    if ( !QFile::exists(xmlDescriptionFile) || !xml.wellFormed() )
         setProductName(UNKNOWN);  // And throw
     else
-        initProduct(product_name, &xml);
+        initProduct(base_product_name, &xml);
 }
 
 Product::~Product(){
@@ -96,26 +106,25 @@ Product::~Product(){
  * @param XmlConfig wich has all the configuration of the products
  */
 
-bool  Product::initProduct(const QString& productName, XmlConfig *xml){
+bool  Product::initProduct(
+    const QString& name,
+    XmlConfig *xml)
+{
     QString aux;
     int count, i;
     bool found;
-    ProductData *product_data=0;
-    OptionNode *option=0;
-
-    setToggleFilter(true);
-    prepareSignals();
-    setButtonAspect();
+    RelatedProductGroup *product_data=0;
+    ProductExtraInfo *option=0;
 
     xml->pushDomain();
     xml->delDomain();
 
-    if (productName.isEmpty()){
+    if (name.isEmpty()){
         xml->popDomain();
         return false;
     }
 
-    setProductName(productName);
+    setProductName(name);
 
     if (!xml->setDomain("products")){
         xml->popDomain();
@@ -129,16 +138,16 @@ bool  Product::initProduct(const QString& productName, XmlConfig *xml){
         aux = xml->readString("product["+ QString::number(i)+"].name");
         if (aux.isEmpty()) continue;
 
-        if (aux == getProductName()){
+        if (aux == baseName()){
             found = true;
             xml->setDomain("product["+QString::number(i)+"]");
             break;
         }
     }
 
-    XmlConfig *aux_xml = new XmlConfig();
+    XmlConfig *aux_xml = new XmlConfig(); //use stack allocated
     aux_xml->createElement("type", "Productos");
-    aux_xml->createElement("first_id", productName);
+    aux_xml->createElement("first_id", name);
     emit genericDataSignal(GDATASIGNAL::REREAD_CONFIG, aux_xml);
     delete aux_xml;
 
@@ -158,7 +167,7 @@ bool  Product::initProduct(const QString& productName, XmlConfig *xml){
     if ( xml->howManyTags("showtext")){
         aux = xml->readString("showtext");
         aux = aux.toLower();
-        setTextInPixmap(aux == "true");
+        setTextInPixmap( aux == "true");
     }
     if (xml->howManyTags("fontsize")){
         int font_size = 0;
@@ -172,27 +181,29 @@ bool  Product::initProduct(const QString& productName, XmlConfig *xml){
 
     if (xml->setDomain("options")){
         count = xml->howManyTags("option");
-        for(i=0; i<count; i++){
+
+        for(i=0; i< count; i++){
             xml->setDomain("option["+QString::number(i)+"]");
-            aux = xml->readString("type");
-            option = new OptionNode(aux);
-            for(int j=0; j < xml->howManyTags("value");j++){
-                aux = xml->readString("value["+QString::number(j)+"]");
-                if (xml->readAttribute("value["+QString::number(j)+"]","type")=="default")
-                    option->addOption(aux, true);
+            auto optionType = xml->readString("type");
+            option = new ProductExtraInfo(optionType);
+
+            for(int j=0; j < xml->howManyTags("value"); j++){
+                optionType = xml->readString("value["+QString::number(j)+"]");
+                if (xml->readAttribute("value["+QString::number(j)+"]","type") == "default")
+                    option->addOption(optionType, true);
                 else
-                    option->addOption(aux);
+                    option->addOption(optionType);
 
             }
             xml->releaseDomain("option");
-            options->append( option, option->getOptionType() );
+            extraInfos.append( option, option->getOptionType() );
         }
         xml->releaseDomain("options");
     }
     count = xml->howManyTags("product");
     for ( i = 0; i < count; i++){
         xml->setDomain("product["+QString::number(i)+"]");
-        product_data = new ProductData(xml);
+        product_data = new RelatedProductGroup(xml);
 
         //add the product to the list and qdict
         append(product_data);
@@ -203,36 +214,32 @@ bool  Product::initProduct(const QString& productName, XmlConfig *xml){
     return true;
 }
 
-bool Product::setProductName(const QString& _name){
-    product_name = _name;
+void Product::setProductName(const QString& _name){
+    base_product_name = _name;
     setTextAtButton();
-    return true;
 }
 
 void Product::setTextAtButton(){
     QString text;
-    BarCoreDB *db=0;
 
-    db = new BarCoreDB("nTPV_ProductCoreConnection", Files::configFilePath("database"));
-    if (!db->connect()){
-        text = getProductName();
+    if (!db.isConnected()){
+        text = baseName();
         text.replace('_',"\n");
         prod_name = text.toUpper();
         setText(prod_name);
         return;
     }
 
-    prod_name = db->getName(getProductName());
-    db->disConnect();
-    delete db;
+    prod_name = db.getName(baseName());
 
     if (prod_name.isEmpty()){
-        text = getProductName();
+        text = baseName();
         text.replace('_',"\n");
         prod_name = text.toUpper();
         setText(prod_name);
         return;
     }
+
     prod_name.replace(' ',"\n");
     prod_name = prod_name.toUpper();
     setText(prod_name);
@@ -257,34 +264,33 @@ void Product::resizeEvent(QResizeEvent* event){
     QToolButton::resizeEvent(event);
 }
 
-bool Product::setProductPixmap(const QString& file_name){
+bool Product::setProductPixmap(
+    const QString& file_name)
+{
     return setProductPixmap( QPixmap(file_name) ) ;
 }
 
-bool Product::setProductPixmap(const QPixmap& pixmap){
-    my_pixmap = pixmap;
+bool Product::setProductPixmap(
+    const QPixmap& pixmap)
+{
+//    my_pixmap = pixmap;
     setIcon(pixmap);
     setIconSize(pixmap.rect().size());
-    has_pixmap = true;
+//    has_pixmap = true;
     return true;
 }
 
-bool Product::setTextInPixmap(bool on){
+void Product::setTextInPixmap(bool on){
+    QPixmap pixmap = icon().pixmap(iconSize());
 
-    QPixmap pix = my_pixmap;
-    if (pix.isNull())
-        return false;
-    if (on){
+    if ( !pixmap.isNull() && on){
         QFont qfont = QApplication::font();
         if (!family.isEmpty()) qfont.setFamily(family);
         qfont.setPointSize(default_font_size);
         qfont.setBold(true);
-        Effects::drawTextInPixmap(prod_name, &pix, qfont);
-        setIcon(pix);
+        Effects::drawTextInPixmap(prod_name, &pixmap, qfont);
+        setIcon(pixmap);
     }
-    else
-        setIcon(my_pixmap);
-    return true;
 }
 
 void Product::setDefaultFontFamily(const QString& _family){
@@ -331,14 +337,14 @@ bool Product::setButtonAspect(){
 }
 
 void Product::prepareSignals(){
-    connect(this, SIGNAL(toggled(bool)), this, SLOT(toggleChanged(bool)));
+    connect(this, &Product::toggled, this, &Product::toggleChanged);
 }
 
 void Product::setToggleFilter(const bool& filter){
     toggle_filter = filter;
 }
 
-bool Product::getToggleFilter(){
+bool Product::getToggleFilter() const{
     return toggle_filter;
 }
 
@@ -353,8 +359,8 @@ void Product::toggleChanged(bool pressed){
         if (productData){
             emit productDefinition(nullptr);
             //disconnecting the signals that create the product.
-            disconnect(SIGNAL(combineWith(QStringList )));
-            disconnect(SIGNAL(productDefinition(XmlConfig *)));
+            disconnect(this, &Product::combineWith, nullptr, nullptr);
+            disconnect(this, &Product::productDefinition, nullptr, nullptr);
         }
         else{
             emit deleteProduct(this);
@@ -372,9 +378,9 @@ bool Product::lead(){
     productData = this;
 
     //prepare the option section. (append the node-sections)
-    options_list->clear();
-    for (int i=0;i<(int)productData->options->count();i++){
-        options_list->append(productData->options->at(i),(productData->options->at(i))->getOptionType());
+    productExtraInfos.clear();
+    for (int i=0;i<(int)productData->extraInfos.count();i++){
+        productExtraInfos.append(productData->extraInfos.at(i),(productData->extraInfos.at(i))->getOptionType());
     }
 
     list = this->getCombinations();
@@ -391,29 +397,29 @@ bool Product::lead(){
     xml = 0;
 
     //disconnecting the signals that create the product.
-    disconnect(SIGNAL(combineWith(QStringList )));
-    disconnect(SIGNAL(productDefinition(XmlConfig *)));
+    disconnect(this, &Product::combineWith, nullptr, nullptr);
+    disconnect(this, &Product::productDefinition, nullptr, nullptr);
     return true;
 }
 
 void Product::combinationClicked(Product *product){
-    ProductData *data = 0;
+    RelatedProductGroup *data = 0;
     QStringList list;
     XmlConfig *xml = 0;
     //OptionNode *on=0;
 
     if (!productData) return;
 
-    data =  productData->getProduct(product->getProductName());
+    data =  productData->getProduct(product->baseName());
     if (!data) return;
 
     productData = data;
-    product_list->append(product);
+    productVariants.append(product);
 
-    for (int i=0;i<(int)productData->options->count();i++){
+    for (int i=0;i<(int)productData->extraInfos.count();i++){
         //check if the option is at the list
-        if (!options_list->find((productData->options->at(i))->getOptionType()))
-            options_list->append(productData->options->at(i),(productData->options->at(i))->getOptionType());
+        if (!productExtraInfos.find((productData->extraInfos.at(i))->getOptionType()))
+            productExtraInfos.append(productData->extraInfos.at(i),(productData->extraInfos.at(i))->getOptionType());
     }
 
     list = productData->getCombinations();
@@ -431,8 +437,8 @@ void Product::combinationClicked(Product *product){
     xml = 0;
 
     //disconnecting the signals that create the product.
-    disconnect(SIGNAL(combineWith(QStringList )));
-    disconnect(SIGNAL(productDefinition(XmlConfig *)));
+    disconnect(this, &Product::combineWith, nullptr, nullptr);
+    disconnect(this, &Product::productDefinition, nullptr, nullptr);
 }
 
 void Product::combinationDeleted(Product *product){
@@ -441,9 +447,9 @@ void Product::combinationDeleted(Product *product){
     QStringList  list;
     Product *prod = 0;
     founded = false;
-    count = product_list->count();
+    count = productVariants.count();
     for(i=0;i<count;i++){
-        if (product==product_list->at(i)){
+        if (product==productVariants.at(i)){
             founded = true;
             break;
         }
@@ -452,7 +458,7 @@ void Product::combinationDeleted(Product *product){
         return;
 
     //all the buttons after the i product and also the i product should be detoggled
-    while ((prod = product_list->at(i))){
+    while ((prod = productVariants.at(i))){
         //may be we will have some problems with these.
         prod->setToggleFilter(true);  //needed to deactivate the emision of the productDeleted Signal
 
@@ -460,21 +466,21 @@ void Product::combinationDeleted(Product *product){
 
         prod->setToggleFilter(false);
         //        product_list->remove(product_list->at(i));
-        product_list->removeAt(i);
+        productVariants.removeAt(i);
     }
 
     //now we should put the node(ProductData) to the last ProductData of the product_list.
     productData = this;
-    options_list->clear();
-    for (int i=0;i<(int)productData->options->count();i++){
-        options_list->append(productData->options->at(i),(productData->options->at(i))->getOptionType());
+    productExtraInfos.clear();
+    for (int i=0;i<(int)productData->extraInfos.count();i++){
+        productExtraInfos.append(productData->extraInfos.at(i),(productData->extraInfos.at(i))->getOptionType());
     }
-    count = product_list->count();
+    count = productVariants.count();
     for(i=0;i<count;i++){
-        prod = product_list->at(i);
-        productData = productData->getProduct(prod->getProductName());
-        for (int i=0;i<(int)productData->options->count();i++){
-            options_list->append(productData->options->at(i),(productData->options->at(i))->getOptionType());
+        prod = productVariants.at(i);
+        productData = productData->getProduct(prod->baseName());
+        for (int i=0;i<(int)productData->extraInfos.count();i++){
+            productExtraInfos.append(productData->extraInfos.at(i),(productData->extraInfos.at(i))->getOptionType());
         }
     }
 
@@ -490,20 +496,18 @@ void Product::combinationDeleted(Product *product){
 
 void Product::disableProduct(){
     //it should only be disabled if the object is not toggled
-    //    if (this->isOn())
-    //        return;
-    if (this->isChecked())
-        return;
-    this->setEnabled(false);
+    //    if (this->isOn())  return;
+    if (isChecked()) return;
+    setEnabled(false);
 }
 
 void Product::enableProduct(){
-    this->setEnabled(true);
+    setEnabled(true);
 }
 
 void Product::defaultValues(){
     productData = nullptr;
-    product_list->clear();
+    productVariants.clear();
     setToggleFilter(true);
     setEnabled(true);
     //@BENE    this->setOn(false);
@@ -513,70 +517,71 @@ void Product::defaultValues(){
 /*************************************************************************************************************
 * all the method that access the productData nodes should also check the options for all the data...
 **************************************************************************************************************/
-XmlConfig* Product::createProductDefinition(){
+XmlConfig* Product::createProductDefinition()
+{
     int i,count;
     XmlConfig *xml = 0;
     Product *prod = 0;
-    QStringList list;
+    QStringList names;
     QString aux;
-    if (!productData)
-        return xml;
 
-    //write all products at the xml
+    if (!productData) return nullptr;
+
+    //write all products in the xml
     //first get the list.
-    if ( getProductName() == END_METAPRODUCT){
-        options_list->clear();
+    if ( baseName() == END_METAPRODUCT){
+        productExtraInfos.clear();
         return nullptr;
     }
-    list.append(this->getProductName());
-    count = product_list->count();
-    for(i=0;i<count;i++){
-        prod = product_list->at(i);
-        aux = prod->getProductName();
-        if (aux == END_METAPRODUCT)
-            break;
-        list.append(prod->getProductName());
+
+    names.append(baseName());
+    count = productVariants.count();
+    for(i=0; i < count; i++){
+        prod = productVariants.at(i);
+        aux = prod->baseName();
+        if (aux == END_METAPRODUCT) break;
+        names.append(prod->baseName());
     }
 
-    if (list.isEmpty()){     //this only happens when the only product was the END_METAPRODUCT
-        return xml;
-    }
+    //this only happens when the only product was the END_METAPRODUCT
+    if (names.isEmpty()) return xml;
 
-    list.sort();
+
+    names.sort();
 
     //now write the XML
     xml = new XmlConfig("/tmp/producto_temporal.xml");
     xml->delDomain();
 
     //delete all products
-    while (xml->howManyTags("product")){
+    while (xml->howManyTags("product"))
         xml->deleteElement("product");
-    }
 
     xml->createElementSetDomain("product");
     //prepare the option section
     //testing purpose
-    for (i=0;i<(int)options_list->count();i++){
-        OptionNode *node = 0;
-        QString option_value="";
-        QString option="";
-        node = options_list->at(i);
+    for (i=0; i<(int)productExtraInfos.count();i++){
+        ProductExtraInfo *node = 0;
+        QString option_value;
+        QString option;
+        node = productExtraInfos.at(i);
         option = node->getOptionType();
         option_value = node->getDefaultOption();
-        if ((option.isEmpty())||(option_value.isEmpty()))
-            continue;
+
+        if ((option.isEmpty())||(option_value.isEmpty())) continue;
         xml->createElement("options.option["+QString::number(i)+"].type",option);
         xml->createElement("options.option["+QString::number(i)+"].value",option_value);
     }
 
     xml->createElementSetDomain("articles");
-    count = list.count();
-    for (i=0;i<count;i++){
-        xml->createElement("article["+QString::number(i)+"].name",list[i]);
-    }
+    count = names.count();
+
+    for (i=0;i<count;i++)
+        xml->createElement("article["+QString::number(i)+"].name",names[i]);
+
     xml->save();
     xml->delDomain();
 
-    this->defaultValues();
+    defaultValues();
     return xml;
 }

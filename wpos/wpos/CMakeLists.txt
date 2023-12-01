@@ -56,8 +56,8 @@ endforeach()
 set(DBUS_ADAPTOR_FILES
     barcore/FileAlterationWatcher.h
     menusystem/menus/ReceiptRecoverWidget.h
-    menusystem/menus/NumCodeWidget.h
-    LoginScreen.h
+    menusystem/menus/PinCodeWidget.h
+    Greeter.h
 )
 
 foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
@@ -126,7 +126,7 @@ set(HEADER_FILES
     menusystem/menus/genericproduct.h
     menusystem/menus/invitationallocatorwidget.h
     menusystem/menus/killticketswidget.h
-    menusystem/menus/numcodewidget.h
+    menusystem/menus/pincodewidget.h
     menusystem/menus/receiptinterface.h
     menusystem/menus/receiptrecoverwidget.h
     menusystem/menus/xzwidget.h
@@ -139,10 +139,10 @@ set(HEADER_FILES
     prodselect/product.h
     prodselect/productscreen.h
     prodselect/productscreenstack.h
-    prodselect/productdata.h
+    prodselect/relatedproductgroup.h
     ticket/ticketcore.h
-    loginscreen.h
-    loginscreeninterface.h
+    greeter.h
+    greeterinterface.h
     main.h
     mainscreen.h
     salesscreen.h
@@ -181,7 +181,7 @@ set(SOURCES_FILES
     menusystem/menus/genericproduct.cpp
     menusystem/menus/invitationallocatorwidget.cpp
     menusystem/menus/killticketswidget.cpp
-    menusystem/menus/numcodewidget.cpp
+    menusystem/menus/pincodewidget.cpp
     menusystem/menus/receiptrecoverwidget.cpp
     menusystem/menus/xzwidget.cpp
     printer/printermanager.cpp
@@ -189,14 +189,14 @@ set(SOURCES_FILES
     printer/printerticket.cpp
     printer/printersamsungsrp350.cpp
     prodselect/product.cpp
-    prodselect/productdata.cpp
+    prodselect/relatedproductgroup.cpp
     ticket/ticketcore.cpp
     main.cpp
     mainscreen.cpp
     salesscreen.cpp
     prodselect/productscreen.cpp
     prodselect/productscreenstack.cpp
-    loginscreen.cpp
+    greeter.cpp
     readconfigscreen.cpp
     menusystem/menus/paymodeswidget.cpp
     menusystem/menus/ticketshandlingwidget.cpp
@@ -212,7 +212,7 @@ set(UIC_FILES
     menusystem/menus/freepricewidget.ui
     menusystem/menus/invitationallocatorwidget.ui
     menusystem/menus/killticketswidget.ui
-    menusystem/menus/numcodewidget.ui
+    menusystem/menus/pincodewidget.ui
     menusystem/menus/xzwidget.ui
     menusystem/menus/paymodeswidget.ui
     saleswidget.ui

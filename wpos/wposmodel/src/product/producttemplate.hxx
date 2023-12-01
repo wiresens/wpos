@@ -39,7 +39,7 @@ SOFTWARE.
 using namespace wpos::model;
 
 #pragma db object(ProductTemplate) definition
-#pragma db member(ProductTemplate::id_) id auto
+#pragma db member(ProductTemplate::id) id auto
 #pragma db member(ProductTemplate::name_) unique not_null
 #pragma db member(ProductTemplate::code_) unique null
 

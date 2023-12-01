@@ -15,7 +15,7 @@
 
 #include "mainscreen.h"
 
-#include "menusystem/menus/mainscreenwidget.h"
+#include "menusystem/menus/mainscreenmenu.h"
 
 #include <libbslxml/xmlconfig.h>
 #include <wposwidget/menustack.h>
@@ -30,24 +30,23 @@
 #include <QStyle>
 #include <QFont>
 
-//static const int  DEFAULT_FONT_SIZE {11};
 #include <iostream>
 using namespace std;
 
-MainScreen::MainScreen(QWidget *parent) :
+MainScreen::MainScreen(QWidget *parent):
     QWidget(parent)
 {
     setupApplication();
     buildMenuStack();
-    buildMainScreen();
+    buildScreenMenu();
 }
 
 void MainScreen::setupApplication(){
-//    setGeometry(0,0,1024,768);
+    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     auto configFile = Files::configFilePath("buttons");
     if (QFile::exists(configFile)){
         XmlConfig xml (configFile);
-        if ( xml.isValid() && xml.setDomain("initscreen")){
+        if ( xml.wellFormed() && xml.setDomain("initscreen")){
             if (xml.setDomain("font")){
                 auto family = xml.readString("family");
                 auto size = xml.readString("size");
@@ -56,7 +55,7 @@ void MainScreen::setupApplication(){
                     bool ok = false;
                     auto font_size = size.toInt(&ok);
                     QFont font(family, Sizes::FONT_SIZE_11);
-                    if (ok) font = QFont(family,font_size);
+                    if (ok) font = QFont(family, font_size);
                     QApplication::setFont(font);
                 }
             }
@@ -70,24 +69,20 @@ void MainScreen::setupApplication(){
 }
 
 void MainScreen::buildMenuStack(){
-    setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-    main_layout = new QVBoxLayout(this);
-    menus_stack = new MenuStack(this);
-    menus_stack->setSizePolicy(sizePolicy());
-    menus_stack->setContentsMargins(0,0,0,0);
-    main_layout->addWidget(menus_stack);
-
-    // Sets default screen when application inits
-    menus_stack->setCurrentPage(Menus::MAIN_MENU);
+    mainLayout = new QVBoxLayout(this);
+    menuStack = new MenuStack(this);
+    menuStack->setSizePolicy(sizePolicy());
+    menuStack->setContentsMargins(0,0,0,0);
+    mainLayout->addWidget(menuStack);
+    menuStack->setCurrentPage(Menus::MAIN_MENU); //start page
 }
 
-void MainScreen::buildMainScreen(){
+void MainScreen::buildScreenMenu(){
     // Add it to a page of menus_stack
-    auto *page = new MenuPage(menus_stack, Menus::MAIN_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+    auto menuPage = new MenuPage(menuStack, Menus::MAIN_MENU);
+    menuPage->setLayoutType(MenuPage::VBOX);
 
     // Create authentification widget
-    main_screen = new MainScreenWidget(page,"MAIN_SCREEN_WIDGET");
-    page->addWidget(main_screen,"MAIN_SCREEN_WIDGET");
-    menus_stack->addPage(page, Menus::MAIN_MENU);
+    screenMenu = new MainScreenMenu(menuPage, Menus::MAIN_SCREEN_MENU);
+    menuStack->addPage(menuPage, menuPage->objectName());
 }

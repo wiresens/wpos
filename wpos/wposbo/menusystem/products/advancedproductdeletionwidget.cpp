@@ -12,12 +12,13 @@ using namespace std;
 static const QString& PRODUCTS_DTD {"/etc/ntpv_backoffice/dtds/products_productslist.dtd"};
 
 AdvancedProductDeletionWidget::AdvancedProductDeletionWidget(
-        ProductModule* product_model,
-        QWidget* parent, const QString& name):
+    ProductModule* product_model,
+    QWidget* parent,
+    const QString& name):
     AdvancedProductEditionWidget(product_model, parent, name)
 {
-    connect(ok_delete_button,SIGNAL(clicked()),this,SLOT(deleteSlot()));
-    connect(cancel_delete_button,SIGNAL(clicked()),this,SLOT(cancelDeletedSlot()));
+    connect(ok_delete_button,  &QPushButton::clicked, this, &AdvancedProductDeletionWidget::deleteSlot);
+    connect(cancel_delete_button, &QPushButton::clicked, this, &AdvancedProductDeletionWidget::cancelDeletedSlot);
 }
 
 void AdvancedProductDeletionWidget::acceptSlot(){
@@ -41,10 +42,10 @@ void AdvancedProductDeletionWidget::deleteSlot(){
 
     if ((productModel().isUnitaryProduct(code))&&(checkUnitaryUse(code))){
         QString msg = tr("You have chosen to delete a unit product \n"
-                          "found as an ingredient in other products.\n"
-                          "If you want to delete the chosen product you must also delete\n"
-                          "all products that contain it.\n"
-                          "Do you want to delete the compound products that contain the product %1?").arg(name);
+                         "found as an ingredient in other products.\n"
+                         "If you want to delete the chosen product you must also delete\n"
+                         "all products that contain it.\n"
+                         "Do you want to delete the compound products that contain the product %1?").arg(name);
 
         if( QMessageBox::question( this, tr("Update product"), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No ){
             cancelDeletedSlot();

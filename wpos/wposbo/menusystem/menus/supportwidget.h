@@ -10,7 +10,7 @@ class SupportWidget :
 {
     Q_OBJECT
 public:
-    explicit SupportWidget(QWidget *parent = 0, const QString & name = QString());
+    explicit SupportWidget(QWidget *parent = nullptr, const QString & name = QString());
 };
 
 #endif // SUPPORTWIDGET_H

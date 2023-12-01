@@ -151,7 +151,7 @@ in the future for begining of any project( kind of scaffolding)
 │   └── simpleArrayTest.cpp // Adapt to our own tests
 ├── .travis.sh 	// Edit to adapt our needs
 └── .travis.yml	// Edit to adapt our needs
-
+y requirement fy re
 ********************************************************************
 Automated Test, Packaging, Deployment(CI/CD) scaffolding:
 Create a template CMake project that enable 
@@ -170,8 +170,22 @@ For CI/CD thing of .travis.sh .travis.yml in Doug Schmidt assignment files
 
 ********************************
 wposwidget depending on dbusprinter generated com.wiresens.dbusprinter.xml
-
 Find ways to remove this dependency
 
 Change Workspace/projets into Workspace/projetcs, projets -> projetcs
+Specify requirement for Qt 5.15 due to the use of
+QSignalMapper::mappedInt instead of obsolete QSignalMapper::mapped
+
+AutoUic: /home/benes/Workspace/projets/wpos/wpos/wposbo/menusystem/design/screenproductsdesigninterface.ui: Warning: Buddy assignment: '' is not a valid widget.
+
+wposwidget/ordercontentview.h
+wpos/salesscreen.cpp
+wpos/menusystem/menus/ticketshandlingwidget.cpp
+wpos/menusystem/menus/killticketswidget.cpp
+wpos/menusystem/menus/receiptrecoverwidget.cpp
+
+wposbo/menusystem/reports/persticketwidget.cpp
+
+ProductScreenStack  Good candidate for catalog viewer
+uses ProductScreen as different navigation screen
 

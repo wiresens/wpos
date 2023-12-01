@@ -39,52 +39,52 @@ public:
     bool isUnitaryProduct(QString product_code);
 
 public slots:
-    virtual bool deleteProduct(const QString& product_code) override;
+   Q_SCRIPTABLE bool deleteProduct(const QString& product_code) override;
 
-    virtual QString getProduct(const QString& product_code) override;
-    virtual QString getProductName(const QString& product_code) override;
+   Q_SCRIPTABLE QString getProduct(const QString& product_code) override;
+   Q_SCRIPTABLE QString getProductName(const QString& product_code) override;
 
-    virtual QString getProductLike(const QString& product_name) override;
+   Q_SCRIPTABLE QString getProductLike(const QString& product_name) override;
 
-    virtual QString getFamilies() override;
+   Q_SCRIPTABLE QString getFamilies() override;
 
-    virtual QString getLogo(const QString& product_name) override;
-    virtual QString getLogoFromProductCode(const QString& product_code) override;
+   Q_SCRIPTABLE QString getLogo(const QString& product_name) override;
+   Q_SCRIPTABLE QString getLogoFromProductCode(const QString& product_code) override;
 
-    virtual QString getLogos(const QString& xml_string) override;
+   Q_SCRIPTABLE QString getLogos(const QString& xml_string) override;
 
-    virtual QString getTaxes() override;
+   Q_SCRIPTABLE QString getTaxes() override;
 
-    virtual QString getProductsExtend() override;
+   Q_SCRIPTABLE QString getProductsExtend() override;
 
-    virtual QString getProducts() override;
+   Q_SCRIPTABLE QString getProducts() override;
 
-    virtual QString getUnitaryProducts() override;
+   Q_SCRIPTABLE QString getUnitaryProducts() override;
 
-    virtual bool insertProduct(const QString& xml_string) override;
+   Q_SCRIPTABLE bool insertProduct(const QString& xml_string) override;
 
-    virtual bool updateProduct(const QString& xml_string) override;
+   Q_SCRIPTABLE bool updateProduct(const QString& xml_string) override;
 
-    virtual QString getCompositions() override;
+   Q_SCRIPTABLE QString getCompositions() override;
 
-    virtual bool insertProductComposition(const QString& xml_string) override;
+   Q_SCRIPTABLE bool insertProductComposition(const QString& xml_string) override;
 
-    virtual bool updateProductComposition(const QString& xml_string) override;
+   Q_SCRIPTABLE bool updateProductComposition(const QString& xml_string) override;
 
-    virtual bool existProductComposition(const QString& xml_string) override;
+   Q_SCRIPTABLE bool existProductComposition(const QString& xml_string) override;
 
-    virtual QString getIngredients(const QString& product_code) override;
+   Q_SCRIPTABLE QString getIngredients(const QString& product_code) override;
 
-    virtual QString getCompositionsWithIngredient(const QString& ingredient_code) override;
+   Q_SCRIPTABLE QString getCompositionsWithIngredient(const QString& ingredient_code) override;
 
-    virtual QString getProductCodeByProductName(const QString& product_name) override;
+   Q_SCRIPTABLE QString getProductCodeByProductName(const QString& product_name) override;
 
-    virtual int getNumberOfProducts() override;
+   Q_SCRIPTABLE int getNumberOfProducts() override;
 
-    virtual void saveBarXml() override;
+   Q_SCRIPTABLE void saveBarXml() override;
 
-    virtual void setProductAtPrinter(const QString& product_name, const QString& printer, bool on) override;
-    virtual bool getProductAtPrinter(const QString& product_name, const QString& printer) override;
+   Q_SCRIPTABLE void setProductAtPrinter(const QString& product_name, const QString& printer, bool on) override;
+   Q_SCRIPTABLE bool getProductAtPrinter(const QString& product_name, const QString& printer) override;
 
 signals:
     /**

@@ -20,15 +20,21 @@ class Browser;
 class QShowEvent;
 class QWebEngineView;
 
-class SubMenuInfoFrame : public QFrame  {
+class SubMenuInfoFrame : public QFrame{
+    Q_OBJECT
 public:
-    explicit SubMenuInfoFrame(QWidget* parent=0, const QString &name = QString());
+    explicit SubMenuInfoFrame(
+        QWidget* parent=0,
+        const QString &name = QString()
+    );
+
     ~SubMenuInfoFrame() = default;
-    void load(const QString &info_file);
-    virtual void showEvent(QShowEvent *e) override;
+
+    void load(const QString &infoFile);
+    void showEvent(QShowEvent *event) override;
 
 private:
-    QVBoxLayout *layout{};
+    QVBoxLayout    *layout{};
     QWebEngineView *browser{};
 };
 

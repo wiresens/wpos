@@ -43,8 +43,8 @@ DatabaseModule::DatabaseModule(QObject *parent, const QString& name):
     //should be created before all the modules are created.
     file_watcher = new QFileSystemWatcher(this);
     file_watcher->addPath(DATABASE_DEFINITION_FILE);
-    connect(file_watcher, SIGNAL(fileChanged(const QString&)),
-            this, SLOT(handleFileChanged(const QString&)));
+    connect(file_watcher, &QFileSystemWatcher::fileChanged,
+            this, &DatabaseModule::handleFileChanged);
 }
 
 DatabaseModule::~DatabaseModule(){}
@@ -55,7 +55,7 @@ bool DatabaseModule::setConfig(QString xml_str){
     //translate to a XmlConfig
     XmlConfig xml;
     xml.readXmlFromString(xml_str);
-    if (!xml.isValid() || !xml.validateXmlWithDTD(DDBB_CONFIGURATION_DTD_NMAP))
+    if (!xml.wellFormed() || !xml.validateXmlWithDTD(DDBB_CONFIGURATION_DTD_NMAP))
         return false;
 
     //all's ok... first we are going to remove the config file and then we are going to save the xml at it
@@ -160,7 +160,7 @@ XmlConfig* DatabaseModule::loadDatabaseConfig(){
         return nullptr;
 
     config_file = new XmlConfig(DATABASE_DEFINITION_FILE);
-    if (!config_file->isValid()
+    if (!config_file->wellFormed()
             || !config_file->validateXmlWithDTD(DATABASE_CONFIG_DTD) ){
         delete config_file;
         return nullptr;

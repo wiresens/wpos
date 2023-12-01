@@ -37,27 +37,8 @@ GenericMenuButton::GenericMenuButton(const QString& text, QWidget *parent, const
     xml = new XmlConfig(GENERIC_BUTTON);
     xml->delDomain();
 
-    connect(this, SIGNAL(released()), this, SLOT(releasedSlot()));
+    connect(this, &GenericMenuButton::released, this, &GenericMenuButton::releasedSlot);
 }
-
-GenericMenuButton::~GenericMenuButton(){
-    delete xml;
-}
-
-
-//void GenericMenuButton::init(){
-//    r_list = new QList<RMenuButtonData*>;
-
-//    QFile file(GENERIC_BUTTON);
-//    if (file.exists())
-//        file.remove();
-
-//    xml = new XmlConfig(GENERIC_BUTTON);
-//    xml->delDomain();
-
-//    connect(this, SIGNAL(released()), this, SLOT(releasedSlot()));
-//}
-
 
 void GenericMenuButton::releasedSlot(){
     int count, i;

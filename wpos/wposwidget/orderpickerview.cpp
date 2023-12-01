@@ -94,14 +94,12 @@ OrderPickerView::OrderPickerView(QWidget *parent, QString name):
     }
 }
 
-OrderPickerView::~OrderPickerView(){}
-
 void OrderPickerView::parseXmlDescription(){
 
     int row{0}, col{0};
 
     XmlConfig xml (ORDER_MANAGER_DESCRIPTION_XML);
-    if ( !QFile::exists(ORDER_MANAGER_DESCRIPTION_XML) || !xml.isValid() ){
+    if ( !QFile::exists(ORDER_MANAGER_DESCRIPTION_XML) || !xml.wellFormed() ){
         cerr << "Can't parse " << ORDER_MANAGER_DESCRIPTION_XML << "file. [CRITICAL ERROR] Can't initialize order in proper way.";
         return;
     }

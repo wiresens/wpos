@@ -37,14 +37,20 @@ SOFTWARE.
 namespace wpos{
 namespace model{
 
-using query  = odb::query<PriceLog>;
+inline PriceLog::PriceLog(Product& product, double price)
+    : price_{price}
+{
+    auto id   = db->persist(product);
+    product_  = db->load<Product>(id);
+}
 
+using query  = odb::query<PriceLog>;
 PriceLogPtr PriceLog::priceAsOf(
     ConstProductPtr product_ptr,
     const TimeStamp& stamp)
 {
     PriceLogPtr loggedPrice = db->query_one<PriceLog>(
-        query::product->id == product_ptr->getId()
+        query::product->id == product_ptr->id
         && query::effectivity.start_date <= stamp
         && stamp < query::effectivity.end_date
     );
@@ -53,37 +59,32 @@ PriceLogPtr PriceLog::priceAsOf(
 
 void PriceLog::logPrice(ProductPtr productPtr)
 {
-    #if defined(DATABASE_SQLITE)
-    auto current_pricelog = db->query_one<PriceLog>(
-        query::product->id == productPtr->getId() &&
-        query::effectivity.start_date == query::effectivity.end_date
-        );
-    #else
-    auto current_pricelog = db->query_one<PriceLog>(
-        query::product->id == productPtr->getId() &&
-        query::effectivity.end_date >= pt::pos_infin
-        );
-    #endif
+    auto prev_pricelog = db->query_one<PriceLog>(
+        query::product->id == productPtr->id &&
+        query::effectivity.end_date >= maxDateTime()
+    );
 
-    auto price = productPtr->price();
-    if (current_pricelog){
-        if( current_pricelog->price_ > price || current_pricelog->price_ < price ) // pricelog->price_ != price
+    auto current_price = productPtr->price();
+    if (prev_pricelog){
+        if( prev_pricelog->price_ > current_price || prev_pricelog->price_ < current_price ) // pricelog->price_ != price
         {
-            current_pricelog->close();
-            #if defined(DATABASE_SQLITE)
-            DateRange newrange(current_pricelog->effectivity_.endDate());
-            #else
-            DateRange newrange(current_pricelog->effectivity_.endDate(), maxDateTime());
-            #endif
-            auto new_pricelog = PriceLog(current_pricelog->product_, newrange, price);
+            prev_pricelog->close();
+            DateRange newrange(prev_pricelog->effectivity_.endDate(), maxDateTime());
+            auto new_pricelog = PriceLog(prev_pricelog->product_, newrange, current_price);
             db->persist(new_pricelog);
-            db->update(current_pricelog);
+            db->update(prev_pricelog);
         }
     }
     else{
-        auto new_pricelog = PriceLog(productPtr, price);
+        auto new_pricelog = PriceLog(productPtr, current_price);
         db->persist(new_pricelog);
     }
+}
+
+void PriceLog::savePrice(Product& product)
+{
+    auto new_pricelog = PriceLog(product, product.price());
+    db->persist(new_pricelog);
 }
 
 }}

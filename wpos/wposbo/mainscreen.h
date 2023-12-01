@@ -22,7 +22,7 @@
 class QVBoxLayout;
 class MenuStack;
 class BslAccessScreenWidget;
-class MainScreenWidget;
+class MainScreenMenu;
 
 /******************************************************************************
  * This widget contains a menus_stack which has all pages.
@@ -46,13 +46,13 @@ public:
     ~MainScreen() = default;
 
 protected:
-    virtual void setupApplication();
-    virtual void buildMenuStack();
-    virtual void buildMainScreen();
+    void setupApplication();
+    void buildMenuStack();
+    void buildScreenMenu();
 
-    QVBoxLayout *main_layout{};
-    MenuStack *menus_stack{};
-    MainScreenWidget *main_screen{};
+    QVBoxLayout *mainLayout{};
+    MenuStack   *menuStack{};
+    MainScreenMenu  *screenMenu{};
 };
 
 #endif

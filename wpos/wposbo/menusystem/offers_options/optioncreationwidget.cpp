@@ -19,7 +19,7 @@
 #include "optioncreationwidget_adaptor.h"
 
 #include "productsmodule/optionsmodule/productoptionmodule.h"
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QtDBus/QDBusConnection>
@@ -39,8 +39,8 @@ OptionCreationWidget::OptionCreationWidget(QWidget *parent, const QString& name 
     group_box->hide();
 
     //unique
-    connect(add_type_button, SIGNAL(clicked()),this,SLOT(processType()));
-    connect(add_option_button, SIGNAL(clicked()),this,SLOT(processOption()));
+    connect(add_type_button,  &QPushButton::clicked, this, &OptionCreationWidget::processType);
+    connect(add_option_button, &QPushButton::clicked, this, &OptionCreationWidget::processOption);
 }
 
 void OptionCreationWidget::processOption(){

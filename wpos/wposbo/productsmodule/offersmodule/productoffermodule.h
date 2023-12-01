@@ -34,41 +34,41 @@ public:
      ~ProductOfferModule() = default;
 
 public slots:
-     virtual bool deleteOffer(const QString& xml_string) override;
-     virtual bool deleteOfferType(const QString& offer_type) override;
-     virtual QString getDescriptionOffer(const QString& xml_string) override;
+    Q_SCRIPTABLE bool deleteOffer(const QString& xml_string) override;
+    Q_SCRIPTABLE bool deleteOfferType(const QString& offer_type) override;
+    Q_SCRIPTABLE QString getDescriptionOffer(const QString& xml_string) override;
 
-     virtual QString getDescriptionOfferType(const QString& offer_type) override;
-     virtual QString getCppOperator(const QString& offer_type) override;
+    Q_SCRIPTABLE QString getDescriptionOfferType(const QString& offer_type) override;
+    Q_SCRIPTABLE QString getCppOperator(const QString& offer_type) override;
 
-     virtual QString getLogoOffer(const QString& xml_string) override;
-     virtual QString getLogo(const QString& type, const QString& name) override;
+    Q_SCRIPTABLE QString getLogoOffer(const QString& xml_string) override;
+    Q_SCRIPTABLE QString getLogo(const QString& type, const QString& name) override;
 
-     virtual QString getAllOffers() override;
-     virtual QString getOffer(const QString& xml_string) override;
-     virtual QString getOffers(const QString& offer_type) override;
-     virtual QString getOfferType(const QString& offer_type) override;
-     virtual QString getOfferTypes() override;
+    Q_SCRIPTABLE QString getAllOffers() override;
+    Q_SCRIPTABLE QString getOffer(const QString& xml_string) override;
+    Q_SCRIPTABLE QString getOffers(const QString& offer_type) override;
+    Q_SCRIPTABLE QString getOfferType(const QString& offer_type) override;
+    Q_SCRIPTABLE QString getOfferTypes() override;
 
-     virtual bool insertOffer(const QString& xml_string) override;
-     virtual bool insertOfferType(const QString& xml_string) override;
+    Q_SCRIPTABLE bool insertOffer(const QString& xml_string) override;
+    Q_SCRIPTABLE bool insertOfferType(const QString& xml_string) override;
 
-     virtual int getNumOfferTypes() override;
+    Q_SCRIPTABLE int getNumOfferTypes() override;
 
-     virtual bool updateOffer(const QString& xml_string) override;
-     virtual bool updateOfferType(const QString& xml_string) override;
+    Q_SCRIPTABLE bool updateOffer(const QString& xml_string) override;
+    Q_SCRIPTABLE bool updateOfferType(const QString& xml_string) override;
 
-     virtual QString getProductOffers(const QString& product_code) override;
-     virtual bool existOffer(const QString& xml_string) override;
-     virtual bool existOfferType(const QString& type) override;
-     virtual bool existProductAndOffer(const QString& xml_string) override;
+    Q_SCRIPTABLE QString getProductOffers(const QString& product_code) override;
+    Q_SCRIPTABLE bool existOffer(const QString& xml_string) override;
+    Q_SCRIPTABLE bool existOfferType(const QString& type) override;
+    Q_SCRIPTABLE bool existProductAndOffer(const QString& xml_string) override;
 
-     virtual bool insertOffersToProduct(const QString& xml_string) override;
-     virtual bool updateOffersToProduct(const QString& xml_string) override;
-     virtual bool deleteOffersToProduct(const QString& product_code, const QString& offer_type, const QString& offer_name) override;
+    Q_SCRIPTABLE bool insertOffersToProduct(const QString& xml_string) override;
+    Q_SCRIPTABLE bool updateOffersToProduct(const QString& xml_string) override;
+    Q_SCRIPTABLE bool deleteOffersToProduct(const QString& product_code, const QString& offer_type, const QString& offer_name) override;
 
-     virtual void setAllProductOfferValue(const QString& offer_type, const QString& offer_name, const QString& value) override;
-     virtual void updateAllProductOfferValue(const QString& offer_type, const QString& offer_name, const QString& value) override;
+    Q_SCRIPTABLE void setAllProductOfferValue(const QString& offer_type, const QString& offer_name, const QString& value) override;
+    Q_SCRIPTABLE void updateAllProductOfferValue(const QString& offer_type, const QString& offer_name, const QString& value) override;
 
  private:
       QString getStringXmlOffer(ProductOfferData* offer);

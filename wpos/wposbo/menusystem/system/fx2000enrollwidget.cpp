@@ -48,6 +48,8 @@ const QString& LH_4 {"hands:l-hand4.png"};
 const QString& EMPTY_FINGERPRINT {"hands:black_fingerprint.png"};
 const QString& FINGERPRINT_DCOP_MODULE {"dcopfx2000"};
 
+static const uint TIME_OUT {5000};
+
 #include <iostream>
 using namespace std;
 
@@ -84,9 +86,9 @@ FX2000EnrollWidget::FX2000EnrollWidget(QWidget *parent, const QString& name ):
     right_hand_label->insert(RH_1,89,14,30,30);
     right_hand_label->insert(RH_0,108,62,35,35);
 
-    connect(left_hand_label, SIGNAL(clickAt(QString)), this, SLOT(doubleClickedAtLeft(QString)));
-    connect(right_hand_label, SIGNAL(clickAt(QString)), this, SLOT(doubleClickedAtRight(QString)));
-    connect(acquire_button, SIGNAL(released()), this, SLOT(fingerprintAcquireSlot()));
+    connect(left_hand_label, &PosLabel::clickAt, this, &FX2000EnrollWidget::doubleClickedAtLeft);
+    connect(right_hand_label, &PosLabel::clickAt, this, &FX2000EnrollWidget::doubleClickedAtRight);
+    connect(acquire_button, &QPushButton::released, this, &FX2000EnrollWidget::fingerprintAcquireSlot);
 }
 
 FX2000EnrollWidget::~FX2000EnrollWidget(){
@@ -114,7 +116,7 @@ void FX2000EnrollWidget::fingerprintAcquireSlot(){
 
     if ( finger_number == -1 ){
         finger_label->setText(tr("You must select a finger of a hand\nbefore acquiring a print"));
-        QTimer::singleShot(4000, this, SLOT(clearFingerLabel()));
+        QTimer::singleShot(TIME_OUT, this, &FX2000EnrollWidget::clearFingerLabel);
         return;
     }
 
@@ -173,7 +175,7 @@ void FX2000EnrollWidget::fingerprintReadSlot(QString xml_str){
 
     QString text = tr("La huella se guardo correctamente\n");
     finger_label->setText(text);
-    QTimer::singleShot(10000, this, SLOT(clearFingerLabel()));
+    QTimer::singleShot( 2*TIME_OUT, this, &FX2000EnrollWidget::clearFingerLabel);
 
 }
 
@@ -193,7 +195,7 @@ void FX2000EnrollWidget::doubleClickedAtLeft(QString name){
     else if (name == LH_2) finger_number = 2;
     else if (name == LH_3) finger_number = 3;
     else if (name == LH_4) finger_number = 4;
-    QTimer::singleShot(4000,this,SLOT(clearFingerLabel()));
+    QTimer::singleShot(TIME_OUT, this, &FX2000EnrollWidget::clearFingerLabel);
 }
 
 void FX2000EnrollWidget::doubleClickedAtRight(QString name){
@@ -207,7 +209,7 @@ void FX2000EnrollWidget::doubleClickedAtRight(QString name){
     else if (name == RH_2) finger_number = 7;
     else if (name == RH_3) finger_number = 8;
     else if (name == RH_4) finger_number = 9;
-    QTimer::singleShot(4000, this, SLOT(clearFingerLabel()));
+    QTimer::singleShot(TIME_OUT, this, &FX2000EnrollWidget::clearFingerLabel);
 }
 
 void FX2000EnrollWidget::showEvent(QShowEvent *e){

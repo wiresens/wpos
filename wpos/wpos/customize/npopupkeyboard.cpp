@@ -19,11 +19,11 @@
 #include <QLayout>
 #include <QString>
 #include "nkeyboard.h"
-#include <optionnode.h>
+#include <productextrainfo.h>
 
 NPopUpKeyboard::NPopUpKeyboard(
-        QWidget *parent,
-        const QString& name) :
+    QWidget *parent,
+    const QString& name) :
     QMenu(parent)
 {
     setObjectName(name);
@@ -31,24 +31,22 @@ NPopUpKeyboard::NPopUpKeyboard(
     keyboard->setSendEvents(false);
     keyboard->setExitWithEnter(true);
 
-    connect(keyboard, SIGNAL(textChanged(const QString &)), this, SIGNAL(textChanged(const QString &)));
-    connect(keyboard, SIGNAL(enterPressed(const QString &)), this, SLOT(enterPressedSlot(const QString &)));
-    connect(keyboard, SIGNAL(loungeSignal(bool)), this, SIGNAL(loungeSignal(bool)));
-    connect(keyboard, SIGNAL(exitClicked()), this, SIGNAL(exitClicked()));
+    connect(keyboard, &NKeyboard::textChanged, this, &NPopUpKeyboard::textChanged);
+    connect(keyboard, &NKeyboard::enterPressed, this, &NPopUpKeyboard::enterPressedSlot);
+    connect(keyboard, &NKeyboard::loungeSignal, this, &NPopUpKeyboard::loungeSignal);
+    connect(keyboard, &NKeyboard::exitClicked, this, &NPopUpKeyboard::exitClicked);
 
     addMenu(keyboard);
 }
 
 NPopUpKeyboard::NPopUpKeyboard(
-        const QString& text,
-        QWidget *parent,
-        const QString& name):
+    const QString& text,
+    QWidget *parent,
+    const QString& name):
     NPopUpKeyboard{parent, name}
 {
     keyboard->setText(text);
 }
-
-NPopUpKeyboard::~NPopUpKeyboard(){}
 
 void NPopUpKeyboard::enterPressedSlot(const QString &text){
     emit textChanged(text);
@@ -70,7 +68,7 @@ void NPopUpKeyboard::setText(const QString& text){
 }
 
 void NPopUpKeyboard::loungeButtonClicked(){
-    keyboard->loungeButtonClicked();
+    keyboard->showLounge();
 }
 
 void NPopUpKeyboard::kbButtonClicked(){
@@ -93,6 +91,6 @@ int NPopUpKeyboard::getTable(){
     return keyboard->getTable();
 }
 
-HList<OptionNode>* NPopUpKeyboard::getOptionsFromLounge(const QString& lounge){
+HList<ProductExtraInfo>* NPopUpKeyboard::getOptionsFromLounge(const QString& lounge){
     return keyboard->getOptionsFromLounge(lounge);
 }

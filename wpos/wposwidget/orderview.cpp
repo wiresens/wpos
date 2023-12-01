@@ -34,7 +34,7 @@ OrderView::OrderView(QWidget *parent, const QString& name):
     auto ordersConfig = Files::configFilePath("orders");
     XmlConfig xml (ordersConfig);
 
-    if ( !QFile::exists(ordersConfig) || !xml.isValid() ){
+    if ( !QFile::exists(ordersConfig) || !xml.wellFormed() ){
         cerr << "Can't find " << ordersConfig.toStdString() << " file. [CRITICAL ERROR] Can't initialize order in proper way.";
         return;
     }
@@ -55,8 +55,8 @@ OrderView::OrderView(QWidget *parent, const QString& name):
     layout->addWidget(order_total);
 
     // Some signals connections
-    connect(order_content, SIGNAL(totalBillSignal(float)), order_total, SLOT(totalBillSlot(float)));
-    connect(order_content, SIGNAL(dataChanged(XmlConfig*)),this, SIGNAL(dataChanged(XmlConfig*)));
+    connect(order_content, &OrderContentView::totalBillSignal, order_total, &OrderFooterView::totalBillSlot);
+    connect(order_content, &OrderContentView::dataChanged, this, &OrderView::dataChanged);
 }
 
 void OrderView::parseXmlDescription(XmlConfig *xml){

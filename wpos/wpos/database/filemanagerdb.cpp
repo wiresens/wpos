@@ -73,7 +73,7 @@ bool FileManagerDB::loadXmlFile(const QString& file){
     std::unique_ptr<XmlConfig> xml {new XmlConfig()};
     xml->readXmlFromString(xml_string);
 
-    if (xml->isValid()){
+    if (xml->wellFormed()){
         xml->save(PATH+file);
         cout << "Retrieved file from the database : "
              << QString(PATH+file).toStdString() << endl;

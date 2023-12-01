@@ -37,7 +37,7 @@ SOFTWARE.
 using namespace wpos::model;
 
 #pragma db object(Product) polymorphic definition
-#pragma db member(Product::id_) id auto
+#pragma db member(Product::id) id auto
 #pragma db member(Product::name_) unique not_null
 #pragma db member(Product::code_) /*unique*/ null
 

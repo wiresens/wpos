@@ -33,17 +33,17 @@ include_directories(
 )
 
 set(HEADER_FILES
-    basickeyboardbox.h
+    numpad.h
     dragobjects.h
     effects.h
-    floatkeyboardbox.h
+    floatkeyboard.h
     global.h
     #iwidgetconfig.h
     iwidgetconfighelper.h
     menusmanager.h
     menupage.h
     menustack.h
-    numkeyboardbox.h
+    numkeyboard.h
     ordercontentview.h
     #ordermanagerconfig.h
     ordercontrols.h
@@ -54,8 +54,8 @@ set(HEADER_FILES
     pdfviewer/pageselector.h
     pdfviewer/pdfviewer.h
     pdfviewer/zoomselector.h
-    popupkeyboard.h
-    spkeyboard.h
+    popupkeyboard.h #not used, investigate deletion
+    spkeyboard.h    #not used
     treeview.h
     visualproduct.h
     toolkit.h
@@ -63,17 +63,17 @@ set(HEADER_FILES
 )
 
 set(SOURCES_FILES
-    basickeyboardbox.cpp
+    numpad.cpp
     dragobjects.cpp
     effects.cpp
-    floatkeyboardbox.cpp
+    floatkeyboard.cpp
     global.cpp
     #iwidgetconfig.cpp
     iwidgetconfighelper.cpp
     menusmanager.cpp
     menupage.cpp
     menustack.cpp
-    numkeyboardbox.cpp
+    numkeyboard.cpp
     ordercontentview.cpp
     #ordermanagerconfig.cpp
     ordercontrols.cpp
@@ -85,10 +85,9 @@ set(SOURCES_FILES
     pdfviewer/pageselector.cpp
     pdfviewer/pdfviewer.cpp
     pdfviewer/zoomselector.cpp
-    popupkeyboard.cpp
-    spkeyboard.cpp
+    popupkeyboard.cpp #not used
+    spkeyboard.cpp    #not used
     treeview.cpp
-    visualproduct.cpp
     toolkit.cpp
     poslabel.cpp
 )
@@ -97,9 +96,9 @@ set(UIC_FILES
     keyboardwidget.ui
     loungewidget.ui
     menusmanager.ui
-    numkeyboard.ui
+    numpad.ui
     pdfviewer/pdfviewer.ui
-    spkeyboardwidget.ui    
+    spkeyboardwidget.ui
 )
 
 set(QRC_FILES

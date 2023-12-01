@@ -41,14 +41,18 @@
 #include <iostream>
 using namespace std;
 
-extern AuthCore *auth;
+extern AuthCore *authCore;
 
 extern QString CASHBOX_DEVICE;
 extern QString CASHBOX_TYPE;
 
 #define TMP_FILE_CORE "/tmp/bar_core.xml"
 
-BarCore::BarCore(QObject *parent, const QString& name):
+BarCoreDB BarCore::db{"BarCoreConnection", Files::configFilePath("database")};
+
+BarCore::BarCore(
+    QObject *parent,
+    const QString& name):
     QObject(parent)
 {
     extra_core = new ExtraCore(this, "extra_core");
@@ -57,35 +61,33 @@ BarCore::BarCore(QObject *parent, const QString& name):
 
     auto gsm = GenericSignalManager::instance();
 
-        gsm->subscribeToGenericDataSignal(GDATASIGNAL::USER_CHANGED, this);
-        gsm->subscribeToGenericDataSignal(GDATASIGNAL::BARCORE_PROCESS_CORE, this);
-        gsm->subscribeToGenericDataSignal(GDATASIGNAL::BARCORE_SEND_PRODUCT, this);
-        gsm->subscribeToGenericDataSignal(GDATASIGNAL::BARCORE_CHANGE_XML, this);
-        gsm->subscribeToGenericDataSignal(GDATASIGNAL::BARCORE_PRINT_ORDER_AT_SPECIAL_PRINTER, this);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::USER_CHANGED, this);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::BARCORE_PROCESS_CORE, this);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::BARCORE_SEND_PRODUCT, this);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::BARCORE_CHANGE_XML, this);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::BARCORE_PRINT_ORDER_AT_SPECIAL_PRINTER, this);
 
-        gsm->subscribeToGenericSignal(GSIGNAL::BARCORE_EXIT_AND_SAVE_RECEIPT, this);
-        gsm->subscribeToGenericSignal(GSIGNAL::BARCORE_SET_LAST_RECEIPT, this);
-        gsm->subscribeToGenericSignal(GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT, this);
+    gsm->subscribeToGenericSignal(GSIGNAL::BARCORE_EXIT_AND_SAVE_RECEIPT, this);
+    gsm->subscribeToGenericSignal(GSIGNAL::BARCORE_SET_LAST_RECEIPT, this);
+    gsm->subscribeToGenericSignal(GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT, this);
 
-        gsm->publishGenericSignal(GSIGNAL::WRONG_PRODUCT, this);
-
+    gsm->publishGenericSignal(GSIGNAL::WRONG_PRODUCT, this);
+    db.connect();
 }
 
 BarCore::~BarCore(){
-    resetCore();
-    delete db;
+    if (xml){
+        xml->delDomain();
+        delete xml;
+    }
     delete receipt_com;
+    db.disConnect();
 }
 
-void BarCore::initCore(bool flush_last){
-    if (db){
-        db->disConnect();
-        delete db;
-        db = nullptr;
-    }
-    db = new BarCoreDB("BarCoreConnection", Files::configFilePath("database"));
-    if (!db->connect())
-        cerr << "Error trying to establish connection"<< endl;
+void BarCore::reInitialise(bool flush_last){
+    if (!db.isConnected())
+        cerr << "Error trying to establish "
+             << db.connectionName().toStdString() << endl;
     delete xml;
     xml = 0;
 
@@ -106,20 +108,15 @@ void BarCore::initCore(bool flush_last){
     emit dataChanged(xml);
 }
 
-bool BarCore::resetCore(){
+void BarCore::resetCore(){
     if (xml){
         xml->delDomain();
         delete xml;
         xml = 0;
     }
-    db->disConnect();
-    delete db;
-    db=0;
 
-    last_employee_id ="";
-    last_start_time = "";
-
-    return true;
+    last_employee_id.clear();
+    last_start_time.clear();
 }
 
 
@@ -134,11 +131,11 @@ void BarCore::setEmployeeInfo(){
     while (xml->howManyTags("employee") != 0)
         xml->deleteElement("employee");
 
-    QString name = auth->getUserName()+" "+auth->getUserLastName();
+    QString name = authCore->userName()+" "+authCore->userLastName();
 
     xml->createElementSetDomain("employee");
     xml->createElement("name", name);
-    xml->createElement("dni", auth->getUserId());
+    xml->createElement("dni", authCore->userId());
 
     xml->delDomain();
     xml->popDomain();
@@ -356,7 +353,7 @@ void BarCore::setProductName(XmlConfig *_xml,const QString& product_code){
     product = _xml;
     product->pushDomain();
 
-    aux = db->getName(product_code);
+    aux = db.getName(product_code);
 
     if (aux.isEmpty())
         xml->createElement("name", product_code);
@@ -394,7 +391,7 @@ bool BarCore::setOptions(XmlConfig *_xml,const QString& product_code){
     for(i=0;i<count;i++){
         option_type = option_list[i];
         option_value = extra_core->getFixedOptionValue(option_type);
-        if (!db->checkOption(product_code,option_type,option_value))
+        if (!db.checkOption(product_code,option_type,option_value))
             continue;
         for(int j=0;j<(int) product->howManyTags("option");j++){
             aux = product->readString("option["+QString::number(j)+"].type");
@@ -410,7 +407,7 @@ bool BarCore::setOptions(XmlConfig *_xml,const QString& product_code){
     for(i=0;i<count;i++){
         option_type = option_list[i];
         option_value = extra_core->getOptionValue(option_type);
-        if (!db->checkOption(product_code,option_type,option_value))
+        if (!db.checkOption(product_code,option_type,option_value))
             return false;
         for(int j=0;j<(int) product->howManyTags("option");j++){
             aux = product->readString("option["+QString::number(j)+"].type");
@@ -442,7 +439,7 @@ bool BarCore::checkOffers(XmlConfig *_xml,const QString& product_code){
         return true;
 
     //now check that offer for that product
-    if (!(offer_db = db->getOffer(product_code,offer->offer_type,offer->offer_name)))
+    if (!(offer_db = db.getOffer(product_code,offer->offer_type,offer->offer_name)))
         return false;
     else{
         product->createElement("offer.type",offer->offer_type);
@@ -469,11 +466,11 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
         //if there are no customizable price, the price is set at the db
         //and is modified by the option of the product
         prod_price = new ProductPriceData;
-        prod_price->price = db->getPrice(product_code);
+        prod_price->price = db.getPrice(product_code);
         if ((prod_price->price).isEmpty())
             prod_price->price = "0.0";
-        prod_price->tax_type = db->getTaxName(product_code);
-        prod_price->tax = db->getTax(product_code);
+        prod_price->tax_type = db.getTaxName(product_code);
+        prod_price->tax = db.getTax(product_code);
         if (prod_price->tax.isEmpty())
             prod_price->tax="0.00";
 
@@ -484,7 +481,7 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
         for(i=0;i<count;i++){
             option_type = xml->readString("option["+QString::number(i)+"].type");
             option_value = xml->readString("option["+QString::number(i)+"].value");
-            mod = this->db->getOptionModifier(product_code,option_type,option_value);
+            mod = this->db.getOptionModifier(product_code,option_type,option_value);
             if (!mod.isEmpty()){
                 modifier = mod.toDouble();
                 r_price += modifier;
@@ -495,7 +492,7 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
 
         //also the special offers at the extra Core should be readed
         if ((offer_data=extra_core->getOffer())){
-            offer_data = db->getOffer(product_code,offer_data->offer_type,offer_data->offer_name);
+            offer_data = db.getOffer(product_code,offer_data->offer_type,offer_data->offer_name);
             if (offer_data->offer_mode == "x"){
                 double discount = (offer_data->offer_discount).toDouble();
                 //FIXME   FIX THE ROUND TO 2 DECIMALS
@@ -616,7 +613,7 @@ void BarCore::processCore(const QString& pay_type){
         receipt_com->deleteReceipt(employee_id, start_time);
 
     emit ticket(xml);
-    initCore();
+    reInitialise();
 
     const char* device_node = CASHBOX_DEVICE.toStdString().c_str();
     FILE *device = fopen(device_node, "w");
@@ -644,17 +641,17 @@ void BarCore::initExtras(){
 }
 
 void BarCore::saveLastReceipt(){
-//    DCOPClient *client= 0;
-//    client = kapp->dcopClient();
+    //    DCOPClient *client= 0;
+    //    client = kapp->dcopClient();
     //only to use at the moment.
     //this code is going to be deleted from here
 
-//    if (!client->isAttached())
-//        client->attach();
+    //    if (!client->isAttached())
+    //        client->attach();
 
     //if the dbusreceipt is not running  exit without saving
-//    if (!client->isApplicationRegistered("dbusreceipt"))
-//        return;
+    //    if (!client->isApplicationRegistered("dbusreceipt"))
+    //        return;
 
     //get some data of the receipt
     xml->pushDomain();
@@ -672,14 +669,14 @@ void BarCore::setLastReceipt(){
         return;
 
     if (receipt_com->receiptState(last_employee_id, last_start_time)){
-        this->initCore();
+        this->reInitialise();
         this->initExtras();
         return;
     }
 
     aux_xml = receipt_com->getReceipt(last_employee_id,last_start_time);
     if (!aux_xml){
-        this->initCore();
+        this->reInitialise();
         this->initExtras();
         return;
     }
@@ -690,17 +687,17 @@ void BarCore::setLastReceipt(){
 }
 
 bool BarCore::exitAndSaveReceipt(){
-//    DCOPClient *client= 0;
+    //    DCOPClient *client= 0;
     bool exist = false;
     bool ret = false;
     QString employee_id;
     QString start_time;
 
-//    client = kapp->dcopClient();
-//    if (!client->isAttached())
-//        client->attach();
-//    if (!client->isApplicationRegistered("dbusreceipt"))
-//        return false;
+    //    client = kapp->dcopClient();
+    //    if (!client->isAttached())
+    //        client->attach();
+    //    if (!client->isApplicationRegistered("dbusreceipt"))
+    //        return false;
 
     xml->pushDomain();
     xml->delDomain();
@@ -724,14 +721,14 @@ bool BarCore::exitAndSaveReceipt(){
 
 void BarCore::genericSignalSlot(const QString& signal_name){
     if (signal_name == GSIGNAL::BARCORE_EXIT_AND_SAVE_RECEIPT){
-        this->exitAndSaveReceipt();
-        this->initCore(false);
-        this->initExtras();
+        exitAndSaveReceipt();
+        reInitialise(false);
+        initExtras();
     }
     else if ( signal_name ==GSIGNAL::BARCORE_SET_LAST_RECEIPT){
-        this->initCore(false);
-        this->initExtras();
-        this->setLastReceipt();
+        reInitialise(false);
+        initExtras();
+        setLastReceipt();
     }
     else if ( signal_name ==GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT){
         QString employee_id;
@@ -785,7 +782,7 @@ void BarCore::genericDataSignalSlot(const QString& signal_name, XmlConfig *_xml)
 }
 
 void BarCore::setProductPrinterSection(const QString& product_code){
-    if (db->getProductAtPrinter(product_code, "kitchen")){
+    if (db.getProductAtPrinter(product_code, "kitchen")){
         xml->createElementSetDomain("printer");
         xml->createAttributeHere("type","kitchen");
         xml->releaseDomain("printer");

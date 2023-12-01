@@ -15,7 +15,7 @@
 #include <xmlconfig.h>
 #include <QString>
 
-#include <optionnode.h>
+#include <productextrainfo.h>
 
 #include <iostream>
 namespace std{}
@@ -39,9 +39,9 @@ AuxDB::AuxDB(const QString& _connection_name,
 AuxDB::~AuxDB(){
 }
 
-HList<OptionNode>* AuxDB::getOptionNodes(){
-    HList<OptionNode> *option_list = 0;
-    OptionNode *o = 0;
+HList<ProductExtraInfo>* AuxDB::getOptionNodes(){
+    HList<ProductExtraInfo> *option_list = 0;
+    ProductExtraInfo *o = 0;
     QSqlQuery *q=0;
     QString query;
     QString type;
@@ -63,13 +63,13 @@ HList<OptionNode>* AuxDB::getOptionNodes(){
         return option_list;
     }
 
-    option_list = new HList<OptionNode>;
+    option_list = new HList<ProductExtraInfo>;
     while (q->next()){
         type = q->value(0).toString();
         value = q->value(1).toString();
         o = option_list->find(type);
         if (!o){
-            o = new OptionNode(type);
+            o = new ProductExtraInfo(type);
             option_list->append(o,type);
             //                        cout << "INSERTANDO OPCION ---> " << type << endl;
         }

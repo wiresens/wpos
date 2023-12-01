@@ -62,8 +62,8 @@ DBusPrinter::DBusPrinter(QObject *parent, const QString& name):
 
     file_watcher->addPath(conf_file_name);
     file_watcher->addPath(CONFIG_FILE_DTD);
-    connect(file_watcher, SIGNAL(fileChanged(const QString&)),
-            this, SLOT(fileDirtySlot(const QString&)));
+    connect(file_watcher, &QFileSystemWatcher::fileChanged,
+            this, &DBusPrinter::fileDirtySlot);
 }
 
 DBusPrinter::~DBusPrinter(){
@@ -79,7 +79,7 @@ DBusPrinter::~DBusPrinter(){
 void DBusPrinter::readConfig(const QString& path){
 
     XmlConfig xml(path);
-    if (!xml.isValid() || !xml.validateXmlWithDTD(CONFIG_FILE_DTD, true))
+    if (!xml.wellFormed() || !xml.validateXmlWithDTD(CONFIG_FILE_DTD, true))
         return;
 
     xml.delDomain();
@@ -177,7 +177,7 @@ bool DBusPrinter::realPrintTicket(QString xml_string, int num){
 
     XmlConfig xml;
     xml.readXmlFromString(xml_string);
-    if (!xml.isValid())  return false;
+    if (!xml.wellFormed())  return false;
 
     PrinterManager printer (main_type, main_device);
     printer.printTicket(&xml, num);
@@ -189,7 +189,7 @@ bool DBusPrinter::realPrintInvoice(QString xml_string, int num){
 
     XmlConfig xml;
     xml.readXmlFromString(xml_string);
-    if ( !xml.isValid() )  return false;
+    if ( !xml.wellFormed() )  return false;
 
     PrinterManager printer(main_type, main_device);
     printer.printInvoice(&xml, num);
@@ -200,7 +200,7 @@ bool DBusPrinter::realPrintX(QString xml_string){
 
     XmlConfig xml ;
     xml.readXmlFromString(xml_string);
-    if ( !xml.isValid() )  return false;
+    if ( !xml.wellFormed() )  return false;
 
     PrinterManager printer(main_type, main_device);
     printer.printX(&xml);
@@ -211,7 +211,7 @@ bool DBusPrinter::realPrintZ(QString xml_string){
 
     XmlConfig xml ;
     xml.readXmlFromString(xml_string);
-    if ( !xml.isValid() )  return false;
+    if ( !xml.wellFormed() )  return false;
 
     PrinterManager printer(main_type, main_device);
     printer.printZ(&xml);
@@ -222,7 +222,7 @@ bool DBusPrinter::realPrintTicketTotal(QString xml_string){
 
     XmlConfig xml ;
     xml.readXmlFromString(xml_string);
-    if ( !xml.isValid() )  return false;
+    if ( !xml.wellFormed() )  return false;
 
     PrinterManager printer(main_type, main_device);
     printer.printTicketTotal(&xml);
@@ -235,7 +235,7 @@ bool DBusPrinter::realPrintKitchenOrder(QString xml_string){
 
     XmlConfig xml ;
     xml.readXmlFromString(xml_string);
-    if ( !xml.isValid() )  return false;
+    if ( !xml.wellFormed() )  return false;
 
     PrinterManager printer(kitchen_type, kitchen_device);
     printer.printKitchenOrder(&xml);

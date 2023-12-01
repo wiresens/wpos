@@ -25,7 +25,7 @@ set(DBUS_ADAPTOR_FILES
     menusystem/offers_options/OptionUpdateWidget.h
     menusystem/reports/NProfitReportWidget.h
 #    menusystem/system/FX2000ConfigWidget.h
-#    menusystem/system/MemStickWidget.h
+    menusystem/system/MemStickWidget.h
     productsmodule/offersmodule/ProductOfferModule.h
     productsmodule/optionsmodule/ProductOptionModule.h
     productsmodule/ProductModule.h
@@ -40,7 +40,7 @@ foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
     qt5_generate_dbus_interface(
         ${filePathLower}
         "${WS_SERVICE}.${fileBase}.xml"
-        OPTIONS -M -s  #export all Public Slot, all Scriptable Signals
+        OPTIONS -m -s  #export all Scriptable Slot, all Scriptable Signals
     )
 
     message("filePathLower  : ${filePathLower}")
@@ -71,70 +71,70 @@ include_directories(
 )
 
 set(HEADER_FILES
+    database/historicdb.h
+    database/productoffersmoduledb.h
+    database/productoptionsmoduledb.h
     database/productsmoduledb.h
     database/usersmoduledb.h
-    database/productoptionsmoduledb.h
-    database/productoffersmoduledb.h
-    database/historicdb.h
-    databasemodule/databasemoduleinterface.h
     databasemodule/databasemodule.h
+    databasemodule/databasemoduleinterface.h
     mainscreen.h
     menusystem/database/databaseconfigwidget.h
     menusystem/design/addinvitationscreenwidget.h
     menusystem/design/deleteinvitationscreenwidget.h
     menusystem/design/deleteofferwidget.h
     menusystem/design/invitationscreendesignwidget.h
+    menusystem/design/nticketdesignwidget.h
     menusystem/design/posdesignselectorwidget.h
     menusystem/design/productscreendesignwidget.h
-    menusystem/design/submenuinfoframe.h
-    menusystem/menus/genericscreenwidget.h
-    menusystem/menus/instantiator.h
-    menusystem/menus/mainscreenwidget.h
-    menusystem/utils.h
     menusystem/design/shortcutbuttonwidget.h
-    menusystem/design/nticketdesignwidget.h
-    menusystem/products/productinsertionwidget.h
-    menusystem/products/advancedproductinsertionwidget.h
-    menusystem/products/advancedproducteditionwidget.h
-    menusystem/products/advancedproductdeletionwidget.h
-    menusystem/products/advancedproductupdatewidget.h
-    menusystem/products/productxmfileupdatewidget.h
-    menusystem/products/productoffercreationwidget.h
-    menusystem/products/productoptioncreationwidget.h
-    menusystem/products/basicproductcreationwidget.h
-    menusystem/products/basicproductupdatewidget.h
-    menusystem/products/basicproducteditionwidget.h
-    menusystem/offers_options/offereditionwidget.h
-    menusystem/offers_options/offercreationwidget.h
-    menusystem/offers_options/offerupdatewidget.h
-    menusystem/offers_options/offerdeletionwidget.h
-    menusystem/offers_options/optioneditionwidget.h
-    menusystem/offers_options/optioncreationwidget.h
-    menusystem/offers_options/optionupdatewidget.h
-    menusystem/offers_options/optiondeletionwidget.h
-    productsmodule/optionsmodule/productoptionmoduleinterface.h
-    productsmodule/optionsmodule/productoptionmodule.h
-    productsmodule/productmoduleinterface.h
-    productsmodule/offersmodule/productoffermoduleinterface.h
-    productsmodule/offersmodule/productoffermodule.h
-    productsmodule/productmodule.h
-    usersmodule/usermodule.h
+    menusystem/design/submenuinfoframe.h
+    menusystem/menus/genericscreen.h
+    menusystem/menus/instantiator.h
+    menusystem/menus/mainscreenmenu.h
     menusystem/menus/supportwidget.h
     menusystem/menus/techwidget.h
-    menusystem/reports/perszwidget.h
-    menusystem/reports/persticketwidget.h
-    menusystem/reports/nprofitreportwidget.h
-    menusystem/reports/reportinterface.h
+    menusystem/offers_options/offercreationwidget.h
+    menusystem/offers_options/offerdeletionwidget.h
+    menusystem/offers_options/offereditionwidget.h
+    menusystem/offers_options/offerupdatewidget.h
+    menusystem/offers_options/optioncreationwidget.h
+    menusystem/offers_options/optiondeletionwidget.h
+    menusystem/offers_options/optioneditionwidget.h
+    menusystem/offers_options/optionupdatewidget.h
+    menusystem/products/advancedproductdeletionwidget.h
+    menusystem/products/advancedproducteditionwidget.h
+    menusystem/products/advancedproductinsertionwidget.h
+    menusystem/products/advancedproductupdatewidget.h
+    menusystem/products/basicproductcreationwidget.h
+    menusystem/products/basicproducteditionwidget.h
+    menusystem/products/basicproductupdatewidget.h
+    menusystem/products/productinsertionwidget.h
+    menusystem/products/productoffercreationwidget.h
+    menusystem/products/productoptioncreationwidget.h
+    menusystem/products/productxmfileupdatewidget.h
     #menusystem/reports/nprodandofferreportwidget.h
+    menusystem/reports/nprofitreportwidget.h
+    menusystem/reports/persticketwidget.h
+    menusystem/reports/perszwidget.h
+    menusystem/reports/reportinterface.h
+    menusystem/system/devicesconfigwidget.h
     #menusystem/system/fx2000configwidget.h
-    #menusystem/system/memstickwidget.h
     menusystem/system/fx2000enrollwidget.h
     menusystem/system/memstickinterface.h
-    menusystem/system/devicesconfigwidget.h
-    menusystem/users/usereditionwidget.h
+    menusystem/system/memstickwidget.h
     menusystem/users/usercreatewidget.h
-    menusystem/users/userupdatewidget.h
+    menusystem/users/usereditionwidget.h
     menusystem/users/userselectwidget.h
+    menusystem/users/userupdatewidget.h
+    menusystem/utils.h
+    productsmodule/offersmodule/productoffermodule.h
+    productsmodule/offersmodule/productoffermoduleinterface.h
+    productsmodule/optionsmodule/productoptionmodule.h
+    productsmodule/optionsmodule/productoptionmoduleinterface.h
+    productsmodule/productmodule.h
+    productsmodule/productmoduleinterface.h
+    usersmodule/usermodule.h
     usersmodule/usermoduleinterface.h
 )
 
@@ -154,9 +154,9 @@ set(SOURCES_FILES
     menusystem/design/posdesignselectorwidget.cpp
     menusystem/design/productscreendesignwidget.cpp
     menusystem/design/submenuinfoframe.cpp
-    menusystem/menus/genericscreenwidget.cpp
+    menusystem/menus/genericscreen.cpp
     menusystem/menus/instantiator.cpp
-    menusystem/menus/mainscreenwidget.cpp
+    menusystem/menus/mainscreenmenu.cpp
     menusystem/utils.cpp
     menusystem/design/shortcutbuttonwidget.cpp
     menusystem/design/nticketdesignwidget.cpp
@@ -191,7 +191,7 @@ set(SOURCES_FILES
     menusystem/reports/nprofitreportwidget.cpp
     #menusystem/reports/nprodandofferreportwidget.cpp
     #menusystem/system/fx2000configwidget.cpp
-    #menusystem/system/memstickwidget.cpp
+    menusystem/system/memstickwidget.cpp
     menusystem/system/fx2000enrollwidget.cpp
     menusystem/system/devicesconfigwidget.cpp
     menusystem/users/usereditionwidget.cpp

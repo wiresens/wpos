@@ -15,7 +15,7 @@
 
 #include "database/productoffersmoduledb.h"
 
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QDir>
@@ -63,17 +63,17 @@ ProductOfferCreationWidget::ProductOfferCreationWidget(
     offer_default->hide();
 
     QHBoxLayout *layout{};
-    float_keyboard_offer = new FloatKeyboardBox(numblock_offer_frame);
+    float_keyboard_offer = new FloatKeyboard(numblock_offer_frame);
     float_keyboard_offer->setObjectName("float_keyboard_offer");
 
     if(!(layout = qobject_cast<QHBoxLayout *>( numblock_offer_frame->layout())))
         layout = new QHBoxLayout(numblock_offer_frame);
 
     layout->addWidget(float_keyboard_offer);
-    connect(save_offer_button, SIGNAL(clicked()), this, SLOT(saveOfferButtonClicked()));
-    connect(offer_type_combo, SIGNAL(activated(const QString&)), this, SLOT(offerTypeActivated(const QString&)));
-    connect(too_offer_button, SIGNAL(clicked()), this, SLOT(tooOfferButtonClicked()));
-    connect(accept_error_button, SIGNAL(clicked()), this, SLOT(acceptErrorButtonClicked()));
+    connect(save_offer_button, &QPushButton::clicked, this, &ProductOfferCreationWidget::saveOfferButtonClicked);
+    connect(offer_type_combo, &QComboBox::textActivated, this, &ProductOfferCreationWidget::offerTypeActivated);
+    connect(too_offer_button, &QPushButton::clicked, this, &ProductOfferCreationWidget::tooOfferButtonClicked);
+    connect(accept_error_button, &QPushButton::clicked, this, &ProductOfferCreationWidget::acceptErrorButtonClicked);
     offer_stack->setCurrentWidget(offer_page);
 }
 
@@ -98,7 +98,7 @@ void ProductOfferCreationWidget::saveOfferButtonClicked(){
     if ( logo && logo->currentItem() )
         offer->logo = (logo->currentItem())->text();
 
-    auto value = float_keyboard_offer->getNumber() - product_price;
+    auto value = float_keyboard_offer->value() - product_price;
     offer->value = value;
     //     offer->is_default = offer_default->isChecked();
 
@@ -363,7 +363,7 @@ void ProductOfferCreationWidget::setOffer(const QString& offer_type, const QStri
         if( !items.isEmpty())
             logo->setCurrentItem(items.first());
     }
-    float_keyboard_offer->receivedNum((xml.readString("value")).toDouble());
+    float_keyboard_offer->receiveDigit(xml.readString("value").toDouble());
 }
 
 void ProductOfferCreationWidget::showError(const QString& offer_type, const QString& offer_name){

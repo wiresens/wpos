@@ -39,8 +39,8 @@ DBusReceiptManager::DBusReceiptManager(QObject *parent, const QString& name) :
     mediator->setObjectName("DBusReceiptMediator");
     notifiyer = new ReceiptChangeNotifiyer(this, "ReceiptChangeNotifiye");
 
-    connect(primitive, SIGNAL(receiptChangedByStartDate(const QString&, const QString&)),
-            notifiyer, SLOT(receiptChangedSlotByDate(const QString&, const QString&)));
+    connect(primitive, &DBusReceiptPrimitive::receiptChangedByStartDate,
+            notifiyer, &ReceiptChangeNotifiyer::receiptChangedSlotByDate);
 }
 
 DBusReceiptManager::~DBusReceiptManager(){}

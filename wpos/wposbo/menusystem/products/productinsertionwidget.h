@@ -19,8 +19,8 @@
 #include <wposcore/hlist.h>
 
 class ProductModule;
-class FloatKeyboardBox;
-class NumKeyboardBox;
+class FloatKeyboard;
+class NumKeyboard;
 class ProductModule;
 class BslDDIconView;
 class BslDDTable;
@@ -201,7 +201,7 @@ private:
 protected:
     ProductOptionModule product_option_model;
     ProductModule *product_model{};
-    FloatKeyboardBox *float_kb{};
+    FloatKeyboard *float_kb{};
     QButtonGroup *tax_button_group;
     BslDDTable *table{};
     HList<NOTypes> *options_list{};
@@ -212,9 +212,9 @@ protected:
     ProductMode mode{Unitary};
 
 private:
-    FloatKeyboardBox *float_kb_options{};
-    FloatKeyboardBox *float_kb_offers{};
-    NumKeyboardBox *num_kb_offers{};
+    FloatKeyboard *float_kb_options{};
+    FloatKeyboard *float_kb_offers{};
+    NumKeyboard *num_kb_offers{};
     BslDDIconView *logo_view{};
     BslDDIconView *icon_view{};
 

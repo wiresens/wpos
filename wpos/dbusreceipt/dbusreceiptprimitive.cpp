@@ -44,8 +44,8 @@ DBusReceiptPrimitive::DBusReceiptPrimitive(QObject *parent, const QString& name)
     file_watcher = new QFileSystemWatcher(this);
 
     file_watcher->addPath(DB_CONNECTION_PATH);
-    connect(file_watcher, SIGNAL(fileChanged(const QString&)),
-            this, SLOT(fileDirtySlot(const QString&)));
+    connect(file_watcher, &QFileSystemWatcher::fileChanged,
+            this, &DBusReceiptPrimitive::fileDirtySlot);
 }
 
 DBusReceiptPrimitive::~DBusReceiptPrimitive(){
@@ -146,7 +146,7 @@ void DBusReceiptPrimitive::fileDirtySlot(const QString& file){
         qDebug() << qApp->applicationName() <<": Rereading database configuration";
         usleep(2000);
         XmlConfig xml (DB_CONNECTION_PATH);
-        if (xml.isValid()){
+        if (xml.wellFormed()){
             delete receipt_db;
             receipt_db = new ReceiptDB(DB_CONNECTION_NAME, DB_CONNECTION_PATH);
         }

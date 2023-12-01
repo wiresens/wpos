@@ -65,6 +65,8 @@ static const QString& OFFERS_ICON_PATH {"controls:offers/"};
 static const int SIZE_CONST = 50.00;
 static const int TABLE_SIZE_X = 70;
 static const int TABLE_SIZE_Y = 70;
+static const uint TIME_OUT {10};
+
 
 ShortcutButtonWidget::ShortcutButtonWidget(QWidget *parent, const QString& name):
     QWidget(parent), button_list{ new HList<ShortcutButtonData>}
@@ -138,16 +140,16 @@ ShortcutButtonWidget::ShortcutButtonWidget(QWidget *parent, const QString& name)
     //@benes    special_buttons_iconview->setGridY(TABLE_SIZE_Y);
 
 
-    connect(up_button,SIGNAL(released()),this,SLOT(scrollUpSlot()));
-    connect(down_button,SIGNAL(released()),this,SLOT(scrollDownSlot()));
-    connect(first_button,SIGNAL(released()),this,SLOT(selectFirstSlot()));
-    connect(last_button,SIGNAL(released()),this,SLOT(selectLastSlot()));
+    connect(up_button, &QPushButton::released, this, &ShortcutButtonWidget::scrollUpSlot);
+    connect(down_button,  &QPushButton::released, this, &ShortcutButtonWidget::scrollDownSlot);
+    connect(first_button,  &QPushButton::released, this, &ShortcutButtonWidget::selectFirstSlot);
+    connect(last_button,  &QPushButton::released, this, &ShortcutButtonWidget::selectLastSlot);
 
-    connect(reload_button,SIGNAL(released()),this,SLOT(reloadSlot()));
-    connect(accept_button,SIGNAL(released()),this,SLOT(acceptSlot()));
+    connect(reload_button,  &QPushButton::released, this, &ShortcutButtonWidget::reloadSlot);
+    connect(accept_button,  &QPushButton::released, this, &ShortcutButtonWidget::acceptSlot);
 
-    connect(this, SIGNAL(itemReaded(int,const QString&,const QString&)),this,SLOT(itemReadedSlot(int,const QString&,const QString&)));
-    connect(shortcut_button_table, SIGNAL(textEnter(int, int, const QString&)), this, SLOT(draggedText(int, int, const QString&)));
+    connect(this,  &ShortcutButtonWidget::itemReaded, this, &ShortcutButtonWidget::itemReadedSlot);
+    connect(shortcut_button_table, QOverload<int, int, const QString&>::of(&BslDDTable::textEnter), this, &ShortcutButtonWidget::draggedText);
 
 }
 
@@ -404,7 +406,7 @@ void ShortcutButtonWidget::readButtonsXml(){
 
     button_list->clear();
     XmlConfig xml(SHORTCUT_XML);
-    if ( !xml.isValid() ) return;
+    if ( !xml.wellFormed() ) return;
 
     xml.delDomain();
     for (auto i=0; i < xml.howManyTags("widget"); i++){
@@ -874,7 +876,7 @@ void ShortcutButtonWidget::showEvent(QShowEvent *e){
         first_show = false;
     else{
         stack->setCurrentWidget(reading_page);
-        QTimer::singleShot(10,this,SLOT(startShowing()));
+        QTimer::singleShot(TIME_OUT, this, &ShortcutButtonWidget::startShowing);
     }
     QWidget::showEvent(e);
 }

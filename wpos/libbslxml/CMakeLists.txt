@@ -15,13 +15,13 @@ set(HEADER_FILES
     comp.h
     utils.h
     xmlconfig.h
-    xmlconfigio.h
+    xmlconfigprivate.h
 )
 
 set(SOURCES_FILES
     utils.cpp
     xmlconfig.cpp
-    xmlconfigio.cpp
+    xmlconfigprivate.cpp
 )
 
 # Make the project root directory the working directory when we run

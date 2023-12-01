@@ -17,7 +17,7 @@
 #include "database/productoptionsmoduledb.h"
 
 #include <wposcore/config.h>
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QLineEdit>
@@ -62,15 +62,15 @@ ProductOptionCreationWidget::ProductOptionCreationWidget(
     logo_label->hide();
 
     QHBoxLayout *layout{};
-    float_keyboard_option = new FloatKeyboardBox(numblock_option_frame);
+    float_keyboard_option = new FloatKeyboard(numblock_option_frame);
     float_keyboard_option->setObjectName( "float_keyboard_option");
 
     if( !( layout = qobject_cast<QHBoxLayout *>(numblock_option_frame->layout()) ))
         layout = new QHBoxLayout(numblock_option_frame);
     layout->addWidget(float_keyboard_option);
 
-    connect(save_option_button, SIGNAL(clicked()), this, SLOT(saveOptionButtonClicked()));
-    connect(option_type_combo, SIGNAL(activated(const QString&)), this, SLOT(optionTypeActivated(const QString&)));
+    connect(save_option_button,   &QPushButton::clicked, this, &ProductOptionCreationWidget::saveOptionButtonClicked);
+    connect(option_type_combo, &QComboBox::textActivated, this, &ProductOptionCreationWidget::optionTypeActivated);
     initLogos();
 }
 
@@ -90,7 +90,7 @@ void ProductOptionCreationWidget::saveOptionButtonClicked(){
     option.option_name = option_combo->currentText();
     option.description_option = description_option->text();
     option.is_default = option_default->isChecked();
-    option.value = float_keyboard_option->getNumber() - product_price;
+    option.value = float_keyboard_option->value() - product_price;
 
     if( option_default->isChecked() ) clearDefaults();
     options.append(option);

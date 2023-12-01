@@ -20,7 +20,7 @@
 #include <QWidget>
 
 class ProductOfferData;
-class FloatKeyboardBox;
+class FloatKeyboard;
 
 class ProductOfferCreationWidget:
         public QWidget,
@@ -65,7 +65,7 @@ protected:
 
 private:
     ProductOfferModule model;
-    FloatKeyboardBox *float_keyboard_offer{};
+    FloatKeyboard *float_keyboard_offer{};
     QList<ProductOfferData*> offers;
     double product_price{0};
 };

@@ -15,7 +15,7 @@
 #include "salesscreen.h"
 #include "barcore/barcore.h"
 
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <wposcore/genericsignalmanager.h>
 
 #include <QLayout>
@@ -35,6 +35,8 @@ using namespace std;
 #define LOOK_DELAY 3000
 #define DECIMALS 2
 
+static const uint TIME_OUT {25};
+
 CashWidget::CashWidget(
     BarCore *_core,
     QWidget *parent,
@@ -44,9 +46,9 @@ CashWidget::CashWidget(
 {
     setupUi(this);
     setObjectName(name);
-    float_keyboard  = new FloatKeyboardBox(this);
+    float_keyboard  = new FloatKeyboard(this);
     float_keyboard->setObjectName("change_cash_numpad");
-    float_keyboard->hideNumber(true);
+    float_keyboard->hideDisplay();
     QHBoxLayout *numpad_layout = qobject_cast<QHBoxLayout *>( numpad_frame->layout() );
 
     if (!numpad_layout)
@@ -70,9 +72,9 @@ CashWidget::CashWidget(
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::CASH_MENU_SPEED,this);
 
     //normal signals and slots
-    connect(cancel_button, SIGNAL(released()), this, SLOT(cancelSlot()));
-    connect(ok_button, SIGNAL(released()), this, SLOT(accepSlot()));
-    connect(float_keyboard, SIGNAL(numChanged(double)), this, SLOT(numkeyChangedSlot(double)));
+    connect(cancel_button, &QPushButton::released, this, &CashWidget::cancelSlot);
+    connect(ok_button, &QPushButton::released, this, &CashWidget::accepSlot);
+    connect(float_keyboard, &FloatKeyboard::valueChanged, this, &CashWidget::numkeyChangedSlot);
     //     connect(quick_button, SIGNAL(released()), this, SLOT(quickAccept()));
     //  button->addContent("name",PRODUCT_SCREEN);
 }
@@ -114,7 +116,7 @@ void CashWidget::numkeyChangedSlot(double _cash){
 }
 
 void CashWidget::accepSlot(){
-    if ((float_keyboard->getNumber() - actual_price ) < 0)
+    if ((float_keyboard->value() - actual_price ) < 0)
         return;
 
     emit genericSignal(GSIGNAL::OPEN_CASHBOX);
@@ -164,7 +166,7 @@ void CashWidget::showEvent(QShowEvent *e){
     cashing_completed = false;
 
     if (!core->hasProducts()){
-        QTimer::singleShot(50, this, SLOT(cancelSlot()));
+        QTimer::singleShot(TIME_OUT, this, &CashWidget::cancelSlot);
         QWidget::showEvent(e);
         return;
     }

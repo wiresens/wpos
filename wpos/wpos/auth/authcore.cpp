@@ -22,141 +22,103 @@
 #include <iostream>
 using namespace std;
 
-
-
+AuthCoreDB AuthCore::db{ "AuthCoreConnection", Files::configFilePath("database")};
 AuthCore::AuthCore(QObject *parent, QString name):
-    QObject(parent),
-    db{new AuthCoreDB("AuthCoreDBConnection", Files::configFilePath("database"))}
+    QObject(parent)
 {
     setObjectName(name);
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::USER_CHANGED, this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::CHANGE_USER, this);
-
+    db.connect();
 }
 
 AuthCore::~AuthCore(){
-    if (db->isConnected()) db->disConnect();
-    delete db;
+    db.disConnect();
 }
 
-QString AuthCore::getUserId(){
-    if (!user_data_ptr)
-        return "";
-    return user_data_ptr->id;
+const QString& AuthCore::userId() const{
+    return user.id;
 }
 
-QString AuthCore::getUserName(){
-    if (!user_data_ptr)
-        return "";
-    return user_data_ptr->name;
+const QString& AuthCore::userName() const{
+    return user.name;
 }
 
-QString AuthCore::getUserLastName(){
-    if (!user_data_ptr)
-        return "";
-    return user_data_ptr->last_name;
+const QString& AuthCore::userLastName() const{
+    return user.last_name;
 }
 
-QString AuthCore::getFullName(){
-    QString ret;
-    if (user_data_ptr)
-        ret = user_data_ptr->name+" "+user_data_ptr->last_name;
-    return ret;
+QString AuthCore::userFullName() const{
+    return  user.name+" "+user.last_name;
 }
 
-bool AuthCore::getAdmin(){
-    if (!user_data_ptr)
-        return false;
-    return user_data_ptr->administration;
+bool AuthCore::isRootUser() const{
+    return user.isRootUser;
 }
 
-bool AuthCore::setUserName(QString name){
-    bool ret=false;
-    ret = (!clearUser());
-    if (db->connect()){
-        user_data_ptr = db->getUserName(name);
-        db->disConnect();
-        ret = true;
-        this->emitUserChanged();
-        //          cout << "DATOS DE NUEVO USUARIO " << data->id <<"  "<< data->name <<"  "<< data->last_name << endl;
+bool AuthCore::loadUserById(QString id){
+    bool loaded {false};
+
+    if (db.isConnected()){
+        user = db.userById(id);
+        loaded = true;
+        notifyUserChanged();
     }
-    return ret;
+    return loaded;
 }
 
-bool AuthCore::setUserId(QString id){
-    bool ret=false;
-
-    ret = (!clearUser());
-    if (db->connect()){
-        user_data_ptr = db->getUserId(id);
-        db->disConnect();
-        ret = true;
-        this->emitUserChanged();
-        //          cout << "DATOS DE NUEVO USUARIO " << data->id <<"  "<< data->name <<"  "<< data->last_name << endl;
+bool AuthCore::loadUserByName(QString name){
+    bool loaded {false};
+    if (db.isConnected()){
+        user = db.userByName(name);
+        loaded = true;
+        notifyUserChanged();
     }
-    return ret;
+    return loaded;
 }
 
-bool AuthCore::setUserLastName(QString last_name){
-    bool ret=false;
-    ret = (!clearUser());
-    if (db->connect()){
-        user_data_ptr = db->getUserLastName(last_name);
-        db->disConnect();
-        ret = true;
-        this->emitUserChanged();
-        //          cout << "DATOS DE NUEVO USUARIO " << data->id <<"  "<< data->name <<"  "<< data->last_name << endl;
+bool AuthCore::loadUserByLastName(QString last_name){
+    bool loaded{false};
+    if (db.isConnected()){
+        user = db.userByLastName(last_name);
+        loaded = true;
+        notifyUserChanged();
     }
-    return ret;
+    return loaded;
 }
 
-bool AuthCore::clearUser(){
-    if (user_data_ptr){
-        delete user_data_ptr;
-        user_data_ptr = 0;
-        return true;
-    }
-    return false;
+void AuthCore::genericDataSignalSlot(const QString& signal, XmlConfig *xml){
+    if (signal == GDATASIGNAL::CHANGE_USER)
+        processXml(*xml);
+
 }
 
-void AuthCore::genericDataSignalSlot(const QString& signal_name, XmlConfig *_xml){
-    if (signal_name == GDATASIGNAL::CHANGE_USER){
-        this->processXml(_xml);
-    }
-}
-
-void AuthCore::processXml(XmlConfig *_xml){
-    QString last_id="";
-    QString new_id;
-
-    if (user_data_ptr)
-        last_id = user_data_ptr->id;
-
-    _xml->pushDomain();
-    _xml->delDomain();
-    new_id = _xml->readString("id");
-
-    if (new_id.isEmpty()){
-        new_id = _xml->readString("name");
-        _xml->popDomain();
-        if (new_id.isEmpty())
-            return;
-        if ((!setUserName(new_id))&& (!last_id.isEmpty()))
-            this->setUserId(last_id);
-        return;
-    }
-    _xml->popDomain();
-    //     cout << "DATOS DE NUEVO USUARIO " << data->id <<"  "<< data->name <<"  "<< data->last_name << endl;
-    if ((!setUserId(new_id)) && (!last_id.isEmpty()))
-        this->setUserId(last_id);
-}
-
-void AuthCore::emitUserChanged(){
+void AuthCore::notifyUserChanged(){
     XmlConfig xml;
     xml.delDomain();
-    xml.createElement("id",user_data_ptr->id);
-    xml.createElement("name",user_data_ptr->name);
-    xml.createElement("last_name",user_data_ptr->last_name);
+    xml.createElement("id", user.id);
+    xml.createElement("name",user.name);
+    xml.createElement("last_name",user.last_name);
     emit genericDataSignal(GDATASIGNAL::USER_CHANGED, &xml);
+}
+
+void AuthCore::processXml(XmlConfig &xml){
+    QString lastId = user.id;
+
+    xml.pushDomain();
+    xml.delDomain();
+    QString new_id = xml.readString("id");
+
+    if (new_id.isEmpty()){
+        new_id = xml.readString("name");
+        xml.popDomain();
+
+        if (new_id.isEmpty()) return;
+        if ( !loadUserByName(new_id) && !lastId.isEmpty() )
+            loadUserById(lastId);
+        return;
+    }
+    xml.popDomain();
+    if (!loadUserById(new_id) && !lastId.isEmpty()) loadUserById(lastId);
 }

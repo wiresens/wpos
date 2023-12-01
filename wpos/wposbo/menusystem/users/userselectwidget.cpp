@@ -164,7 +164,7 @@ void UserSelectWidget::loadUsers(){
 
     XmlConfig xml;
     xml.readXmlFromString(users_xml);
-    if ( !xml.isValid() || !xml.validateXmlWithDTD(USERS_LIST_DTD, true)) return;
+    if ( !xml.wellFormed() || !xml.validateXmlWithDTD(USERS_LIST_DTD, true)) return;
 
     users_view->clear();
     QTreeWidgetItem *current_item {};

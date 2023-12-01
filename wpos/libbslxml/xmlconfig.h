@@ -30,7 +30,7 @@ class String;
 class QString;
 class QRegExp;
 class QStringList;
-class XmlConfigIO;
+class XmlConfigPrivate;
 
 #define _HAS_VALIDATE_METHOD_
 
@@ -64,7 +64,6 @@ class XmlConfigIO;
 class XmlConfig {
 
 public:
-
     /**
     * CONSTRUCTOR
     * We make the xml document from the file. So we can close the file, we have all the info
@@ -76,8 +75,10 @@ public:
     * @param mode The mode we open the document. If we open the document in readonly mode we can't
     * save the changes in the same file, so it's safe always to read from a XML without breaking it
     */
-    explicit XmlConfig(const QString& _file = QString(),
-              QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text);
+    explicit XmlConfig(
+        const QString& _file = QString(),
+        QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
+    );
 
     /**
   * CONSTRUCTOR
@@ -93,9 +94,11 @@ public:
   * @param _file: the file we will write the document to
   * @param mode: the mode we'll open the file
   */
-    explicit XmlConfig(QDomDocument* document,
-              const QString& _file = QString(),
-              QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text);
+    explicit XmlConfig(
+        QDomDocument* document,
+        const QString& _file = QString(),
+        QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
+    );
 
     /**
     * DESTRUCTOR
@@ -111,7 +114,7 @@ public:
   * to check if everything is OK we have this method
   * @return true if correct memory tree false if the object is inconsistent
   */
-    bool isValid();
+    bool wellFormed();
 
     /*
   * this method construct the XmlConfig from a QString, if the string contains a
@@ -127,7 +130,7 @@ public:
 
 #ifdef _HAS_VALIDATE_METHOD_
     bool validateXmlWithDTD(QString path, bool verbose = false);
-//    void validate(const QString& xml_str, const QString& dtdfile){}
+    //    void validate(const QString& xml_str, const QString& dtdfile){}
     bool validateXmlWithInternalDTD(bool verbose = false);
 #endif
 
@@ -273,7 +276,11 @@ public:
     * @param comment the comment that will be written JUST BEFORE, half implemented
     * @return true if success false if fail.
     */
-    bool createElement(const QString& node_name, const QString& value = QString(), const QString& comment = QString());
+    bool createElement(
+        const QString& node_name,
+        const QString& value = QString(),
+        const QString& comment = QString()
+    );
 
     /**
   * This method do the same that the above method and also set the domain to the recently created element
@@ -283,7 +290,11 @@ public:
     * @param comment the comment that will be written JUST BEFORE, half implemented
     * @return true if success false if fail.
   */
-    bool createElementSetDomain(const QString& node_name, const QString& value = QString(), const QString& comment = QString());
+    bool createElementSetDomain(
+        const QString& node_name,
+        const QString& value = QString(),
+        const QString& comment = QString()
+    );
 
     /**
     * This will delete a element <tag> tag value </tag>
@@ -326,7 +337,11 @@ public:
   * @return false if we can't write the value, this can happen if the tag don't
   * exist or the attribute don't exist
   */
-    bool writeAttribute(const QString& tag, const QString& attr, const QString& value);
+    bool writeAttribute(
+        const QString& tag,
+        const QString& attr,
+        const QString& value
+    );
 
     /**
   * Will delete an attribute from a tag
@@ -347,7 +362,11 @@ public:
   * value is null, this + overwrite  can make you put your attr to null if you don't check
   * @return false if the tag wasn't found or true otherwise
   */
-    bool createAttribute(const QString& tag, const QString& attr, const QString& value = QString());
+    bool createAttribute(
+        const QString& tag,
+        const QString& attr,
+        const QString& value = QString()
+    );
 
     /**
   * Will create a new attribute in the current domain, done for convenience
@@ -357,7 +376,10 @@ public:
   * @param value the value to write to the attribute just created
   * @return false there's some problem with the curren domain , true if created
   */
-    bool createAttributeHere(const QString& attr, const QString& value = QString());
+    bool createAttributeHere(
+        const QString& attr,
+        const QString& value = QString()
+    );
 
     //*********************************
     // DOMAIN
@@ -380,7 +402,10 @@ public:
     * @param overwrite_domain true if you set a new domain , false if the domain is relative to the old domain
   * @return true if sucessfull , important check this to be sure you are in a domain
     */
-    bool setDomain(const QString& domain, bool overwrite_domain = false);
+    bool setDomain(
+        const QString& domain,
+        bool overwrite_domain = false
+    );
 
     /**
   * we want to enter in that domain, if this domain don't exist we'll create it
@@ -474,7 +499,11 @@ public:
   * @return true in success
   */
 
-    bool copy (XmlConfig *xml_src, const QString& src = QString(), const QString& dst = QString());
+    bool copy (
+        XmlConfig *xml_src,
+        const QString& src = QString(),
+        const QString& dst = QString()
+    );
 
     /**
   * When you copy to a element that already exist it will copy
@@ -487,7 +516,11 @@ public:
   * @param dst the node we write to
   * @return true in success
   */
-    bool merge (XmlConfig *xml_src, const QString& src = QString(), const QString& dst = QString());
+    bool merge (
+        XmlConfig *xml_src,
+        const QString& src = QString(),
+        const QString& dst = QString()
+    );
 
     /**
   * Move a certain fragment in a xmlconfig to other one
@@ -499,7 +532,11 @@ public:
   * @param dst the node we write to
   * @return true if successfull
   */
-    bool move (XmlConfig *xml_src, const QString& src = QString(), const QString& dst = QString());
+    bool move (
+        XmlConfig *xml_src,
+        const QString& src = QString(),
+        const QString& dst = QString()
+    );
 
     /**
   * Will search a tag inside the tree and will return the list of the nodes found
@@ -518,7 +555,11 @@ public:
   * if the stringlist.count()==0 nothing was found , note that null can be returned as value
   * because the node can be children of the root node.
   */
-    QStringList findNode(const QString& tag, const QString& domain = QString(), bool recursive = true);
+    QStringList findNode(
+        const QString& tag,
+        const QString& domain = QString(),
+        bool recursive = true
+    );
 
     /*
   * Overloaded function for convenience, it look for a regular expresion, why we use 2 method
@@ -528,7 +569,11 @@ public:
   * literal string instead of the regular expresion, that why the overloaded method is provided, so the
   * programmer can control if the param will be taken as literal or as regexp
   */
-    QStringList findNode(const QRegExp& tag, const QString& domain = QString(), bool recursive = true);
+    QStringList findNode(
+        const QRegExp& tag,
+        const QString& domain = QString(),
+        bool recursive = true
+    );
 
     /**
   * Will search for a value inside the domain and will return a list of nodes found
@@ -541,12 +586,18 @@ public:
   * @param domain the domain we look for
   * @return a list with all the elements that has inside the value
   */
-    QStringList findValue(const QString& value, const QString& domain = QString());
+    QStringList findValue(
+        const QString& value,
+        const QString& domain = QString()
+    );
 
     /*
   * Overloaded function provide for convenience, @see findValue
   */
-    QStringList findValue(const QRegExp& value, const QString& domain = QString());
+    QStringList findValue(
+        const QRegExp& value,
+        const QString& domain = QString()
+    );
 
     /*
   * return the nodes that with a specific value
@@ -554,7 +605,11 @@ public:
   * will return the partitions with the path that has /dev/hda2
   *
   */
-    QStringList findNodeValue(const QString& node, const QString& value, const QString& domain);
+    QStringList findNodeValue(
+        const QString& node,
+        const QString& value,
+        const QString& domain
+    );
 
     // This will be implemented when useful
     //  QStringList findAttrNode(const QString& attr, const QString& domain);
@@ -569,7 +624,10 @@ public:
     * @param comment the comment we want to write
     * @return true if succesful , false otherwise
   */
-    bool createComment(const QString& tag, const QString& comment);
+    bool createComment(
+        const QString& tag,
+        const QString& comment
+    );
 
     /*******
 * Utilities
@@ -607,7 +665,11 @@ private:
     * @param anidate if true we'll search between the children, if false we'll search between the siblings
     * @return the first node with this node found
   **/
-    QDomNode findPrivate(const QString& tag, const QDomNode& from, bool anidate = true);
+    QDomNode findPrivate(
+        const QString& tag,
+        const QDomNode& from,
+        bool anidate = true
+     );
 
     /**
     * Yet another helper method, it accepts a string  token[number]
@@ -623,19 +685,34 @@ private:
   * Other helper method for create, it can be merged with the next one, it's used so when you
   * want to create a.b.c.d.e and you have already a.b it will create c.d.e
   */
-    bool createElementRecursivePrivate(const QString& node_name, const QString& value = QString(), const QString& comment = QString(), bool set_domain = false);
+    bool createElementRecursivePrivate(
+        const QString& node_name,
+        const QString& value = QString(),
+        const QString& comment = QString(),
+        bool set_domain = false
+    );
 
     /**
   * This is a helper method, it does the real job of createElement and createElementSetDomain
   * Read the comments there.
   */
-    bool createElementPrivate(const QString& node_name, const QString& value = QString(), const QString& comment = QString(), bool set_domain = false);
+    bool createElementPrivate(
+        const QString& node_name,
+        const QString& value = QString(),
+        const QString& comment = QString(),
+        bool set_domain = false
+    );
 
     /**
   * This is the method used by copy, merge and move, it just copy or merges depending on the
   * merge parameter if merge is true it merges else it copies
   */
-    bool copyPrivate (XmlConfig *xml_src, const QString& src = QString(), const QString& dst = QString(), bool merge = false);
+    bool copyPrivate (
+        XmlConfig *xml_src,
+        const QString& src = QString(),
+        const QString& dst = QString(),
+        bool merge = false
+    );
 
     /*
   * This method get a node from the DOM tree and returns the string
@@ -652,7 +729,8 @@ private:
   */
     QDomNode temporyDomainPrivate (const QString& domain );
 
-    XmlConfigIO *IO{};
+private:
+    XmlConfigPrivate *impl{};
     QDomDocument *doc{};  //the document pointing to our data
     QDomNode currentNode; //the current node , why is it not a pointer?
     QDomNode domain;      //the current domain , why is it not a pointer?

@@ -29,12 +29,11 @@
 using namespace std;
 
 static const QString& VERSION {"2.0rc1"};
-
 static const QString& SPLASH_PIXMAP {"/usr/share/ntpv_backoffice/apps/ntpv_backoffice_splash.png"};
 
 QSplashScreen *splash{};
-int main(int argc, char *argv[]){
-
+int main(int argc, char *argv[])
+{
     QApplication app{argc, argv};
     QDir::setSearchPaths("controls32", QStringList(Files::Controls32Dir));
     QDir::setSearchPaths("controls48", QStringList(Files::Controls48Dir));
@@ -77,6 +76,5 @@ int main(int argc, char *argv[]){
         splash->finish(&wposbo);
         delete(splash);
     }
-
     return app.exec();
 }

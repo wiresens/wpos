@@ -590,3 +590,142 @@ dcopreceipt_config.xml          ntpv_buttons.xml             printerz.xml
 
 Restrict unauthorized repository cloning on GitHub
 Anonymous repository cloning is only enabled for public projects so make your project private to disable anonymous cloning. If you want to allow users to clone/pull/push over SSH, you must add create_ssh_key permission on role. Users will be able to manage their SSH keys in 'my account'.
+
+template <typename... Args>
+struct QNonConstOverload
+{
+    template <typename R, typename T>
+    Q_DECL_CONSTEXPR auto operator()(R (T::*ptr)(Args...)) const noexcept -> decltype(ptr)
+    { return ptr; }
+
+    template <typename R, typename T>
+    static Q_DECL_CONSTEXPR auto of(R (T::*ptr)(Args...)) noexcept -> decltype(ptr)
+    { return ptr; }
+};
+
+template <typename... Args>
+struct QConstOverload
+{
+    template <typename R, typename T>
+    Q_DECL_CONSTEXPR auto operator()(R (T::*ptr)(Args...) const) const noexcept -> decltype(ptr)
+    { return ptr; }
+
+    template <typename R, typename T>
+    static Q_DECL_CONSTEXPR auto of(R (T::*ptr)(Args...) const) noexcept -> decltype(ptr)
+    { return ptr; }
+};
+
+template <typename... Args>
+struct QOverload : QConstOverload<Args...>, QNonConstOverload<Args...>
+{
+    using QConstOverload<Args...>::of;
+    using QConstOverload<Args...>::operator();
+    using QNonConstOverload<Args...>::of;
+    using QNonConstOverload<Args...>::operator();
+
+    template <typename R>
+    Q_DECL_CONSTEXPR auto operator()(R (*ptr)(Args...)) const noexcept -> decltype(ptr)
+    { return ptr; }
+
+    template <typename R>
+    static Q_DECL_CONSTEXPR auto of(R (*ptr)(Args...)) noexcept -> decltype(ptr)
+    { return ptr; }
+};
+
+QListView
+
+layoutMode : LayoutMode
+determines whether the layout of items should happen immediately or be delayed.
+This property holds the layout mode for the items. When the mode is SinglePass (the default), the items are laid out all in one go. When the mode is Batched, the items are laid out in batches of batchSize items, while processing events. This makes it possible to instantly view and interact with the visible items while the rest are being laid out.
+ 
+ QListView::LayoutMode layoutMode() const
+ void setLayoutMode(QListView::LayoutMode mode)
+ 
+ViewMode = *ListMode | IconMode
+This property holds the view mode of the QListView.
+This property will change the other unset properties to conform with the set view mode. QListView-specific properties that have already been set will not be changed, unless clearPropertyFlags() has been called.
+Setting the view mode will enable or disable drag and drop based on the selected movement.
+
+ListMode :the default movement is Static (drag and drop disabled)
+IconMode :the default movement is Free (drag and drop enabled).
+ViewMode =  *ListMode | IconMode
+ 
+ QListView::ViewMode viewMode() const
+ void setViewMode(QListView::ViewMode mode)
+ 
+Movement = Static | Free | Snap
+This property holds whether the items can be moved freely, are snapped to a grid, or cannot be moved at all.
+This property determines how the user can move the items in the view. 
+
+Static : items can't be moved by the user. 
+Free   : use can drag and drop items to any position in the view. 
+Snap   : user can drag and drop the items, but only to the positions in a notional grid signified by the gridSize property.
+
+Setting this property when the view is visible will cause the items to be laid out again.
+By default, this property is set to Static.
+
+QListView::Movement movement() const
+void setMovement(QListView::Movement movement)
+
+Flow
+This property holds which direction the items layout should flow.
+If this property is LeftToRight, the items will be laid out left to right. If the isWrapping property is true, the layout will wrap when it reaches the right side of the visible area. If this property is TopToBottom, the items will be laid out from the top of the visible area, wrapping when it reaches the bottom.
+Setting this property when the view is visible will cause the items to be laid out again.
+By default, this property is set to TopToBottom.
+Access functions:
+ QListView::Flow flow() const
+ void setFlow(QListView::Flow flow)
+
+ nTPV_ProductCoreConnection:
+ QSqlDatabasePrivate::removeDatabase: connection 'nTPV_ProductCoreConnection' is still in use, all queries will cease to work.
+ This was solved in 4 steps:
+    1) Declaring  BareCoreDB() = default
+    2) Making db object openin nTPV_ProductCoreConnection static in Product
+    3) Using if(!db.isConnected())  instead of if(!db.connect())
+    4) Not calling db.disConnect() any more
+
+QSqlDatabasePrivate::removeDatabase: connection 'option_check' is still in use, all queries will cease to work.
+QSqlDatabasePrivate::removeDatabase: connection 'AuthCoreDBConnection' is still in use, all queries will cease to work.
+QSqlDatabasePrivate::removeDatabase: connection 'EventLogCoreConnection' is still in use, all queries will cease to work.
+QSqlDatabasePrivate::removeDatabase: connection 'BarCoreConnection' is still in use, all queries will cease to work.
+QSqlDatabasePrivate::removeDatabase: connection 'LoginScreen' is still in use, all queries will cease to work.
+
+
+Start Up:
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/master_card.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/master_card.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/visa.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/visa.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/american_express.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/american_express.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/orange_money.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/orange_money.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/google_pay.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/google_pay.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/airtel.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/airtel.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/paypal.svg', because: No such file or directory
+qt.svg: Cannot open file '/home/benes/Workspace/projets/icons/payment/paypal.svg', because: No such file or directory
+qt.svg: Invalid path data; path truncated.
+qt.svg: Invalid path data; path truncated.
+qt.svg: Invalid path data; path truncated.
+qt.svg: Invalid path data; path truncated.
+qt.svg: Invalid path data; path truncated.
+qt.svg: Invalid path data; path truncated.
+qt.svg: Invalid path data; path truncated.
+QLayout: Attempting to add QLayout "" to QFrame "", which already has a layout
+QLayout: Attempting to add QLayout "" to QFrame "", which already has a layout
+
+After Login:
+QSqlDatabasePrivate::removeDatabase: connection 'AuthCoreDBConnection' is still in use, all queries will cease to work.
+QSqlDatabasePrivate::addDatabase: duplicate connection name 'AuthCoreDBConnection', old connection removed.
+
+After Adding Product and Validate Payment:
+QSqlDatabasePrivate::addDatabase: duplicate connection name 'BarCoreConnection', old connection removed.
+
+Renaming:
+each connection name  as ClassConnection , where Class is the name of the class using the connection
+BarCore::processCore to appropriate
+
+Revise QVector<UserData> AuthCoreDB::enabledUsers()
+so as not to make a new db call to check user.administration = isPrivilaged(user.id);

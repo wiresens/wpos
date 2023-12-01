@@ -15,7 +15,7 @@
 
 #include <wposwidget/global.h>
 
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 
@@ -46,7 +46,7 @@ ChangeMoneyWidget::ChangeMoneyWidget(QWidget *parent, const QString& name) :
     gsm->publishGenericDataSignal(GDATASIGNAL::EVENTLOG,this);
 
     QVBoxLayout *numpad_frame_layout = new QVBoxLayout(numpad_frame);
-    keyPad = new FloatKeyboardBox(numpad_frame);
+    keyPad = new FloatKeyboard(numpad_frame);
 
     // Initialize all images
     ok_button->setIcon(QPixmap("controls:button_ok_48.png"));
@@ -73,14 +73,11 @@ ChangeMoneyWidget::ChangeMoneyWidget(QWidget *parent, const QString& name) :
     total_change_label->setText (QString::number (money_in_cash)+ tr(" E","€"));
 
     // Establish standart connections
-    connect(keyPad,SIGNAL(numChanged(double)),this,SLOT(updateChangeSlot(double)));
-    connect(ok_button,SIGNAL(clicked()),this,SLOT(acceptChangeSlot()));
-    connect(cancel_button,SIGNAL(clicked()),this,SLOT(rejectChangeSlot()));
-    connect(sustractMoneyButton,SIGNAL(toggled(bool)),this,SLOT(sustractMoneySlot()));
-    connect(addMoneyButton,SIGNAL(toggled(bool)),this,SLOT(addMoneySlot()));
-}
-
-ChangeMoneyWidget::~ChangeMoneyWidget(){
+    connect(keyPad, &FloatKeyboard::valueChanged,       this, &ChangeMoneyWidget::updateChangeSlot);
+    connect(ok_button, &QPushButton::clicked,           this, &ChangeMoneyWidget::acceptChangeSlot);
+    connect(cancel_button, &QPushButton::clicked,       this, &ChangeMoneyWidget::rejectChangeSlot);
+    connect(sustractMoneyButton, &QPushButton::toggled, this, &ChangeMoneyWidget::sustractMoneySlot);
+    connect(addMoneyButton, &QPushButton::toggled,      this, &ChangeMoneyWidget::addMoneySlot);
 }
 
 void ChangeMoneyWidget::updateChangeSlot(double _change){
@@ -158,7 +155,7 @@ void ChangeMoneyWidget::sustractMoneySlot(){
     operation_type = SUBSTRACT;
 
     // Call the update
-    updateChangeSlot (keyPad->getNumber());
+    updateChangeSlot (keyPad->value());
 }
 
 void ChangeMoneyWidget::addMoneySlot(){
@@ -171,7 +168,7 @@ void ChangeMoneyWidget::addMoneySlot(){
     operation_type = ADD_UP;
 
     // Call the update
-    updateChangeSlot(keyPad->getNumber());
+    updateChangeSlot(keyPad->value());
 }
 
 void ChangeMoneyWidget::showEvent(QShowEvent *event){

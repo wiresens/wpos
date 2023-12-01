@@ -32,8 +32,8 @@ Modified by Carlos Manzanedo Rueda.
 using namespace std;
 
 using IDBusReceiptPrinter = com::wiresens::wpos::dbusprinter::DBusReceiptPrinter;
-static const QString dbus_service = "com.wiresens.wpos.dbusprinter";
-static const QString dbus_object = "/wpos/dbusprinter/DBusReceiptPrinter";
+static const QString dbusService {"com.wiresens.wpos.dbusprinter"};
+static const QString dbusObject  {"/wpos/dbusprinter/DBusReceiptPrinter"};
 
 OrderContentView::OrderContentView(
     XmlConfig *xml,
@@ -45,22 +45,18 @@ OrderContentView::OrderContentView(
 
 {
     setObjectName(name);
-
-    // Generic signals initialization
     auto gsm = GenericSignalManager::instance();
     gsm->subscribeToGenericSignal(GSIGNAL::WRONG_PRODUCT, this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::SETCORE_MODE, this);
 
-    // Set focus style
-
-    //@benes    setFocusStyle(QTable::FollowStyle);
     // Order has 0 rows at start time
     setRowCount(0);
     setAlternatingRowColors(true);
     setSelectionBehavior(QAbstractItemView::SelectRows);
     setSelectionMode(QAbstractItemView::SingleSelection);
 
-    // Default profile for order is obtained from the description XML. <PART 2> extracting values from XML
+    // Default profile for order is obtained from the description XML.
+    // <PART 2> extracting values from XML
     parseXmlDescription(xml);
 }
 
@@ -71,10 +67,10 @@ OrderContentView::~OrderContentView(){
 void OrderContentView::printTicket(){
     auto bus = QDBusConnection::sessionBus();
     IDBusReceiptPrinter *iface;
-    iface = new IDBusReceiptPrinter(dbus_service, dbus_object, bus, this);
+    iface = new IDBusReceiptPrinter(dbusService, dbusObject, bus, this);
     if (!iface->isValid()){
-        qDebug() << "DBus Service :" << dbus_service << "for object :" << dbus_object
-                 << "Requested by OrderContentFrame::printSlot()"
+        qDebug() << "DBus Service :" << dbusService << "for object :" << dbusObject
+                 << "Requested by OrderContentView::printTicket()"
                  << "From DBusReceiptPrinter::printTicket()"
                  << "Not Available";
         return;
@@ -341,21 +337,21 @@ void OrderContentView::setDefaultColor(){
         palette.setColor(QPalette::Window, QColor(Colors::ORDER_WARNING_COLOR));
         setPalette(palette);
         color_state++;
-        QTimer::singleShot(200,this,SLOT(setDefaultColor()));
+        QTimer::singleShot(200,this, &OrderContentView::setDefaultColor);
         break;
 
     case 1:
         palette.setColor(QPalette::Window, QColor(Colors::ORDER_NORMAL_COLOR));
         setPalette(palette);
         color_state++;
-        QTimer::singleShot(100,this,SLOT(setDefaultColor()));
+        QTimer::singleShot(100, this, &OrderContentView::setDefaultColor);
         break;
 
     case 2:
         palette.setColor(QPalette::Window, QColor(Colors::ORDER_WARNING_COLOR));
         setPalette(palette);
         color_state++;
-        QTimer::singleShot(200,this,SLOT(setDefaultColor()));
+        QTimer::singleShot(200,this, &OrderContentView::setDefaultColor);
         break;
 
     default:
@@ -365,18 +361,18 @@ void OrderContentView::setDefaultColor(){
     }
 }
 
-void OrderContentView::genericSignalSlot(const QString& signal_name){
-    if (signal_name == GSIGNAL::WRONG_PRODUCT){
+void OrderContentView::genericSignalSlot(const QString& signal){
+    if (signal == GSIGNAL::WRONG_PRODUCT){
         color_state = 0;
         last_color = palette().window().color();
         update();
-        QTimer::singleShot(50, this, SLOT(setDefaultColor()));
+        QTimer::singleShot(50, this, &OrderContentView::setDefaultColor);
     }
 }
 
-void OrderContentView::genericDataSignalSlot(const QString& signal_name,XmlConfig *xml){
+void OrderContentView::genericDataSignalSlot(const QString& signal, XmlConfig *xml){
     QString aux;
-    if (signal_name == GDATASIGNAL::SETCORE_MODE){
+    if (signal == GDATASIGNAL::SETCORE_MODE){
         xml->delDomain();
         aux = (xml->readString("mode")).toLower();
         QPalette palet;
@@ -407,7 +403,6 @@ void OrderContentView::showColumn(QString name, bool show_it){
 }
 
 void OrderContentView::selectUp(){
-
     auto selected_row = currentRow();
     if( !selected_row) return;
 
@@ -427,10 +422,9 @@ void OrderContentView::selectFirst(){
 
 void OrderContentView::selectDown(){
      auto selected_row = currentRow();
-
     if(selected_row == rowCount() - 1 )  return;
-    clearSelection();
 
+    clearSelection();
     auto selection =  QTableWidgetSelectionRange(selected_row + 1, 0, selected_row + 1, columnCount());
     setRangeSelected(selection, true);
     setCurrentCell(selected_row + 1, 0);
@@ -438,7 +432,6 @@ void OrderContentView::selectDown(){
 
 void OrderContentView::selectLast(){
     clearSelection();
-
      auto selected_row = rowCount();
      auto selection =  QTableWidgetSelectionRange(selected_row - 1, 0, selected_row - 1, columnCount());
     setRangeSelected(selection, true);
@@ -446,14 +439,10 @@ void OrderContentView::selectLast(){
 }
 
 void OrderContentView::clearOrder(){
-
-    //        setNumRows(0);
-    for(int i = 0; i < rowCount(); i++)
-        removeRow(i);
+    for(int i = 0; i < rowCount(); i++) removeRow(i);
 
     setRowCount(products->count());
-    for(int i = 0; i < rowCount(); i++)
-        setRowHeight(i, row_height);
+    for(int i = 0; i < rowCount(); i++) setRowHeight(i, row_height);
 }
 
 void OrderContentView::reset(){
@@ -705,11 +694,9 @@ void OrderContentView::setTimeStamp(const QString &domain){
  **********************************************************************************************************************/
 void OrderContentView::selectLastOrderItem(){
     auto selected_row = rowCount();
-
     if (!selected_row) return;
 
     clearSelection();
-
     auto selection =  QTableWidgetSelectionRange(selected_row, 0, selected_row, columnCount());
     setRangeSelected(selection, true);
     setCurrentCell(selected_row, 0);

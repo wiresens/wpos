@@ -33,7 +33,6 @@ class MenuPage : public QFrame{
     Q_OBJECT
 
 public:
-
     enum LayoutType
     {
         GRID = 0,

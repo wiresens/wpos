@@ -73,14 +73,14 @@ BasicProductEditionWidget::BasicProductEditionWidget(
     previous_button->hide();
     cancel_button->hide();
 
-    connect(search_product_edit, SIGNAL(textChanged(const QString&)), this, SLOT(productNameChanged(const QString&)));
-    connect(product_list_wgt, SIGNAL(clicked(QListViewItem*)), this, SLOT(productSelectedChanged(QListViewItem*)));
-    connect(accept_button, SIGNAL(clicked()), this, SLOT(acceptSlot()));
-    connect(cancel_button, SIGNAL(clicked()), this, SLOT(cancelSlot()));
-    connect(next_button, SIGNAL(clicked()), this, SLOT(nextSlot()));
-    connect(previous_button, SIGNAL(clicked()), this, SLOT(previousSlot()));
-    connect(up_button,SIGNAL(clicked()),this,SLOT(upClickedSlot()));
-    connect(down_button,SIGNAL(clicked()),SLOT(downClickedSlot()));
+    connect(search_product_edit, &QLineEdit::textChanged, this, &BasicProductEditionWidget::productNameChanged);
+    connect(product_list_wgt, &QTreeWidget::itemClicked, this, &BasicProductEditionWidget::productSelectedChanged);
+    connect(accept_button, &QPushButton::clicked, this, &BasicProductEditionWidget::acceptSlot);
+    connect(cancel_button, &QPushButton::clicked, this, &BasicProductEditionWidget::cancelSlot);
+    connect(next_button, &QPushButton::clicked, this, &BasicProductEditionWidget::nextSlot);
+    connect(previous_button, &QPushButton::clicked, this, &BasicProductEditionWidget::previousSlot);
+    connect(up_button,&QPushButton::clicked, this, &BasicProductEditionWidget::upClickedSlot);
+    connect(down_button,&QPushButton::clicked, this, &BasicProductEditionWidget::downClickedSlot);
 
     up_button->setAutoRepeat(true);
     down_button->setAutoRepeat(true);

@@ -52,7 +52,7 @@ InvitationAllocatorWidget::InvitationAllocatorWidget(QWidget *parent, const QStr
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
     gsm->subscribeToGenericSignal(GSIGNAL::LOAD_OFFERS,this);
 
-    connect(cancel_button,SIGNAL(clicked()),this,SLOT(cancelSlot()));
+    connect(cancel_button, &QPushButton::clicked, this, &InvitationAllocatorWidget::cancelSlot);
 }
 
 InvitationAllocatorWidget::~InvitationAllocatorWidget(){}
@@ -85,7 +85,7 @@ void InvitationAllocatorWidget::parseXmlDescription(){
     }
 
     XmlConfig xml(configFile);
-    if (!xml.isValid()){
+    if (!xml.wellFormed()){
         cerr << "Can't parse " << configFile.toStdString() << "file. [CRITICAL ERROR] Can't initialize order in proper way.";
         return;
     }

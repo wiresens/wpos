@@ -19,7 +19,7 @@
 
 #include <wposcore/config.h>
 #include <wposwidget/dragobjects.h>
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QLabel>
@@ -107,7 +107,7 @@ void BasicProductUpdateWidget::setProduct(ProductData *prod){
     }
 
     setTax(prod->tax);
-    float_keyboard_product->setNumber(prod->price);
+    float_keyboard_product->setValue(prod->price);
 
     if(product_mod->isUnitaryProduct(prod->code))
         setModeProduct(UnitaryProduct);
@@ -132,7 +132,7 @@ bool BasicProductUpdateWidget::updateCompositionProduct(){
 
     xml.createElement("code", code_aux);
     xml.createElement("name", product_name->text());
-    xml.createElement("price", QString::number(float_keyboard_product->getNumber()));
+    xml.createElement("price", QString::number(float_keyboard_product->value()));
     xml.createElement("tax", getTax());
     xml.createElement("logo", logo);
 
@@ -178,7 +178,7 @@ bool BasicProductUpdateWidget::updateUnitaryProduct(){
     QString code = getCode();
     xml.createElement("code", code);
     xml.createElement("name", product_name->text());
-    xml.createElement("price", QString::number(float_keyboard_product->getNumber()));
+    xml.createElement("price", QString::number(float_keyboard_product->value()));
     xml.createElement("tax", getTax());
     xml.createElement("logo", logo);
     //     xml.createElement("description", description_text->text());

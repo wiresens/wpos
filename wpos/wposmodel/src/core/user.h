@@ -12,25 +12,26 @@ namespace model{
 using namespace odb::core;
 class User;
 using UserPtr = std::shared_ptr<User>;
+using ConstUserPtr = std::shared_ptr<const User>;
 
 class SessionManager{
 public:
-    void authenticate(const User& user);
+    UserPtr authenticate(const string &login, const string &pwd);
     void logOut(const User& user){ endSession(user);}
 
     virtual ~SessionManager() = default;
 
 protected:
-    virtual bool logIn(const User& user);
+    virtual UserPtr logIn(const string& login, const string& pwd);
     virtual void startSession(const User&){}
-    virtual void endSession(const User&){}
-    virtual void notifyAuthtenticationError(){}
+    virtual void endSession(const User& user);
+    virtual void notifyAuthFailiure(){}
 };
 
 //class User : public Persistable<User> {
 class User : public Persistable{
     friend class odb::access;
-    friend void SessionManager::authenticate(const User& user);
+    friend UserPtr SessionManager::authenticate(const string&, const string&);
 
 public:
     User(User&&) = default;
@@ -39,16 +40,12 @@ public:
     static UserPtr exist(const string& login, const string& pwd);
     static User newUser(PersonPtr employee, const string& login, const string& pwd);
 
-    User( const string& login, const string& pwd):
-        login_{login},
-        pwd_hash_{pwdHash(pwd)}
-    {}
-
     User( PersonPtr employee, const string& login, const string& pwd):
-        login_{login}, pwd_hash_{pwdHash(pwd)},
+        login_{login}, password_{pwdHash(pwd)},
         pwd_timeout_{ nowLocal()}, employee_{employee}
     {
-        if( exist(login_, pwd_hash_)) throw DuplicateAuthTokenException{};
+        if(login.empty() || pwd.empty()) throw EmptyValueException{};
+        if( exist(login_, password_)) throw DuplicateAuthTokenException{};
     }
 
     virtual void persist() override;
@@ -58,12 +55,27 @@ public:
 
     const TimeStamp& lastLogin() const { return last_login_ ;}
 
-    void setPassWord(const string& pwd){  pwd_hash_ = pwdHash(pwd);}
-    const string& passWord() const { return  pwd_hash_ ;}
+    void setPassword(const string& pwd){  password_ = pwdHash(pwd);}
+    const string& password() const { return  password_ ;}
+
+    Person& employee() const { return  *employee_ ;}
+    PersonPtr employeePtr() const { return  employee_ ;}
+
+    void enable() { enabeled_ = true; }
+
+    void disable() { enabeled_ = false;}
+
+    bool isConnected() const{
+        return connected_;
+    }
+
+    void disconnect() const{
+        connected_ = false;
+    }
 
 protected:
     void updatelastLogin() const{
-        conected_ = true;
+        connected_  = true;
         last_login_ = nowLocal();
     }
 
@@ -73,14 +85,16 @@ protected:
 private:
     User() = default;
 
+public:
+    const ulong id{0};
+
 private:
-    ulong id_{0};
     string login_;
-    string pwd_hash_;
+    string password_;
     mutable TimeStamp last_login_;
     TimeStamp pwd_timeout_;
     bool enabeled_{true};
-    mutable bool conected_{false};
+    mutable bool connected_{false};
     PersonPtr employee_;
 };
 

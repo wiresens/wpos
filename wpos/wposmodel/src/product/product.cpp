@@ -14,21 +14,24 @@ Product::Product(ProductTemplatePtr tpl,
     name_{name},
     price_{price}
 {
-    if(name.empty()) throw EmptyNameException{};
+    if(name.empty()) throw EmptyValueException{};
     if( ! ( price_ > 0.0 || price_ < 0.0) ) throw ZeroPriceException{};
-//    db->persist(shared_from_this());
     savePrice();
 }
 
 void Product::setPrice(double newPrice, PriceType){
-    if( price_ != newPrice && ( newPrice > 0.0 || newPrice < 0.0) ){
-        logPrice();
+    if( price_ != newPrice && ( newPrice > 0.0 || newPrice < 0.0) ){       
         price_ = newPrice;
+        logPrice();
     }
 }
 
 void Product::logPrice(){
     PriceLog::logPrice(shared_from_this());
+}
+
+void Product::savePrice(){
+    PriceLog::savePrice(*this);
 }
 
 double Product::priceAsOf(const TimeStamp& stamp, PriceType) const

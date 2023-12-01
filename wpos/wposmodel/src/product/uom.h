@@ -48,7 +48,7 @@ public:
     UomType& operator=(const UomType&) = delete;
 
     UomType(const string& name) : name_{name}{
-        if (name.empty()) throw EmptyNameException{};
+        if (name.empty()) throw EmptyValueException{};
     }
 
     const string& name() { return name_ ;}
@@ -79,7 +79,7 @@ public:
         double  factor = 1.0,
         double rate = 1.0)
         : type_{type}, name_{name}, symbol_{symbol}, factor_{factor}, rate_{rate}{
-        if (name.empty() || symbol.empty()) throw EmptyNameException{};
+        if (name.empty() || symbol.empty()) throw EmptyValueException{};
     }
 
     UomType& type() const{

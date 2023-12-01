@@ -27,28 +27,39 @@ struct UserData {
     QString email;
     QString company_id;
     QString picture;
-    bool administration;
+    bool isRootUser{false};
 };
 
-struct AuthCoreDB : public BasicDatabase  {
-    AuthCoreDB(const QString& _connection_name,
-               const QString& _hostname,
-               const QString& _database,
-               const QString& _username,
-               const QString& _passwd);
+struct AuthCoreDB :
+    public BasicDatabase
+{
 
-    AuthCoreDB(const QString& _connection_name, XmlConfig *xml);
+    AuthCoreDB() = default;
 
-    AuthCoreDB(const QString& _connection_name,
-               const QString& configuration_path);
+    AuthCoreDB(
+        const QString& connection,
+        const QString& hostname,
+        const QString& database,
+        const QString& username,
+        const QString& passwd);
 
-    ~AuthCoreDB();
+    AuthCoreDB(
+        const QString& connection,
+        XmlConfig *xml);
 
-    UserData* getUserName(const QString& _name);
-    UserData* getUserId(const QString& _id);
-    UserData* getUserLastName(const QString& _last_name);
-    bool getAdministracion(const QString& _id);
-    HList<UserData>* getUsers();
+    AuthCoreDB(
+        const QString& connection,
+        const QString& configFile);
+
+//    UserData* userById(const QString& id)  const;
+    UserData userById(const QString& id)  const;
+
+    //Potential bug : Name and Last are not unique identifiers
+    UserData userByName(const QString& name) const; // First record with  name
+    UserData userByLastName(const QString& lastName)  const; // First record with  lastName
+
+    bool isRootUser(const QString& id)  const;
+    QVector<UserData> userList()  const;
 };
 
 #endif

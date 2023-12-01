@@ -16,7 +16,7 @@
 #include "ui_cashwidget.h"
 #include <QWidget>
 
-class FloatKeyboardBox;
+class FloatKeyboard;
 class BarCore;
 class XmlConfig;
 
@@ -50,7 +50,7 @@ protected:
     void showEvent(QShowEvent *e);
     void sendTicketSignal();
 
-    FloatKeyboardBox *float_keyboard;
+    FloatKeyboard *float_keyboard;
     BarCore *core{};
     double cash{};
     double actual_price{};

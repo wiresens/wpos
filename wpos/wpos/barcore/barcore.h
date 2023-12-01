@@ -36,9 +36,8 @@ public:
     /**
      * prepare a new XML and set on it the timestamp, employee, and locationInfo
      */
-    void initCore(bool flush_last = true);
-    bool resetCore();
 
+    void reInitialise(bool flush_last = true);
     double getBillingSum();
     bool hasProducts();
     bool hasProducts(XmlConfig *_xml);
@@ -85,13 +84,16 @@ protected:
     void saveLastReceipt();
 
 private:
+    void resetCore();
+
+private:
     XmlConfig *xml{};
-    BarCoreDB *db{};
     ExtraCore *extra_core{};
     DBusReceiptQuerier *receipt_com{};
 
     QString last_employee_id;
     QString last_start_time;
+    static BarCoreDB db;
 };
 
 #endif

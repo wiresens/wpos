@@ -20,20 +20,14 @@
 
 #include <QString>
 
-class VisualProduct {
-public:
-    VisualProduct();
-    ~VisualProduct();
-
-/**
-* decremets all anchor which value is greater than max
-*/
+// decremets all anchor which value is greater than max
+struct VisualProduct {
     QString name;
     QString description;
     QString options;
-    float quantity;
-    float price;
-    int xmlAnchor;
+    float quantity{0.0};
+    float price{0.0};
+    int xmlAnchor{};
 };
 
 #endif

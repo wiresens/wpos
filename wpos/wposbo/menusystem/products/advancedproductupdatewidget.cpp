@@ -21,8 +21,8 @@ AdvancedProductUpdateWidget::AdvancedProductUpdateWidget(
     product_insertion_form = new AdvancedProductInsertionWidget(product_model, ProductInsertionWidget::Unitary, update_frame, "Update Widget");
     vlayout->addWidget(product_insertion_form);
 
-    connect(product_insertion_form,SIGNAL(cancelSignal()),this,SLOT(nUpdateCancelSlot()));
-    connect(product_insertion_form,SIGNAL(acceptSignal()),this,SLOT(nUpdateAcceptSlot()));
+    connect(product_insertion_form, &AdvancedProductInsertionWidget::cancelSignal, this, &AdvancedProductUpdateWidget::nUpdateCancelSlot);
+    connect(product_insertion_form, &AdvancedProductInsertionWidget::acceptSignal, this, &AdvancedProductUpdateWidget::nUpdateAcceptSlot);
 }
 
 void AdvancedProductUpdateWidget::acceptSlot(){

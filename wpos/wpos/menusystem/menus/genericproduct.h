@@ -16,17 +16,17 @@
 #include "ui_freepricewidget.h"
 #include <QObject>
 
-class FloatKeyboardBox;
+class FloatKeyboard;
 class XmlConfig;
 
 class GenericProduct : public QWidget, private Ui::FreePriceWidget  {
     Q_OBJECT
 public:
-    explicit GenericProduct(const QString& product_name,
-                      QWidget *parent=0,
-                      const QString& name = QString());
-
-    ~GenericProduct();
+    explicit GenericProduct(
+        const QString& product_name,
+        QWidget *parent=0,
+        const QString& name = QString()
+     );
 
 signals:
     void genericDataSignal(const QString& signal, XmlConfig *xml);
@@ -37,7 +37,7 @@ protected slots:
     void toggleButtonsState();
 
 private:
-    FloatKeyboardBox *key_pad;
+    FloatKeyboard *key_pad;
     QString generic_product_name;
 };
 

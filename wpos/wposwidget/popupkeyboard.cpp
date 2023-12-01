@@ -29,9 +29,9 @@ PopUpKeyboard::PopUpKeyboard(QWidget *parent, const QString& name) :
 
     kb->sendEvents(false);
     kb->exitWithEnter(true);
-    connect(kb, SIGNAL(textChanged(const QString &)), this, SIGNAL(textChanged(const QString &)));
-    connect(kb, SIGNAL(enterPressed(const QString &)), this, SLOT(enterPressedSlot(const QString &)));
-    connect(kb, SIGNAL(exitClicked()), this, SIGNAL(exitClicked()));
+    connect(kb, &SpKeyboard::textChanged, this, &PopUpKeyboard::textChanged);
+    connect(kb, &SpKeyboard::enterPressed, this, &PopUpKeyboard::enterPressedSlot);
+    connect(kb, &SpKeyboard::exitClicked, this, &PopUpKeyboard::exitClicked);
 }
 
 PopUpKeyboard::~PopUpKeyboard(){

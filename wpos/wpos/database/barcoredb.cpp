@@ -18,49 +18,42 @@
 #include <QStringList>
 #include <QDebug>
 
-BarCoreDB::BarCoreDB(const QString& _connection_name,
-                     const QString& _hostname,const QString& _database,
-                     const QString& _username,const QString& _passwd):
-    BasicDatabase(_connection_name,_hostname, _database, _username,_passwd)
+BarCoreDB::BarCoreDB(
+    const QString& connection_name,
+    const QString& hostname,
+    const QString& database,
+    const QString& username,
+    const QString& passwd):
+    BasicDatabase(
+        connection_name,
+        hostname,
+        database,
+        username,passwd
+    )
 {}
 
-BarCoreDB::BarCoreDB(const QString& _connection_name,
-                     const QString& configuration_path):
-    BasicDatabase(_connection_name,configuration_path){
+BarCoreDB::BarCoreDB(
+    const QString& connection_name,
+    const QString& configuration_path):
+    BasicDatabase(connection_name,configuration_path)
+{}
 
-}
+QString BarCoreDB::getName(const QString& product_code)
+{
 
-BarCoreDB::~BarCoreDB(){}
+    if (!isConnected()) return QString();
 
-QString BarCoreDB::getName(const QString& product_code){
-    QSqlQuery *q=0;
-    QString query;
-    QString ret = "";
-
-    if (!this->isConnected())
-        return ret;
-
-    query = "SELECT product FROM products WHERE product_code='"+product_code+"';";
-    q = new QSqlQuery(query,this->getDB());
+    QString sql {"SELECT product FROM products WHERE product_code='"+product_code+"';"};
+    QSqlQuery query(sql, getDB());
 
     //prepare the query execution
-    if (!q->isActive()){
-        qDebug() << "fallo por query no activa " << product_code.toLatin1() ;
-        delete q;
-        return QString("");
+    if (!query.isActive() || !query.size()){
+        qDebug() << "Fault due to inactive query " << product_code.toLatin1() ;
+        return QString();
     }
 
-    if (!q->size()){
-        return ret;
-        delete q;
-    }
-    else{
-        q->first();
-        ret = (q->value(0)).toString();
-    }
-
-    delete q;
-    return ret;
+    query.first();
+    return  query.value(0).toString();
 }
 
 
@@ -71,10 +64,10 @@ QString BarCoreDB::getName(const QStringList article_list){
     aux = "";
     for(i=0;i<count;i++){
         aux = article_list[i];
-        if (i!=(count-1))
+        if (i != (count-1) )
             aux+=" ";
     }
-    return this->getName(aux);
+    return getName(aux);
 }
 
 

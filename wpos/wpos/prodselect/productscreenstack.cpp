@@ -22,50 +22,48 @@
 
 #include <unistd.h>
 
-
-
 using namespace std;
 
 //Normally the constructors  should throw if unable to read the config files
 // Presently we are not throwing but will add that when everything works
 //We will also find a way to factor out the constructors by using forwarding constructors.
 
-ProductScreenStack::ProductScreenStack(const QString& file_name,
-                                       QWidget *parent,
-                                       const QString& name):
-    ProductScreenStack(parent,name)
+ProductScreenStack::ProductScreenStack(
+    const QString& xmlDescriptionFile,
+    QWidget *parent,
+    const QString& name):
+    ProductScreenStack(parent, name)
 {
-
-    if (!QFile(file_name).exists())
-        cerr << " Missing file: " << file_name.toStdString() << "cant be opened to read the screen definitions" << endl;
+    if (!QFile::exists(xmlDescriptionFile))
+        cerr << " Missing file: " << xmlDescriptionFile.toStdString() << "cant be opened to read the screen definitions" << endl;
     else{
-        std::unique_ptr<XmlConfig> xml {new XmlConfig(file_name)};
-        if (xml->isValid())
-            initScreenStack(xml.get());
+        XmlConfig xml{xmlDescriptionFile};
+        if (xml.wellFormed()) initScreenStack(&xml);
     }
 }
 
-ProductScreenStack::ProductScreenStack(XmlConfig *xml,
-                                       QWidget *parent,
-                                       const QString& name):
+ProductScreenStack::ProductScreenStack(
+    XmlConfig *xml,
+    QWidget *parent,
+    const QString& name):
     ProductScreenStack(parent, name)
 {
-    if (!xml->isValid()) return;
-    initScreenStack(xml);
+    if (xml->wellFormed()) initScreenStack(xml);
 }
 
-ProductScreenStack::ProductScreenStack(QWidget *parent,
-                                       const QString& name):
+ProductScreenStack::ProductScreenStack(
+    QWidget *parent,
+    const QString& name):
     QStackedWidget(parent)
 {
     setObjectName(name);
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+
     auto gsm = GenericSignalManager::instance();
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::PRODUCTS_SETPAGE, this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::PRODSELECT_COLOR_MODE, this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::SETCORE_MODE, this);
     gsm->subscribeToGenericSignal(GSIGNAL::LOAD_PRODUCTS, this);
-
 }
 
 ProductScreenStack::~ProductScreenStack(){
@@ -88,10 +86,10 @@ bool ProductScreenStack::setDefaultScreen(){
     return true;
 }
 
-bool ProductScreenStack::initScreenStack(const QString& file_name){
-    XmlConfig xml (file_name);
-    if ( !QFile::exists(file_name)  || !xml.isValid()){
-        cerr << " Missing file: " << file_name.toStdString()
+bool ProductScreenStack::initScreenStack(const QString& xmlDescriptionFile){
+    XmlConfig xml (xmlDescriptionFile);
+    if ( !QFile::exists(xmlDescriptionFile)  || !xml.wellFormed()){
+        cerr << " Missing file: " << xmlDescriptionFile.toStdString()
              << "can't be opened to read the screen definitions" << endl;
         return false;
     }
@@ -193,14 +191,12 @@ bool ProductScreenStack::remove(const QString& screen_name){
     return true;
 }
 
-bool ProductScreenStack::addScreen(const QString& screen_name, XmlConfig* xml){
+void ProductScreenStack::addScreen(const QString& screen_name, XmlConfig* xml){
     ProductScreen *screen = new ProductScreen(screen_name, xml, this);
-    //the connect section.
     addWidget(screen);
     screen_dict->insert(screen->screenName(), screen);
     screen_list->append(screen);
     setCurrentWidget(screen);
-    return true;
 }
 
 bool ProductScreenStack::setScreen(const QString& screen_name){
@@ -272,11 +268,11 @@ void ProductScreenStack::productClickedSlot(Product *prod){
     if (!selected_product){
         selected_product = prod;
         //prepare the new connections
-        connect(selected_product, SIGNAL(combineWith(QStringList)),
-                this, SLOT(combineWithSlot(QStringList)));
+        connect(selected_product, &Product::combineWith,
+                this, &ProductScreenStack::combineWithSlot);
 
-        connect(selected_product, SIGNAL(productDefinition(XmlConfig*)),
-                this, SLOT(productDefinitionSlot(XmlConfig*)));
+        connect(selected_product, &Product::productDefinition,
+                this, &ProductScreenStack::productDefinitionSlot);
 
         completed = selected_product->lead();
 
@@ -368,9 +364,9 @@ void ProductScreenStack::genericDataSignalSlot(const QString& signal_name, XmlCo
         if (aux == "normal")
             setSpecialModeColor(ProductScreen::Normal);
         else if (aux == "product_anulation")
-            setSpecialModeColor(ProductScreen::Product_anulation);
+            setSpecialModeColor(ProductScreen::ProductAnulation);
         else if (aux == "default_offer")
-            setSpecialModeColor(ProductScreen::Default_offer);
+            setSpecialModeColor(ProductScreen::DefaultOffer);
     }
 }
 

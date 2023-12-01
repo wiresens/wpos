@@ -38,7 +38,7 @@
 #include <iostream>
 using namespace std;
 
-extern AuthCore *auth;
+extern AuthCore *authCore;
 extern FileManager *file_manager;
 
 AdminWidget::AdminWidget(ProductScreenStack *stack, QWidget* parent, const QString& name):
@@ -203,7 +203,7 @@ void AdminWidget::loadToggleButtonStatus(){
 void AdminWidget::cancelSlot(){
 
     XmlConfig xml;
-    if ( auth && auth->getUserId()  == "1" ){
+    if ( authCore && authCore->userId()  == "1" ){
         xml.createElement("name", MainScreen::LOGIN_SCREEN);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
         return;
@@ -219,8 +219,9 @@ void AdminWidget::cancelSlot(){
 }
 
 void AdminWidget::launchBackOffice(){
-    connect(process, SIGNAL(finished(int)), this, SLOT(backOfficeEndSlot()));
-    process->setProgram("/home/benes/Workspace/projets/wpos/wpos/wposbo/wposbo");
+    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+            this, &AdminWidget::backOfficeEndSlot);
+    process->setProgram("/home/benes/Workspace/projets/wpos/bin/wposbo");
     process->start();
 }
 
@@ -229,7 +230,8 @@ int AdminWidget::launchXterm(){
 }
 
 void AdminWidget::backOfficeEndSlot( ){
-    disconnect(process, SIGNAL(finished(int)), this, SLOT(backOfficeEndSlot()));
+    disconnect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
+               this, &AdminWidget::backOfficeEndSlot);
     raiseConfigWidget();
     emit genericSignal(GSIGNAL::LOAD_BUTTONS);
     emit genericSignal(GSIGNAL::LOAD_PRODUCTS);

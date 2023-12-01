@@ -15,17 +15,8 @@ using std::string;
 
 class database{
 public:
-    static odb::database &instance();
+    static odb::database& instance();
     virtual ~database();
-
-//    struct Connector{
-//        const string driver;
-//        const string host;
-//        const string db;
-//        const string user;
-//        const string pwd;
-//        const uint16_t port;
-//    };
 
     struct Connector{
         string driver;

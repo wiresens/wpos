@@ -15,8 +15,8 @@
 
 #include <wposcore/config.h>
 #include <wposwidget/dragobjects.h>
-#include <wposwidget/floatkeyboardbox.h>
-#include <wposwidget/basickeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
+#include <wposwidget/numpad.h>
 
 
 #include <QPushButton>
@@ -98,8 +98,8 @@ void AdvancedProductInsertionWidget::setProduct(const QString& product_code){
     xml.setDomain("products.product");
     p_code = xml.readString("code");
     product_name_lineedit->setText(xml.readString("name"));
-    float_kb->setNumber((xml.readString("price")).toDouble());
-    float_kb->setInitMode(true);
+    float_kb->setValue((xml.readString("price")).toDouble());
+    float_kb->setDirty(true);
     xml_string = xml.readString("tax");
 
     for (auto button : tax_button_group->buttons())
@@ -173,7 +173,7 @@ void AdvancedProductInsertionWidget::setOptions(const QString& product_code){
         xml.setDomain("option["+QString::number(i)+"]");
         auto type = xml.readString("option_type");
         auto name = xml.readString("option_name");
-        auto value = xml.readString("value").toDouble() + float_kb->getNumber();
+        auto value = xml.readString("value").toDouble() + float_kb->value();
 
         if (xml.readString("default") == "true") is_default = true;
         else is_default = false;
@@ -297,7 +297,7 @@ bool AdvancedProductInsertionWidget::saveProduct(){
     xml.createElementSetDomain("product");
     xml.createElement("code", p_code);
     xml.createElement("name",product_name_lineedit->text());
-    xml.createElement("price", QString::number(float_kb->getNumber(),'f',2));
+    xml.createElement("price", QString::number(float_kb->value(),'f',2));
     xml.createElement("tax", getActualTax());
     xml.createElement("logo", logo);
     if (!mode)

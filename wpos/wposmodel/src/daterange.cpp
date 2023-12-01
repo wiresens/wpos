@@ -52,9 +52,9 @@ TimeStamp nowUTC(){
 
 TimeStamp maxDateTime(){
     #if defined(DATABASE_SQLITE)
-    return boost::date_time::not_a_date_time;
+        return pt::from_iso_string("99991231T000000"); // represents +infinity
     #else
-    return pt::pos_infin;
+        return pt::pos_infin;
     #endif
 }
 

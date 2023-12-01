@@ -13,7 +13,7 @@
 #include "genericproduct.h"
 
 #include <wposwidget/global.h>
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <wposcore/genericsignalmanager.h>
 
 #include "salesscreen.h"
@@ -36,7 +36,7 @@ GenericProduct::GenericProduct(const QString& product_name,
     setupUi(this);
     setObjectName(name);
     QVBoxLayout *numpad_frame_layout = new QVBoxLayout(numpad_frame);
-    key_pad = new FloatKeyboardBox(numpad_frame);
+    key_pad = new FloatKeyboard(numpad_frame);
     numpad_frame_layout->addWidget(key_pad);
 
     generic_product_name = product_name;
@@ -60,15 +60,12 @@ GenericProduct::GenericProduct(const QString& product_name,
      *     should create a button for each type of tax... in spain main taxes for pubs and bar are
      *    16% 4% and 7% and there are hardcoded
      */
-    connect(ok_button,SIGNAL(released()),this,SLOT(handleAccepted()));
-    connect(cancel_button,SIGNAL(released()),this,SLOT(handleCancelled()));
-    connect(tax_16_button,SIGNAL(released()),this,SLOT(toggleButtonsState()));
-    connect(tax_7_button, SIGNAL(released()),this,SLOT(toggleButtonsState()));
-    connect(tax_4_button, SIGNAL(released()),this,SLOT(toggleButtonsState()));
-
+    connect(ok_button, &QPushButton::released, this, &GenericProduct::handleAccepted);
+    connect(cancel_button, &QPushButton::released, this, &GenericProduct::handleCancelled);
+    connect(tax_16_button, &QPushButton::released, this, &GenericProduct::toggleButtonsState);
+    connect(tax_7_button, &QPushButton::released, this, &GenericProduct::toggleButtonsState);
+    connect(tax_4_button, &QPushButton::released, this, &GenericProduct::toggleButtonsState);
 }
-
-GenericProduct::~GenericProduct(){}
 
 void GenericProduct::handleAccepted(){
 
@@ -76,7 +73,7 @@ void GenericProduct::handleAccepted(){
     //pass to the extracore the new price
     {
         XmlConfig xml ;
-        xml.createElement("price", QString::number(key_pad->getNumber()));
+        xml.createElement("price", QString::number(key_pad->value()));
         if (tax_16_button->isDown()){
             xml.createElement("tax_type","iva16");
             xml.createElement("tax","0.16");

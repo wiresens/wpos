@@ -22,7 +22,7 @@ class ProductModule;
 class BslDDIconView;
 class XmlConfig;
 class IngredientData;
-class FloatKeyboardBox;
+class FloatKeyboard;
 class ProductOptionCreationWidget;
 class ProductOfferCreationWidget;
 class BslDDTable;
@@ -119,7 +119,7 @@ protected:
     void clearButtonList();
 
 protected:
-    FloatKeyboardBox *float_keyboard_product{};
+    FloatKeyboard *float_keyboard_product{};
     ProductOptionCreationWidget *option_widget{};
     ProductOfferCreationWidget *offer_widget{};
     BslDDIconView *icon_view{};

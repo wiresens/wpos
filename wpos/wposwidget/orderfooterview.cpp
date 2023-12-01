@@ -22,8 +22,11 @@ Modified by Carlos Manzanedo Rueda.
 
 using namespace std;
 
-OrderFooterView::OrderFooterView(XmlConfig *xml, QWidget *parent, const QString& name) :
-    QFrame(parent)
+OrderFooterView::OrderFooterView(
+    XmlConfig *xml,
+    QWidget *parent,
+    const QString& name)
+    :QFrame(parent)
 {
     setObjectName(name);
     parseXmlDescription(xml);
@@ -32,17 +35,17 @@ OrderFooterView::OrderFooterView(XmlConfig *xml, QWidget *parent, const QString&
 
 void OrderFooterView::parseXmlDescription(XmlConfig *xml){
 
-    IWidgetConfigHelper wcHelper;
+    IWidgetConfigHelper widgetConfigHelper;
     xml->delDomain(); //releaseDomain() : Position ourself at the root of the XML tree
     xml->setDomain("totaldescription.global");
     auto aux_string = xml->readString("backgroundcolor");
-    if(!aux_string.isEmpty()) wcHelper.setBackgroundColor(*this, QColor(aux_string));
+    if(!aux_string.isEmpty()) widgetConfigHelper.setBackgroundColor(*this, QColor(aux_string));
 
-    wcHelper.setSize(*this, width(), 50);
+    widgetConfigHelper.setSize(*this, width(), 50);
 
     auto hsizepolicy = xml->readString("hsizepolicy");
     auto vsizepolicy = xml->readString("vsizepolicy");
-    wcHelper.setSizePolicy(*this, hsizepolicy, vsizepolicy);
+    widgetConfigHelper.setSizePolicy(*this, hsizepolicy, vsizepolicy);
 
     layout = new QHBoxLayout(this);
 
@@ -54,8 +57,8 @@ void OrderFooterView::parseXmlDescription(XmlConfig *xml){
     if (!aux_string.isEmpty())
         layout->setSpacing(aux_string.toInt());
 
-    wcHelper.setFrameShape(*this, xml->readString("frameshape"));
-    wcHelper.setFrameShadow(*this, xml->readString("frameshadow"));
+    widgetConfigHelper.setFrameShape(*this, xml->readString("frameshape"));
+    widgetConfigHelper.setFrameShadow(*this, xml->readString("frameshadow"));
 
     xml->delDomain();
     xml->setDomain("totaldescription.labels"); //goto
@@ -72,23 +75,23 @@ void OrderFooterView::parseXmlDescription(XmlConfig *xml){
         if(!aux_text.isEmpty()) label->setText(aux_text);
 
         aux_string = xml->readString("label["+QString::number(i)+".backgroundcolor");
-        if(!aux_string.isEmpty()) wcHelper.setBackgroundColor(*this, QColor(aux_string));
+        if(!aux_string.isEmpty()) widgetConfigHelper.setBackgroundColor(*this, QColor(aux_string));
 
         auto width_str = xml->readString("label["+QString::number(i)+".width");
         auto height_str = xml->readString("label["+QString::number(i)+".height");
         if ( !width_str.isEmpty() || !height_str.isEmpty())
-            wcHelper.setSize(*label, width_str.toInt(), height_str.toInt());
+            widgetConfigHelper.setSize(*label, width_str.toInt(), height_str.toInt());
 
         auto halign = xml->readString("label["+QString::number(i)+"].halign");
         auto valign = xml->readString("label["+QString::number(i)+"].valign");
-        wcHelper.setAlignment(*label, halign, valign);
+        widgetConfigHelper.setAlignment(*label, halign, valign);
 
         auto hsizepolicy = xml->readString("label["+QString::number(i)+"].hsizepolicy");
         auto vsizepolicy = xml->readString("label["+QString::number(i)+"].vsizepolicy");
 
         auto  hstretch = xml->readString("label["+QString::number(i)+"].hstretch").toInt();
         auto  vstretch = xml->readString("label["+QString::number(i)+"].vstretch").toInt();
-        wcHelper.setSizePolicy(*label, hsizepolicy, vsizepolicy, hstretch, vstretch);
+        widgetConfigHelper.setSizePolicy(*label, hsizepolicy, vsizepolicy, hstretch, vstretch);
 
         // Sets the font
         QFont font("SansSerif");

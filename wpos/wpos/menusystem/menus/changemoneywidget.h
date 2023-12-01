@@ -17,14 +17,13 @@
 #include "database/changemoneywidgetdb.h"
 #include <QWidget>
 
-class FloatKeyboardBox;
+class FloatKeyboard;
 class XmlConfig;
-  
+
 class ChangeMoneyWidget : public QWidget, private Ui::ChangeMoneyWidget  {
 Q_OBJECT
   public:
     explicit ChangeMoneyWidget(QWidget *parent=0, const QString& name = QString());
-    ~ChangeMoneyWidget();
     void showEvent(QShowEvent *event);
 
   signals:
@@ -37,9 +36,9 @@ Q_OBJECT
     void sustractMoneySlot();
     void addMoneySlot();
     void toggleButtonsStateSlot();
-    
+
   private:
-    FloatKeyboardBox *keyPad;
+    FloatKeyboard *keyPad;
     ChangeMoneyWidgetDB *db;
 
     /* This variable stores how many money is in the cash BEFORE
@@ -56,8 +55,8 @@ Q_OBJECT
     int operation_type;
 
     enum {
-		ADD_UP,
-		SUBSTRACT
+        ADD_UP,
+        SUBSTRACT
     } OperationType;
 };
 

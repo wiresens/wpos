@@ -30,6 +30,7 @@ using namespace std;
 static const QString& PRODUCTS_DTD {"/etc/ntpv_backoffice/dtds/products_productslist.dtd"};
 static const int SCROLL_LENGTH {150};
 static const double ICON_SIZE = 40.0;
+static const uint TIME_OUT {10};
 
 AdvancedProductEditionWidget::AdvancedProductEditionWidget(
         ProductModule *product_model,
@@ -55,24 +56,24 @@ AdvancedProductEditionWidget::AdvancedProductEditionWidget(
     ok_delete_button->setIcon(QPixmap("controls48:button_ok_48.png"));
     cancel_delete_button->setIcon(QPixmap("controls48:button_cancel.png"));
 
-    connect(up_button,SIGNAL(clicked()),this,SLOT(upButtonSlot()));
-    connect(down_button,SIGNAL(clicked()),this,SLOT(downButtonSlot()));
-    connect(search_button,SIGNAL(clicked()),this,SLOT(searchButtonSlot()));
-    connect(ok_button,SIGNAL(clicked()),this,SLOT(acceptSlot()));
-    connect(cancel_button,SIGNAL(clicked()),this,SLOT(cancelSlot()));
+    connect(up_button,  &QPushButton::clicked, this, &AdvancedProductEditionWidget::upButtonSlot);
+    connect(down_button,  &QPushButton::clicked, this, &AdvancedProductEditionWidget::downButtonSlot);
+    connect(search_button,  &QPushButton::clicked, this, &AdvancedProductEditionWidget::searchButtonSlot);
+    connect(ok_button,  &QPushButton::clicked, this, &AdvancedProductEditionWidget::acceptSlot);
+    connect(cancel_button,  &QPushButton::clicked, this, &AdvancedProductEditionWidget::cancelSlot);
 
-    connect(this,SIGNAL(progressSignal(int, const QString& )),
-            this,SLOT(setProgressSlot(int, const QString&)));
+    connect(this, &AdvancedProductEditionWidget::progressSignal,
+            this, &AdvancedProductEditionWidget::setProgressSlot);
 
     connect(product_listview, &QTreeWidget::itemSelectionChanged,
             this, &AdvancedProductEditionWidget::productSelectedSlot);
 
-    connect(search_lineedit, SIGNAL(textChanged(const QString&)),
-            this, SLOT(nameChangedSlot(const QString&)));
+    connect(search_lineedit, &QLineEdit::textChanged,
+            this, &AdvancedProductEditionWidget::nameChangedSlot);
 }
 
 void AdvancedProductEditionWidget::showEvent(QShowEvent *e){
-    QTimer::singleShot(10, this, SLOT(startShowing()));
+    QTimer::singleShot(TIME_OUT, this, &AdvancedProductEditionWidget::startShowing);
     QWidget::showEvent(e);
 }
 

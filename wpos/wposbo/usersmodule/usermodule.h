@@ -41,16 +41,16 @@ public:
     */
 
 public slots:
-    bool createUser(const QString&);
-    bool changeUser(const QString&);
-    bool deleteUser(const QString&);
-    bool realDelUser(const QString&);
-    QString usersList(bool all=false);
-    QString usersExtendedList(bool all=false);
-    QString getUserInfo(const QString& employee_id);
-    void enrollUserData(const QString& xml);
+    Q_SCRIPTABLE bool createUser(const QString&) override;
+    Q_SCRIPTABLE bool changeUser(const QString&) override;
+    Q_SCRIPTABLE bool deleteUser(const QString&) override;
+    Q_SCRIPTABLE bool realDelUser(const QString&) override;
+    Q_SCRIPTABLE QString usersList(bool all=false) override;
+    Q_SCRIPTABLE QString usersExtendedList(bool all=false) override;
+    Q_SCRIPTABLE QString getUserInfo(const QString& employee_id) override;
+    Q_SCRIPTABLE void enrollUserData(const QString& xml) override;
 
-    bool delUserFingerprints(const QString&);
+    Q_SCRIPTABLE bool delUserFingerprints(const QString&) override;
 
 signals:
     /**

@@ -187,7 +187,7 @@ QString arg;
 
      //try to create the XML
      xml = new XmlConfig(arg);
-     if (!xml->isValid()){
+     if (!xml->wellFormed()){
           cerr << "the file " << arg.toStdString() <<" is not a valid XML file." << endl;
           delete xml;
           xml = 0;

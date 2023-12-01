@@ -37,7 +37,7 @@
 using namespace std;
 
 #define ITEMS_PER_PAGE 10
-extern AuthCore *auth;
+extern AuthCore *authCore;
 
 
 KillTicketsWidget::KillTicketsWidget(
@@ -219,8 +219,8 @@ void KillTicketsWidget::deleteTicket(){
     std::unique_ptr<XmlConfig> xml  {ticket_db->getTicketFromDatabase (tid)};
     ticket_db->disConnect();
 
-    xml->doWrite ("employee.dni", auth->getUserId());
-    xml->doWrite ("employee.name", auth->getUserName());
+    xml->doWrite ("employee.dni", authCore->userId());
+    xml->doWrite ("employee.name", authCore->userName());
     setTicketNegative(xml.get());
     emit genericDataSignal (GDATASIGNAL::BARCORE_CHANGE_XML, xml.get());
 
@@ -265,7 +265,7 @@ void KillTicketsWidget::printTicket(){
     ticket_db->disConnect();
 
     /* Update the command */
-    if (xml->isValid()){
+    if (xml->wellFormed()){
         PrinterManager printer(nullptr, "killTicketPrinter");
         printer.printTicket( xml.get(), 1);
         xml->debug();

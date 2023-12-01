@@ -7,14 +7,14 @@
 
 namespace wpos {
 
-    const char* EmptyNameException::
+    const char* EmptyValueException::
     what() const noexcept{
         return "Fatal : Empty Name Supplied";
     }
 
-    EmptyNameException* EmptyNameException::
+    EmptyValueException* EmptyValueException::
     clone () const{
-        return new EmptyNameException (*this);
+        return new EmptyValueException (*this);
     }
 
     const char* BadGenderException::

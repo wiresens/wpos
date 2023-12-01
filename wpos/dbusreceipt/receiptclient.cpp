@@ -41,11 +41,8 @@ ReceiptClient::ReceiptClient(
     client->setObjectName(client_name);
     client->acceptCompressed(false);
 
-    connect(client, SIGNAL( methodResponse(int, const QVariant&) ),
-            this, SLOT(responseSlot(int, const QVariant&) ));
-
-    connect(client, SIGNAL( fault(int,int,const QString&) ),
-            this, SLOT(faultSlot(int,int,const QString&) ));
+    connect(client, &XRClient::methodResponse, this, &ReceiptClient::responseSlot);
+    connect(client, &XRClient::fault, this, &ReceiptClient::faultSlot);
 }
 
 ReceiptClient::~ReceiptClient(){

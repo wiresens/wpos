@@ -19,7 +19,7 @@
 //#include "optiondeletionwidget_adapter.h"
 
 #include "productsmodule/optionsmodule/productoptionmodule.h"
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QtDBus/QDBusConnection>
@@ -42,7 +42,7 @@ OptionDeletionWidget::OptionDeletionWidget(QWidget *parent, const QString& name 
     group_box->hide();
 
     connect(option_listview, &QTreeWidget::itemSelectionChanged,this, &OptionDeletionWidget::optionClickedSlot); //idem
-    connect(del_type_button, SIGNAL(clicked()),this,SLOT(delTypeSlot()));
+    connect(del_type_button,  &QPushButton::clicked, this, &OptionDeletionWidget::delTypeSlot);
 }
 
 void OptionDeletionWidget::delTypeSlot(){

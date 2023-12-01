@@ -159,7 +159,7 @@ void UserEditionWidget::showMessageBox(const QString& title, const QString& msg,
 
 void UserEditionWidget::showFeedBack(const QString& feedBack){
     output_label->setText(feedBack);
-    QTimer::singleShot(FEEDBACK_TIMEOUT, this, SLOT(clearOutputLabel()));
+    QTimer::singleShot(FEEDBACK_TIMEOUT, this, &UserEditionWidget::clearOutputLabel);
 }
 
 QString UserEditionWidget::userId() const{

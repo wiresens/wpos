@@ -11,6 +11,7 @@ namespace wpos{
 namespace model{
 
 class Product;
+
 using ProductPtr = std::shared_ptr<Product>;
 using ConstProductPtr = std::shared_ptr<const Product>;
 
@@ -19,7 +20,7 @@ class Product:
     public Persistable,
     public std::enable_shared_from_this<Product>
 {
-    friend class odb::access;
+    friend class odb::access;    
 
 public:
     enum PriceType{
@@ -38,15 +39,6 @@ public:
         double price = std::numeric_limits<double>::max()
     );
 
-//    Product(
-//        ProductTemplatePtr tpl,
-//        const string& name)
-//        : tpl_{tpl}, name_{name}
-//    {
-//        if(name.empty()) throw EmptyNameException{};
-//    }
-
-    ulong getId() const{ return id_ ;}
     virtual void setCode(const string& code){ code_ = code ;}
     virtual const string& getCode() const { return code_ ; }
 
@@ -70,16 +62,17 @@ public:
     void setPrice(double newPrice, PriceType = ListPrice );
 
 protected:
-    void logPrice();
-    void savePrice(){}
+    virtual void logPrice();
+    void savePrice();
 
     Product() = default;
-    void setId(ulong id){  if(id) id_ = id ;}
     void setActive(bool active){ active_ = active ; }
     bool getActive() const { return active_ ;}
 
+public:
+    const ulong id{0};
+
 private:
-    ulong id_{0};
     ProductTemplatePtr tpl_;
 
     string name_;

@@ -1,5 +1,5 @@
-#ifndef IWIDGETCONFIGHELPER_H
-#define IWIDGETCONFIGHELPER_H
+#ifndef I_WIDGET_CONFIG_HELPER_H
+#define I_WIDGET_CONFIG_HELPER_H
 
 #include <QFrame>
 #include <QMap>
@@ -12,9 +12,10 @@ class QSizePolicy;
 
 class IWidgetConfigHelper{
 public:
-    virtual void setBackgroundColor(QWidget& target, const QColor&color);
+    virtual void setBackgroundColor(QWidget& target, const QColor& color);
     virtual void setSize(QWidget& target, uint w, uint h);
-    virtual void setSizePolicy(QWidget& target, const QString& hpolicy, const QString& vpolicy, uint hs = 0 , uint vs = 0);
+    virtual void setSizePolicy(QWidget& target, const QString& hpolicy,
+                               const QString& vpolicy, uint hs = 0 , uint vs = 0);
     virtual void setLayoutSpacing(QWidget& target, uint space);
     virtual void setFrameShape(QWidget& target, const QString& shape);
     virtual void setFrameShadow(QWidget& target, const QString &shadow);
@@ -28,4 +29,4 @@ private :
     static const QMap<QString, Qt::Alignment> alignments;
 };
 
-#endif // IWIDGETCONFIGHELPER_H
+#endif // I_WIDGET_CONFIG_HELPER_H

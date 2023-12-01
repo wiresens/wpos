@@ -25,13 +25,12 @@ class TreeView : public QTreeWidget  {
     Q_OBJECT
 public:
     explicit TreeView(QWidget* parent=nullptr);
-    ~TreeView();
 
 signals:
-    void setMenuSignal(QString name); //@benes nodeClicked(QString name)
+    void menuRequested(const QString& name);
 
 public slots:
-    void nodeClicked(QTreeWidgetItem *item); //@benes setMenu(QTreeWidgetItem *item)
+    void setMenu(QTreeWidgetItem *item);
 
 };
 

@@ -35,8 +35,6 @@ SOFTWARE.
 #include "product.h"
 #include "daterange.h"
 
-#include <limits>
-
 namespace wpos{
 namespace model{
 
@@ -46,23 +44,25 @@ using PriceLogPtr = std::shared_ptr<PriceLog>;
 
 //class PriceLog : public Persistable<PriceLog>{
 class PriceLog : public Persistable{
-   friend class odb::access;
+    friend class odb::access;
+    friend class Product;
 
 public:
     PriceLog(const PriceLog&) = delete;
     PriceLog& operator=(const PriceLog&) = delete;
 
-    ulong id() const{ return id_ ;}
     const DateRange& effectivity() const{
         return effectivity_;
     }
 
-    static void logPrice(ProductPtr product_ptr);
+    static void logPrice(ProductPtr product_ptr);    
     static PriceLogPtr priceAsOf(ConstProductPtr product_ptr, const TimeStamp& stamp = nowLocal());
-//    static double price(const Product& product, const TimeStamp& stamp = nowLocal());
 
 private:
     PriceLog() = default;
+    static void savePrice(Product& product);
+
+    PriceLog(Product& product, double price);
 
     PriceLog(ConstProductPtr product, double price)
         : product_{ product}, price_{price}{}
@@ -71,19 +71,15 @@ private:
         : effectivity_{range}, product_{ product}, price_{price}{}
 
     void close(){
-//        if( effectivity_.endDate() >= pt::pos_infin )
+        if( effectivity_.endDate() >= maxDateTime() )
             effectivity_= DateRange(effectivity_.startDate(), nowLocal());
     }
 
 private:
-    ulong id_{0};
-    #if defined(DATABASE_SQLITE)
-        DateRange effectivity_{ nowLocal()};
-    #else
-        DateRange effectivity_{ nowLocal(), maxDateTime()};
-    #endif
+    DateRange effectivity_{ nowLocal(), maxDateTime()};
 
 public:
+    const ulong id{0};
     ConstProductPtr product_;
     const double price_{};
     Product::PriceType type_{Product::ListPrice};

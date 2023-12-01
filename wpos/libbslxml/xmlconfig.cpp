@@ -15,7 +15,7 @@
  *                                                                         *
  ***************************************************************************/
 #include "xmlconfig.h"
-#include "xmlconfigio.h"
+#include "xmlconfigprivate.h"
 #include "utils.h"
 #include "comp.h"
 
@@ -59,29 +59,33 @@ so now we can access the new domfragment, inside this if we attempt to get data 
 will go out of the fragment again. So it result a semitransparent method
 */
 
-XmlConfig::XmlConfig(const QString& _file, QIODevice::OpenMode mode):
-    IO{new XmlConfigIO(_file, mode)}
+XmlConfig::XmlConfig(
+    const QString& _file,
+    QIODevice::OpenMode mode):
+    impl{new XmlConfigPrivate(_file, mode)}
 {
-    if (IO->ok()){
-        doc = IO->domDocument();
+    if (impl->ok()){
+        doc = impl->domDocument();
         currentNode = doc->documentElement().firstChild();
     }
 
 }
 
-XmlConfig::XmlConfig(QDomDocument* document, const QString& _file, QIODevice::OpenMode mode):
-    IO{new XmlConfigIO(document, _file, mode)}
+XmlConfig::XmlConfig(
+    QDomDocument* document,
+    const QString& _file,
+    QIODevice::OpenMode mode):
+    impl{new XmlConfigPrivate(document, _file, mode)}
 {
-    if (IO->ok()){
-        doc = IO->domDocument();
+    if (impl->ok()){
+        doc = impl->domDocument();
         currentNode = doc->documentElement().firstChild();
     }
 }
 
 XmlConfig::~XmlConfig(){
-    delete IO;
+    delete impl;
 }
-
 
 //************************************************************************************
 //PUBLIC
@@ -94,11 +98,11 @@ bool XmlConfig::readXmlFromString(const QString& xml_str){
     if (!aux_doc->setContent(xml_str))
         return false;
 
-    QString aux_file_name = IO->fileName();
-    delete IO;
-    IO = new XmlConfigIO(aux_doc.get(), aux_file_name, QIODevice::ReadWrite);
-    if (IO->ok()){
-        doc = IO->domDocument();
+    QString aux_file_name = impl->fileName();
+    delete impl;
+    impl = new XmlConfigPrivate(aux_doc.get(), aux_file_name, QIODevice::ReadWrite);
+    if (impl->ok()){
+        doc = impl->domDocument();
         currentNode = doc->documentElement().firstChild();
     }
 
@@ -107,7 +111,7 @@ bool XmlConfig::readXmlFromString(const QString& xml_str){
 }
 
 QString XmlConfig::toString(){
-    return IO->toString();
+    return impl->toString();
 }
 
 #ifdef _HAS_VALIDATE_METHOD_
@@ -119,14 +123,14 @@ bool XmlConfig::validateXmlWithDTD(QString path, bool verbose){
     QString aux_string;
 
     //check if our xml is correct.
-    if ( !doc || !isValid() || toString().isEmpty())
+    if ( !doc || !wellFormed() || toString().isEmpty())
         return false;
 
     aux_string = toString().toUtf8();
     char *buffer = new char[aux_string.length()];
     memcpy(buffer, aux_string.toLatin1(), aux_string.length());
     xml2_document = xmlParseMemory(buffer,aux_string.length());
-    delete buffer;
+    delete[] buffer;
 
     if (!xml2_document){
         //problems obtaining the document at the xmllib
@@ -175,7 +179,7 @@ bool XmlConfig::validateXmlWithInternalDTD(bool verbose){
     QString aux_string;
 
     //check if our xml is correct.
-    if ((!doc) || (!this->isValid()) || (this->toString().isEmpty()))
+    if ((!doc) || (!this->wellFormed()) || (this->toString().isEmpty()))
         return false;
     aux_string = this->toString().toUtf8();
     char *buffer = new char[aux_string.length()];
@@ -215,8 +219,8 @@ bool XmlConfig::validateXmlWithInternalDTD(bool verbose){
 
 #endif
 
-bool XmlConfig::isValid(){
-    return ( IO && IO->ok());
+bool XmlConfig::wellFormed(){
+    return ( impl && impl->ok());
 }
 
 QStringList XmlConfig::list( const QString& domain){
@@ -274,23 +278,23 @@ int XmlConfig::howManyAttributes(const QString& tag){
 }
 
 bool XmlConfig::save(const QString& file){
-    return IO->save(file);
+    return impl->save(file);
 }
 
 QString XmlConfig::file(){
-    return IO->fileName();
+    return impl->fileName();
 }
 
 void XmlConfig::debug(const QString& section, int ident){
 
     if (section.isNull() || section.isEmpty())
-        IO->debug(*doc, ident);
+        impl->debug(*doc, ident);
     else
-        IO->debug(temporyDomainPrivate(section), ident);
+        impl->debug(temporyDomainPrivate(section), ident);
 }
 
 QIODevice::OpenMode XmlConfig::openMode(){
-    return IO->openedMode();
+    return impl->openedMode();
 }
 
 
@@ -566,15 +570,27 @@ void XmlConfig::popDomain(){
 // ADVANCED
 //*********************************
 
-bool XmlConfig::merge (XmlConfig *xml_src, const QString& src, const QString& dst){
+bool XmlConfig::merge (
+    XmlConfig *xml_src,
+    const QString& src,
+    const QString& dst)
+{
     return copyPrivate(xml_src, src, dst, true);
 }
 
-bool XmlConfig::copy (XmlConfig *xml_src, const QString& src, const QString& dst){
+bool XmlConfig::copy (
+    XmlConfig *xml_src,
+    const QString& src,
+    const QString& dst)
+{
     return copyPrivate(xml_src, src, dst, false);
 }
 
-bool XmlConfig::move (XmlConfig *xml_src, const QString& src, const QString& dst){
+bool XmlConfig::move (
+    XmlConfig *xml_src,
+    const QString& src,
+    const QString& dst)
+{
     bool result=false;
     if (copy (xml_src,src,dst))
     {
@@ -584,11 +600,19 @@ bool XmlConfig::move (XmlConfig *xml_src, const QString& src, const QString& dst
     return result;
 }
 
-QStringList XmlConfig::findNode(const QString& tag, const QString& domain, bool recursive){
+QStringList XmlConfig::findNode(
+    const QString& tag,
+    const QString& domain,
+    bool recursive)
+{
     return findNode(QRegExp(QRegExp::escape(tag)),domain,recursive);
 }
 
-QStringList XmlConfig::findNode(const QRegExp& tag, const QString& domain, bool recursive){
+QStringList XmlConfig::findNode(
+    const QRegExp& tag,
+    const QString& domain,
+    bool recursive)
+{
     QStringList result;
     QDomNode i;
     QDomElement e;
@@ -623,8 +647,10 @@ QStringList XmlConfig::findNode(const QRegExp& tag, const QString& domain, bool 
     return result;
 }
 
-QStringList XmlConfig::findValue(const QString& value, const QString& domain){
-
+QStringList XmlConfig::findValue(
+    const QString& value,
+    const QString& domain)
+{
     QStringList result;
     QDomNode i;
     QDomElement e;
@@ -654,8 +680,10 @@ QStringList XmlConfig::findValue(const QString& value, const QString& domain){
     return result;
 }
 
-QStringList XmlConfig::findValue(const QRegExp& value, const QString& domain){
-
+QStringList XmlConfig::findValue(
+    const QRegExp& value,
+    const QString& domain)
+{
     QStringList result;
     QDomNode i;
     QDomElement e;
@@ -682,8 +710,11 @@ QStringList XmlConfig::findValue(const QRegExp& value, const QString& domain){
     return result;
 }
 
-QStringList XmlConfig::findNodeValue(const QString& node,const QString& value,const QString& domain){
-
+QStringList XmlConfig::findNodeValue(
+    const QString& node,
+    const QString& value,
+    const QString& domain)
+{
     QStringList result;
     QStringList nodes = findNode(node,domain);
 
@@ -695,11 +726,15 @@ QStringList XmlConfig::findNodeValue(const QString& node,const QString& value,co
     return result;
 }
 
-QDomDocument* XmlConfig::getDocument(){
+QDomDocument* XmlConfig::getDocument()
+{
     return doc ;
 }
 
-bool XmlConfig::createComment(const QString& tag, const QString& comment){
+bool XmlConfig::createComment(
+    const QString& tag,
+    const QString& comment)
+{
     std::cerr << "using a non-implemented method createComment with args " << (const char*)(tag.toLatin1()) << (const char*)(comment.toLatin1());
     return false;
 }
@@ -712,12 +747,13 @@ bool XmlConfig::createComment(const QString& tag, const QString& comment){
 //************************************************************************************
 //************************************************************************************
 
-QDomNode XmlConfig::nodeFromTagPrivate(const QString& tag){
+QDomNode XmlConfig::nodeFromTagPrivate(const QString& tag)
+{
     QDomNode result; // the result
     QString token;   // tokens separated with .
 
 #ifdef MYDEBUG
-    int i;  				 //	paranoic comprobation,
+    int i;  //	paranoic comprobation,
 #endif
     int jump;        // disk[number] this variable is that number
     QString tagtemp=tag; // not mess with the parameter //maybe we need .toLower() here?
@@ -779,8 +815,10 @@ QDomNode XmlConfig::nodeFromTagPrivate(const QString& tag){
     return(result);
 }
 
-QString XmlConfig::discardBracketPrivate(QString token, int *number){
-
+QString XmlConfig::discardBracketPrivate(
+    QString token,
+    int *number)
+{
     if (token.contains('[')){
         int digits = token.indexOf(']') - token.indexOf('['); //how many digits does the number have?
         QString temp = token.mid( token.indexOf('[') + 1, digits - 1);
@@ -793,8 +831,11 @@ QString XmlConfig::discardBracketPrivate(QString token, int *number){
     return token;
 }
 
-QDomNode XmlConfig::findPrivate(const QString& tag, const QDomNode& from, bool anidate){
-
+QDomNode XmlConfig::findPrivate(
+    const QString& tag,
+    const QDomNode& from,
+    bool anidate)
+{
     QDomNode wall;
     int exist_children = 0; //if there's no more children we don't continue inwards
 
@@ -858,7 +899,11 @@ QDomNode XmlConfig::findPrivate(const QString& tag, const QDomNode& from, bool a
 }
 
 //FIXME this two methods can be merge in only one and make the program run faster
-bool XmlConfig::createElementRecursivePrivate(const QString& node_name, const QString& value, const QString& comment, bool set_domain)
+bool XmlConfig::createElementRecursivePrivate(
+    const QString& node_name,
+    const QString& value,
+    const QString& comment,
+    bool set_domain)
 {
     if ((node_name==0)||(node_name.isEmpty()))
         return false;
@@ -919,7 +964,11 @@ So this is a bit unclear to the programmer, if value is null won't be writtable 
 else it will.
 */
 
-bool XmlConfig::createElementPrivate(const QString& node_name, const QString& value, const QString& comment, bool set_domain)
+bool XmlConfig::createElementPrivate(
+    const QString& node_name,
+    const QString& value,
+    const QString& comment,
+    bool set_domain)
 {
     QString tag=node_name;
     QString parent_name;
@@ -937,7 +986,6 @@ bool XmlConfig::createElementPrivate(const QString& node_name, const QString& va
     else
         tag_name=tag;
 
-
     QDomNode parent=this->nodeFromTagPrivate(parent_name); //the parent that will have the new element
     if (parent.isNull()){
         if (!this->domain.isNull())
@@ -948,7 +996,6 @@ bool XmlConfig::createElementPrivate(const QString& node_name, const QString& va
 
     tag_name=this->discardBracketPrivate(tag_name,nullptr); //the node with the name we want to write in the XML
     QDomElement tag_node=doc->createElement(tag_name);
-
 
     //the faster way to do it, if we have been requested a [n] (a specific number) we find his
     //sibling and just add it as a younger brother. If we have been requested to insert the first
@@ -1016,8 +1063,8 @@ bool XmlConfig::createElementPrivate(const QString& node_name, const QString& va
     return true;
 }
 
-bool XmlConfig::deleteElement(const QString& tag){
-
+bool XmlConfig::deleteElement(const QString& tag)
+{
     QDomNode node = nodeFromTagPrivate(tag);
     if (node.isNull())  return false;
 
@@ -1027,8 +1074,11 @@ bool XmlConfig::deleteElement(const QString& tag){
     return true;
 }
 
-bool XmlConfig::copyPrivate (XmlConfig *xml_src, const QString& src, const QString& dst, bool merge){
-
+bool XmlConfig::copyPrivate(
+    XmlConfig *xml_src,
+    const QString& src,
+    const QString& dst,
+    bool merge){
     QDomDocument *doc_src;
     QDomDocument *my_doc;
     QDomNode ta_el_cimbel;
@@ -1041,7 +1091,6 @@ bool XmlConfig::copyPrivate (XmlConfig *xml_src, const QString& src, const QStri
     QDomNode i;
 
     QDomNode parent_of_data;
-
 
     if (!xml_src)       //to avoid segfaults
         return false;
@@ -1117,8 +1166,8 @@ bool XmlConfig::copyPrivate (XmlConfig *xml_src, const QString& src, const QStri
     return true;
 }
 
-QDomNode XmlConfig::temporyDomainPrivate (const QString& domain ){
-
+QDomNode XmlConfig::temporyDomainPrivate(const QString& domain )
+{
     QDomNode where;
     if ( !domain.isNull() && !domain.isEmpty() ){
         where = nodeFromTagPrivate(domain);

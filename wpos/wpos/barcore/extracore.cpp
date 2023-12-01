@@ -16,7 +16,7 @@
 
 #include "wpos/database/barcoredb.h"
 #include <xmlconfig.h>
-#include <optionnode.h>
+#include <productextrainfo.h>
 
 #include <QString>
 #include <QStringList>
@@ -58,7 +58,7 @@ QStringList ExtraCore::getOptionsNames(){
 
 QString ExtraCore::getOptionValue(const QString& option_name){
 
-    OptionNode* node = options.find(option_name);
+    ProductExtraInfo* node = options.find(option_name);
 
     if (node)
         return node->getDefaultOption();
@@ -79,7 +79,7 @@ QStringList ExtraCore::getFixedOptionsNames(){
 
 QString ExtraCore::getFixedOptionValue(const QString& option_name){
 
-    OptionNode* node = fixed_options.find(option_name);
+    ProductExtraInfo* node = fixed_options.find(option_name);
     if (node)
         return node->getDefaultOption();
     return QString();
@@ -237,7 +237,7 @@ void ExtraCore::readOptionFromXml(XmlConfig* xml){
     if ((name.isEmpty())||(value.isEmpty()))
         return;
 
-    OptionNode* node {new OptionNode(name)};
+    ProductExtraInfo* node {new ProductExtraInfo(name)};
     node->addOption(value, true);
     options.append(node, node->getOptionType() );
 }
@@ -249,7 +249,7 @@ void ExtraCore::readFixedOptionFromXml(XmlConfig* xml){
 
     if (name.isEmpty() || value.isEmpty()) return;
 
-    OptionNode *node {new OptionNode(name)};
+    ProductExtraInfo *node {new ProductExtraInfo(name)};
     node->addOption(value, true);
     fixed_options.append(node, node->getOptionType() );
 }

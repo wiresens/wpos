@@ -113,15 +113,15 @@ private:
     long amount_{0};
     Currency::CurrencyPtr currency_;
 
-    friend bool operator==( const Money& l, const Money&r);
-    friend bool operator!=( const Money& l, const Money&r);
-    friend bool operator>=( const Money& l, const Money&r);
-    friend bool operator<=( const Money& l, const Money&r);
-    friend bool operator>( const Money& l, const Money&r);
-    friend bool operator<( const Money& l, const Money&r);
+    friend bool operator==( const Money& l, const Money& r);
+    friend bool operator!=( const Money& l, const Money& r);
+    friend bool operator>=( const Money& l, const Money& r);
+    friend bool operator<=( const Money& l, const Money& r);
+    friend bool operator >( const Money& l, const Money& r);
+    friend bool operator <( const Money& l, const Money& r);
 
-    friend Money operator+( const Money& l, const Money&r);
-    friend Money operator-( const Money& l, const Money&r);
+    friend Money operator+( const Money& l, const Money& r);
+    friend Money operator-( const Money& l, const Money& r);
     friend Money operator*( const Money& m, float v);
     friend Money operator*( float v, const Money& m );
     friend Money operator/( const Money& m, float v);

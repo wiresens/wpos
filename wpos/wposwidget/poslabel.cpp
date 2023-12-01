@@ -54,7 +54,6 @@ PosLabel::~PosLabel(){
 
 void PosLabel::init(){
     point_list = new HList<MPoint>;
-    point_list->setAutoDelete(true);
 }
 
 bool PosLabel::insertMPoint(const MPoint *point){

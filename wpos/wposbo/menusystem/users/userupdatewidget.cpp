@@ -37,7 +37,7 @@ void UserUpdateWidget::setUser(QString user_id){
 
     XmlConfig xml;
     xml.readXmlFromString(user_info);
-    if ( !xml.isValid() || !xml.validateXmlWithDTD(USERS_DTD,true) ) return;
+    if ( !xml.wellFormed() || !xml.validateXmlWithDTD(USERS_DTD,true) ) return;
     showUserInfo(xml);
 }
 

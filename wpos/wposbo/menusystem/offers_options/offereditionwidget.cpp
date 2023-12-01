@@ -14,8 +14,8 @@
 #include "offereditionwidget.h"
 #include "menusystem/utils.h"
 
-#include <wposwidget/numkeyboardbox.h>
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/numkeyboard.h>
+#include <wposwidget/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QDir>
@@ -38,13 +38,13 @@ OfferEditionWidget::OfferEditionWidget(QWidget *parent, const QString& name):
     setObjectName(name);
     QVBoxLayout *vlayout;
 
-    float_kb = new FloatKeyboardBox(box);
+    float_kb = new FloatKeyboard(box);
     float_kb->setObjectName("float_keyboard_offer");
     if( !( vlayout = qobject_cast<QVBoxLayout *> (box->layout())))
         vlayout = new QVBoxLayout(box);
     vlayout->addWidget(float_kb);
 
-    num_kb = new NumKeyboardBox(box);
+    num_kb = new NumKeyboard(box);
     num_kb->setObjectName("float_keyboard_offer");
     if( ! (vlayout = qobject_cast<QVBoxLayout *> (box->layout())))
         vlayout = new QVBoxLayout(box);

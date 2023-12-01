@@ -90,25 +90,25 @@ PersTicketWidget::PersTicketWidget(QWidget *parent, const QString& name):
     ticketnum_listview->setSelectionMode(QListView::SingleSelection);
 
     // Establish standart connections
-    connect(this,SIGNAL(genericDataSignal(const QString &, XmlConfig *)),
-            order->orderContent(),SLOT(genericDataSignalSlot(const QString &, XmlConfig *)));
+    connect(this, &PersTicketWidget::genericDataSignal,
+            order->orderContent(), &OrderContentView::genericDataSignalSlot);
 
-    connect(ok_button,SIGNAL(clicked()),order->orderContent(),SLOT(printSlot()));
+    connect(ok_button, &QPushButton::clicked, order->orderContent(), &OrderContentView::printTicket);
 
-    connect(down_type_button,SIGNAL(clicked()),this,SLOT(downTicketSlot()));
-    connect(up_type_button,SIGNAL(clicked()),this,SLOT(upTicketSlot()));
+    connect(down_type_button,  &QPushButton::clicked, this, &PersTicketWidget::downTicketSlot);
+    connect(up_type_button,  &QPushButton::clicked, this, &PersTicketWidget::upTicketSlot);
 
-    connect(first_ticket_button,SIGNAL(clicked()),this,SLOT(firstTicketSlot()));
-    connect(last_ticket_button,SIGNAL(clicked()),this,SLOT(lastTicketSlot()));
+    connect(first_ticket_button,  &QPushButton::clicked, this, &PersTicketWidget::firstTicketSlot);
+    connect(last_ticket_button,  &QPushButton::clicked, this, &PersTicketWidget::lastTicketSlot);
 
-    connect(order_down_button, SIGNAL(clicked()), order->orderContent(),SLOT(selectDown()));
-    connect(order_up_button, SIGNAL(clicked()), order->orderContent(),SLOT(selectUp()));
+    connect(order_down_button,   &QPushButton::clicked, order->orderContent(), &OrderContentView::selectDown);
+    connect(order_up_button,   &QPushButton::clicked, order->orderContent(), &OrderContentView::selectUp);
 
-    connect(ticketnum_listview, SIGNAL(itemClicked(QTreeWidgetItem*,int)),this, SLOT(ticketSelectedSlot(QTreeWidgetItem*)));
+    connect(ticketnum_listview, &QTreeWidget::itemClicked, this, &PersTicketWidget::ticketSelectedSlot);
 
-    connect(init_datepicker,SIGNAL(dateTimeChanged(QDateTime)),this,SLOT(tableClickedSlot()));
-    connect(end_datepicker,SIGNAL(dateTimeChanged(QDateTime)),this,SLOT(tableClickedSlot()));
-    connect(timer,SIGNAL(timeout()),this,SLOT(timerDone()));
+    connect(init_datepicker, &QDateTimeEdit::dateTimeChanged, this, &PersTicketWidget::tableClickedSlot);
+    connect(end_datepicker, &QDateTimeEdit::dateTimeChanged, this, &PersTicketWidget::tableClickedSlot);
+    connect(timer, &QTimer::timeout, this, &PersTicketWidget::timerDone);
 
     stack->setCurrentWidget(main_page);
 }

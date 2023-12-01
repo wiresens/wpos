@@ -44,16 +44,16 @@ NTicketDesignWidget::NTicketDesignWidget(QWidget *parent, const QString& name ):
     pix_label2->setPixmap(QPixmap("controls32:kmessedwords.png"));
     pix_label3->setPixmap(QPixmap("controls32:package_editors.png"));
 
-    connect(ok_button,SIGNAL(clicked()),this,SLOT(acceptSlot()));
+    connect(ok_button, &QPushButton::clicked, this, &NTicketDesignWidget::acceptSlot);
 
-    connect(company_label,SIGNAL(textChanged(const QString&)),this,SLOT(somethingChanged(const QString&)));
-    connect(cif_label,SIGNAL(textChanged(const QString&)),this,SLOT(somethingChanged(const QString&)));
-    connect(address_label,SIGNAL(textChanged(const QString&)),this,SLOT(somethingChanged(const QString&)));
-    connect(provincia_label,SIGNAL(textChanged(const QString&)),this,SLOT(somethingChanged(const QString&)));
-    connect(tlf_label,SIGNAL(textChanged(const QString&)),this,SLOT(somethingChanged(const QString&)));
-    connect(head_label,SIGNAL(textChanged(const QString&)),this,SLOT(somethingChanged(const QString&)));
-    connect(foot_label,SIGNAL(textChanged(const QString&)),this,SLOT(somethingChanged(const QString&)));
-    connect(bye_label,SIGNAL(textChanged(const QString&)),this,SLOT(somethingChanged(const QString&)));
+    connect(company_label, &QLineEdit::textChanged, this, &NTicketDesignWidget::somethingChanged);
+    connect(cif_label,  &QLineEdit::textChanged, this, &NTicketDesignWidget::somethingChanged);
+    connect(address_label, &QLineEdit::textChanged, this, &NTicketDesignWidget::somethingChanged);
+    connect(provincia_label, &QLineEdit::textChanged, this, &NTicketDesignWidget::somethingChanged);
+    connect(tlf_label, &QLineEdit::textChanged, this, &NTicketDesignWidget::somethingChanged);
+    connect(head_label, &QLineEdit::textChanged, this, &NTicketDesignWidget::somethingChanged);
+    connect(foot_label, &QLineEdit::textChanged, this, &NTicketDesignWidget::somethingChanged);
+    connect(bye_label, &QLineEdit::textChanged, this, &NTicketDesignWidget::somethingChanged);
 }
 
 void NTicketDesignWidget::acceptSlot(){
@@ -93,7 +93,7 @@ bool NTicketDesignWidget::readXml(){
 
 
     XmlConfig xml(SAVED_CONFIG);
-    if ( !xml.isValid() || !xml.validateXmlWithDTD(DTD,true) )
+    if ( !xml.wellFormed() || !xml.validateXmlWithDTD(DTD,true) )
         return false;
 
     xml.setDomain("ticket_values");
@@ -124,7 +124,7 @@ void NTicketDesignWidget::writeXml(){
 
     {
         XmlConfig xml(DCOPPRINTER_FILE);
-        if ( !xml.isValid() )
+        if ( !xml.wellFormed() )
             char_length = 42;
 
         else{
@@ -199,7 +199,7 @@ void NTicketDesignWidget::writeXml(){
     {
         XmlConfig xml;
         xml.readXmlFromString(xml_string);
-        if (xml.isValid())
+        if (xml.wellFormed())
             xml.save(MAIN_TICKET_FILE);
     }
 
@@ -245,7 +245,7 @@ void NTicketDesignWidget::writeXml(){
     {
         XmlConfig xml;
         xml.readXmlFromString(xml_string);
-        if (xml.isValid())
+        if (xml.wellFormed())
             xml.save(MAIN_INVOICE_FILE);
     }
 }

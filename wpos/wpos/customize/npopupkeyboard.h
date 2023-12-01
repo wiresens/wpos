@@ -22,23 +22,29 @@
 #include <QStringList>
 #include <wposcore/hlist.h>
 
-
-
 class NKeyboard;
 class QString;
-class OptionNode;
+class ProductExtraInfo;
 
-class NPopUpKeyboard : public QMenu  {
+class NPopUpKeyboard : public QMenu{
     Q_OBJECT
+
 public:
-    explicit NPopUpKeyboard(QWidget *parent=0, const QString& name = QString());
-    explicit NPopUpKeyboard(const QString& text,QWidget *parent=0, const QString& name = QString());
-    ~NPopUpKeyboard();
+    explicit NPopUpKeyboard(
+        QWidget *parent=0,
+        const QString& name = QString()
+    );
+
+    explicit NPopUpKeyboard(
+        const QString& text,
+        QWidget *parent=0,
+        const QString& name = QString()
+    );
 
     bool isAtTable();
     int getTable();
     QString getLounge();
-    HList<OptionNode>* getOptionsFromLounge(const QString& lounge);
+    HList<ProductExtraInfo>* getOptionsFromLounge(const QString& lounge);
 
 public slots:
     void setText(const QString& text);
@@ -57,6 +63,8 @@ protected slots:
 protected:
     void showEvent(QShowEvent *event);
     void hideEvent(QHideEvent *event);
+
+private:
     NKeyboard *keyboard{};
 };
 

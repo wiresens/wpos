@@ -39,7 +39,7 @@ SOFTWARE.
 using namespace wpos::model;
 
 #pragma db object(PriceLog) definition
-#pragma db member(PriceLog::id_) id auto
+#pragma db member(PriceLog::id) id auto
 #pragma db member(PriceLog::product_) not_null on_delete(cascade)
 #pragma db member(PriceLog::effectivity_) not_null
 #pragma db index(PriceLog::"pricelog_i") unique members (product_ , effectivity_)

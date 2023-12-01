@@ -24,28 +24,24 @@
  *
  *
  ************************************************************************************************************/
-TreeView::TreeView(QWidget* parent) : QTreeWidget(parent){
-
-    // Initialization and defalut values
-//@benes    setFixedWidth(230);
-
+TreeView::TreeView(QWidget* parent):
+    QTreeWidget(parent)
+{
     /*@benes
     addColumn("");
     setTreeStepSize(40);
     header()->adjustHeaderSize();
     header()->setStretchEnabled(true);
-    //@benes*/
+    @benes*/
 
     header()->hide();
     setFont(QFont("SansSeriff", 9, QFont::Normal, true));
     setFrameStyle(QFrame::NoFrame | QFrame::Plain);
-    // Make some connections
-    //  connect(this,SIGNAL(clicked(QTreeWidgetItem *)),this,SLOT(nodeClicked(QTreeWidgetItem *)));
+
+//    connect(this, &TreeView::itemClicked, this, &TreeView::setMenu);
 }
 
-TreeView::~TreeView(){}
-
-void TreeView::nodeClicked(QTreeWidgetItem* item){
+void TreeView::setMenu(QTreeWidgetItem* /*item*/){
     //  cerr << "@ node clicked in BsListView class" << endl;
 
     //  if(item == 0)

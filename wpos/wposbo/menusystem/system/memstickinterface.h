@@ -14,10 +14,11 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#ifndef MEMSTICKINTERFACE_H
-#define MEMSTICKINTERFACE_H
+#ifndef MEM_STICK_INTERFACE_H
+#define MEM_STICK_INTERFACE_H
 
 class MemStickInterface{
-    virtual void operationResultSlot(bool) = 0; //ASYNC
+    virtual void setOperationResult(bool) = 0; //ASYNC
 };
-#endif
+
+#endif // MEM_STICK_INTERFACE_H

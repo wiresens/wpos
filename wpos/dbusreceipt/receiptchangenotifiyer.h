@@ -30,7 +30,7 @@ class ReceiptChangeNotifiyer : public QObject  {
 public:
     explicit ReceiptChangeNotifiyer(QObject *parent = nullptr, const QString& name = QString());
 
-protected slots:
+public slots:
     void receiptChangedSlotByDate(const QString& employee_id, const QString& start_time);
 };
 

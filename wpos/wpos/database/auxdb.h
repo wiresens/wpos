@@ -16,7 +16,7 @@
 #include <basicdatabase.h>
 #include <QList>
 #include <wposcore/hlist.h>
-class OptionNode;
+class ProductExtraInfo;
 class XmlConfig;
 
 class AuxDB : public BasicDatabase  {
@@ -36,7 +36,7 @@ public:
 
         ~AuxDB();
 
-        HList<OptionNode>* getOptionNodes();
+        HList<ProductExtraInfo>* getOptionNodes();
 };
 
 #endif

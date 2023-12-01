@@ -16,7 +16,7 @@
 #include <wposwidget/menupage.h>
 #include <xmlconfig.h>
 
-#include "loginscreen.h"
+#include "greeter.h"
 #include "salesscreen.h"
 #include "readconfigscreen.h"
 
@@ -51,7 +51,7 @@ MainScreen::MainScreen(
     // Create and add to the stack the Login Widget
     auto page = new MenuPage(this, LOGIN_SCREEN);
     page->setLayoutType(MenuPage::VBOX);
-    loginScreen = new LoginScreen(page, LOGIN_SCREEN);
+    loginScreen = new Greeter(page, LOGIN_SCREEN);
     addPage(page, LOGIN_SCREEN);
 
     // Create and add to the stack the Sales Widget

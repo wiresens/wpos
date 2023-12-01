@@ -23,7 +23,7 @@
 #include "barcore/filemanager.h"
 #include <QString>
 
-AuthCore *auth;
+AuthCore *authCore;
 FileManager *file_manager;
 
 QString CASHBOX_DEVICE;

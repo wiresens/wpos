@@ -10,9 +10,9 @@
 #include "exception.h"
 
 namespace wpos {
-struct EmptyNameException : wpos::exception{
+struct EmptyValueException : wpos::exception{
     virtual const char*  what() const noexcept;
-    virtual EmptyNameException*  clone () const;
+    virtual EmptyValueException*  clone () const;
 };
 
 struct BadGenderException : wpos::exception{

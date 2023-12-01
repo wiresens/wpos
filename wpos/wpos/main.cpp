@@ -121,7 +121,7 @@ int main(int argc, char *argv[]){
 
     {
         XmlConfig xml (Files::configFilePath("database"));
-        if (!xml.isValid()){
+        if (!xml.wellFormed()){
             qDebug() << "Incorrect database configuration file : "+Files::configFilePath("database");
             exit (1);
         }
@@ -145,7 +145,7 @@ int main(int argc, char *argv[]){
 
     //device section
     XmlConfig xml (Files::configFilePath("devices"));
-    if ( !xml.isValid() ){
+    if ( !xml.wellFormed() ){
         cout << "The xml that defines the devices is not correct" << endl;
         exit (2);
     }

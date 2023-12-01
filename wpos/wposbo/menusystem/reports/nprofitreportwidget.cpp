@@ -134,15 +134,15 @@ void NProfitReportWidget::init(){
     connect(button_group, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
             this, &NProfitReportWidget::toggleStates);
 
-    connect(advanced_button,SIGNAL(toggled(bool)),this,SLOT(advancedButtonToggleSlot(bool)));
-    connect(up_employee_button,SIGNAL(clicked()),this,SLOT(upUsersSlot()));
-    connect(down_employee_button,SIGNAL(clicked()),this,SLOT(downUsersSlot()));
-    connect(employee_groupbox,SIGNAL(toggled(bool)),this,SLOT(usersBoxCheckedSlot(bool)));
-    connect(employee_listview,SIGNAL(itemSelectionChanged()),this,SLOT(selectedUserSlot()));
+    connect(advanced_button, &QPushButton::toggled, this, &NProfitReportWidget::advancedButtonToggleSlot);
+    connect(up_employee_button, &QPushButton::clicked, this, &NProfitReportWidget::upUsersSlot);
+    connect(down_employee_button, &QPushButton::clicked, this, &NProfitReportWidget::downUsersSlot);
+    connect(employee_groupbox, &QGroupBox::toggled, this, &NProfitReportWidget::usersBoxCheckedSlot);
+    connect(employee_listview, &QTreeWidget::itemSelectionChanged, this, &NProfitReportWidget::selectedUserSlot);
 
-    connect(ok_button,SIGNAL(clicked()), this, SLOT(acceptSlot()));
-    connect(exit_button,SIGNAL(clicked()),this,SLOT(exitFromViewSlot()));
-    connect(save_report_button,SIGNAL(clicked()), this, SLOT(saveReportSlot()));
+    connect(ok_button, &QPushButton::clicked, this, &NProfitReportWidget::acceptSlot);
+    connect(exit_button,  &QPushButton::clicked, this, &NProfitReportWidget::exitFromViewSlot);
+    connect(save_report_button,  &QPushButton::clicked, this, &NProfitReportWidget::saveReportSlot);
 
     //    connectDCOPSignal(0,0,"reportCreated(QString)","reportSlot(QString)", false); //@benes
     connect( this, &NProfitReportWidget::reportCreated, &NProfitReportWidget::reportSlot); //@benes
@@ -184,7 +184,7 @@ void NProfitReportWidget::getUsers(){
     QString xml_string = mod->usersList(true);
     XmlConfig xml;
     xml.readXmlFromString(xml_string);
-    if (!xml.isValid() || !xml.validateXmlWithDTD(USERS_LIST_DTD, true)){
+    if (!xml.wellFormed() || !xml.validateXmlWithDTD(USERS_LIST_DTD, true)){
          cerr << "XML parse error or XML does not validate against dtd" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
         return;
     }
@@ -356,7 +356,7 @@ void NProfitReportWidget::acceptSlot(){
     stack->setCurrentWidget(progress_page);
     progress_bar->setValue(0);
     timer->start(5);
-    connect(timer, SIGNAL(timeout()), this, SLOT(timerSlot()));
+    connect(timer, &QTimer::timeout, this, &NProfitReportWidget::timerSlot);
     pos = 0;
     emit reportCreated(last_report_name);  //@benes
 }
@@ -429,7 +429,7 @@ void NProfitReportWidget::timerSlot(){
 
 void NProfitReportWidget::reportSlot(QString file){
     file = "/home/benes/Workspace/projets/wpos/wpos/doc/ntpv.pdf";
-    QObject::disconnect(timer,SIGNAL(timeout()),this,SLOT(timerSlot()));
+    QObject::disconnect(timer, &QTimer::timeout, this, &NProfitReportWidget::timerSlot);
     progress_bar->setValue(0);
     timer->stop();
 

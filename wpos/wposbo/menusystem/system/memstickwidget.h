@@ -5,46 +5,49 @@
     copyright            : (C) 2004 by Carlos Manzanedo
     email                : carlos@napsis.com
  ***************************************************************************/
-/**
-  *@author Carlos Manzanedo
-  */
-
 
 #ifndef MEMSTICKWIDGET_H
 #define MEMSTICKWIDGET_H
 
+#include <QtCore/QObject>
 #include <QWidget>
-#include "memstickwidgetbase.h"
 #include "memstickinterface.h"
 
+namespace Ui{
+    class MemStickWidgetBase;
+} // namespace Ui
+
 class QTimer;
-class QListWidgetItem;
+class QTreeWidgetItem;
+class MemStickWidgetBase;
 
 class MemStickWidget :
-        public MemStickWidgetBase,
-        virtual public MemStickInterface
+    public QWidget,
+    public MemStickInterface
 {
     Q_OBJECT
+    Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wposbo.MemStick")
+
 public:
-    MemStickWidget(QWidget *parent=0, const QString& name=QString());
+    static const QString DBusObject;
+
+    explicit MemStickWidget(QWidget *parent=0, const QString& name=QString());
     ~MemStickWidget();
 
 public slots:
-    void saveIconsToStickSlot();
-    void saveIconsFromStickSlot();
-    void saveDatabaseToStickSlot();
-    void saveDatabaseCSVToStickSlot();
-    void getDatabaseFromStickClickedSlot();
+    Q_SCRIPTABLE void setOperationResult(bool status) override;
+    void saveIconsToStick();
+    void loadIconsFromStick();
+    void saveDatabaseToStick();
+    void saveDatabaseCSVToStick();
+    void getDatabaseFromStick();
 
-    void operationResultSlot(bool status);
-    void acceptClickedSlot();
+    void accept();
+    void cancel();
+    void proceed();
 
-    void cancelClicked();
-    void okClicked();
-
-
-    void dbSelectionChangedSlot(QListWidgetItem *item);
-    void dbNameChangedSlot(const QString& name);
+    void dbSelection();
+    void dbName(const QString& name);
 
 protected slots:
     void startTimer();
@@ -52,17 +55,20 @@ protected slots:
     void stopTimer();
 
 protected:
-    void init();
-    void showEvent(QShowEvent *e);
-    bool checkStickModule();
+    void showEvent(QShowEvent *event) override;
+    virtual bool wposStckicRunning();
+    void init();   
+    bool stickModuleAvailable();
     bool showErrorScreen();
 
     void clearDatabasePage();
     void checkAllDB();
 
+private:
+    void errorMessage(const QString& caption, const QString& msg , std::ostream& s);
     int pos;
-    QTimer *timer;
-
+    QTimer *timer{};
+    Ui::MemStickWidgetBase* ui{};
 };
 
 #endif

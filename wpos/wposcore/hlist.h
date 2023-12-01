@@ -36,18 +36,18 @@
 
 template  <typename T>
 class HList{
-public: 
-    HList(){}
-    ~HList(){ clear(); }
+public:
+//    inline HList() noexcept {}
+//    ~HList(){ clear(); }
 
-    auto begin(){ return list.begin(); }
-    auto end(){ return list.end(); }
+    auto begin() const noexcept { return list.begin(); }
+    auto end() const noexcept { return list.end(); }
 
-    int count() { return list.count(); }
-    bool isEmpty(){ return list.isEmpty(); }
-    int size(){ return list.size(); }
-    int indexOf(T* const &item){ return list.indexOf(item); }
-    int indexOf(const QString& key){ return indexOf(find(key)); }
+    int count() const { return list.count(); }
+    bool isEmpty() const noexcept { return list.isEmpty(); }
+    int size() const noexcept { return list.size(); }
+    int indexOf (T* const &item) const { return list.indexOf(item); }
+    int indexOf(const QString& key) const { return indexOf(find(key)); }
 
     void clear(){
         map.clear();
@@ -95,17 +95,17 @@ public:
         return  removed;
     }
 
-    T* getFirst(){ return list.first(); }
-    T* getLast(){ return list.last(); }
-    T* at(int pos){ return list.at(pos); }
-    int at(){ return list.at(0); }
-    T* at(const QString& key ){ return find(key); }
+    T* getFirst() const { return list.first(); }
+    T* getLast() const { return list.last(); }
+    T* at(int pos) const { return list.at(pos); }
+    int at() const { return list.at(0); }
+    T* at(const QString& key ) const { return find(key); }
 
     //     T* next(){ return list.next(); }
     //     T* previous(){ return list.previous(); }
     //     T* current(){  return list.current(); }
 
-    T* find(const QString& key){   return map.value(key);    }
+    T* find (const QString& key) const {   return map.value(key);    }
 
     T* take(const QString &key){
         T *dict_value =  map.value(key);
@@ -113,7 +113,6 @@ public:
         return dict_value;
     }
 
-    void setAutoDelete(bool enabled){  autodelete = enabled;}
     T* operator[](const QString& key){return find(key);}
     T* operator[](int pos){ return list.at(pos);  }
     void statistics(){}
@@ -128,9 +127,9 @@ protected:
         return false;
     }
 
+private:
     QList<T*> list;
     QMap<QString, T*> map;
-    bool autodelete{false};
 };
 
 #endif

@@ -81,11 +81,13 @@ public:
     BasicDatabase(const QString& _connection_name,
                   const QString& configuration_path);
 
+//    ~BasicDatabase(){ QSqlDatabase::removeDatabase(connection_name);}
+
     //use this to create queries outside this class
-    QSqlDatabase& getDB();
+    const QSqlDatabase &getDB() const;
 
     bool connect();
-    bool disConnect();
+    void disConnect();
     bool isConnected() const;
 
     //transaction methods

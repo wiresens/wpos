@@ -18,7 +18,7 @@
 
 #include <wposcore/genericsignalmanager.h>
 #include <xmlconfig.h>
-#include <optionnode.h>
+#include <productextrainfo.h>
 #include <wposwidget/orderview.h>
 #include <wposwidget/ordercontentview.h>
 #include "database/killticketsdb.h"
@@ -45,8 +45,8 @@
 using namespace std;
 
 #define ITEMS_PER_PAGE 8
-
-extern AuthCore *auth;
+static const uint TIME_OUT {25};
+extern AuthCore *authCore;
 
 
 using IReceiptPrimitive = com::wiresens::wpos::dbusreceipt::DBusReceiptPrimitive;
@@ -78,7 +78,6 @@ ReceiptRecoverWidget::ReceiptRecoverWidget(
     gsm->publishGenericSignal(GSIGNAL::BARCORE_SET_LAST_RECEIPT, this);
 
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::RECEIPTWIDGET_ALL_SETENABLED, this);
-
 
     lounge_button->setText(tr("Open\nCommand"));
     lounge_button->setIcon(null_pixmap);
@@ -190,7 +189,7 @@ void ReceiptRecoverWidget::refreshList(){
     if ( ! allusers_button->isDown() )
         tickets.reset( allEmployeeReceiptResume() );
     else
-        tickets.reset( employeeReceiptResume( auth->getUserId() ));
+        tickets.reset( employeeReceiptResume( authCore->userId() ));
 
     if ( !tickets.get() ) return;
 
@@ -250,8 +249,8 @@ void ReceiptRecoverWidget::kbExitClickedSlot(){
     QString start_time,lounge,table;
     QTreeWidgetItem *item = 0;
     XmlConfig *xml = 0;
-    HList<OptionNode> *options = 0;
-    OptionNode *node=0;
+    HList<ProductExtraInfo> *options = 0;
+    ProductExtraInfo *node=0;
 
     aux="";
     ticketnum_treeview->setEnabled(false);
@@ -308,7 +307,7 @@ void ReceiptRecoverWidget::kbExitClickedSlot(){
     keyboard=0;
 
     if (!aux.isEmpty())
-        QTimer::singleShot(25, this, SLOT(setSelectedSlot()));
+        QTimer::singleShot(TIME_OUT, this, &ReceiptRecoverWidget::setSelectedSlot);
     ticketnum_treeview->setEnabled(true);
 
 }
@@ -465,10 +464,10 @@ void ReceiptRecoverWidget::openOrderKbExitClickedSlot(){
         xml = new XmlConfig();
         xml->delDomain();
         xml->doWrite("description", input_text);
-        auto name = auth->getUserName()+" "+auth->getUserLastName();
+        auto name = authCore->userName()+" "+authCore->userLastName();
         xml->createElementSetDomain("employee");
         xml->createElement("name",name);
-        xml->createElement("dni", auth->getUserId());
+        xml->createElement("dni", authCore->userId());
         xml->delDomain();
 
         auto start_date = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
@@ -515,7 +514,7 @@ void ReceiptRecoverWidget::openOrderKbExitClickedSlot(){
     keyboard=0;
 
     if ( !input_text.isEmpty() )
-        QTimer::singleShot( 25, this, SLOT(setSelectedSlot()));
+        QTimer::singleShot( TIME_OUT, this, &ReceiptRecoverWidget::setSelectedSlot);
 
     ticketnum_treeview->setEnabled(true);
 }

@@ -90,10 +90,10 @@ XZWidget::XZWidget(QWidget *parent, const QString& name) :
     up_button->setAutoRepeat(true);
     down_button->setAutoRepeat(true);
 
-    connect(down_button,SIGNAL(released()),this,SLOT(scrollDownSlot()));
-    connect(up_button,SIGNAL(released()),this,SLOT(scrollUpSlot()));
-    connect(print_button,SIGNAL(released()),this,SLOT(printSlot()));
-    connect(cancel_button,SIGNAL(released()),this,SLOT(returnToADMmenuSlot()));
+    connect(down_button, &QPushButton::released, this, &XZWidget::scrollDownSlot);
+    connect(up_button, &QPushButton::released,this, &XZWidget::scrollUpSlot);
+    connect(print_button, &QPushButton::released, this, &XZWidget::printSlot);
+    connect(cancel_button, &QPushButton::released, this, &XZWidget::returnToADMmenuSlot);
 }
 
 XZWidget::~XZWidget(){}

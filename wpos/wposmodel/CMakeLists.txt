@@ -20,9 +20,9 @@ find_package(ODB
 
 include(${ODB_USE_FILE})
 list (APPEND ODB_ARGS
-    -x --std=c++20
-    --default-pointer std::shared_ptr
+    -x --std=c++20   
     --profile boost/date-time/posix-time
+    --default-pointer std::shared_ptr
 )
 
 find_package(Threads)
@@ -58,6 +58,7 @@ list (APPEND  ODB_INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/src
     ${PROJECT_SOURCE_DIR}/src/product
     ${PROJECT_SOURCE_DIR}/src/core
+    ${PROJECT_SOURCE_DIR}/src/order
 )
 
 list ( REMOVE_DUPLICATES ODB_INCLUDE_DIRS)
@@ -66,8 +67,6 @@ list ( REMOVE_DUPLICATES ODB_INCLUDE_DIRS)
 set(HEADER_FILES
     include/connector.h
     include/database.h
-    include/SimpleArray.h
-    include/AllocationTracker.h
     src/core/group.h
     src/core/party.h
     src/core/user.h
@@ -83,11 +82,11 @@ set(HEADER_FILES
     src/version.hxx
     src/exception.h
     src/exceptions.h
+    src/order/orderline.h
+    src/order/order.h
 )
 
 set(SOURCE_FILES
-#    src/SimpleArray.cpp
-#    src/AllocationTracker.cpp
     src/daterange.cpp
     src/core/group.cpp
     src/core/party.cpp
@@ -100,6 +99,8 @@ set(SOURCE_FILES
     src/product/uom.cpp
     src/database.cpp
     src/exceptions.cpp
+    src/order/orderline.cpp
+    src/order/order.cpp
 )
 
 set (ODB_HEADER_FILES
@@ -112,15 +113,17 @@ set (ODB_HEADER_FILES
     src/product/producttemplate.hxx
     src/product/product.hxx
     src/product/uom.hxx
+    src/order/orderline.hxx
+    src/order/order.hxx
 )
 
 set(TESTING_SOURCE_FILES
     tests/main.cpp
-#    tests/simpleArrayTest.cpp
-#    tests/moreTests.cpp
     tests/uom_test.cpp
     tests/produt_test.cpp
     tests/party_test.cpp
+    tests/user_test.cpp
+    tests/order_test.cpp
 )
 
 set(ODB_TAGERT_INCLUDE_DIRS)
@@ -147,7 +150,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../lib)
 add_library(${MAIN_TARGET} SHARED
     ${SOURCE_FILES}
     ${HEADER_FILES}
-    ${ODB_HEADER_FILES}
+    ${ODB_HEADER_FILES}   
 )
 
 set_target_properties (${MAIN_TARGET} PROPERTIES

@@ -34,6 +34,7 @@
 
 static const QString& INVITATION_XML = "/etc/ntpv_backoffice/invitations_description.xml";
 static const double ICON_SIZE = 32.00;
+static const uint TIME_OUT {10};
 static const QString ICON_PATH = "controls:offers/";
 
 AddInvitationScreenWidget::AddInvitationScreenWidget(QWidget *parent, const QString& name):
@@ -56,11 +57,11 @@ AddInvitationScreenWidget::AddInvitationScreenWidget(QWidget *parent, const QStr
     ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
     cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
 
-    connect(ok_button, SIGNAL(clicked()), this, SLOT(apply()));
-    connect(cancel_button, SIGNAL(clicked()), this, SLOT(cancel()));
-    connect(screen_name_label,SIGNAL(textChanged(const QString&)), this, SLOT(nameChangedSlot(const QString&)));
-    connect(up_button,SIGNAL(clicked()),this,SLOT(upButtonSlot()));
-    connect(down_button,SIGNAL(clicked()),this,SLOT(downButtonSlot()));
+    connect(ok_button, &QPushButton::clicked, this, &AddInvitationScreenWidget::apply);
+    connect(cancel_button, &QPushButton::clicked, this, &AddInvitationScreenWidget::cancel);
+    connect(screen_name_label, &QLineEdit::textChanged, this, &AddInvitationScreenWidget::nameChangedSlot);
+    connect(up_button, &QPushButton::clicked, this, &AddInvitationScreenWidget::upButtonSlot);
+    connect(down_button, &QPushButton::clicked, this, &AddInvitationScreenWidget::downButtonSlot);
 
 }
 
@@ -146,7 +147,7 @@ void AddInvitationScreenWidget::showLogos(){
 }
 
 void AddInvitationScreenWidget::showEvent(QShowEvent *e){
-    QTimer::singleShot(10, this,SLOT(showLogos()));
+    QTimer::singleShot(TIME_OUT, this, &AddInvitationScreenWidget::showLogos);
     QWidget::showEvent(e);
 }
 

@@ -12,7 +12,6 @@
 #include <QtPdf/QPdfPageNavigation>
 
 const qreal zoomMultiplier = 1.414213562373 ; //qSqrt(2.0)
-
 Q_LOGGING_CATEGORY(lcExample, "qt.examples.pdfviewer")
 
 PdfViewer::PdfViewer(QWidget *parent)
@@ -41,7 +40,7 @@ PdfViewer::PdfViewer(QWidget *parent)
     bookmarkModel->setDocument(m_pdf);
 
     ui->bookmarkView->setModel(bookmarkModel);
-    connect(ui->bookmarkView, SIGNAL(activated(QModelIndex)), this, SLOT(bookmarkSelected(QModelIndex)));
+    connect(ui->bookmarkView, &QTreeView::activated, this, &PdfViewer::bookmarkSelected);
 
     ui->tabWidget->setTabEnabled(1, false); // disable 'Pages' tab for now
 

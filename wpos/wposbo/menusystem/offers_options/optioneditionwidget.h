@@ -4,7 +4,7 @@
 #include "ui_optioneditionwidgetbase.h"
 #include "productsmodule/optionsmodule/productoptionmodule.h"
 
-class FloatKeyboardBox;
+class FloatKeyboard;
 class QListWidgetItem;
 
 class OptionEditionWidget :
@@ -40,7 +40,7 @@ private:
     void fillOptions(const QString& domain, const QString& sub_domain, const QString& tag, QComboBox* cbx, const QString& data);
 
 protected:
-    FloatKeyboardBox *float_kb{};
+    FloatKeyboard *float_kb{};
     ProductOptionModule mod;
 };
 

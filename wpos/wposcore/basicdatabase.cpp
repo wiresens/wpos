@@ -82,7 +82,7 @@ void BasicDatabase::initDB(){
     database.setPort(port);
 }
 
-QSqlDatabase& BasicDatabase::getDB(){
+const QSqlDatabase& BasicDatabase::getDB() const{
     return database;
 }
 
@@ -91,9 +91,11 @@ bool BasicDatabase::connect(){
     return database.open();
 }
 
-bool BasicDatabase::disConnect(){
-    delConnection();
-    return true;
+void BasicDatabase::disConnect(){
+    if (database.isOpen()){
+        database.close();
+        //        QSqlDatabase::removeDatabase(connection_name);
+    }
 }
 
 bool BasicDatabase::isConnected() const{

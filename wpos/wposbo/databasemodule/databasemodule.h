@@ -21,8 +21,8 @@ class XmlConfig;
 class QFileSystemWatcher;
 
 class DatabaseModule :
-        public QObject,
-        public DataBaseModuleInterface
+    public QObject,
+    public DataBaseModuleInterface
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wposbo.DBusBOModel")
@@ -37,16 +37,16 @@ public:
     //the documentation is at the .h of this class
 
 public slots:
-    bool setConfig(QString xml_str) override;
-    QString getConfig() override;
-    void stopDatabase() override;
-    void startDatabase() override;
-    bool databaseState() override;
-    bool compact() override;
-    bool saveDump() override;
-    bool saveDump(QString file_path) override;
-    bool restoreDump() override;
-    bool restoreDump(QString file_path) override;
+    Q_SCRIPTABLE bool setConfig(QString xml_str) override;
+    Q_SCRIPTABLE QString getConfig() override;
+    Q_SCRIPTABLE void stopDatabase() override;
+    Q_SCRIPTABLE void startDatabase() override;
+    Q_SCRIPTABLE bool databaseState() override;
+    Q_SCRIPTABLE bool compact() override;
+    Q_SCRIPTABLE bool saveDump() override;
+    Q_SCRIPTABLE bool saveDump(QString file_path) override;
+    Q_SCRIPTABLE bool restoreDump() override;
+    Q_SCRIPTABLE bool restoreDump(QString file_path) override;
 
 signals:
     //all of this actions are done with the File Access Manager and QFileSystemWatcher

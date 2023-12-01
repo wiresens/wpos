@@ -19,7 +19,7 @@
 //#include "optionupdatewidget_adapter.h"
 
 #include "productsmodule/optionsmodule/productoptionmodule.h"
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QtDBus/QDBusConnection>
@@ -49,7 +49,7 @@ OptionUpdateWidget::OptionUpdateWidget(QWidget *parent, const QString& name ) :
     box_button->setText(tr("Insert Option\n in all\nproducts"));
 
     connect(option_listview, &QTreeWidget::itemSelectionChanged, this, &OptionUpdateWidget::optionClickedSlot); //idem
-    connect(box_button, SIGNAL(clicked()), this, SLOT(applyToAllProductsSlot()));
+    connect(box_button,  &QPushButton::clicked, this, &OptionUpdateWidget::applyToAllProductsSlot);
 }
 
 void OptionUpdateWidget::optionClickedSlot(){
@@ -85,7 +85,7 @@ void OptionUpdateWidget::acceptSlot(){
     double mul = 1.0;
     if ( !plus_button->isDown() )  mul = 1.0;
     else if ( !minus_button->isDown()) mul = -1.0;
-    auto value = mul * float_kb->getNumber();
+    auto value = mul * float_kb->value();
 
     auto title = tr("Aplicar nuevo precio a opcion");
     auto msg = tr("Se va a proceder a la actualizacion de todos los productos\n que posean la opcion %1 - %2 Estos productos pasaran a valer: %3").arg(type).arg(option).arg(QString::number(value,'f', 2));
@@ -107,7 +107,7 @@ void OptionUpdateWidget::applyToAllProductsSlot(){
     double mul = 1.0;
     if ( !plus_button->isDown())  mul = 1.0;
     else if ( !minus_button->isDown()) mul = -1.0;
-    auto value = mul * float_kb->getNumber();
+    auto value = mul * float_kb->value();
     auto title = tr("Aplicar nuevo precio a opcion");
 
     auto msg = tr("Se va a proceder a insertar la opcion : %1 - %2 \n\en todos los productos. Estos productos pasaran a valer : %3").arg(type).arg(option).arg(QString::number(value,'f',2));

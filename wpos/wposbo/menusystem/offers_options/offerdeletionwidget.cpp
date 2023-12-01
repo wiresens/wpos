@@ -49,12 +49,12 @@ OfferDeletionWidget::OfferDeletionWidget(
 
     connect(offer_listbox, &QListWidget::itemSelectionChanged, this, &OfferDeletionWidget::handleOfferListSelected);
     connect(offer_listview,  &QTreeWidget::itemSelectionChanged, this, &OfferDeletionWidget::handleOfferTreeSelected);
-    connect(up_button, SIGNAL(clicked()), this, SLOT(previousOffer()));
-    connect(down_button, SIGNAL(clicked()), this, SLOT(nextOffer()));
-    connect(up_type_button, SIGNAL(clicked()), this, SLOT(previousType()));
-    connect(down_type_button, SIGNAL(clicked()), this, SLOT(nextType()));
-    connect(del_type_button, SIGNAL(released()), this, SLOT(deleteOfferType()));
-    connect(ok_button, SIGNAL(released()), this, SLOT(acceptSlot()));
+    connect(up_button, &QPushButton::clicked, this, &OfferDeletionWidget::previousOffer);
+    connect(down_button,  &QPushButton::clicked, this, &OfferDeletionWidget::nextOffer);
+    connect(up_type_button,  &QPushButton::clicked, this, &OfferDeletionWidget::previousType);
+    connect(down_type_button,  &QPushButton::clicked, this, &OfferDeletionWidget::nextType);
+    connect(del_type_button,  &QPushButton::released, this, &OfferDeletionWidget::deleteOfferType);
+    connect(ok_button,  &QPushButton::released, this, &OfferDeletionWidget::acceptSlot);
 }
 
 void OfferDeletionWidget::clear(){

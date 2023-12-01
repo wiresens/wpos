@@ -2,7 +2,7 @@
 
 #include "productsmodule/optionsmodule/productoptionmodule.h"
 
-#include <wposwidget/floatkeyboardbox.h>
+#include <wposwidget/floatkeyboard.h>
 #include <wposwidget/toolkit.h>
 #include <libbslxml/xmlconfig.h>
 
@@ -21,7 +21,7 @@ OptionEditionWidget::OptionEditionWidget(QWidget *parent, const QString& name ):
 
     //idem
     QVBoxLayout *vlayout{};
-    float_kb = new FloatKeyboardBox(box);
+    float_kb = new FloatKeyboard(box);
     float_kb->setObjectName("float_keyboard_offer");
     if(!(vlayout = (QVBoxLayout *) box->layout()))
         vlayout = new QVBoxLayout(box);
@@ -52,17 +52,13 @@ OptionEditionWidget::OptionEditionWidget(QWidget *parent, const QString& name ):
     down_option_button->setIcon(QPixmap("controls32:down.png"));
 
     //connections.
-    connect(up_type_button,SIGNAL(clicked()),this,SLOT(upTypeSlot()));
-    connect(down_type_button,SIGNAL(clicked()),this,SLOT(downTypeSlot()));
-    connect(up_option_button,SIGNAL(clicked()),this,SLOT(upOptionSlot()));
-    connect(down_option_button,SIGNAL(clicked()),this,SLOT(downOptionSlot()));
+    connect(up_type_button,  &QPushButton::clicked, this, &OptionEditionWidget::upTypeSlot);
+    connect(down_type_button, &QPushButton::clicked, this, &OptionEditionWidget::downTypeSlot);
+    connect(up_option_button, &QPushButton::clicked, this, &OptionEditionWidget::upOptionSlot);
+    connect(down_option_button, &QPushButton::clicked, this, &OptionEditionWidget::downOptionSlot);
 
     connect(type_listview, &QTreeWidget::itemSelectionChanged, this, &OptionEditionWidget::typeClickedSlot);
-    connect(ok_button, SIGNAL(clicked()),this,SLOT(acceptSlot()));
-
-    //unique idem
-//    connect(add_type_button,SIGNAL(clicked()),this,SLOT(processType()));
-//    connect(add_option_button,SIGNAL(clicked()),this,SLOT(processOption()));
+    connect(ok_button,  &QPushButton::clicked, this, &OptionEditionWidget::acceptSlot);
 }
 
 OptionEditionWidget::~OptionEditionWidget(){

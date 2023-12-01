@@ -72,14 +72,13 @@ FileAlterationWatcher::~FileAlterationWatcher(){
 }
 
 void FileAlterationWatcher::startWatching(){
-    connect(watcher, SIGNAL(fileChanged(const QString&)),
-            this, SLOT(fileDirtySlot(const QString&)));
+    connect(watcher, &QFileSystemWatcher::fileChanged,
+        this, &FileAlterationWatcher::fileDirtySlot);
 }
 
 void FileAlterationWatcher::stopWatching(){
-
-    disconnect(watcher, SIGNAL(fileChanged(const QString&)),
-               this, SLOT(fileDirtySlot(const QString&)));
+    disconnect(watcher, &QFileSystemWatcher::fileChanged,
+               this, &FileAlterationWatcher::fileDirtySlot);
 }
 
 void FileAlterationWatcher::fileDirtySlot(const QString& file_name){
@@ -87,16 +86,16 @@ void FileAlterationWatcher::fileDirtySlot(const QString& file_name){
     stopWatching();
     qDebug() << file_name.toLatin1() << " Has been modified" ;
     if (file_name == Files::configFilePath("bar"))
-        QTimer::singleShot(DELAY, this, SLOT(productFileSlot()));
+        QTimer::singleShot(DELAY, this, &FileAlterationWatcher::productFileSlot);
 
     else if (file_name == Files::configFilePath("buttons"))
-        QTimer::singleShot(DELAY, this, SLOT(buttonFileSlot()));
+        QTimer::singleShot(DELAY, this, &FileAlterationWatcher::buttonFileSlot);
 
     else if (file_name == Files::configFilePath("invitations"))
-        QTimer::singleShot(DELAY, this, SLOT(offersSlot()));
+        QTimer::singleShot(DELAY, this, &FileAlterationWatcher::offersSlot);
 
     else if (file_name == Files::configFilePath("devices"))
-        QTimer::singleShot(DELAY, this, SLOT(devicesSlot()));
+        QTimer::singleShot(DELAY, this, &FileAlterationWatcher::devicesSlot);
 
     if (file_manager)  file_manager->saveFiles();
 }
@@ -158,7 +157,7 @@ void FileAlterationWatcher::realButton(){
     cout << " Customizing Buttons " << endl;
     XmlConfig xml(Files::configFilePath("buttons"));
 
-    if (xml.isValid()){
+    if (xml.wellFormed()){
         raiseConfigWidget();
         emit genericSignal(GSIGNAL::LOAD_BUTTONS);
         raiseMainWidget();
@@ -170,7 +169,7 @@ void FileAlterationWatcher::realButton(){
 void FileAlterationWatcher::realProduct(){
     cout << " rereading product screens " << endl;
     XmlConfig xml(Files::configFilePath("bar"));
-    if (xml.isValid()){
+    if (xml.wellFormed()){
         raiseConfigWidget();
         emit genericSignal(GSIGNAL::LOAD_PRODUCTS);
         raiseMainWidget();
@@ -182,7 +181,7 @@ void FileAlterationWatcher::realProduct(){
 void FileAlterationWatcher::realOffer(){
     cout << " Rereading offers " << endl;
     XmlConfig xml (Files::configFilePath("invitations"));
-    if (xml.isValid()){
+    if (xml.wellFormed()){
         raiseConfigWidget();
         emit genericSignal(GSIGNAL::LOAD_OFFERS);
         raiseMainWidget();
@@ -195,7 +194,7 @@ void FileAlterationWatcher::realDevices(){
 
     cout << " Rereading devices " << endl;
     XmlConfig xml (Files::configFilePath("devices"));
-    if (xml.isValid()){
+    if (xml.wellFormed()){
         QString cashbox_type { xml.readString("cashbox.type") };
         QString cashbox_device { xml.readString("cashbox.dev") };
 

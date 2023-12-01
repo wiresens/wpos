@@ -45,7 +45,7 @@
 //#include "menusystem/reports/nprodandofferreportwidget.h"
 
 //#include "menusystem/system/fx2000configwidget.h"
-//#include "menusystem/system/memstickwidget.h"
+#include "menusystem/system/memstickwidget.h"
 #include "menusystem/system/devicesconfigwidget.h"
 
 #include "menusystem/users/usercreatewidget.h"
@@ -62,13 +62,11 @@ extern QSplashScreen *splash;
 
 Instantiator::Instantiator(QWidget* parent, const QString& name):
     QObject(parent),
-    menus{new HList<QWidget>()},
     parent{parent}
 {
 
     // Initialization and default values
     setObjectName(name);
-
     connect(this, &Instantiator::splashRequested, splash, &QSplashScreen::showMessage);
 
     emit splashRequested(tr("D-Bus Module"), splash_align, splash_color);
@@ -102,168 +100,170 @@ Instantiator::Instantiator(QWidget* parent, const QString& name):
     disconnect(this, &Instantiator::splashRequested, splash, &QSplashScreen::message);
 }
 
-QWidget *Instantiator::getMenu(QWidget *parent, const QString &menu_name)
-{
-    QWidget *widget =  menus->find(menu_name);
-    if(widget) widget->setParent(parent);
-    return widget;
-}
-
-bool Instantiator::hasMenu(const QString &menu_name){
-    QWidget *widget =  this->menus->find(menu_name);
-    return widget;
-}
-
 void Instantiator::initDcopModules(){
-    db_mod = new DatabaseModule(this,"databsemodule");
-    user_mod = new UserModule(this,"usermodule");
+    db_mod      = new DatabaseModule(this, "databsemodule");
+    user_mod    = new UserModule(this, "usermodule");
     product_mod = new ProductModule(this, "productmodule");
 }
 
 void Instantiator::initSysConfMenu(){
-    auto info = new SubMenuInfoFrame(0,"INFO");
-    menus->append(info,"SYSCONF_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame(nullptr, "INFO");
+    menus.append(widget, "SYSCONF_SUBMENU");
 
-//@benes    auto config_widget = new FX2000ConfigWidget(user_mod, 0, "FX2000_CONFIG_WIDGET");
-//@benes    menus->append(config_widget,"SYSCONF_SUBMENU_FX2000DEVICE");
+    //@benes    auto config_widget = new FX2000ConfigWidget(user_mod, nullptr, "FX2000_CONFIG_WIDGET");
+    //@benes    menus.append(config_widget,"SYSCONF_SUBMENU_FX2000DEVICE");
 
-    auto ticket_widtet = new NTicketDesignWidget(0,"NTICKET_DESIGN_WIDGET");
-    menus->append(ticket_widtet,"SYSCONF_SUBMENU_TICKETDESIGN_WIDGET");
+    widget = new NTicketDesignWidget(nullptr,"NTICKET_DESIGN_WIDGET");
+    menus.append(widget, "SYSCONF_SUBMENU_TICKETDESIGN_WIDGET");
 
-    auto ddbb_widget = new DatabaseConfigWidget(db_mod,0,"DDBB_WIDGET");
-    menus->append(ddbb_widget,"SYSCONF_SUBMENU_DDBB_SUBMENU_GENERAL");
+    widget = new DatabaseConfigWidget(db_mod,nullptr, "DDBB_WIDGET");
+    menus.append(widget,"SYSCONF_SUBMENU_DDBB_SUBMENU_GENERAL");
 
-    auto devices_config = new DevicesConfig(0,"DEVICES_CONFIG_WIDGET");
-    menus->append(devices_config,"SYSCONF_SUBMENU_DEVICES_CONFIG_WIDGET");
+    widget = new DevicesConfig( nullptr, "DEVICES_CONFIG_WIDGET");
+    menus.append(widget, "SYSCONF_SUBMENU_DEVICES_CONFIG_WIDGET");
 
 }
 
 void Instantiator::initUsersMenu(){
-    auto info = new SubMenuInfoFrame(0,"INFO");
-    menus->append(info,"USER_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame( nullptr,  "INFO");
+    menus.append(widget, "USER_SUBMENU");
 
-    auto users_widget = new UserCreationWidget(user_mod ,0,"USERS_WIDGET");
-    menus->append(users_widget,"USER_SUBMENU_ADD");
+    widget = new UserCreationWidget(user_mod,  nullptr,  "USERS_WIDGET");
+    menus.append(widget, "USER_SUBMENU_ADD");
 
-    auto delete_users = new UserSelectWidget(db_mod,user_mod, UserSelectWidget::Deleter,0,"SELECT_USERS_MOD_WIDGET");
-    menus->append(delete_users,"USER_SUBMENU_DEL");
+    widget = new UserSelectWidget(db_mod,user_mod, UserSelectWidget::Deleter, nullptr, "SELECT_USERS_MOD_WIDGET");
+    menus.append(widget, "USER_SUBMENU_DELETE");
 
-    auto update_users = new UserSelectWidget(db_mod,user_mod, UserSelectWidget::Updater,0,"SELECT_USERS_MOD_WIDGET");
-    menus->append(update_users,"USER_SUBMENU_MODIFY");
+    widget = new UserSelectWidget(db_mod,user_mod, UserSelectWidget::Updater, nullptr, "SELECT_USERS_MOD_WIDGET");
+    menus.append(widget, "USER_SUBMENU_MODIFY");
 }
 
 void Instantiator::initProductsMenu(){
 
     // Main information for this menu
-    auto info = new SubMenuInfoFrame(0,"INFO");
-    menus->append(info,"PRODUCTS_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame( nullptr,  "INFO");
+    menus.append(widget, "PRODUCTS_SUBMENU");
 
     emit splashRequested(tr("Modulo Productos: Unitarios"), splash_align, splash_color);
-    auto unitary_product_widget = new ProductInsertionWidget(product_mod, ProductInsertionWidget::Unitary, 0, "UNITARY_PRODUCT_INSERT_WIDGET");
-    menus->append(unitary_product_widget,"PRODUCTS_SUBMENU_ADD_UNITARY");
+    widget = new ProductInsertionWidget(product_mod, ProductInsertionWidget::Unitary,  nullptr,  "UNITARY_PRODUCT_INSERT_WIDGET");
+    menus.append(widget,"PRODUCTS_SUBMENU_ADD_UNITARY");
 
     emit splashRequested(tr("Modulo Productos: Compuestos"), splash_align, splash_color);
-    auto  composition_product_widget = new ProductInsertionWidget(product_mod, ProductInsertionWidget::Composed, 0, "COMPOSITION_PRODUCT_INSERT_WIDGET");
-    menus->append(composition_product_widget,"PRODUCTS_SUBMENU_ADD_COMPOSITE");
+    widget = new ProductInsertionWidget(product_mod, ProductInsertionWidget::Composed,  nullptr,  "COMPOSITION_PRODUCT_INSERT_WIDGET");
+    menus.append(widget,"PRODUCTS_SUBMENU_ADD_COMPOSITE");
 
     emit splashRequested(tr("Modulo Productos: Actualizacion"), splash_align, splash_color);
-    auto update_product_widget = new AdvancedProductUpdateWidget(product_mod, 0,"UPDATE_PRODUCT_WIDGET");
-    menus->append(update_product_widget, "PRODUCTS_SUBMENU_MODIFY");
+    widget = new AdvancedProductUpdateWidget(product_mod,  nullptr, "UPDATE_PRODUCT_WIDGET");
+    menus.append(widget, "PRODUCTS_SUBMENU_MODIFY");
 
     emit splashRequested(tr("Modulo Productos: Borrado"), splash_align, splash_color);
-    auto delete_product_widget = new AdvancedProductDeletionWidget(product_mod, 0, "DELETE_PRODUCT_WIDGET");
-    menus->append(delete_product_widget, "PRODUCTS_SUBMENU_DEL");
+    widget = new AdvancedProductDeletionWidget(product_mod,  nullptr,  "DELETE_PRODUCT_WIDGET");
+    menus.append(widget, "PRODUCTS_SUBMENU_DELETE");
 
-    auto update_xml = new ProductXmFileUpdateWidget(product_mod, 0,"update_xml");
-    menus->append(update_xml,"PRODUCTS_SUBMENU_XML_UPDATE");
+    widget = new ProductXmFileUpdateWidget(product_mod,  nullptr, "update_xml");
+    menus.append(widget,"PRODUCTS_SUBMENU_XML_UPDATE");
 }
 
 void Instantiator::initDesignMenu(){
     // Main information for this menu
-    auto info = new SubMenuInfoFrame(0,"INFO");
-    menus->append(info,"DESIGN_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame( nullptr, "INFO");
+    menus.append(widget,"DESIGN_SUBMENU");
 
-    auto screen = new ProductScreenDesignWidget(0, "SCREEN_PRODUCTS");
-    menus->append(screen, "DESIGN_SUBMENU_SCREEN");
+    widget = new ProductScreenDesignWidget( nullptr,  "SCREEN_PRODUCTS");
+    menus.append(widget, "DESIGN_SUBMENU_SCREEN");
 
-    auto offers = new InvitationScreenDesignWidget(0, "SCREEN_OFFERS");
-    menus->append(offers, "DESIGN_SUBMENU_OFFERS");
+    widget = new InvitationScreenDesignWidget( nullptr,  "SCREEN_OFFERS");
+    menus.append(widget, "DESIGN_SUBMENU_OFFERS");
 
-    auto shortcut_buttons = new ShortcutButtonWidget(0,"SHORTCUTBUTTONS_WIDGET");
-    menus->append(shortcut_buttons, "DESIGN_SUBMENU_BUTTONS");
+    widget = new ShortcutButtonWidget( nullptr, "SHORTCUTBUTTONS_WIDGET");
+    menus.append(widget, "DESIGN_SUBMENU_BUTTONS");
 }
 
 void Instantiator::initOffersAndOptionsMenu(){
-    auto info = new SubMenuInfoFrame(0,"INFO");
-    menus->append(info,"OFFERS_OPTIONS_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame( nullptr, "INFO");
+    menus.append(widget, "OFFERS_OPTIONS_SUBMENU");
 
-    auto add_offer = new OfferCreationWidget(0, "ADD_OFFER");
-    menus->append(add_offer, "OFFERS_OPTIONS_SUBMENU_ADD_OFFER");
+    widget = new OfferCreationWidget( nullptr,  "ADD_OFFER");
+    menus.append(widget, "OFFERS_OPTIONS_SUBMENU_ADD_OFFER");
 
-    auto update_offer = new OfferUpdateWidget(0, "ADD_OFFER");
-    menus->append(update_offer, "OFFERS_OPTIONS_SUBMENU_UPDATE_OFFER");
+    widget = new OfferUpdateWidget( nullptr,  "ADD_OFFER");
+    menus.append(widget, "OFFERS_OPTIONS_SUBMENU_UPDATE_OFFER");
 
-    auto del_offer = new OfferDeletionWidget(0, "ADD_OFFER");
-    menus->append(del_offer, "OFFERS_OPTIONS_SUBMENU_DEL_OFFER");
+    widget = new OfferDeletionWidget( nullptr,  "ADD_OFFER");
+    menus.append(widget, "OFFERS_OPTIONS_SUBMENU_DEL_OFFER");
 
-    auto add_option = new OptionCreationWidget(0,"ADD_OPTION");
-    menus->append(add_option, "OFFERS_OPTIONS_SUBMENU_ADD_OPTION");
+    widget = new OptionCreationWidget( nullptr, "ADD_OPTION");
+    menus.append(widget, "OFFERS_OPTIONS_SUBMENU_ADD_OPTION");
 
-    auto del_option = new OptionDeletionWidget(0,"ADD_OPTION");
-    menus->append(del_option, "OFFERS_OPTIONS_SUBMENU_DEL_OPTION");
+    widget = new OptionDeletionWidget( nullptr, "ADD_OPTION");
+    menus.append(widget, "OFFERS_OPTIONS_SUBMENU_DEL_OPTION");
 
-    auto update_option = new OptionUpdateWidget(0,"ADD_OPTION");
-    menus->append(update_option, "OFFERS_OPTIONS_SUBMENU_UPDATE_OPTION");
+    widget = new OptionUpdateWidget( nullptr, "ADD_OPTION");
+    menus.append(widget, "OFFERS_OPTIONS_SUBMENU_UPDATE_OPTION");
 }
 
 void Instantiator::initHistoricMenu(){
 
     // Main information for this menu
-    auto   info = new SubMenuInfoFrame(0,"INFO");
-    menus->append(info,"HISTORIC_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame( nullptr, "INFO");
+    menus.append( widget, "HISTORIC_SUBMENU");
 
-    auto ticket = new PersTicketWidget(0,"TICKET_HISTORIC_SUBMENU");
-    menus->append(ticket, "TICKET_HISTORIC_SUBMENU");
+    widget = new PersTicketWidget( nullptr, "TICKET_HISTORIC_SUBMENU");
+    menus.append(widget, "TICKET_HISTORIC_SUBMENU");
 
-    auto z = new PersZWidget(0, "Z_HISTORIC_SUBMENU");
-    menus->append(z, "Z_HISTORIC_SUBMENU");
+    widget = new PersZWidget( nullptr,  "Z_HISTORIC_SUBMENU");
+    menus.append(widget, "Z_HISTORIC_SUBMENU");
 }
 
 void Instantiator::initReportMenu(){
 
     // Main information for this menu
-    auto info = new SubMenuInfoFrame(0,"INFO");
-    menus->append(info,"REPORT_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame( nullptr, "INFO");
+    menus.append(widget,"REPORT_SUBMENU");
 
-    auto profits = new NProfitReportWidget(user_mod,0,"PROFIT_REPORT");
-    menus->append(profits, "PROFIT_SUBMENU");
+    widget = new NProfitReportWidget(user_mod, nullptr, "PROFIT_REPORT");
+    menus.append(widget, "PROFIT_SUBMENU");
 
-//@benes    auto prod_and_offer = new NProdAndOfferReportWidget(user_mod,0,"PROD_AND_OFFER_REPORT");
-//@benes    menus->append(prod_and_offer, "PRODUCT_AND_OFFERS_SUBMENU");
+    //@benes    widget = new NProdAndOfferReportWidget(user_mod, nullptr, "PROD_AND_OFFER_REPORT");
+    //@benes    menus.append(widget, "PRODUCT_AND_OFFERS_SUBMENU");
 }
 
 void Instantiator::initStickMenu(){
 
     // Main information for this menu
-     auto info = new SubMenuInfoFrame(0,"INFO");
-     menus->append(info,"STICK_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame( nullptr,  "INFO");
+    menus.append( widget, "STICK_SUBMENU");
 
-//@benes    auto stick_widget = new MemStickWidget(0,"STICK_SUBMENU");
-//@benes    menus->append(stick_widget, "STICK_SUBMENU");
+    widget = new MemStickWidget( nullptr, "STICK_SUBMENU");
+    menus.append( widget, "STICK_SUBMENU");
 }
 
 void Instantiator::initSupportMenu(){
     // Main information for this menu
-    auto info = new SubMenuInfoFrame(0,"INFO");
-    menus->append(info,"SUPPORT_SUBMENU");
+    QWidget* widget = new SubMenuInfoFrame( nullptr,  "INFO");
+    menus.append(widget, "SUPPORT_SUBMENU");
 
-    auto support = new SupportWidget(0,"SUPPORT_WIDGET");
-    menus->append(support, "SUPPORT_SUBMENU");
+    widget = new SupportWidget( nullptr,  "SUPPORT_WIDGET");
+    menus.append(widget, "SUPPORT_SUBMENU");
 
-    auto tech = new TechWidget(0,"TECHWIDGET");
-    menus->append(tech, "TECH_TEAM_SUBMENU");
+    widget = new TechWidget( nullptr,  "TECHWIDGET");
+    menus.append( widget, "TECH_TEAM_SUBMENU");
 }
 
-void Instantiator::showMenu(const QString& page_name){
-    emit showPageMenu(page_name);
+QWidget *Instantiator::getMenu(
+    QWidget *parent,
+    const QString &menuName)
+{
+    QWidget *widget =  menus.find(menuName);
+    if(widget) widget->setParent(parent);
+    return widget;
+}
+
+bool Instantiator::hasMenu(const QString &menuName){
+    return menus.find(menuName);
+
+}
+
+void Instantiator::showMenu(const QString& pageName){
+    emit showPageMenu(pageName);
 }

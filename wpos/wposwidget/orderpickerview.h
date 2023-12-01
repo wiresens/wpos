@@ -30,7 +30,6 @@ class OrderPickerView : public QFrame  {
 public:
     explicit OrderPickerView(QWidget *parent, QString name=QString{});
 
-    ~OrderPickerView();
     OrderView *order();
 
 public slots:

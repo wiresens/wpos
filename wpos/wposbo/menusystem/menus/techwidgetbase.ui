@@ -15,7 +15,7 @@
   </property>
   <layout class="QVBoxLayout">
    <item>
-    <spacer name="spacer90">
+    <spacer name="topSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
@@ -31,9 +31,9 @@
     </spacer>
    </item>
    <item>
-    <layout class="QHBoxLayout">
+    <layout class="QHBoxLayout" name="mainLayout">
      <item>
-      <spacer name="spacer88">
+      <spacer name="leftSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -49,7 +49,7 @@
       </spacer>
      </item>
      <item>
-      <widget class="QTextEdit" name="textEdit1">
+      <widget class="QTextEdit" name="textEdit">
        <property name="readOnly">
         <bool>true</bool>
        </property>
@@ -78,7 +78,7 @@ Mesón Rueda &lt;font size=&quot;-1&quot;&gt;(C\Felix Rodriguez de la fuente ,Al
       </widget>
      </item>
      <item>
-      <spacer name="spacer88_2">
+      <spacer name="rightSpacer">
        <property name="orientation">
         <enum>Qt::Horizontal</enum>
        </property>
@@ -96,7 +96,7 @@ Mesón Rueda &lt;font size=&quot;-1&quot;&gt;(C\Felix Rodriguez de la fuente ,Al
     </layout>
    </item>
    <item>
-    <spacer name="spacer90_2">
+    <spacer name="bottomSpacer">
      <property name="orientation">
       <enum>Qt::Vertical</enum>
      </property>
