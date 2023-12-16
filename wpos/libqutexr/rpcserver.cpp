@@ -40,7 +40,10 @@ bool RpcServer::start(Port port, const QHostAddress &address){
 
     if( port == 0 ) port = serverPort();
     if ( listen( port, address) ){
-        std::cout << "\nStarting " << serverName().toStdString() << " Server listening on : " << port << "\n";
+        std::cout
+            << "\nStarting " << serverName().toStdString()
+            << " Server listening on : "
+            << port << "\n";
         return true;
     }
 

@@ -37,7 +37,7 @@ SUBDIRS += \
 #    wpos \
 #    wposbo \
 #    test \
-#    wposrpcd \
+    wposrpcd \
 #    dcopstick \
 #    dcopreports \
 

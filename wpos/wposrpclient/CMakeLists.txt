@@ -1,26 +1,32 @@
-project(wposrpcd VERSION ${PROJECT_VERSION} LANGUAGES CXX)
+project(wposrpclient VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
-set(MAIN_TARGET wposrpcd)
+set(MAIN_TARGET wposrpclient)
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 
 include_directories(
     ../libqutexr
+    ..
 )
 
 find_package(Qt5 REQUIRED COMPONENTS
-    Network
-    Xml
+    Core
+    Gui
+    Widgets
 )
 
 set(HEADER_FILES
-    validationserver.h
+    clientimpl.h
 )
 
 set(SOURCES_FILES
-    validationserver.cpp
+    clientimpl.cpp
     main.cpp
+)
+
+set(UIC_FILES
+    client.ui
 )
 
 # Make the project root directory the working directory when we run
@@ -30,6 +36,7 @@ add_executable(
     ${MAIN_TARGET}
     ${HEADER_FILES}
     ${SOURCES_FILES}
+    ${UIC_FILES}
 )
 
 target_include_directories(${MAIN_TARGET}  PRIVATE
@@ -43,8 +50,8 @@ target_link_libraries(${MAIN_TARGET} PRIVATE
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
     Qt5::Core
-    Qt5::Network
-    Qt5::Xml
+    Qt5::Gui
+    Qt5::Widgets
 )
 
 install(TARGETS ${MAIN_TARGET}
