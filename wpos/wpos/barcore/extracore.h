@@ -28,8 +28,6 @@ class ExtraCore : public QObject  {
     Q_OBJECT
 public:
     explicit ExtraCore(QObject *parent=nullptr, const QString& name = QString());
-    //should be done before using the extraCore
-    void attachSlots();
 
     QStringList getOptionsNames();
     QString getOptionValue(const QString& option_name);
@@ -51,7 +49,7 @@ public:
     bool setDefaultOffer(const QString& offer_type,const QString& offer_name);
     bool delDefaultOffer();
 
-    bool clearExtras();
+    void clearExtras();
 
 
 public slots:
@@ -65,7 +63,7 @@ public slots:
 
 
 signals:
-    void genericDataSignal(const QString& signal_name,XmlConfig *xml);
+    void genericDataSignal(const QString& signal,XmlConfig *xml);
 
 protected:
     HList<ProductExtraInfo> options;
@@ -74,7 +72,6 @@ protected:
     OfferData *custom_offer{};
     OfferData *default_offer{};
     bool price_state;
-
 };
 
 #endif

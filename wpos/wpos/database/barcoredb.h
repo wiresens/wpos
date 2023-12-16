@@ -29,6 +29,13 @@ struct OfferData{
     QString offer_mode;
     QString offer_discount;
     int item_code;
+
+    bool isNull() const {
+        return offer_type.isEmpty() &&
+               offer_name.isEmpty() &&
+               offer_mode.isEmpty() &&
+               offer_discount.isEmpty();
+    }
 };
 
 class BarCoreDB : public BasicDatabase  {
@@ -42,11 +49,11 @@ public:
         const QString& passwd);
 
     BarCoreDB(
-        const QString& connection_name,
-        const QString& configuration_path);
+        const QString& connection,
+        const QString& configFile);
 
     QString getName(const QString& product_code);
-    QString getName(const QStringList article_list);
+    QString getName(const QStringList &article_list);
 
     bool getProductAtPrinter(const QString& product_code, const QString& printer);
 
@@ -57,7 +64,8 @@ public:
     QString getOptionModifier(const QString& product_code,const QString& option_type,const QString& option_value);
 
     bool checkOption(const QString& product_code,const QString& option_type,const QString& option_value);
-    OfferData* getOffer(const QString& product_code,const QString& offer_type,const QString& offer_name);
+//    OfferData* getOffer(const QString& product_code,const QString& offer_type,const QString& offer_name);
+    OfferData getOffer(const QString& product_code,const QString& offer_type,const QString& offer_name) const;
 
 };
 

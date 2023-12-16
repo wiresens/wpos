@@ -17,65 +17,47 @@
 
 #include <productextrainfo.h>
 
-#include <iostream>
-namespace std{}
-using namespace std;
+AuxDB::AuxDB(const QString& connection,
+             const QString& hostname,
+             const QString& database,
+             const QString& username,
+             const QString& passwd):
+    BasicDatabase(
+        connection,
+        hostname,
+        database,
+        username,
+        passwd)
+{}
 
-AuxDB::AuxDB(const QString& _connection_name,
-             const QString& _hostname,
-             const QString& _database,
-             const QString& _username,
-             const QString& _passwd):
-    BasicDatabase(_connection_name,_hostname,_database,_username,_passwd){}
-
-AuxDB::AuxDB(const QString& _connection_name,
+AuxDB::AuxDB(const QString& connection,
              XmlConfig *xml):
-    BasicDatabase(_connection_name,xml){}
+    BasicDatabase(connection,xml){}
 
-AuxDB::AuxDB(const QString& _connection_name,
-             const QString& configuration_path):
-    BasicDatabase(_connection_name,configuration_path){}
+AuxDB::AuxDB(const QString& connection,
+             const QString& configFile):
+    BasicDatabase(connection,configFile){}
 
-AuxDB::~AuxDB(){
-}
+QMap<QString, ProductExtraInfo> AuxDB::productExtra(){
+    QMap<QString, ProductExtraInfo> extra;
+    if ( isConnected() ){
+        QString sql = "SELECT option_type, prod_option from products_options_list;";
+        QSqlQuery query(sql, getDB());
 
-HList<ProductExtraInfo>* AuxDB::getOptionNodes(){
-    HList<ProductExtraInfo> *option_list = 0;
-    ProductExtraInfo *o = 0;
-    QSqlQuery *q=0;
-    QString query;
-    QString type;
-    QString value;
-
-    if ( !isConnected() )
-        return option_list;
-
-    query = "SELECT option_type, prod_option from products_options_list ;";
-    q = new QSqlQuery(query,this->getDB());
-
-    //prepare the query execution
-    if (!q->isActive()){
-        delete q;
-        return option_list;
-    }
-    if (!q->size()){
-        delete q;
-        return option_list;
-    }
-
-    option_list = new HList<ProductExtraInfo>;
-    while (q->next()){
-        type = q->value(0).toString();
-        value = q->value(1).toString();
-        o = option_list->find(type);
-        if (!o){
-            o = new ProductExtraInfo(type);
-            option_list->append(o,type);
-            //                        cout << "INSERTANDO OPCION ---> " << type << endl;
+        //prepare the query execution
+        if ( query.isActive() && query.size()){
+            while (query.next()){
+                auto type = query.value(0).toString();
+                auto value = query.value(1).toString();
+                auto extraInfoIt = extra.find(type);
+                if ( extraInfoIt == extra.end()){
+                    ProductExtraInfo extraInfo(type);
+                    extraInfo.addOption(value);
+                    extra.insert(type, extraInfo);
+                }
+                else (*extraInfoIt).addOption(value);
+            }
         }
-        o->addOption(value);
-        //                cout << "ANADIDA OPCION TIPO :"<< type <<" VALOR :" << value << endl;
     }
-    delete q;
-    return option_list;
+    return extra;
 }

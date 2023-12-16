@@ -729,3 +729,8 @@ BarCore::processCore to appropriate
 
 Revise QVector<UserData> AuthCoreDB::enabledUsers()
 so as not to make a new db call to check user.administration = isPrivilaged(user.id);
+
+Translation:
+Lugar : Place
+Sala  : Hall
+Mostrador : Counter

@@ -16,15 +16,20 @@
 #include <basicdatabase.h>
 
 class ChangeMoneyWidgetDB : public BasicDatabase  {
-public: 
-     ChangeMoneyWidgetDB(const QString& _connection_name,
-                       const QString& _hostname,const QString& _database,
-                       const QString& _username,const QString& _passwd);
-     ChangeMoneyWidgetDB(const QString& _connection_name, const QString& configuration_path);
-     ~ChangeMoneyWidgetDB();
+public:
+    ChangeMoneyWidgetDB(
+        const QString& connection,
+        const QString& hostname,
+        const QString& database,
+        const QString& username,
+        const QString& passwd);
 
-     double getMoneyInCash();
-     double getMoneyPayType(const QString& type);
+    ChangeMoneyWidgetDB(
+        const QString& connection,
+        const QString& configFile);
+
+    double getMoneyInCash();
+    double getMoneyPayType(const QString& type);
 };
 
 #endif

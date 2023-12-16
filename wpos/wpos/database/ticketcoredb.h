@@ -53,16 +53,17 @@ class QString;
 class OfferData;
 
 class TicketCoreDB : public BasicDatabase  {
-public: 
-    TicketCoreDB(const QString& _connection_name,
-                 const QString& _hostname,
-                 const QString& _database,
-                 const QString& _username,
-                 const QString& _passwd);
+public:
+    TicketCoreDB(
+        const QString& connection,
+        const QString& hostname,
+        const QString& database,
+        const QString& username,
+        const QString& passwd);
 
-    TicketCoreDB(const QString& _connection_name,
-                 const QString& configuration_path);
-    ~TicketCoreDB();
+    TicketCoreDB(
+        const QString& connection,
+        const QString& configFile);
 
     int getNextVal();
     bool setVal(int val);
@@ -99,7 +100,7 @@ public:
     bool ticketCodeExists(int ticket_code);
     QString dateFromTicketCode(int ticket_code);
 
-    bool zeta();
+    bool vaccum();
 };
 
 #endif

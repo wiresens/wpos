@@ -55,8 +55,8 @@ BarCore::BarCore(
     const QString& name):
     QObject(parent)
 {
-    extra_core = new ExtraCore(this, "extra_core");
-    receipt_com = new DBusReceiptQuerier(this);
+    extraCore = new ExtraCore(this, "extraCore");
+    receiptQuerier = new DBusReceiptQuerier(this);
     setObjectName(name);
 
     auto gsm = GenericSignalManager::instance();
@@ -80,7 +80,7 @@ BarCore::~BarCore(){
         xml->delDomain();
         delete xml;
     }
-    delete receipt_com;
+    delete receiptQuerier;
     db.disConnect();
 }
 
@@ -92,8 +92,8 @@ void BarCore::reInitialise(bool flush_last){
     xml = 0;
 
     if (flush_last){
-        last_employee_id ="";
-        last_start_time = "";
+        last_employee_id.clear();
+        last_start_time.clear();
     }
 
     xml = new XmlConfig();
@@ -262,7 +262,7 @@ bool BarCore::setProduct(XmlConfig *product){
         last = xml->howManyTags("product");
         xml->deleteElement("product["+QString::number(last-1)+"]");
         xml->delDomain();
-        extra_core->clearOptionList();
+        extraCore->clearOptionList();
         return false;
     }
 
@@ -272,7 +272,7 @@ bool BarCore::setProduct(XmlConfig *product){
         last = xml->howManyTags("product");
         xml->deleteElement("product["+QString::number(last-1)+"]");
         xml->delDomain();
-        extra_core->clearOptionList();
+        extraCore->clearOptionList();
         return false;
     }
 
@@ -298,7 +298,7 @@ void BarCore::dataChangedSlot(XmlConfig *_xml){
     xml = new XmlConfig();
     xml->readXmlFromString(_xml->toString());
 
-    this->initExtras();
+    initExtras();
     xml->pushDomain();
     xml->delDomain();
     xml->setDomain("products");
@@ -312,7 +312,7 @@ void BarCore::dataChangedSlot(XmlConfig *_xml){
                 aux_xml = new XmlConfig();
                 aux_xml->createElement("type",type);
                 aux_xml->createElement("value",value);
-                extra_core->readFixedOptionFromXml(aux_xml);
+                extraCore->readFixedOptionFromXml(aux_xml);
                 delete aux_xml;
             }
         }
@@ -386,11 +386,11 @@ bool BarCore::setOptions(XmlConfig *_xml,const QString& product_code){
     product->setDomain("options");
 
 
-    option_list = extra_core->getFixedOptionsNames();
+    option_list = extraCore->getFixedOptionsNames();
     count = option_list.count();
     for(i=0;i<count;i++){
         option_type = option_list[i];
-        option_value = extra_core->getFixedOptionValue(option_type);
+        option_value = extraCore->getFixedOptionValue(option_type);
         if (!db.checkOption(product_code,option_type,option_value))
             continue;
         for(int j=0;j<(int) product->howManyTags("option");j++){
@@ -402,11 +402,11 @@ bool BarCore::setOptions(XmlConfig *_xml,const QString& product_code){
         }//product for
     }//option for
 
-    option_list = extra_core->getOptionsNames();
+    option_list = extraCore->getOptionsNames();
     count = option_list.count();
     for(i=0;i<count;i++){
         option_type = option_list[i];
-        option_value = extra_core->getOptionValue(option_type);
+        option_value = extraCore->getOptionValue(option_type);
         if (!db.checkOption(product_code,option_type,option_value))
             return false;
         for(int j=0;j<(int) product->howManyTags("option");j++){
@@ -419,32 +419,27 @@ bool BarCore::setOptions(XmlConfig *_xml,const QString& product_code){
     }//option for
     product->releaseDomain("options");
     xml->copy(product,"options","options");
-    extra_core->clearOptionList();
+    extraCore->clearOptionList();
     return true;
 }
 
-bool BarCore::checkOffers(XmlConfig *_xml,const QString& product_code){
-    OfferData *offer = 0;
-    OfferData *offer_db = 0;
-    XmlConfig *product=0;
-    product = _xml;
-    if (!product)
-        return false;
+bool BarCore::checkOffers(XmlConfig *_xml, const QString& product_code){
+    XmlConfig *product = _xml;
+    if (!product)  return false;
     //this method should only try to connect to the database and if there are offers at
     //extra core it should check if the product_code has the extra_offer.
-    offer = extra_core->getOffer();
+    OfferData *offer = extraCore->getOffer();
 
     //if there are no offers all's ok
-    if (!offer)
-        return true;
+    if (!offer)  return true;
 
+    OfferData offer_db =  db.getOffer(product_code, offer->offer_type, offer->offer_name);
     //now check that offer for that product
-    if (!(offer_db = db.getOffer(product_code,offer->offer_type,offer->offer_name)))
+    if (offer_db.isNull())
         return false;
     else{
         product->createElement("offer.type",offer->offer_type);
         product->createElement("offer.name",offer->offer_name);
-        delete offer_db;
     }
     return true;
 }
@@ -452,7 +447,6 @@ bool BarCore::checkOffers(XmlConfig *_xml,const QString& product_code){
 void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
     int i,count;
     ProductPriceData *prod_price = 0;
-    OfferData *offer_data = 0;
     XmlConfig *product;
     QString mod,option_value,option_type;
     double modifier;
@@ -462,7 +456,7 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
         return;
 
     //should check the customizable price and taxes
-    if ( !( prod_price = extra_core->getPrice() ) ){
+    if ( !( prod_price = extraCore->getPrice() ) ){
         //if there are no customizable price, the price is set at the db
         //and is modified by the option of the product
         prod_price = new ProductPriceData;
@@ -491,24 +485,24 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
         prod_price->price = QString::number(r_price);
 
         //also the special offers at the extra Core should be readed
-        if ((offer_data=extra_core->getOffer())){
-            offer_data = db.getOffer(product_code,offer_data->offer_type,offer_data->offer_name);
-            if (offer_data->offer_mode == "x"){
-                double discount = (offer_data->offer_discount).toDouble();
+        OfferData* tmp = extraCore->getOffer();
+        if ( tmp){
+            OfferData offer_data = db.getOffer(product_code, tmp->offer_type, tmp->offer_name);
+            if (offer_data.offer_mode == "x"){
+                double discount = (offer_data.offer_discount).toDouble();
                 //FIXME   FIX THE ROUND TO 2 DECIMALS
                 prod_price->price = QString::number((double) (prod_price->price).toDouble() * discount );
             }
-            else if (offer_data->offer_mode == "="){
-                prod_price->price = offer_data->offer_discount;
+            else if (offer_data.offer_mode == "="){
+                prod_price->price = offer_data.offer_discount;
             }
-            extra_core->clearOffer();
+            extraCore->clearOffer();
         }
     }
 
     r_price = (prod_price->price).toDouble();
-    r_price = extra_core->getModifiedPrice(r_price);
+    r_price = extraCore->getModifiedPrice(r_price);
     prod_price->price = QString::number(r_price);
-
 
     xml->createElement("billing.price",prod_price->price);
     xml->createElement("billing.currency","euro");
@@ -518,34 +512,39 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
 
 
     //be sure to clean the customizable price
-    extra_core->clearPrice();
+    extraCore->clearPrice();
 }
 
-bool BarCore::hasProducts(){
-    return hasProducts(xml);
+bool BarCore::hasProducts() const{
+    return hasProducts(*xml);
 }
 
-bool BarCore::hasProducts(XmlConfig *_xml){
-    int count;
+//bool BarCore::hasProducts(XmlConfig &xml) const{
+//    int count;
 
-    if (!_xml)
-        return false;
+//    xml.pushDomain();
+//    xml.delDomain();
 
-    _xml->pushDomain();
-    _xml->delDomain();
+//    if (!xml.setDomain("products")){
+//        xml.popDomain();
+//        return false;
+//    }
 
-    if (!_xml->setDomain("products")){
-        _xml->popDomain();
-        return false;
-    }
+//    count = xml.howManyTags("product");
+//    if (!count){
+//        xml.popDomain();
+//        return false;
+//    }
+//    xml.popDomain();
+//    return true;
+//}
 
-    count = _xml->howManyTags("product");
-    if (!count){
-        _xml->popDomain();
-        return false;
-    }
-    _xml->popDomain();
-    return true;
+bool BarCore::hasProducts(XmlConfig &xml) const{
+    xml.pushDomain();
+    xml.delDomain();
+    auto res = xml.setDomain("products") && xml.howManyTags("product");
+    xml.popDomain();
+    return res;
 }
 
 void BarCore::setDescription(const QString& description){
@@ -556,38 +555,22 @@ void BarCore::setDescription(const QString& description){
     emit dataChanged(xml);
 }
 
-
-double BarCore::getBillingSum(){
-    int count,i;
-    double ret = 0;
-    double parcial;
-    QString aux;
-    bool ok;
+double BarCore::total(){
     xml->pushDomain();
     xml->delDomain();
 
-    if (!xml->setDomain("products")){
-        xml->popDomain();
-        return ret;
-    }
-
-    count = xml->howManyTags("product");
-    if (count==0){
-        xml->popDomain();
-        return ret;
-    }
-    else
-        ret = 0;
-
-    for(i=0;i<count;i++){
-        aux = xml->readString("product["+QString::number(i)+"].billing.price");
-        parcial = aux.toDouble(&ok);
-        if (!ok)
-            continue;
-        ret += parcial;
+    double sum{};
+    if ( xml->setDomain("products")){
+        bool ok;
+        double parcial{};
+        for( auto i=0; i < xml->howManyTags("product"); i++){
+            parcial = xml->readString("product["+QString::number(i)+"].billing.price").toDouble(&ok);
+            if (!ok)  continue;
+            sum += parcial;
+        }
     }
     xml->popDomain();
-    return ret;
+    return sum;
 }
 
 void BarCore::processCore(const QString& pay_type){
@@ -609,8 +592,8 @@ void BarCore::processCore(const QString& pay_type){
     xml->delDomain();
     xml->popDomain();
 
-    if ( receipt_com->receiptExist(employee_id, start_time) )
-        receipt_com->deleteReceipt(employee_id, start_time);
+    if ( receiptQuerier->receiptExist(employee_id, start_time))
+        receiptQuerier->deleteReceipt(employee_id, start_time);
 
     emit ticket(xml);
     reInitialise();
@@ -637,7 +620,7 @@ void BarCore::processCore(const QString& pay_type){
 }
 
 void BarCore::initExtras(){
-    extra_core->clearExtras();
+    extraCore->clearExtras();
 }
 
 void BarCore::saveLastReceipt(){
@@ -668,13 +651,13 @@ void BarCore::setLastReceipt(){
     if ((last_employee_id.isEmpty()) || (last_start_time.isEmpty()))
         return;
 
-    if (receipt_com->receiptState(last_employee_id, last_start_time)){
+    if (receiptQuerier->receiptState(last_employee_id, last_start_time)){
         this->reInitialise();
         this->initExtras();
         return;
     }
 
-    aux_xml = receipt_com->getReceipt(last_employee_id,last_start_time);
+    aux_xml = receiptQuerier->getReceipt(last_employee_id,last_start_time);
     if (!aux_xml){
         this->reInitialise();
         this->initExtras();
@@ -682,7 +665,7 @@ void BarCore::setLastReceipt(){
     }
     this->dataChangedSlot(aux_xml);
     delete aux_xml;
-    receipt_com->lockRemoteReceipts(last_employee_id, last_start_time);
+    receiptQuerier->lockRemoteReceipts(last_employee_id, last_start_time);
     emit dataChanged(xml);
 }
 
@@ -706,31 +689,31 @@ bool BarCore::exitAndSaveReceipt(){
     xml->delDomain();
     xml->popDomain();
 
-    exist = receipt_com->receiptExist(employee_id, start_time);
+    exist = receiptQuerier->receiptExist(employee_id, start_time);
     if (!exist){
         if ( !hasProducts() ) return false;
-        ret = receipt_com->createReceipt(xml);
+        ret = receiptQuerier->createReceipt(xml);
     }
     else
-        ret = receipt_com->saveReceipt(xml);
+        ret = receiptQuerier->saveReceipt(xml);
 
     saveLastReceipt();
-    receipt_com->unlockRemoteReceipts(employee_id, start_time);
+    receiptQuerier->unlockRemoteReceipts(employee_id, start_time);
     return ret;
 }
 
-void BarCore::genericSignalSlot(const QString& signal_name){
-    if (signal_name == GSIGNAL::BARCORE_EXIT_AND_SAVE_RECEIPT){
+void BarCore::genericSignalSlot(const QString& signal){
+    if (signal == GSIGNAL::BARCORE_EXIT_AND_SAVE_RECEIPT){
         exitAndSaveReceipt();
         reInitialise(false);
         initExtras();
     }
-    else if ( signal_name ==GSIGNAL::BARCORE_SET_LAST_RECEIPT){
+    else if ( signal ==GSIGNAL::BARCORE_SET_LAST_RECEIPT){
         reInitialise(false);
         initExtras();
         setLastReceipt();
     }
-    else if ( signal_name ==GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT){
+    else if ( signal ==GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT){
         QString employee_id;
         QString start_time;
         xml->pushDomain();
@@ -739,29 +722,29 @@ void BarCore::genericSignalSlot(const QString& signal_name){
         start_time = xml->readString("timestamps.start");
         xml->delDomain();
         xml->popDomain();
-        receipt_com->deleteReceipt(employee_id,start_time);
+        receiptQuerier->deleteReceipt(employee_id,start_time);
     }
 }
 
-void BarCore::genericDataSignalSlot(const QString& signal_name, XmlConfig *_xml){
-    if ( signal_name == GDATASIGNAL::USER_CHANGED ){
+void BarCore::genericDataSignalSlot(const QString& signal, XmlConfig *_xml){
+    if ( signal == GDATASIGNAL::USER_CHANGED ){
         setEmployeeInfo();
         emit dataChanged(xml);
     }
-    else if ( signal_name == GDATASIGNAL::BARCORE_PROCESS_CORE ){
+    else if ( signal == GDATASIGNAL::BARCORE_PROCESS_CORE ){
         xml->delDomain();
         auto pay_type = _xml->readString("pay_type");
         processCore(pay_type);
     }
-    else if (signal_name == GDATASIGNAL::BARCORE_SEND_PRODUCT){
+    else if (signal == GDATASIGNAL::BARCORE_SEND_PRODUCT){
         receiveProduct(_xml);
         emit dataChanged(xml);
     }
-    else if (signal_name == GDATASIGNAL::BARCORE_CHANGE_XML){
+    else if (signal == GDATASIGNAL::BARCORE_CHANGE_XML){
         dataChangedSlot(_xml);
         emit dataChanged(xml);
     }
-    else if (signal_name == GDATASIGNAL::BARCORE_CHANGE_ORDER_DESCRIPTION){
+    else if (signal == GDATASIGNAL::BARCORE_CHANGE_ORDER_DESCRIPTION){
         QString aux;
         _xml->pushDomain();
         _xml->delDomain();
@@ -770,7 +753,7 @@ void BarCore::genericDataSignalSlot(const QString& signal_name, XmlConfig *_xml)
             this->setDescription(aux);
         _xml->popDomain();
     }
-    else if (signal_name == GDATASIGNAL::BARCORE_PRINT_ORDER_AT_SPECIAL_PRINTER){
+    else if (signal == GDATASIGNAL::BARCORE_PRINT_ORDER_AT_SPECIAL_PRINTER){
         QString aux;
         _xml->pushDomain();
         _xml->delDomain();
@@ -798,58 +781,45 @@ void BarCore::setProductPrinterSection(const QString& product_code){
 
 */
 void BarCore::sendCurrentOrderToKitchen(){
-    XmlConfig *kitchen = 0;
-    int i,count;
-    //int j,attr_count;
-    QStringList num_list;
-    PrinterManager *printer=0;
-
-    if (!this->hasProducts())
-        return;
-
+    if (!hasProducts()) return;
     xml->pushDomain();
 
-    kitchen = new XmlConfig();
-    kitchen->readXmlFromString(xml->toString());
+    XmlConfig kitchenXml;
+    kitchenXml.readXmlFromString(xml->toString());
+    kitchenXml.delDomain();
+    kitchenXml.setDomain("products");
 
-    kitchen->delDomain();
-    kitchen->setDomain("products");
-    count =kitchen->howManyTags("product");
-    for (i=0;i<count;i++){
-        kitchen->setDomain("product["+QString::number(i)+"]");
+    QStringList printers;
+    for ( auto i=0; i < kitchenXml.howManyTags("product"); i++){
+        kitchenXml.setDomain("product["+QString::number(i)+"]");
         /**
         FIXME At the moment there is only a printer type so, we should only check for this tag
         In the future, with a lot of printer tags, this method must check all printer tags and check
         that a printer tag has the kitchen attribute;
 */
-        if (kitchen->howManyTags("printer")==0){
-            num_list.prepend(QString::number(i));
-        }
-        kitchen->releaseDomain("product");
+        if (kitchenXml.howManyTags("printer")==0)
+            printers.prepend(QString::number(i));
+        kitchenXml.releaseDomain("product");
     }
 
-    count = num_list.count();
-    for (i=0;i<count;i++){
-        kitchen->deleteElement("product["+num_list[i]+"]");
-    }
+    for (const QString& item : printers)
+        kitchenXml.deleteElement("product["+item+"]");
 
-    kitchen->delDomain();
-    if (!(hasProducts(kitchen)))
-        return;
+    kitchenXml.delDomain();
+    if (! hasProducts(kitchenXml)) return;
 
     xml->delDomain();
     xml->setDomain("products");
-    count =xml->howManyTags("product");
-    for (i=0;i<count;i++){
+    for (auto i=0; i < xml->howManyTags("product"); i++){
         xml->setDomain("product["+QString::number(i)+"]");
         /**
         FIXME At the moment there is only a printer type so, we should only check for this tag
         In the future, with a lot of printer tags, this method must check all printer tags and check
         that a printer tag has the kitchen attribute;
-*/
-        if (kitchen->howManyTags("printer")==0){
+        */
+        if (kitchenXml.howManyTags("printer")==0)
             xml->createAttribute("printer","printed","true");
-        }
+
         xml->releaseDomain("product");
     }
     xml->delDomain();
@@ -857,18 +827,13 @@ void BarCore::sendCurrentOrderToKitchen(){
 
     emit dataChanged(xml);
 
-    printer = new PrinterManager(this);
-    printer->printKitchenOrder(kitchen);
-    delete printer;
-    delete kitchen;
-
+    PrinterManager printer;
+    printer.printKitchenOrder(kitchenXml);
 }
 
 void BarCore::debug(){
-    QString aux;
-    aux = xml->toString();
     cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
     cout << "                          XML DEL CORE                "<< endl;
-    cout << aux.toStdString();
+    cout << xml->toString().toStdString();
     cout << "+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++" << endl;
 }

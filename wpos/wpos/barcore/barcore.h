@@ -38,20 +38,18 @@ public:
      */
 
     void reInitialise(bool flush_last = true);
-    double getBillingSum();
-    bool hasProducts();
-    bool hasProducts(XmlConfig *_xml);
+    double total();
+    bool hasProducts() const;
+    bool hasProducts(XmlConfig &xml) const;
 
     bool exitAndSaveReceipt();
-
-public slots:
-    void genericDataSignalSlot(const QString& signal_name, XmlConfig *_xml);
-    void genericSignalSlot(const QString& signal_name);
-
     void receiveProduct(XmlConfig *_xml);
     void receiveProduct(XmlConfig *_xml, int number);
 
-    void processCore(const QString& pay_type);
+public slots:
+    void genericDataSignalSlot(const QString& signal, XmlConfig *_xml);
+    void genericSignalSlot(const QString& signal);
+
     void initExtras();
     void setLastReceipt();
     void setDescription(const QString& description);
@@ -60,9 +58,9 @@ public slots:
     void dataChangedSlot(XmlConfig *_xml);
 
 signals:
-    void dataChanged(XmlConfig *_xml);
-    void ticket(XmlConfig *_xml);
-    void genericSignal(const QString& signal_name);
+    void dataChanged(XmlConfig *xml);
+    void ticket(XmlConfig *xml);
+    void genericSignal(const QString& signal);
 
 protected:
     //module info reception
@@ -85,11 +83,12 @@ protected:
 
 private:
     void resetCore();
+    void processCore(const QString& pay_type);
 
 private:
     XmlConfig *xml{};
-    ExtraCore *extra_core{};
-    DBusReceiptQuerier *receipt_com{};
+    ExtraCore *extraCore{};
+    DBusReceiptQuerier *receiptQuerier{};
 
     QString last_employee_id;
     QString last_start_time;

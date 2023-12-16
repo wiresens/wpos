@@ -37,60 +37,31 @@ XmlConfigPrivate::XmlConfigPrivate(
 
     if ( init(file_name, mode) == -1 ){ //there's no opened file, no point continuing with the constructor
         cerr << "Errors happened in the constructor, exiting without xml loaded" <<endl;
-
-            dev.close();
+        dev.close();
         return;
     }
 
-    m_domDocument = new QDomDocument();
-    if (m_domDocument)
-        if ( !(is_xml_file_parsed_succesfully = m_domDocument->setContent( &dev, &errorMsg, &errorLine, &errorColumn )) ) {
-            cerr << "Parse error in XML file : " << file_name.toStdString() << endl;
-            cerr <<  errorMsg.toStdString() << " Line: " << errorLine << ", Col: " << errorColumn << endl;
-        }
+    if ( !(is_xml_file_parsed_succesfully = m_domDocument.setContent( &dev, &errorMsg, &errorLine, &errorColumn )) ) {
+        cerr << "Parse error in XML file : " << file_name.toStdString() << endl;
+        cerr <<  errorMsg.toStdString() << " Line: " << errorLine << ", Col: " << errorColumn << endl;
+    }
     dev.close();
 }
 
 XmlConfigPrivate::XmlConfigPrivate(
-    QDomDocument* document,
+    const QDomDocument &document,
     const QString& file_name,
     QIODevice::OpenMode mode):
     XmlConfigPrivate(file_name, mode)
 {
-    QDomDocument domDoc  { document->cloneNode(true).toDocument() };
-    m_domDocument = new QDomDocument();
-    m_domDocument->setContent( domDoc.toString());
+    m_domDocument.setContent( document.cloneNode(true).toDocument().toString());
 }
-
-//XmlConfigIO::XmlConfigIO(QDomDocument* document,
-//                         const QString& file_name,
-//                         QIODevice::OpenMode mode)
-//{
-
-//    if ( init(file_name, mode) == -1 ){
-//        cerr << "Errors happened in the constructor, exiting" <<endl;
-//        return;
-//    }
-
-//    QDomDocument domDoc  { document->cloneNode(true).toDocument() };
-//    m_domDocument = new QDomDocument();
-
-//    QString errorMsg;
-//    int errorLine;
-//    int errorColumn;
-//    if( !( is_xml_file_parsed_succesfully = m_domDocument->setContent( domDoc.toString(), &errorMsg, &errorLine, &errorColumn ) ) ){
-//        cerr << "Parse error in XML file : " << file_name.toStdString() << endl;
-//        cerr <<  errorMsg.toStdString() << " Line: " << errorLine << ", Col: " << errorColumn << endl;
-//    }
-//    dev.close();
-//}
 
 //the private shared constructor
 int XmlConfigPrivate::init(const QString& file_name, QIODevice::OpenMode mode){
 
     //if we open in writeonly mode , bad things (tmp) will happen
-    if (mode == QIODevice::WriteOnly)
-        mode = QIODevice::ReadWrite;
+    if (mode == QIODevice::WriteOnly)  mode = QIODevice::ReadWrite;
 
     //the file really don't exist, we'll use a tempory file instead
     if ( file_name.isNull() || file_name.isEmpty() ){
@@ -131,10 +102,17 @@ int XmlConfigPrivate::init(const QString& file_name, QIODevice::OpenMode mode){
     return 0;
 }
 
+//XmlConfigPrivate::~XmlConfigPrivate(){
+//    if (has_tempory_file)
+//        fclose(tmp_fd);
+//    else dev.close();
+//}
+
 XmlConfigPrivate::~XmlConfigPrivate(){
-    delete m_domDocument;
-    if (has_tempory_file) fclose(tmp_fd);
-    else dev.close();
+    if (tmp_fd)
+        fclose(tmp_fd);
+    else
+        dev.close();
 }
 
 bool XmlConfigPrivate::ok(){
@@ -156,7 +134,7 @@ bool XmlConfigPrivate::save(const QString& file_name){
     }
 
     QTextStream stream(&dev);
-    m_domDocument->save(stream, XML_TAG_IDENTATION);
+    m_domDocument.save(stream, XML_TAG_IDENTATION);
     dev.close();
     return true;
 }
@@ -166,10 +144,7 @@ QString XmlConfigPrivate::fileName() const{
 }
 
 QString XmlConfigPrivate::toString() const{
-    if (m_domDocument)
-        return m_domDocument->toString();
-    else
-        return QString("");
+    return m_domDocument.toString();
 }
 
 void XmlConfigPrivate::debug(const QDomNode& section, uint ident) const{
@@ -182,7 +157,7 @@ void XmlConfigPrivate::debug(const QDomNode& section, uint ident) const{
     cout << endl;
 }
 
-QDomDocument *XmlConfigPrivate::domDocument()const {
+const QDomDocument& XmlConfigPrivate::domDocument() const {
     return m_domDocument;
 }
 

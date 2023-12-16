@@ -95,17 +95,23 @@ public:
   * @param mode: the mode we'll open the file
   */
     explicit XmlConfig(
-        QDomDocument* document,
+        const QDomDocument &document,
         const QString& _file = QString(),
         QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
     );
+
+    XmlConfig& operator=(XmlConfig&&);
+    XmlConfig(XmlConfig&&);
 
     /**
     * DESTRUCTOR
   * We must delete the document to free our memory and we also must take care of
   * deleting any posible temporal file we were using
     */
+
     ~XmlConfig();
+
+    void clear();
 
     /*
   * Damnnn constructors, they don't return anything so we can't know if really we have read
@@ -126,7 +132,7 @@ public:
   * this method construct a QString with all the xml tree
   * @return a QString with the xml tree
   */
-    QString toString();
+    QString toString() const;
 
 #ifdef _HAS_VALIDATE_METHOD_
     bool validateXmlWithDTD(QString path, bool verbose = false);
@@ -639,7 +645,7 @@ public:
   * WARNING: If you use this method you have to know what are you doing
   * @return the qt representation of the document
   */
-    QDomDocument* getDocument();
+    const QDomDocument &getDocument() const;
 
 private:
 
@@ -730,8 +736,8 @@ private:
     QDomNode temporyDomainPrivate (const QString& domain );
 
 private:
-    XmlConfigPrivate *impl{};
-    QDomDocument *doc{};  //the document pointing to our data
+    XmlConfigPrivate* impl;
+    QDomDocument doc{};  //the document pointing to our data
     QDomNode currentNode; //the current node , why is it not a pointer?
     QDomNode domain;      //the current domain , why is it not a pointer?
     QString string_domain; //the domain in a string representation

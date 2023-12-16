@@ -30,21 +30,18 @@ struct EventLogData{
 class EventLogCoreDB : public BasicDatabase  {
 public:
     EventLogCoreDB(
-        const QString& _connection_name,
-        const QString& _hostname,
-        const QString& _database,
-        const QString& _username,
-        const QString& _passwd);
+        const QString& connection,
+        const QString& hostname,
+        const QString& database,
+        const QString& username,
+        const QString& passwd);
 
     EventLogCoreDB(
-        const QString& _connection_name,
-        const QString& configuration_path);
+        const QString& connection,
+        const QString& configFile);
 
-    ~EventLogCoreDB();
-
-    int getNextItemVal ();
-    void logData(const EventLogData *data);
-
+    int getNextItemVal();
+    void logData(const EventLogData &data);
 };
 
 #endif

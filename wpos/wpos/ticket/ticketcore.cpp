@@ -73,8 +73,7 @@ void TicketCore::zSlot(){
     dailyCashOperations(false);
 }
 
-void TicketCore::receiveCoreDataSlot(XmlConfig *_xml){
-
+void TicketCore::receiveCoreData(XmlConfig *_xml){
     if (!_xml)   return;
 
     XmlConfig xml;
@@ -92,247 +91,188 @@ void TicketCore::receiveCoreDataSlot(XmlConfig *_xml){
     if (getTogglePrinterState()){
         //print ticket code.
     }
-
 }
 
-bool TicketCore::stampTicket(XmlConfig *_xml){
+bool TicketCore::stampTicket(XmlConfig *xml){
     bool numeric_bool;
     bool ret;
     int ticket_number;
     int item_code;
-    int count,i;
-    int op_count,j;
+
     double total=0;
     QString string_tn;
-    QString ticket_log;
-    TicketData *data=0;
-    TicketLocationData *location=0;
-    TicketItemData *item=0;
-    TicketItemOptionData *option=0;
-    XmlConfig *event = 0;
 
-    _xml->pushDomain();
-    _xml->delDomain();
-    string_tn = _xml->readString("ticketnumber");
-    if (string_tn.isEmpty())
-        return false;
+
+    xml->pushDomain();
+    xml->delDomain();
+    string_tn = xml->readString("ticketnumber");
+    if (string_tn.isEmpty()) return false;
 
     ticket_number = string_tn.toInt(&numeric_bool);
-    if (!numeric_bool)
-        return false;
-
+    if (!numeric_bool)   return false;
 
     //fill the ticket data and location;
-    data = new TicketData;
-    location = new TicketLocationData;
+    TicketData data;
+    TicketLocationData location;
 
     //ticket data
-    data->ticket_number = ticket_number;
-    data->employee_id = _xml->readString("employee.dni");
-    data->start_time = _xml->readString("timestamps.start");
-    data->end_time = _xml->readString("timestamps.last");
-    data->pay_type = _xml->readString("paytype");
-    // FIXME The set of states of the ticket hasn't been defined...
-    data->ticket_state = "cobrado";
+    data.ticket_number = ticket_number;
+    data.employee_id = xml->readString("employee.dni");
+    data.start_time = xml->readString("timestamps.start");
+    data.end_time = xml->readString("timestamps.last");
+    data.pay_type = xml->readString("paytype");
+    data.ticket_state = "cobrado"; // FIXME The set of states of the ticket hasn't been defined...
 
-    //location data
-    //      not used by now...
-
-    location->lounge = _xml->readString("location.lounge");
-    location->table = _xml->readString("location.table");
-    location->ticket_number=ticket_number;
-
+    location.lounge = xml->readString("location.lounge");
+    location.table = xml->readString("location.table");
+    location.ticket_number = ticket_number;
 
     //start the transaction trying with queries over the ticket_table and location_table
     db->startTransaction();
-    if (!db->insertTicket(data)){
-        printf ("INSERTTICKET FAILED\n");
+    if (!db->insertTicket(&data)){
+        printf ("INSERT TICKET FAILED\n");
         db->rollback();
         db->setVal(ticket_number);
-        _xml->popDomain();
-        delete data;
-        delete location;
+        xml->popDomain();
         return false;
     }
 
-    //     if (!location->lounge.isEmpty()){
-    if (!db->insertLocation(location)){
+    //     if (!location.lounge.isEmpty()){
+    if ( !db->insertLocation(&location) ){
         db->rollback();
         db->setVal(ticket_number);
-        _xml->popDomain();
-        delete data;
-        delete location;
+        xml->popDomain();
         return false;
     }
     //     }
 
-    _xml->setDomain("products");
-    count = _xml->howManyTags("product");
-    for(i=0;i<count;i++){
-        if ((item_code = db->getNextItemVal()) ==-1)
-            continue;
-        _xml->setDomain("product["+QString::number(i)+"]");
-        item = new TicketItemData;
-        item->item_code = item_code;
-        item->ticket_number = ticket_number;
-        item->product_code = this->getProductCode(_xml);
-        item->price = (_xml->readString("billing.price")).toDouble();
-        total += item->price;
-        if (item->price < 0)
-            item->units=-1;
-        else
-            item->units=1;
-        item->order_time = _xml->readString("timestamps.ordertime");
-        item->tax = _xml->readAttribute("billing.tax","type");
-        item->tax_rate = (_xml->readString("billing.tax")).toDouble();
+    xml->setDomain("products");
+    for( auto i=0; i < xml->howManyTags("product"); ++i){
+        if ( (item_code = db->getNextItemVal()) == -1 ) continue;
+        xml->setDomain("product["+QString::number(i)+"]");
+        TicketItemData itemData;
+        itemData.item_code = item_code;
+        itemData.ticket_number = ticket_number;
+        itemData.product_code = getProductCode(xml);
+        itemData.price = xml->readString("billing.price").toDouble();
+        total += itemData.price;
 
-        if (!db->insertTicketItem(item)){
+        if (itemData.price < 0) itemData.units=-1;
+        else itemData.units = 1;
+
+        itemData.order_time = xml->readString("timestamps.ordertime");
+        itemData.tax = xml->readAttribute("billing.tax","type");
+        itemData.tax_rate = xml->readString("billing.tax").toDouble();
+
+        if (!db->insertTicketItem(&itemData)){
             db->rollback();
             db->setVal(ticket_number);
-            _xml->popDomain();
-            delete item;
-            delete data;
-            delete location;
+            xml->popDomain();
             return false;
         }
 
-        if (_xml->setDomain("offer")){
-            OfferData *offer = new OfferData;
-            offer->offer_type = _xml->readString("type");
-            offer->offer_name = _xml->readString("name");
-            offer->item_code = item_code;
-            if (!db->insertOffer(offer)){
+        if (xml->setDomain("offer")){
+            OfferData offer;
+            offer.offer_type = xml->readString("type");
+            offer.offer_name = xml->readString("name");
+            offer.item_code = item_code;
+            if (!db->insertOffer(&offer)){
                 db->rollback();
                 db->setVal(ticket_number);
-                _xml->popDomain();
-                delete item;
-                delete offer;
-                delete data;
-                delete location;
+                xml->popDomain();
                 return false;
             }
-            _xml->releaseDomain("offer");
-            delete offer;
+            xml->releaseDomain("offer");
         }
 
-        op_count = _xml->howManyTags("option","options");
-        for (j=0;j<op_count;j++){
-            option = new TicketItemOptionData;
-            option->item_code = item_code;
-            option->option_type = _xml->readString("options.option["+QString::number(j)+"].type");
-            option->option = _xml->readString("options.option["+QString::number(j)+"].value");
-            if (!db->insertItemOption(option)){
+        for (auto j=0; j < xml->howManyTags("option","options"); j++){
+            TicketItemOptionData option;
+            option.item_code = item_code;
+            option.option_type = xml->readString("options.option["+QString::number(j)+"].type");
+            option.option = xml->readString("options.option["+QString::number(j)+"].value");
+            if (!db->insertItemOption(&option)){
                 db->rollback();
                 db->setVal(ticket_number);
-                _xml->popDomain();
-                delete option;
-                delete item;
-                delete data;
-                delete location;
+                xml->popDomain();
                 return false;
             }
-            delete option;
         }
-        _xml->releaseDomain("product");
-        delete item;
+        xml->releaseDomain("product");
     }
 
-    ret= db->commit();
+    ret = db->commit();
 
-    if (total > 0)
-        ticket_log = "ticket_add";
-    else
-        ticket_log = "ticket_substract";
+    QString ticket_log;
+    if ( total > 0 ) ticket_log = "ticket_add";
+    else  ticket_log = "ticket_substract";
 
-
-    if (data->pay_type=="metalico"){
-        event = new XmlConfig();
-        event->createElement("event_type",ticket_log);
-        event->createElement("cash_quantity",QString::number(total));
-        event->createElement("ticket_number",QString::number(ticket_number));
-        emit genericDataSignal(GDATASIGNAL::EVENTLOG,event);
-        delete event;
+    if ( data.pay_type == "metalico"){
+        XmlConfig xml;
+        xml.createElement("event_type", ticket_log);
+        xml.createElement("cash_quantity",QString::number(total));
+        xml.createElement("ticket_number",QString::number(ticket_number));
+        emit genericDataSignal(GDATASIGNAL::EVENTLOG, &xml);
     }
 
-    _xml->delDomain();
-    _xml->popDomain();
+    xml->delDomain();
+    xml->popDomain();
 
-    delete data;
-    delete location;
-
-    if (this->printer_state)
-        printer->printTicket(_xml,num_copy);
-
+    if (printer_state)  printer->printTicket(*xml, num_copy);
     return ret;
 }
 
-QString TicketCore::getProductCode(XmlConfig *_xml){
-    int count,i;
+QString TicketCore::getProductCode(XmlConfig *xml){
     QString sort_aux;
-    XmlConfig *product = 0;
     //check the name at the list of articles
-    product = _xml;
-    product->pushDomain();
+    xml->pushDomain();
+    for ( auto i=0; i < xml->howManyTags("article","articles"); i++)
+        sort_aux+= xml->readString("articles.article["+QString::number(i)+"].name") + " ";
 
-    sort_aux = "";
-    count = product->howManyTags("article","articles");
-    for (i=0;i<count;i++){
-        sort_aux+= product->readString("articles.article["+QString::number(i)+"].name");
-        if (i!=(count-1))
-            sort_aux+=" ";
-    }
-    sort_aux.simplified();
-
-    product->popDomain();
-    return sort_aux;
+    xml->popDomain();
+    return sort_aux.simplified();
 }
 
 bool TicketCore::dailyCashOperations(bool partial){
-    QString first_timestamp, last_timestamp;
-    XmlConfig *tmp_xml = 0;
-    ChangeMoneyWidgetDB *tmp_db = 0;
-
-    tmp_xml = new XmlConfig();
-    tmp_xml->delDomain();
+    XmlConfig tmp_xml;
+    tmp_xml.delDomain();
 
     //the timestamp for the X or Z actions
-    last_timestamp = currentDateTimeString();
-    tmp_xml->createElement("timestamp", last_timestamp);
+    QString last_timestamp = currentDateTimeString();
+    tmp_xml.createElement("timestamp", last_timestamp);
 
     //timestamps of the first and last tickets at the database(at TICKETS table).
-    first_timestamp = db->getLastZDate();
+    QString first_timestamp = db->getLastZDate();
     if ( first_timestamp.isEmpty() ) first_timestamp = currentDateTimeString();;
 
-    tmp_xml->createElement("timestamps.first", first_timestamp);
-    tmp_xml->createElement("timestamps.last", last_timestamp);
+    tmp_xml.createElement("timestamps.first", first_timestamp);
+    tmp_xml.createElement("timestamps.last", last_timestamp);
 
 
-    if ( !db->getXEmployeeData(tmp_xml) ){
+    if ( !db->getXEmployeeData(&tmp_xml) ){
         cout << __FILE__ << endl;
         cout << __PRETTY_FUNCTION__ << " : " << __LINE__ - 2 << endl;
         cout << "Problems Obtaining  staff data" << endl;
         return false;
     }
-    if ( !db->getXMain(tmp_xml) ){
+    if ( !db->getXMain(&tmp_xml) ){
         cout << "Problems obtaining main data" << endl;
         return false;
     }
-    if(!db->getXOfferSection(tmp_xml)){
+    if(!db->getXOfferSection(&tmp_xml)){
         cout << "Problems obtaining offer data " << endl;
         return false;
     }
-    if(!db->getXOptionSection(tmp_xml)){
+    if(!db->getXOptionSection(&tmp_xml)){
         cout << "Problems obtaining options data " << endl;
         return false;
     }
 
 
     //there is a new section at the xml that with the cash at the cashbox
-    tmp_db = new ChangeMoneyWidgetDB("TicketCoreCashInWidget", Files::configFilePath("database"));
-    tmp_db->connect();
-    tmp_xml->createElement("money_at_cashbox", QString::number(tmp_db->getMoneyInCash(),'f',2));
-    tmp_db->disConnect();
-    delete tmp_db;  tmp_db=0;
+    ChangeMoneyWidgetDB tmp_db("TicketCoreCashInWidget", Files::configFilePath("database"));
+    tmp_db.connect();
+    tmp_xml.createElement("money_at_cashbox", QString::number(tmp_db.getMoneyInCash(),'f',2));
+    tmp_db.disConnect();
 
     /*************************************************************
 All this code will be moved soon to a new section called statistics which
@@ -350,12 +290,12 @@ to this new section.
     cout << "****************************************************************************" <<endl;
     cout << "                     THIS IS THE OUTPUT OF THE X or Z                      "  <<endl;
     cout << "****************************************************************************" <<endl;
-    tmp_xml->debug();
+    tmp_xml.debug();
     cout << "****************************************************************************" <<endl;
 
     //this is the X method
     if (partial){
-        emit genericDataSignal(GDATASIGNAL::X, tmp_xml);
+        emit genericDataSignal(GDATASIGNAL::X, &tmp_xml);
         if (printer_state){
             //send the xml to the printer
             printer->printX(tmp_xml);
@@ -373,28 +313,23 @@ to this new section.
         xml_event.createElement("event_type", "z");
         emit genericDataSignal(GDATASIGNAL::EVENTLOG, &xml_event);
         fillTicketGaps();
-        if ( !db->zeta() ){
+        if ( !db->vaccum() ){
             cout << "ZETA error"<< endl;
-            delete tmp_xml;
             return false;
         }
-        emit genericDataSignal(GDATASIGNAL::Z, tmp_xml);
+        emit genericDataSignal(GDATASIGNAL::Z, &tmp_xml);
         if (printer_state){
             printer->printZ(tmp_xml);
             usleep(100);
             printer->printTicketTotal(tmp_xml);
         }
     }
-    delete tmp_xml;
     return true;
 }
 
 void TicketCore::genericSignalSlot(const QString& signal){
-    if ( signal == GSIGNAL::X){
-        xSlot();
-    }else if (signal == GSIGNAL::Z){
-        zSlot();
-    }
+    if ( signal == GSIGNAL::X ) xSlot();
+    else if ( signal == GSIGNAL::Z ) zSlot();
 }
 
 void TicketCore::genericDataSignalSlot(
@@ -422,51 +357,37 @@ void TicketCore::genericDataSignalSlot(
 }
 
 void TicketCore::fillTicketGaps(){
-    int first;
-    int last;
-    int actual;
-    QString date ="";
-    TicketData *data=0;
+    QString date;
 
-    first = db->getFirstTicketCode();
-    last = db->getLastTicketCode();
+    int first = db->getFirstTicketCode();
+    int last = db->getLastTicketCode();
+    if (last <= first)  return;
 
-    if (last<=first)
-        return;
-
-    for(actual=first;actual<last;actual++){
+    for(auto i = first; i < last; i++){
         //check ticketcode gaps
-        if (!db->ticketCodeExists(actual)){
+        if (!db->ticketCodeExists(i)){
             if (date.isEmpty()){
-                date = db->dateFromTicketCode(actual+1);
-                if (date.isEmpty()){
-                    //                    date = QDate::currentDate().toString("dd/MM/yyyy")+" ";
-                    //                    date+=QTime::currentTime().toString("hh:mm:ss");
-                    date = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
-                }
+                date = db->dateFromTicketCode(i+1);
+                if (date.isEmpty())
+                    date = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);               
             }
-            data = new TicketData;
-            data->ticket_number = actual;
-            data->employee_id = "1"; //the system user should be always "1"
-            data->start_time = date;
-            data->end_time = date;
-            data->pay_type = "metalico";  //pay_type always at the database :?
-            data->ticket_state = "cobrado";
+            TicketData data;
+            data.ticket_number = i;
+            data.employee_id = "1"; //the system user should be always "1"
+            data.start_time = date;
+            data.end_time = date;
+            data.pay_type = "metalico";  //pay_type always at the database :?
+            data.ticket_state = "cobrado";
 
-            if (!db->insertTicket(data)){
+            if (!db->insertTicket(&data)){
                 db->rollback();
-                delete data;
                 continue;
             }
-            delete data;
-
         }
-        else
-            date = db->dateFromTicketCode(actual);
+        else  date = db->dateFromTicketCode(i);
     }
     db->setVal(last);
 }
-
 
 void TicketCore::setTicketCopies(uint copies){
     if ( copies > 0 && copies < 100 )

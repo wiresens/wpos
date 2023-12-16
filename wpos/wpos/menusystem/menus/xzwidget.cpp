@@ -96,8 +96,6 @@ XZWidget::XZWidget(QWidget *parent, const QString& name) :
     connect(cancel_button, &QPushButton::released, this, &XZWidget::returnToADMmenuSlot);
 }
 
-XZWidget::~XZWidget(){}
-
 bool XZWidget::initBrowser(){
     delete browser;
     delete b_layout;
@@ -179,12 +177,12 @@ void XZWidget::printSlot(){
     PrinterManager printer;
     switch(operation){
     case XOperation:
-        printer.printX(&last_xml);
-        printer.printTicketTotal(&last_xml);
+        printer.printX(last_xml);
+        printer.printTicketTotal(last_xml);
         break;
     case ZOperation:
-        printer.printZ(&last_xml);
-        printer.printTicketTotal(&last_xml);
+        printer.printZ(last_xml);
+        printer.printTicketTotal(last_xml);
         break;
     }
 
@@ -194,14 +192,6 @@ void XZWidget::returnToADMmenuSlot(){
     XmlConfig xml;
     xml.createElement("name", SalesScreen::ADMIN_MENU);
     emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
-}
-
-void XZWidget::showEvent(QShowEvent *e){
-    QWidget::showEvent(e);
-}
-
-void XZWidget::hideEvent(QHideEvent *e){
-    QWidget::hideEvent(e);
 }
 
 void XZWidget::genericDataSignalSlot(const QString& signal_name, XmlConfig *xml){

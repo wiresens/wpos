@@ -26,9 +26,7 @@ class QString;
 
 class ProductExtraInfo{
 public:
-    ProductExtraInfo();
-    explicit ProductExtraInfo(const QString option_type);
-    ~ProductExtraInfo();
+    explicit ProductExtraInfo(const QString option_type = "UNKNOWN_OPTION" );
 
     void addOption(const QString& option, bool is_default=false);
     bool removeOption(const QString& option);

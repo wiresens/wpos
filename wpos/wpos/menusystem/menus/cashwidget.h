@@ -26,10 +26,9 @@ class CashWidget :
     Q_OBJECT
 public:
     CashWidget(
-        BarCore *_core,
+        BarCore *barCore,
         QWidget *parent,
         const QString& name = QString());
-    ~CashWidget();
 
     void setNewPrice(double price);
 
@@ -40,18 +39,18 @@ protected slots:
     void cancelSlot();
 
     void quickAccept();
-    void genericDataSignalSlot(const QString& signal_name,XmlConfig *xml);
+    void genericDataSignalSlot(const QString& signal,XmlConfig *xml);
 
 signals:
-    void genericDataSignal(const QString& signal_name,XmlConfig *xml);
-    void genericSignal(const QString& signal_name);
+    void genericDataSignal(const QString& signal,XmlConfig *xml);
+    void genericSignal(const QString& signal);
 
 protected:
-    void showEvent(QShowEvent *e);
+    void showEvent(QShowEvent *event);
     void sendTicketSignal();
 
     FloatKeyboard *float_keyboard;
-    BarCore *core{};
+    BarCore *barCore{};
     double cash{};
     double actual_price{};
     bool fast_cashing{ true }; // Controls whether clicking the ok_button continue the sales operation

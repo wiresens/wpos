@@ -173,7 +173,7 @@ void PayModes::showEvent(QShowEvent *e){
         return;
     }
 
-    actual_price = core->getBillingSum();
+    actual_price = core->total();
 
     //the price is 0... nothing to pay
     XmlConfig xml;

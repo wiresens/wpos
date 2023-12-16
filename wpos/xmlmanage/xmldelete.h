@@ -30,20 +30,19 @@ class QString;
 class XmlConfig;
 
 class XmlDelete {
-public: 
-	XmlDelete();
-	~XmlDelete();
+public:
+    XmlDelete();
+    ~XmlDelete();
 
-     void del(QStringList *list);
-     void delAttribute(QStringList *list);
+    void del(QStringList *list);
+    void delAttribute(QStringList *list);
 
 private:
+    void delNodes(QString file_name,QStringList *list);
+    void getXml(QString file_name);
+    void errorExit(QString output="");
 
-     void delNodes(QString file_name,QStringList *list);
-     void getXml(QString file_name);
-     void errorExit(QString output="");
-
-     XmlConfig *xml;
+    XmlConfig *xml;
 
 };
 

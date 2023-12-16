@@ -28,46 +28,44 @@ namespace std{}
 using namespace std;
 
 FileManagerDB::FileManagerDB(
-    const QString& _connection_name,
-    const QString& _hostname,
-    const QString& _database,
-    const QString& _username,
-    const QString& _passwd):
-    BasicDatabase(_connection_name,_hostname,_database,_username,_passwd){}
+    const QString& connection,
+    const QString& hostname,
+    const QString& database,
+    const QString& username,
+    const QString& passwd):
+    BasicDatabase(connection,hostname,database,username,passwd){}
 
-FileManagerDB::FileManagerDB(const QString& _connection_name,
+FileManagerDB::FileManagerDB(const QString& connection,
                              XmlConfig *xml):
-    BasicDatabase(_connection_name,xml){}
+    BasicDatabase(connection,xml){}
 
-FileManagerDB::FileManagerDB(const QString& _connection_name,const QString& configuration_path):
-    BasicDatabase(_connection_name,configuration_path){}
-
-FileManagerDB::~FileManagerDB(){}
+FileManagerDB::FileManagerDB(const QString& connection, const QString& configFile):
+    BasicDatabase(connection,configFile){}
 
 bool FileManagerDB::exists(const QString& file){
 
     if (!isConnected()) return false;
 
-    QString query {"SELECT file_name FROM xml_files WHERE file_name='"+file+"' ; "};
-    QSqlQuery query_obj {QSqlQuery(query, getDB())};
+    QString sql {"SELECT file_name FROM xml_files WHERE file_name='"+file+"' ; "};
+    QSqlQuery query {QSqlQuery(sql, getDB())};
 
     //prepare the query execution
-    return  (query_obj.isActive() && query_obj.size());
+    return  (query.isActive() && query.size());
 }
 
 bool FileManagerDB::loadXmlFile(const QString& file){
     bool ret = false;
     if (!isConnected()) return ret;
 
-    QString query {"SELECT file_contents FROM xml_files WHERE file_name='"+file+"' ; "};
-    QSqlQuery query_obj {QSqlQuery(query, getDB())};
+    QString sql {"SELECT file_contents FROM xml_files WHERE file_name='"+file+"' ; "};
+    QSqlQuery query {QSqlQuery(sql, getDB())};
 
     //prepare the query execution
-    if (!query_obj.isActive() || !query_obj.size())
+    if (!query.isActive() || !query.size())
         return ret;
 
-    query_obj.first();
-    auto xml_string = query_obj.value(0).toString();
+    query.first();
+    auto xml_string = query.value(0).toString();
     xml_string.replace("*","\'");
 
     std::unique_ptr<XmlConfig> xml {new XmlConfig()};
@@ -86,21 +84,21 @@ bool FileManagerDB::saveXmlFile(const QString& file){
     QFile qfile {QFile(PATH+file)};
     if ( !isConnected() || !qfile.exists()) return false;
 
-    std::unique_ptr<XmlConfig> xml {new XmlConfig(PATH + file)};
+    XmlConfig xml(PATH + file);
 
-    QString xml_string = xml->toString();
+    QString xml_string = xml.toString();
     xml_string.replace("\'","*");
     xml_string.replace("\n"," ");
 
-    QString query {"INSERT INTO xml_files (file_path, file_name, file_contents)"};
-    query += "VALUES (";
-    query += "'"+PATH+"',";
-    query += "'"+file+"',";
-    query += "'"+xml_string+"');";
+    QString sql {"INSERT INTO xml_files (file_path, file_name, file_contents)"};
+    sql += "VALUES (";
+    sql += "'"+PATH+"',";
+    sql += "'"+file+"',";
+    sql += "'"+xml_string+"');";
 
-    QSqlQuery query_obj {QSqlQuery( query, getDB() ) };
+    QSqlQuery query {QSqlQuery( sql, getDB() ) };
 
-    QSqlError error{ query_obj.lastError() };
+    QSqlError error{ query.lastError() };
     if ( error.type()!= QSqlError::NoError){
         qDebug() << error.nativeErrorCode()+": "+ error.text();
         return false;
@@ -112,9 +110,9 @@ bool FileManagerDB::delXmlFile(const QString& file){
 
     if ( !isConnected() ) return false;
 
-    QString query {"DELETE FROM xml_files WHERE file_name='"+file+"';"};
-    QSqlQuery query_obj { QSqlQuery( query, getDB() ) };
-    QSqlError error{ query_obj.lastError() };
+    QString sql {"DELETE FROM xml_files WHERE file_name='"+file+"';"};
+    QSqlQuery query { QSqlQuery( sql, getDB() ) };
+    QSqlError error{ query.lastError() };
 
     if ( error.type()!= QSqlError::NoError){
         qDebug() << error.nativeErrorCode()+": "+ error.text();

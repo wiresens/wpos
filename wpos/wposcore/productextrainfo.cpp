@@ -16,24 +16,11 @@
  ***************************************************************************/
 
 #include "productextrainfo.h"
-
 #include <QString>
-#define UNKNOWN_OPTION "UNKNOWN_OPTION_TYPE"
-
-#include <iostream>
-
-using namespace std;
-
-ProductExtraInfo::ProductExtraInfo()
-    :m_option_type("UNKNOWN_OPTION"){}
 
 ProductExtraInfo::ProductExtraInfo(const QString option_type)
     :m_option_type(option_type)
 {}
-
-ProductExtraInfo::~ProductExtraInfo(){
-    m_option_values.clear();
-}
 
 void ProductExtraInfo::addOption(
     const QString& option,

@@ -15,8 +15,8 @@
  *                                                                         *
  ***************************************************************************/
 
-#ifndef _GENERIC_BUTTON_GROUP_H
-#define _GENERIC_BUTTON_GROUP_H
+#ifndef GENERIC_BUTTON_GROUP_H
+#define GENERIC_BUTTON_GROUP_H
 
 #include <QObject>
 #include <QWidget>
@@ -24,50 +24,49 @@
 #include <wposcore/hlist.h>
 #include "prodselect/productscreenstack.h"
 
-
-
 class QPushButton;
 class XmlConfig;
 class QString;
 
 class GenericButtonGroup : public QObject  {
     Q_OBJECT
+
 public:
-    explicit GenericButtonGroup(ProductScreenStack *stack, QWidget *_parent=0, const QString& name = QString());
-    ~GenericButtonGroup();
+    explicit GenericButtonGroup(
+        ProductScreenStack *stack,
+        QWidget *parent=0,
+        const QString& name = QString());
 
     QPushButton* findButton(const QString& name);
     QPushButton* find(const QString& name);
 
 public slots:
     void clear();
-    bool readConfigFrom(const QString& section, const QString& xml_path);
+    bool readConfigFrom(const QString& section, const QString& xmlFile);
     bool readConfigFrom(const QString& section, XmlConfig *xml);
 
 signals:
-    void genericDataSignal(const QString& signal_name, XmlConfig *xml);
+    void genericDataSignal(const QString& signal, XmlConfig *xml);
 
 protected:
-    QPushButton* readButtonConfig(XmlConfig *xml, QWidget *parent_wdgt, bool append=true);
+    QPushButton* readButtonConfig(XmlConfig *xml, QWidget *parent, bool append=true);
 
     //generic types
-    QPushButton* readProductConfig(XmlConfig *xml, QWidget *parent_wgt);
-    QPushButton* readGenericButton(XmlConfig *xml, QWidget *parent_wgt);
-    QPushButton* readMenuButton(XmlConfig *xml, QWidget *parent_wgt);
+    QPushButton* readProductConfig(XmlConfig *xml, QWidget *parent);
+    QPushButton* readGenericButton(XmlConfig *xml, QWidget *parent);
+    QPushButton* readMenuButton(XmlConfig *xml, QWidget *parent);
 
     //special types (composed)
-    QPushButton* screensButton(XmlConfig *xml, QWidget *parent_wgt);
-    QPushButton* optionsButton(XmlConfig *xml, QWidget *parent_wgt);
-    QPushButton* defaultScreenButton(XmlConfig *xml, QWidget *parent_wgt);
-
+    QPushButton* screensButton(XmlConfig *xml, QWidget *parent);
+    QPushButton* optionsButton(XmlConfig *xml, QWidget *parent);
+    QPushButton* defaultScreenButton(XmlConfig *xml, QWidget *parent);
 
     void setSizeAndColorPolicy(QPushButton *button, XmlConfig *xml);
 
-    HList<QPushButton> *button_list{};
+    HList<QPushButton> buttons{};
     ProductScreenStack *stack{};
     QWidget *parent{};
-    QString section_name;
-
+    QString sectionName;
 };
 
 #endif

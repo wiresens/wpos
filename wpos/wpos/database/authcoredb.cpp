@@ -44,101 +44,95 @@ AuthCoreDB::AuthCoreDB(
 {}
 
 UserData AuthCoreDB::userById(const QString& id) const{
-
-    if (!isConnected()) return UserData();
-
-    QString sql = "SELECT employee_id, name, last_name, address, nss, phone, ";
-    sql += "cellular, email, company_id, picture ";
-    sql += "FROM staff ";
-    sql += "WHERE employee_id='"+id+"' AND active='t';";
-    QSqlQuery query(sql, getDB());
-
-
-    //prepare the query execution
-    if (!query.isActive() || !query.size())
-        return UserData();
-
     UserData user;
+    if (isConnected()){
 
-    //only get the first record with this name
-    query.first();
-    user.id = query.value(0).toString();
-    user.name = query.value(1).toString();
-    user.last_name = query.value(2).toString();
-    user.address = query.value(3).toString();
-    user.nss = query.value(4).toString();
-    user.phone = query.value(5).toString();
-    user.cellular = query.value(6).toString();
-    user.email = query.value(7).toString();
-    user.company_id = query.value(8).toString();
-    user.picture = query.value(9).toString();
-    user.isRootUser = isRootUser(user.id);
+        QString sql = "SELECT employee_id, name, last_name, address, nss, phone, ";
+        sql += "cellular, email, company_id, picture ";
+        sql += "FROM staff ";
+        sql += "WHERE employee_id='"+id+"' AND active='t';";
+        QSqlQuery query(sql, getDB());
+
+        //prepare the query execution
+        if ( query.isActive() && query.size()){
+
+            //only get the first record with this name
+            query.first();
+            user.id = query.value(0).toString();
+            user.name = query.value(1).toString();
+            user.last_name = query.value(2).toString();
+            user.address = query.value(3).toString();
+            user.nss = query.value(4).toString();
+            user.phone = query.value(5).toString();
+            user.cellular = query.value(6).toString();
+            user.email = query.value(7).toString();
+            user.company_id = query.value(8).toString();
+            user.picture = query.value(9).toString();
+            user.isRootUser = isRootUser(user.id);
+        }
+    }
     return user;
 }
 
 UserData AuthCoreDB::userByName(const QString& name) const{
-
-
-
-    if (!isConnected()) return UserData();
-
-    QString sql = "SELECT employee_id, name, last_name, address, nss, phone, ";
-    sql += "cellular, email, company_id, picture ";
-    sql += "FROM staff ";
-    sql += "WHERE name='"+name+"' AND active='t';";
-
-    QSqlQuery query(sql, getDB());
-
-    //prepare the query execution
-    if (!query.isActive() || !query.size())
-        return UserData();
-
-    //only get the first record with this name
-    query.first();
     UserData user;
-    user.id = query.value(0).toString();
-    user.name = query.value(1).toString();
-    user.last_name = query.value(2).toString();
-    user.address = query.value(3).toString();
-    user.nss = query.value(4).toString();
-    user.phone = query.value(5).toString();
-    user.cellular = query.value(6).toString();
-    user.email = query.value(7).toString();
-    user.company_id = query.value(8).toString();
-    user.picture = query.value(9).toString();
-    user.isRootUser = isRootUser(user.id);
 
+    if (isConnected()){
+        QString sql = "SELECT employee_id, name, last_name, address, nss, phone, ";
+        sql += "cellular, email, company_id, picture ";
+        sql += "FROM staff ";
+        sql += "WHERE name='"+name+"' AND active='t';";
+
+        QSqlQuery query(sql, getDB());
+
+        //prepare the query execution
+        if ( query.isActive() && query.size()){
+
+            //only get the first record with this name
+            query.first();
+            user.id = query.value(0).toString();
+            user.name = query.value(1).toString();
+            user.last_name = query.value(2).toString();
+            user.address = query.value(3).toString();
+            user.nss = query.value(4).toString();
+            user.phone = query.value(5).toString();
+            user.cellular = query.value(6).toString();
+            user.email = query.value(7).toString();
+            user.company_id = query.value(8).toString();
+            user.picture = query.value(9).toString();
+            user.isRootUser = isRootUser(user.id);
+        }
+    }
     return user;
 }
 
 UserData AuthCoreDB::userByLastName(const QString& lastName) const{
-
-    if (!isConnected()) return UserData();
-
-    QString sql = "SELECT employee_id, name, last_name, address, nss, phone, ";
-    sql += "cellular, email, company_id, picture ";
-    sql += "FROM staff ";
-    sql += "WHERE last_name='"+lastName+"' AND active='t';";
-    QSqlQuery query(sql, getDB());
-
-    //prepare the query execution
-    if (!query.isActive() || !query.size())  return UserData();
-
-    //only get the first record with this name
-    query.first();
     UserData user;
-    user.id = query.value(0).toString();
-    user.name = query.value(1).toString();
-    user.last_name = query.value(2).toString();
-    user.address = query.value(3).toString();
-    user.nss = query.value(4).toString();
-    user.phone = query.value(5).toString();
-    user.cellular = query.value(6).toString();
-    user.email = query.value(7).toString();
-    user.company_id = query.value(8).toString();
-    user.picture = query.value(9).toString();
-    user.isRootUser = this->isRootUser(user.id);
+    if ( isConnected()){
+        QString sql = "SELECT employee_id, name, last_name, address, nss, phone, ";
+        sql += "cellular, email, company_id, picture ";
+        sql += "FROM staff ";
+        sql += "WHERE last_name='"+lastName+"' AND active='t';";
+        QSqlQuery query(sql, getDB());
 
+        //prepare the query execution
+        if ( query.isActive() && query.size()){
+            //only get the first record with this name
+            query.first();
+
+            user.id = query.value(0).toString();
+            user.name = query.value(1).toString();
+            user.last_name = query.value(2).toString();
+            user.address = query.value(3).toString();
+            user.nss = query.value(4).toString();
+            user.phone = query.value(5).toString();
+            user.cellular = query.value(6).toString();
+            user.email = query.value(7).toString();
+            user.company_id = query.value(8).toString();
+            user.picture = query.value(9).toString();
+            user.isRootUser = isRootUser(user.id);
+        }
+    }
     return user;
 }
 
@@ -149,11 +143,8 @@ bool AuthCoreDB::isRootUser(const QString& id) const{
     sql += "WHERE employee_id='"+id+"' ;";
 
     if(!isConnected())  return false;
-
     QSqlQuery query (sql, getDB());
-
     if (!query.isActive() || !query.size())  return false;
-
     while(query.next()){
         auto res = query.value(0).toString();
         if (res == "administracion"){
@@ -164,37 +155,30 @@ bool AuthCoreDB::isRootUser(const QString& id) const{
 }
 
 QVector<UserData> AuthCoreDB::userList() const{
-
+    QVector<UserData> users;
     QString sql =  "SELECT employee_id, name, last_name, address, nss, phone, ";
     sql += "cellular, email, company_id, picture ";
     sql += "FROM staff WHERE active='t' ";
     sql += "ORDER BY employee_id;";
 
-    if(!isConnected()){
-        cout << "problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ << endl;
-        return QVector<UserData>();
-    }
-
-    QSqlQuery query (sql, getDB());
-    if (!query.isActive() || !query.size()){
-        return QVector<UserData>();
-    }
-
-    QVector<UserData> users;
-    while( query.next() ){
-        UserData user;
-        user.id = query.value(0).toString();
-        user.name = query.value(1).toString();
-        user.last_name = query.value(2).toString();
-        user.address = query.value(3).toString();
-        user.nss = query.value(4).toString();
-        user.phone = query.value(5).toString();
-        user.cellular = query.value(6).toString();
-        user.email = query.value(7).toString();
-        user.company_id = query.value(8).toString();
-        user.picture = query.value(9).toString();
-        user.isRootUser = isRootUser(user.id);
-        users.append(user);
+    if( isConnected()){
+        QSqlQuery query (sql, getDB());
+        if ( query.isActive() && query.size())
+        while( query.next() ){
+            UserData user;
+            user.id = query.value(0).toString();
+            user.name = query.value(1).toString();
+            user.last_name = query.value(2).toString();
+            user.address = query.value(3).toString();
+            user.nss = query.value(4).toString();
+            user.phone = query.value(5).toString();
+            user.cellular = query.value(6).toString();
+            user.email = query.value(7).toString();
+            user.company_id = query.value(8).toString();
+            user.picture = query.value(9).toString();
+            user.isRootUser = isRootUser(user.id);
+            users.append(user);
+        }
     }
     return users;
 }

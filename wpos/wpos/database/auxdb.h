@@ -22,21 +22,21 @@ class XmlConfig;
 class AuxDB : public BasicDatabase  {
 public:
 
-        AuxDB(const QString& _connection_name,
-              const QString& _hostname,
-              const QString& _database,
-              const QString& _username,
-              const QString& _passwd);
+    AuxDB(const QString& connection,
+          const QString& hostname,
+          const QString& database,
+          const QString& username,
+          const QString& passwd);
 
-        AuxDB(const QString& _connection_name,
-              XmlConfig *xml);
+    AuxDB(
+        const QString& connection,
+        XmlConfig *xml);
 
-        AuxDB(const QString& _connection_name,
-              const QString& configuration_path);
+    AuxDB(
+        const QString& connection,
+        const QString& configFile);
 
-        ~AuxDB();
-
-        HList<ProductExtraInfo>* getOptionNodes();
+    QMap<QString, ProductExtraInfo> productExtra();
 };
 
 #endif

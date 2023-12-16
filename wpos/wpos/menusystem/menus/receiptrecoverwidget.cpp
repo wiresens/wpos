@@ -425,15 +425,14 @@ QStringList ReceiptRecoverWidget::getUsedTableCodes(){
 
     QStringList table_codes;
     ticket_db->connect();
-    QList<TicketResumeData*> *tickets = ticket_db->getReceiptResume();
+    QList<TicketResumeData> tickets  {ticket_db->getReceiptResume()};
     ticket_db->disConnect();
 
-    if (!tickets) return QStringList();
-
-    for ( auto ticket : *tickets)
-        if (!ticket->table_code.isEmpty())
-            table_codes.append(ticket->table_code);
-
+    if ( !tickets.isEmpty()){
+        for ( TicketResumeData& ticket : tickets)
+            if (!ticket.table_code.isEmpty())
+                table_codes.append(ticket.table_code);
+    }
     return table_codes;
 }
 

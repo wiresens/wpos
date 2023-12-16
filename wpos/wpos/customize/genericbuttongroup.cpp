@@ -26,7 +26,6 @@
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 
-
 #include <productextrainfo.h>
 #include <xmlconfig.h>
 
@@ -34,52 +33,43 @@
 #include <QFrame>
 #include <QLayout>
 #include <QString>
-#include <QAbstractButton>
 #include <QColor>
+#include <QAbstractButton>
 
-#include <iostream>
-namespace std{}
-using namespace std;
-
-
+static const int BUTTON_SIZE{80};
 
 GenericButtonGroup::GenericButtonGroup(
-        ProductScreenStack *_stack,
-        QWidget *_parent,
-        const QString& name )
-    :QObject(_parent),
-      button_list{new HList<QPushButton>},
-      stack{_stack},
-      parent{_parent}
+    ProductScreenStack *stack,
+    QWidget *parent,
+    const QString& name )
+    :QObject(parent),
+    stack{stack},
+    parent{parent}
 {
     setObjectName(name);
     auto gsm = GenericSignalManager::instance();
-
     gsm->publishGenericDataSignal(GDATASIGNAL::REREAD_CONFIG, this);
-
-}
-
-GenericButtonGroup::~GenericButtonGroup(){
-    clear();
-    delete button_list;
 }
 
 void GenericButtonGroup::clear(){
-    button_list->clear();
+    buttons.clear();
 }
 
-bool GenericButtonGroup::readConfigFrom(const QString& section, const QString& xml_path){
-
-    XmlConfig xml (xml_path);
-    if (!QFile(xml_path).exists() || !xml.wellFormed())
+bool GenericButtonGroup::readConfigFrom(
+    const QString& section,
+    const QString& xmlFile)
+{
+    XmlConfig xml (xmlFile);
+    if ( !QFile(xmlFile).exists() || !xml.wellFormed() )
         return false;
-
     return readConfigFrom(section, &xml);
 }
 
-bool GenericButtonGroup::readConfigFrom(const QString& section, XmlConfig *xml){
-
-    section_name = section;
+bool GenericButtonGroup::readConfigFrom(
+    const QString& section,
+    XmlConfig *xml)
+{
+    sectionName = section;
     xml->pushDomain();
     bool section_exist  {false};
 
@@ -105,14 +95,11 @@ bool GenericButtonGroup::readConfigFrom(const QString& section, XmlConfig *xml){
     }
 
     QLayout *layout{};
-    if ( (layout = parent->layout()) )
-        delete layout;
+    if ( (layout = parent->layout()) ) delete layout;
 
     xml->setDomain("layout");
-
     auto layout_type = xml->readString("type");
-    if (layout_type.isEmpty())
-        layout_type = "hbox";
+    if (layout_type.isEmpty()) layout_type = "hbox";
 
     int row, col;
     QGridLayout *gridLayout{};
@@ -126,7 +113,7 @@ bool GenericButtonGroup::readConfigFrom(const QString& section, XmlConfig *xml){
         vLayout = new QVBoxLayout(parent);
         layout = qobject_cast<QLayout *>( vLayout );
     }
-    else if (layout_type == "grid"){
+    else/* if (layout_type == "grid")*/{
         row = xml->readInt("rows");
         col = xml->readInt("cols");
         gridLayout = new QGridLayout(parent);
@@ -144,24 +131,18 @@ bool GenericButtonGroup::readConfigFrom(const QString& section, XmlConfig *xml){
 
     auto spacing = 0;
     auto margin  = 0;
-    if ( xml->howManyTags("spacing") )
-        spacing = xml->readInt("spacing");
-
-    if ( xml->howManyTags("margin") )
-        margin = xml->readInt("margin");
+    if ( xml->howManyTags("spacing") ) spacing = xml->readInt("spacing");
+    if ( xml->howManyTags("margin") )  margin = xml->readInt("margin");
 
     layout->setSpacing(spacing);
     layout->setMargin(margin);
-
     xml->releaseDomain("layout");
 
     for ( i=0; i < xml->howManyTags("item"); i++){
         xml->setDomain("item["+QString::number(i)+"]");
         QPushButton* button = readButtonConfig(xml, parent);
-        if (layout_type == "hbox")
-            hLayout->addWidget(button);
-        else if (layout_type == "vbox")
-            vLayout->addWidget(button);
+        if (layout_type == "hbox") hLayout->addWidget(button);
+        else if (layout_type == "vbox") vLayout->addWidget(button);
         else if (layout_type == "grid"){
             row = xml->readInt("row");
             col = xml->readInt("col");
@@ -174,8 +155,11 @@ bool GenericButtonGroup::readConfigFrom(const QString& section, XmlConfig *xml){
     return true;
 }
 
-QPushButton* GenericButtonGroup::readButtonConfig(XmlConfig *xml, QWidget *parent_wdgt, bool append){
-
+QPushButton* GenericButtonGroup::readButtonConfig(
+    XmlConfig *xml,
+    QWidget *parent,
+    bool append)
+{
     auto item_type = xml->readString("type");
     XmlConfig tmp_xml;
     tmp_xml.createElement("type", "Botoneras");
@@ -184,31 +168,33 @@ QPushButton* GenericButtonGroup::readButtonConfig(XmlConfig *xml, QWidget *paren
 
     QPushButton* button{};
     if (item_type == "product")
-        button = readProductConfig(xml, parent_wdgt);
+        button = readProductConfig(xml, parent);
     else if (item_type == "button")
-        button = readGenericButton(xml, parent_wdgt);
+        button = readGenericButton(xml, parent);
     else if (item_type == "menu")
-        button = readMenuButton(xml,parent_wdgt);
+        button = readMenuButton(xml,parent);
     else if (item_type == "screens")
-        button = screensButton(xml,parent_wdgt);
+        button = screensButton(xml,parent);
     else if (item_type == "options")
-        button = optionsButton(xml,parent_wdgt);
+        button = optionsButton(xml,parent);
     else if (item_type == "defaultscreen")
-        button = defaultScreenButton(xml,parent_wdgt);
+        button = defaultScreenButton(xml,parent);
 
     if (button){
-        if (append) button_list->append(button, button->objectName());
+        if (append) buttons.append(button, button->objectName());
         setSizeAndColorPolicy(button, xml);
         button->show();
     }
     return button;
 }
 
-QPushButton* GenericButtonGroup::readProductConfig(XmlConfig *xml, QWidget *parent_wgt){
-
+QPushButton* GenericButtonGroup::readProductConfig(
+    XmlConfig *xml,
+    QWidget *parent)
+{
     xml->pushDomain();
     auto aux = xml->readString("product_code");
-    auto product = new Product(aux, Files::configFilePath("bar"), parent_wgt);
+    auto product = new Product(aux, Files::configFilePath("bar"), parent);
     product->setDefaultFontSize(9);
     product->setTextInPixmap(true);
 
@@ -218,13 +204,12 @@ QPushButton* GenericButtonGroup::readProductConfig(XmlConfig *xml, QWidget *pare
     return ((QPushButton *) product);
 }
 
-QPushButton* GenericButtonGroup::readGenericButton(XmlConfig *xml, QWidget *parent_wgt){
+QPushButton* GenericButtonGroup::readGenericButton(XmlConfig *xml, QWidget *parent){
     int r_count, j, r_content,k;
     QString iconset, pixmap, toggle;
     bool is_toggle{false};
 
     xml->pushDomain();
-
     auto text = xml->readString("text");
     auto name_id = xml->readString("name");
     if (name_id.isEmpty())
@@ -233,7 +218,7 @@ QPushButton* GenericButtonGroup::readGenericButton(XmlConfig *xml, QWidget *pare
     text.replace("_","\n");
 
     GenericButton* gbutton {};
-    gbutton = new GenericButton(text, parent_wgt, name_id.toLatin1() );
+    gbutton = new GenericButton(text, parent, name_id.toLatin1() );
 
     if ( xml->setDomain("relationships") ){
         r_count = xml->howManyTags("relation");
@@ -310,11 +295,9 @@ QPushButton* GenericButtonGroup::readGenericButton(XmlConfig *xml, QWidget *pare
 
     xml->popDomain();
     return ((QPushButton *)gbutton);
-
 }
 
-QPushButton* GenericButtonGroup::readMenuButton(XmlConfig *xml,QWidget *parent_wgt){
-
+QPushButton* GenericButtonGroup::readMenuButton(XmlConfig *xml, QWidget *parent){
     xml->pushDomain();
     auto orientation = xml->readString("orientation");
     auto text = xml->readString("text");
@@ -327,9 +310,9 @@ QPushButton* GenericButtonGroup::readMenuButton(XmlConfig *xml,QWidget *parent_w
 
     MenuButton *menu_button {};
     if (orientation == "hmenu")
-        menu_button = new MenuButton(Qt::Horizontal, parent_wgt, name_id);
+        menu_button = new MenuButton(Qt::Horizontal, parent, name_id);
     else if (orientation == "vmenu")
-        menu_button = new MenuButton(Qt::Vertical, parent_wgt, name_id);
+        menu_button = new MenuButton(Qt::Vertical, parent, name_id);
 
     for ( auto i = 0; i < xml->howManyTags("item"); i++ ){
         xml->setDomain("item["+QString::number(i)+"]");
@@ -349,16 +332,15 @@ QPushButton* GenericButtonGroup::readMenuButton(XmlConfig *xml,QWidget *parent_w
     return menu_button;
 }
 
-QPushButton* GenericButtonGroup::screensButton(XmlConfig *xml, QWidget *parent_wgt){
-
+QPushButton* GenericButtonGroup::screensButton(XmlConfig *xml, QWidget *parent){
     xml->pushDomain();
 
     auto tmp_str = xml->readString("orientation");
     if ( tmp_str.isEmpty() ) tmp_str = "hmenu";
 
     MenuButton *menu_button {};
-    if (tmp_str == "hmenu") menu_button = new MenuButton(Qt::Horizontal, parent_wgt, "Screens");
-    else if (tmp_str == "vmenu") menu_button = new MenuButton(Qt::Vertical, parent_wgt, "Screens");
+    if (tmp_str == "hmenu") menu_button = new MenuButton(Qt::Horizontal, parent, "Screens");
+    else if (tmp_str == "vmenu") menu_button = new MenuButton(Qt::Vertical, parent, "Screens");
 
     auto iconset = xml->readString("iconset");
     if (!iconset.isEmpty()) menu_button->setIcon(QPixmap(iconset));
@@ -390,8 +372,7 @@ QPushButton* GenericButtonGroup::screensButton(XmlConfig *xml, QWidget *parent_w
     return qobject_cast<QPushButton*>( menu_button );
 }
 
-QPushButton* GenericButtonGroup::defaultScreenButton(XmlConfig *xml, QWidget *parent_wgt){
-
+QPushButton* GenericButtonGroup::defaultScreenButton(XmlConfig *xml, QWidget *parent){
     GenericButton *button {};
     std::unique_ptr<XmlConfig> aux_xml  {new XmlConfig(Files::configFilePath("bar"))} ;
     xml->pushDomain();
@@ -400,10 +381,10 @@ QPushButton* GenericButtonGroup::defaultScreenButton(XmlConfig *xml, QWidget *pa
 
     auto aux = aux_xml->readString("defaultscreen");
     if ( !aux.isEmpty() )
-        button =  new GenericButton("Principal", parent_wgt, "defaultscreen");
+        button =  new GenericButton("Principal", parent, "defaultscreen");
     else{
         aux = aux_xml->readString("screen.name");
-        button =  new GenericButton(aux, parent_wgt, "defaultscreen");
+        button =  new GenericButton(aux, parent, "defaultscreen");
     }
     button->createDataRelationship(GDATASIGNAL::MAINSTACK_SETPAGE);
     button->addContent("name", SalesScreen::PRODUCT_MENU);
@@ -422,84 +403,56 @@ QPushButton* GenericButtonGroup::defaultScreenButton(XmlConfig *xml, QWidget *pa
     return qobject_cast<QPushButton *>( button );
 }
 
-QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *parent_wgt){
-    int i,j, v_count ,count;
+QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *parent){
+    AuxDB db("option_check", Files::configFilePath("database"));
+    db.connect();
+    QMap<QString,ProductExtraInfo> extra = db.productExtra();
+    db.disConnect();
 
-    ProductExtraInfo *option= 0;
-    QString aux;
-    MenuButton *menu = 0;
-    MenuButton *menu_v = 0;
-    GenericButton *generic_button = 0;
+    if ( extra.isEmpty() ) return nullptr;
 
-    std::unique_ptr<AuxDB> db  {new AuxDB("option_check", Files::configFilePath("database"))};
-    db->connect();
-    HList<ProductExtraInfo>* option_nodes = db->getOptionNodes();
-    db->disConnect();
-
-    if (!option_nodes)
-        return ((QPushButton *) menu);
-
-    count = option_nodes->count();
-    if ( count == 1 ){
-        QStringList option_node_values;
-        option = option_nodes->at(0);
-        option_node_values = option->getValues();
-        count = option_node_values.count();
-        aux = option->getOptionType().replace("_","\n");
-        aux = aux.replace(" ","\n");
-        menu = new MenuButton( Qt::Horizontal, parent_wgt, aux );
-        for( i=0; i < count; i++){
-            aux = option_node_values[i];
-            aux = aux.replace("_","\n");
-            aux = aux.replace(" ","\n");
-            generic_button =  new GenericButton(aux, menu, aux.toLatin1());
-            generic_button->createDataRelationship(GDATASIGNAL::XCORE_SET_PRODUCT_OPTION);
-            generic_button->addContent("type", option->getOptionType());
-            generic_button->addContent("value", option_node_values[i]);
-            generic_button->resize(80,80);
+    MenuButton *menu{};
+    MenuButton *menuValue{};
+    GenericButton *genericButton{};
+    if ( extra.size() == 1 ){
+        ProductExtraInfo &option = extra.first();
+        QString type = option.getOptionType().replace("_","\n").replace(" ","\n");
+        menu = new MenuButton( Qt::Horizontal, parent, type );
+        for( QString& item :  option.getValues()){
+            auto value = item.replace("_", "\n").replace(" ", "\n");
+            genericButton =  new GenericButton(value, menu, value);
+            genericButton->createDataRelationship(GDATASIGNAL::XCORE_SET_PRODUCT_OPTION);
+            genericButton->addContent("type", option.getOptionType());
+            genericButton->addContent("value", item);
+            genericButton->resize(BUTTON_SIZE,BUTTON_SIZE);
         }
     }
-    else if ( count > 1 ){
-        menu = new MenuButton(Qt::Horizontal, parent_wgt, tr("Options"));
-        for( i = 0; i < count; i++){
-            QStringList list;
-            option = option_nodes->at(i);
-            list = option->getValues();
-            aux = (option->getOptionType()).replace("_","\n");
-            aux = aux.replace(" ","\n");
-            menu_v = new MenuButton(Qt::Vertical, menu, aux);
-            menu_v->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-            menu_v->resize(80,80);
-            v_count = list.count();
-            for( j=0; j< v_count; j++){
-                aux = list[j];
-                aux = aux.replace("_","\n");
-                aux = aux.replace(" ","\n");
-                generic_button =  new GenericButton(aux,menu_v,aux.toLatin1());
-                generic_button->createDataRelationship(GDATASIGNAL::XCORE_SET_PRODUCT_OPTION);
-                generic_button->addContent("type", option->getOptionType());
-                generic_button->addContent("value",list[j]);
-                generic_button->resize(80,80);
+    else{
+        menu = new MenuButton(Qt::Horizontal, parent, tr("Options"));
+        for( auto &option : extra){
+            QString type = option.getOptionType().replace("_","\n").replace(" ","\n");
+            menuValue = new MenuButton(Qt::Vertical, menu, type);
+            menuValue->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
+            menuValue->resize(BUTTON_SIZE,BUTTON_SIZE);
+            for( QString& item : option.getValues()){
+                auto value = item.replace("_","\n").replace(" ","\n");
+                genericButton =  new GenericButton(value,menuValue, value);
+                genericButton->createDataRelationship(GDATASIGNAL::XCORE_SET_PRODUCT_OPTION);
+                genericButton->addContent("type", option.getOptionType());
+                genericButton->addContent("value", item);
+                genericButton->resize(BUTTON_SIZE,BUTTON_SIZE);
             }
         }
     }
+    auto iconFile = xml->readString("iconset");
+    if (!iconFile.isEmpty()) menu->setIcon(QPixmap(iconFile));
 
-    option_nodes->clear();
-    delete option_nodes;
-
-    auto iconset = xml->readString("iconset");
-    if (!iconset.isEmpty())
-        menu->setIcon(QPixmap(iconset));
-
-    auto pixmap = xml->readString("pixmap");
-    if (!pixmap.isEmpty())
-        menu->setIcon(QPixmap(pixmap));
-
+    auto pixmapFile = xml->readString("pixmap");
+    if (!pixmapFile.isEmpty()) menu->setIcon(QPixmap(pixmapFile));
     return ((QPushButton *) menu);
 }
 
 void GenericButtonGroup::setSizeAndColorPolicy(QPushButton *button, XmlConfig *xml){
-
     xml->pushDomain();
     auto xpolicy = xml->readString("size_policy.x").toLower();
     auto ypolicy = xml->readString("size_policy.y").toLower();
@@ -523,33 +476,32 @@ void GenericButtonGroup::setSizeAndColorPolicy(QPushButton *button, XmlConfig *x
         button->setBackgroundRole(QPalette::Button);
     }
 
-//    //These are commented out so that the shortcut_buttons are resizable
-//        int width, height;
-//        if (xml->howManyTags("width")){
-//            width = xml->readInt("width");
-//            button->setMinimumWidth(width);
-//        }
-//        if (xml->howManyTags("height")){
-//            height = xml->readInt("height");
-//            button->setMinimumHeight(height);
-//        }
-//        if (xml->howManyTags("maxwidth")){
-//            width = xml->readInt("width");
-//            button->setMaximumWidth(width);
-//        }
-//        if (xml->howManyTags("maxheight")){
-//            height = xml->readInt("height");
-//            button->setMaximumHeight(height);
-//        }
-//        if (xml->howManyTags("fixedwidth")){
-//            width = xml->readInt("fixedwidth");
-//            button->setFixedWidth(width);
-//        }
-//        if (xml->howManyTags("fixedheight")){
-//            height = xml->readInt("fixedheight");
-//            button->setFixedHeight(height);
-//        }
-
+    //    //These are commented out so that the shortcut_buttons are resizable
+    //        int width, height;
+    //        if (xml->howManyTags("width")){
+    //            width = xml->readInt("width");
+    //            button->setMinimumWidth(width);
+    //        }
+    //        if (xml->howManyTags("height")){
+    //            height = xml->readInt("height");
+    //            button->setMinimumHeight(height);
+    //        }
+    //        if (xml->howManyTags("maxwidth")){
+    //            width = xml->readInt("width");
+    //            button->setMaximumWidth(width);
+    //        }
+    //        if (xml->howManyTags("maxheight")){
+    //            height = xml->readInt("height");
+    //            button->setMaximumHeight(height);
+    //        }
+    //        if (xml->howManyTags("fixedwidth")){
+    //            width = xml->readInt("fixedwidth");
+    //            button->setFixedWidth(width);
+    //        }
+    //        if (xml->howManyTags("fixedheight")){
+    //            height = xml->readInt("fixedheight");
+    //            button->setFixedHeight(height);
+    //        }
     xml->popDomain();
 }
 
@@ -558,5 +510,5 @@ QPushButton* GenericButtonGroup::findButton(const QString& name){
 }
 
 QPushButton* GenericButtonGroup::find(const QString& name){
-    return button_list->find(name);
+    return buttons.find(name);
 }

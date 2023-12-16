@@ -18,69 +18,50 @@
 
 #include "changemoneywidgetdb.h"
 
-ChangeMoneyWidgetDB::ChangeMoneyWidgetDB(const QString& _connection_name,
-                       const QString& _hostname,const QString& _database,
-                       const QString& _username,const QString& _passwd):
-                       BasicDatabase(_connection_name,_hostname, _database, _username,_passwd) {
+ChangeMoneyWidgetDB::ChangeMoneyWidgetDB(
+    const QString& connection,
+    const QString& hostname,
+    const QString& database,
+    const QString& username,
+    const QString& passwd):
+    BasicDatabase(connection,hostname, database, username,passwd) {
 }
 
-ChangeMoneyWidgetDB::ChangeMoneyWidgetDB(const QString& _connection_name,const QString& configuration_path):
-                                   BasicDatabase(_connection_name,configuration_path){
-}
-
-ChangeMoneyWidgetDB::~ChangeMoneyWidgetDB(){
+ChangeMoneyWidgetDB::ChangeMoneyWidgetDB(
+    const QString& connection,
+    const QString& configFile):
+    BasicDatabase(connection,configFile){
 }
 
 double ChangeMoneyWidgetDB::getMoneyInCash () {
-QSqlQuery *q=0;
-QString query;
-double ret = -1;
+    double result = -1;
+    if (isConnected()){
+        QString sql = "SELECT sum(quantity) FROM cash_movements;";
+        QSqlQuery query (sql, getDB());
 
-     if (!this->isConnected())
-          return ret;
-
-     query = "SELECT sum(quantity) FROM cash_movements;";
-     q = new QSqlQuery(query,this->getDB());
-
-     if (!q->isActive()){
-          delete q;
-          return ret;
-     }
-
-     q->first ();
-
-     ret = q->value (0).toDouble ();
-
-     delete q;
-     return ret;
+        if (query.isActive()){
+           query.first();
+           result = query.value(0).toDouble();
+        }
+    }
+    return result;
 }
 
-
 double ChangeMoneyWidgetDB::getMoneyPayType(const QString& type){
-QSqlQuery *q=0;
-QString query;
-double ret = 0.00;
+    double ret = 0.00;
+    if (isConnected()){
+        QString sql = "SELECT sum(c.quantity) FROM ";
+        sql+= "tickets t JOIN cash_movements c ";
+        sql+= "USING (ticket_code) ";
+        sql+= "WHERE t.pay_type='"+type+"' ;";
+        QSqlQuery query( sql, getDB());
 
-     if (!this->isConnected())
-          return ret;
-
-     query = "SELECT sum(c.quantity) FROM ";
-     query+= "tickets t JOIN cash_movements c ";
-     query+= "USING (ticket_code) ";
-     query+= "WHERE t.pay_type='"+type+"' ;";
-     q = new QSqlQuery(query,this->getDB());
-
-     if (!q->isActive()){
-          delete q;
-          return ret;
-     }
-
-     q->first ();
-
-     ret = q->value (0).toDouble ();
-
-     delete q;
-     return ret;
+        if (query.isActive()){
+           query.first ();
+           ret = query.value(0).toDouble();
+        }
+    }
+    return ret;
 }
 
 

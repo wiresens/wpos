@@ -29,18 +29,15 @@ BarCoreDB::BarCoreDB(
         hostname,
         database,
         username,passwd
-    )
+        )
 {}
 
-BarCoreDB::BarCoreDB(
-    const QString& connection_name,
-    const QString& configuration_path):
-    BasicDatabase(connection_name,configuration_path)
+BarCoreDB::BarCoreDB(const QString& connection,
+                     const QString& configFile):
+    BasicDatabase(connection,configFile)
 {}
 
-QString BarCoreDB::getName(const QString& product_code)
-{
-
+QString BarCoreDB::getName(const QString& product_code){
     if (!isConnected()) return QString();
 
     QString sql {"SELECT product FROM products WHERE product_code='"+product_code+"';"};
@@ -56,259 +53,162 @@ QString BarCoreDB::getName(const QString& product_code)
     return  query.value(0).toString();
 }
 
-
-QString BarCoreDB::getName(const QStringList article_list){
-    int count,i;
-    QString aux;
-    count =article_list.count();
-    aux = "";
-    for(i=0;i<count;i++){
-        aux = article_list[i];
-        if (i != (count-1) )
-            aux+=" ";
-    }
-    return getName(aux);
+QString BarCoreDB::getName(const QStringList& article_list){
+    QString product_code;
+    for(const QString& name : article_list)
+        product_code += name + " ";
+    return getName(product_code.trimmed());
 }
-
 
 QString BarCoreDB::getPrice(const QString& product_code){
-    double price;
-    QSqlQuery *q = 0;
-    QString query="";
-    QString ret="";
+    if (!isConnected())  return QString("0.0");
 
-    if (!this->isConnected())
-        return ret="0.0";
+    QString sql = "SELECT price FROM products WHERE product_code='"+product_code+"';";
 
-    query = "SELECT price FROM products WHERE product_code='"+product_code+"';";
-
-    q= new QSqlQuery(query,this->getDB());
+    QSqlQuery query(sql, getDB());
     //prepare the query execution
-    if (!q->isActive()){
-        qDebug() << "fallo por query no activa ";
-        delete q;
-        return ret="0.0";
+    if (!query.isActive() || !query.size()){
+        return QString("0.0");
     }
 
-    if (!q->size()){
-        price = 0.0;
-        delete q;
-        return ret="0.0";
-    }
-    else{
-        q->first();
-        ret = (q->value(0)).toString();
-        price = (q->value(0)).toDouble();
-
-    }
-
-    ret = QString::number(price);
-    return ret;
+    query.first();
+    return QString::number(query.value(0).toDouble());
 }
 
-QString BarCoreDB::getTax(const QString& product_code){
-    double tax;
-    QSqlQuery *q = 0;
-    QString query="";
-    QString ret="";
+QString BarCoreDB::getTax(const QString& product_code){    
+    if (!isConnected()) return QString("0.0");
 
-    if (!this->isConnected())
-        return ret="0.0";
+    QString sql = "SELECT t.rate FROM products p, taxes t ";
+    sql += "WHERE (p.product_code='"+product_code+"') AND (t.tax=p.tax);";
 
-    query = "SELECT t.rate FROM products P, taxes T ";
-    query +="WHERE (P.product_code='"+product_code+"') AND (T.tax=P.tax);";
-
-    q= new QSqlQuery(query,this->getDB());
+    QSqlQuery query(sql, getDB());
     //prepare the query execution
-    if (!q->isActive()){
-        qDebug() << "fallo por query no activa ";
-        delete q;
-        return ret="0.0";
-    }
+    if (!query.isActive() || !query.size())
+        return QString("0.0");
 
-    if (!q->size()){
-        tax = 0.0;
-        delete q;
-        return ret="0.0";
-    }
-    else{
-        q->first();
-        ret = (q->value(0)).toString();
-        tax = (q->value(0)).toDouble();
-
-    }
-
-    ret = QString::number(tax);
-    return ret;
+    query.first();
+    return QString::number(query.value(0).toDouble());
 }
 
-QString  BarCoreDB::getTaxName(const QString& product_code){
-    QSqlQuery *q=0;
-    QString query;
-    QString ret = "";
+QString  BarCoreDB::getTaxName(const QString& product_code){    
+    if (!isConnected())  return QString();
 
-
-
-    if (!this->isConnected())
-        return ret;
-
-    query = "SELECT tax FROM products WHERE product_code='"+product_code+"';";
-    q = new QSqlQuery(query,this->getDB());
+    QString sql = "SELECT tax FROM products WHERE product_code='"+product_code+"';";
+    QSqlQuery query(sql, getDB());
 
     //prepare the query execution
-    if (!q->isActive()){
-        delete q;
-        return QString("");
-    }
+    if (!query.isActive() || !query.size())
+        return QString();
 
-    if (!q->size()){
-        return ret;
-        delete q;
-    }
-    else{
-        q->first();
-        ret = (q->value(0)).toString();
-    }
-
-    delete q;
-    return ret;
+    query.first();
+    return query.value(0).toString();
 }
 
-QString BarCoreDB::getOptionModifier(const QString& product_code,
-                                     const QString& option_type,const QString& option_value){
-    QSqlQuery *q=0;
-    QString query;
-    QString ret = "";
-    double d;
-    bool ok;
+QString BarCoreDB::getOptionModifier(
+    const QString& product_code,
+    const QString& option_type,
+    const QString& option_value)
+{
+    if (!isConnected()) return QString("");
 
-    if (!this->isConnected())
-        return ret;
+    QString sql =   "SELECT value FROM init_prod_options WHERE ";
+    sql += "(product_code='"+product_code+"') AND ";
+    sql += "(option_type='"+option_type+"') AND ";
+    sql += "(prod_option='"+option_value+"') ;";
 
-    query =   "SELECT value FROM init_prod_options WHERE ";
-    query += "(product_code='"+product_code+"') AND ";
-    query += "(option_type='"+option_type+"') AND ";
-    query += "(prod_option='"+option_value+"') ;";
-    q = new QSqlQuery(query,this->getDB());
+    QSqlQuery query(sql, getDB());
 
     //prepare the query execution
-    if (!q->isActive()){
-        delete q;
-        return QString("");
-    }
+    if (!query.isActive()  || !query.size())  return QString("");
 
-    if (!q->size()){
-        return ret;
-        delete q;
-    }
-    else{
-        q->first();
-        ret = (q->value(0)).toString();
-    }
 
-    d = ret.toDouble(&ok);
-    if (!ok)
-        ret = "";
+    query.first();
+    QString result = query.value(0).toString();
 
-    delete q;
-    return ret;
+    bool ok{false};
+    result.toDouble(&ok);
+    if (!ok) return QString("");
+
+    return result;
 }
 
-bool BarCoreDB::checkOption(const QString& product_code,const QString& option_type,const QString& option_value){     
-    QSqlQuery *q=0;
-    QString query;
-    bool ret = false;
+bool BarCoreDB::checkOption(
+    const QString& product_code,
+    const QString& option_type,
+    const QString& option_value)
+{
+    if (!isConnected())  return false;
 
-
-
-    if (!this->isConnected())
-        return ret;
-
-    query =   "SELECT count(*) FROM init_prod_options ";
-    query += "WHERE product_code='"+product_code+"' AND ";
-    query += "option_type='"+option_type+"' AND prod_option='"+option_value+"';";
-    q = new QSqlQuery(query,this->getDB());
+    QString sql =   "SELECT count(*) FROM init_prod_options ";
+    sql += "WHERE product_code='"+product_code+"' AND ";
+    sql += "option_type='"+option_type+"' AND prod_option='"+option_value+"';";
+    QSqlQuery query(sql, getDB());
 
     //prepare the query execution
-    if (!q->isActive()){
-        delete q;
-        return ret;
-    }
+    if (!query.isActive() || !query.size()) return false;
 
-    if (!q->size()){
-        return ret;
-        delete q;
-    }
-    else{
-        q->first();
-        ret = (q->value(0)).toInt();
-    }
-
-    delete q;
-    return ret;
+    query.first();
+    return query.value(0).toInt();
 }
 
-OfferData* BarCoreDB::getOffer(const QString& product_code,const QString& offer_type,const QString& offer_name){
-    OfferData* ret = 0;
-    QSqlQuery *q=0;
-    QString query;
+//OfferData* BarCoreDB::getOffer(const QString& product_code,const QString& offer_type,const QString& offer_name){
+//    if (!isConnected()) return nullptr;
 
-    if (!this->isConnected())
-        return ret;
+//    QString sql =   "SELECT o.cpp_operator, i.value ";
+//    sql += "FROM offer_types o, init_prod_offers i ";
+//    sql += "WHERE (o.offer_type=i.offer_type) AND ";
+//    sql += "(i.product_code='"+product_code+"') ";
+//    sql += "AND (i.prod_offer='"+offer_name+"') ;";
+//    QSqlQuery query(sql, getDB());
 
-    query =   "SELECT o.cpp_operator, i.value ";
-    query += "FROM offer_types o, init_prod_offers i ";
-    query += "WHERE (o.offer_type=i.offer_type) AND ";
-    query += "(i.product_code='"+product_code+"') ";
-    query += "AND (i.prod_offer='"+offer_name+"') ;";
-    q = new QSqlQuery(query,this->getDB());
+//    //prepare the query execution
+//    if (!query.isActive() || !query.size())  return nullptr;
 
-    //prepare the query execution
-    if (!q->isActive()){
-        delete q;
-        return ret;
+//    query.first();
+//    OfferData* offer = new OfferData;
+//    offer->offer_type = offer_type;
+//    offer->offer_name = offer_name;
+//    offer->offer_mode = query.value(0).toString();
+//    offer->offer_discount = query.value(1).toString();
+
+//    return offer;
+//}
+
+OfferData BarCoreDB::getOffer(
+    const QString& product_code,
+    const QString& offer_type,
+    const QString& offer_name) const
+{
+    OfferData offer;
+    if (isConnected()){
+        QString sql =   "SELECT o.cpp_operator, i.value ";
+        sql += "FROM offer_types o, init_prod_offers i ";
+        sql += "WHERE (o.offer_type=i.offer_type) AND ";
+        sql += "(i.product_code='"+product_code+"') ";
+        sql += "AND (i.prod_offer='"+offer_name+"') ;";
+        QSqlQuery query(sql, getDB());
+
+        //prepare the query execution
+        if ( query.isActive() && query.size()){
+            query.first();
+            offer.offer_type = offer_type;
+            offer.offer_name = offer_name;
+            offer.offer_mode = query.value(0).toString();
+            offer.offer_discount = query.value(1).toString();
+        }
     }
-
-    if (!q->size()){
-        return ret;
-        delete q;
-    }
-    else{
-        q->first();
-        ret = new OfferData;
-        ret->offer_type = offer_type;
-        ret->offer_name = offer_name;
-        ret->offer_mode = (q->value(0)).toString();
-        ret->offer_discount = (q->value(1)).toString();
-    }
-
-    delete q;
-    return ret;
-
-
+    return offer;
 }
 
-bool BarCoreDB::getProductAtPrinter(const QString& product_code, const QString& printer){
-    QSqlQuery *q=0;
-    QString query;
-    bool ret = false;
+bool BarCoreDB::getProductAtPrinter(
+    const QString& product_code,
+    const QString& printer)
+{
+    if (!isConnected())  return false;
+    QString sql =  "SELECT product_code FROM product_printer_types ";
+    sql += " WHERE (product_code='"+product_code+"') AND ";
+    sql += "(printer_type='"+printer+"') ;";
 
-    if (!this->isConnected())
-        return ret;
-
-    query =  "SELECT product_code FROM product_printer_types ";
-    query += " WHERE (product_code='"+product_code+"') AND ";
-    query += "(printer_type='"+printer+"') ;";
-    q = new QSqlQuery(query,this->getDB());
-    if (!q->isActive()){
-        delete q;
-        return false;
-    }
-
-    if (q->size()){
-        ret = true;
-    }
-
-    delete q;
-    return ret;
+    QSqlQuery query (sql, getDB());
+    return  ( query.isActive() && query.size() );
 }

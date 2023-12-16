@@ -49,7 +49,7 @@ public slots:
     void genericDataSignalSlot(const QString& signal, XmlConfig *xml);
 
 signals:
-    void genericDataSignal(const QString& signal_name, XmlConfig *xml);
+    void genericDataSignal(const QString& signal, XmlConfig *xml);
 
 protected:
     void notifyUserChanged();

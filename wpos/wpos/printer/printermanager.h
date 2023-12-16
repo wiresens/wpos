@@ -19,17 +19,20 @@ modified by Carlos Manzanedo Rueda
 
 class XmlConfig;
 
-class PrinterManager :public QObject{
-public:
-    explicit PrinterManager(QObject *parent=nullptr, const QString& name = QString());
-    ~PrinterManager();
+class PrinterManager : public QObject{
+Q_OBJECT
 
-    bool printTicket(XmlConfig* xml, int times=1 );
-    bool printInvoice(XmlConfig* xml, int times=2 );
-    bool printX(XmlConfig* xml);
-    bool printZ(XmlConfig* xml);
-    bool printTicketTotal(XmlConfig* xml);
-    bool printKitchenOrder(XmlConfig* xml);
+public:
+    explicit PrinterManager(
+        QObject *parent=nullptr,
+        const QString& name = QString());
+
+    bool printTicket(const XmlConfig& xml, int times=1 );
+    bool printInvoice(const XmlConfig& xml, int times=2 );
+    bool printX(const XmlConfig& xml);
+    bool printZ(const XmlConfig& xml);
+    bool printTicketTotal(const XmlConfig& xml);
+    bool printKitchenOrder(const XmlConfig& xml);
 };
 
 #endif

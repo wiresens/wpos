@@ -20,6 +20,7 @@
 
 
 #include <QFile>
+#include <QDomDocument>
 
 extern "C" {
 #include <stdlib.h>
@@ -30,7 +31,6 @@ extern "C" {
 
 class QString;
 class QFile;
-class QDomDocument;
 class QDomNode;
 
 /**
@@ -41,14 +41,14 @@ class QDomNode;
   */
 
 class XmlConfigPrivate {
-public: 
+public:
     static const uint XML_TAG_IDENTATION;
     explicit XmlConfigPrivate(
         const QString& file_name,
         QIODevice::OpenMode = QIODevice::ReadWrite);
 
     XmlConfigPrivate(
-        QDomDocument* document,
+        const QDomDocument &document,
         const QString& file_name,
         QIODevice::OpenMode = QIODevice::ReadWrite);
 
@@ -83,7 +83,7 @@ public:
     */
     QString fileName() const;
 
-    QDomDocument *domDocument() const;
+    const QDomDocument &domDocument() const;
 
     QIODevice::OpenMode openedMode() const ;
 
@@ -121,10 +121,8 @@ private:
   */
     inline void setXmlHeaderAndFooter(QFile &dev);
 
-    //the document pointing to our data, we will make it to be stack allocated later
-    //because it is copyable
-    QDomDocument* m_domDocument{};
     FILE* tmp_fd{};
+    QDomDocument m_domDocument;
     QFile dev;         //the file we are working with
     QIODevice::OpenMode mode;         //the mode in which we open the file
     bool has_tempory_file{false};  // Are we working with is tempory file or not

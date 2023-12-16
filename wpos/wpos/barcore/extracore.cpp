@@ -256,7 +256,6 @@ void ExtraCore::readFixedOptionFromXml(XmlConfig* xml){
 
 OfferData* ExtraCore::getOffer(){
     if (custom_offer)  return custom_offer;
-
     if (default_offer) return default_offer;
     return nullptr;
 }
@@ -299,29 +298,9 @@ bool ExtraCore::delDefaultOffer(){
     return true;
 }
 
-bool ExtraCore::clearExtras(){
+void ExtraCore::clearExtras(){
     clearPrice();
     clearOffer();
     clearOptionList(true);
     delDefaultOffer();
-    return true;
-}
-
-void ExtraCore::attachSlots(){
-
-//    if (generic_signal_manager){
-//        //GENERIC DATA SIGNALS SLOTS
-//        generic_signal_manager->subscribeToGenericDataSignal(GDATASIGNAL_XCORE_SET_DEFAULT_PRODUCT_OFFER, this);
-//        generic_signal_manager->subscribeToGenericDataSignal(GDATASIGNAL_XCORE_SET_PRODUCT_OPTION, this);
-//        generic_signal_manager->subscribeToGenericDataSignal(GDATASIGNAL_XCORE_SET_PRODUCT_PRICE, this);
-//        generic_signal_manager->subscribeToGenericDataSignal(GDATASIGNAL_XCORE_SET_PRODUCT_OFFER, this);
-//        generic_signal_manager->subscribeToGenericDataSignal(GDATASIGNAL_SETCORE_MODE, this);
-
-//        //GENERIC SIGNALS SLOTS   GSIGNAL_XCORE_CLEAR_EXTRAS
-//        generic_signal_manager->subscribeToGenericSignal(GDATASIGNAL_XCORE_DEL_OPTIONS, this);
-//        generic_signal_manager->subscribeToGenericSignal(GSIGNAL_XCORE_CLEAR_EXTRAS, this);
-
-//        //emited signals
-//        generic_signal_manager->publishGenericDataSignal(GDATASIGNAL_PRODSELECT_COLOR_MODE, this);
-//    }
 }

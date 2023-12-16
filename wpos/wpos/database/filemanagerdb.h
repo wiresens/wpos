@@ -19,20 +19,21 @@
 class XmlConfig;
 
 class FileManagerDB : public BasicDatabase  {
-public: 
-    FileManagerDB(const QString& _connection_name,
-                  const QString& _hostname,
-                  const QString& _database,
-                  const QString& _username,
-                  const QString& _passwd);
+public:
+    FileManagerDB(
+        const QString& connection,
+        const QString& hostname,
+        const QString& database,
+        const QString& username,
+        const QString& passwd);
 
-    FileManagerDB(const QString& _connection_name,
-                  XmlConfig *xml);
+    FileManagerDB(
+        const QString& connection,
+        XmlConfig *xml);
 
-    FileManagerDB(const QString& _connection_name,
-                  const QString& configuration_path);
-
-    ~FileManagerDB();
+    FileManagerDB(
+        const QString& connection,
+        const QString& configFile);
 
     bool exists(const QString& file);
     bool loadXmlFile(const QString& file);

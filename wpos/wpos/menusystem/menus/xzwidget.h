@@ -35,9 +35,6 @@ public:
     };
 
     explicit XZWidget(QWidget *parent, const QString& name = QString());
-    ~XZWidget();
-    void showEvent(QShowEvent *e);
-    void hideEvent(QHideEvent *e);
 
 public slots:
     void xSlot(XmlConfig *xml);

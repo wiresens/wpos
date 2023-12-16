@@ -37,12 +37,11 @@ using namespace std;
 
 static const uint TIME_OUT {25};
 
-CashWidget::CashWidget(
-    BarCore *_core,
+CashWidget::CashWidget(BarCore *barCore,
     QWidget *parent,
     const QString& name):
     QWidget(parent),
-    core  {_core}
+    barCore{barCore}
 {
     setupUi(this);
     setObjectName(name);
@@ -78,8 +77,6 @@ CashWidget::CashWidget(
     //     connect(quick_button, SIGNAL(released()), this, SLOT(quickAccept()));
     //  button->addContent("name",PRODUCT_SCREEN);
 }
-
-CashWidget::~CashWidget(){}
 
 void CashWidget::setNewPrice(double price){
     total_receivable_value_label->clear();
@@ -156,7 +153,7 @@ void CashWidget::cancelSlot(){
     }
 }
 
-void CashWidget::showEvent(QShowEvent *e){
+void CashWidget::showEvent(QShowEvent *event){
 
     float_keyboard->clear();
     ok_button->setEnabled(false);
@@ -165,13 +162,13 @@ void CashWidget::showEvent(QShowEvent *e){
     float_keyboard->setEnabled(true);
     cashing_completed = false;
 
-    if (!core->hasProducts()){
+    if (!barCore->hasProducts()){
         QTimer::singleShot(TIME_OUT, this, &CashWidget::cancelSlot);
-        QWidget::showEvent(e);
+        QWidget::showEvent(event);
         return;
     }
 
-    actual_price = QString::number(core->getBillingSum(), 'f', 2).toDouble();
+    actual_price = QString::number(barCore->total(), 'f', 2).toDouble();
     XmlConfig xml;
     xml.createElement("enabled", "false");
     emit genericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED, &xml);
@@ -200,7 +197,7 @@ void CashWidget::showEvent(QShowEvent *e){
 
     ok_button->setEnabled(false);
     setNewPrice(actual_price);
-    QWidget::showEvent(e);
+    QWidget::showEvent(event);
 }
 
 void CashWidget::sendTicketSignal(){
@@ -213,8 +210,8 @@ void CashWidget::quickAccept(){
     sendTicketSignal();
 }
 
-void CashWidget::genericDataSignalSlot(const QString& signal_name, XmlConfig *xml){
-    if ( signal_name == GDATASIGNAL::CASH_MENU_SPEED){
+void CashWidget::genericDataSignalSlot(const QString& signal, XmlConfig *xml){
+    if ( signal == GDATASIGNAL::CASH_MENU_SPEED){
         xml->delDomain();
         QString aux = xml->readString("state");
         if (aux == "on")

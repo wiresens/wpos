@@ -33,51 +33,51 @@ public:
 
 class KillTicketsDB : public BasicDatabase {
 public:
-    KillTicketsDB(const QString& _connection_name,
-                  const QString& _hostname,
-                  const QString& _database,
-                  const QString& _username,
-                  const QString& _passwd);
+    KillTicketsDB(
+        const QString& connection,
+        const QString& hostname,
+        const QString& database,
+        const QString& username,
+        const QString& passwd);
 
-    KillTicketsDB(const QString& _connection_name,
-                  const QString& configuration_path);
-
-    ~KillTicketsDB();
-
+    KillTicketsDB(
+        const QString& connection,
+        const QString& configFile);
 
     /**
-        * invoices sequences. (Invoices are attached to tickets).
-        */
+    * invoices sequences. (Invoices are attached to tickets).
+    */
     int getNextInvoiceVal();
     bool setNextInvoiceVal(int val);
 
     /**
-        *       get a list with a resume of all tickets
-        */
-    QList<TicketResumeData*>* getTicketResume();
-    QList<TicketResumeData*>* getReceiptResume(QString employee_id);
-    QList<TicketResumeData*>* getReceiptResume();
+    *       get a list with a resume of all tickets
+    */
+    QList<TicketResumeData> getTicketResume();
+    QList<TicketResumeData> getReceiptResume(QString employee_id);
+    QList<TicketResumeData> getReceiptResume();
 
     /**
-        *       @param a qstring with the ticket_code in a QString or a int with the ticket
-        *       @return true if the ticket has any price with value < 0.
-        */
+    *       @param a qstring with the ticket_code in a QString or a int with the ticket
+    *       @return true if the ticket has any price with value < 0.
+    */
     bool ticketHasNegative(const QString& ticket);
     bool ticketHasNegative(int ticket);
 
     /**
-        *       invoice methods to obtain and insert invoices.
-        */
+    *       invoice methods to obtain and insert invoices.
+    */
     int getInvoiceFromTicket(int ticket);
     bool groupInvoiceWithTicket(int ticket_code, int invoice_code);
 
 
     /**
-        * get a ticket from the DataBase. This method return a Xml with the composition
-        * of the ticket at the database. The method will be moved in the future to the TicketCoreDB
-        * class if any other DB method need the Xml from the Database.
-        */
-    XmlConfig *getTicketFromDatabase(int ticket_number);
+    * get a ticket from the DataBase. This method return a Xml with the composition
+    * of the ticket at the database. The method will be moved in the future to the TicketCoreDB
+    * class if any other DB method need the Xml from the Database.
+    */
+//    XmlConfig *getTicketFromDatabase(int ticket_number);
+    XmlConfig getTicketFromDatabase(int ticket_number);
 };
 
 #endif

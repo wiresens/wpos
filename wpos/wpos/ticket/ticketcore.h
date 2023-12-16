@@ -29,7 +29,7 @@ public:
     bool getTogglePrinterState();
 
 public slots:
-    void receiveCoreDataSlot(XmlConfig *_xml);
+    void receiveCoreData(XmlConfig *_xml);
     void togglePrinterState(bool on);
     void xSlot();
     void zSlot();
@@ -43,8 +43,8 @@ signals:
 
 protected:
     bool dailyCashOperations(bool partial = true);
-    bool stampTicket(XmlConfig *_xml);
-    QString getProductCode(XmlConfig *_xml);
+    bool stampTicket(XmlConfig *xml);
+    QString getProductCode(XmlConfig *xml);
     void fillTicketGaps();
 
     TicketCoreDB *db{};

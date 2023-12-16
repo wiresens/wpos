@@ -192,7 +192,7 @@ SalesScreen::SalesScreen(MenuPage *parent,
     connect(orderPicker->order(), &OrderView::dataChanged, barCore, &BarCore::dataChangedSlot);
     connect(productScreenStack, &ProductScreenStack::productDefinition, this, &SalesScreen::receiveProduct);
     connect(barCore, &BarCore::dataChanged, orderPicker->order(), &OrderView::changeData);
-    connect(barCore, &BarCore::ticket, ticketCore, &TicketCore::receiveCoreDataSlot);
+    connect(barCore, &BarCore::ticket, ticketCore, &TicketCore::receiveCoreData);
 
     connect(next_button, &QPushButton::pressed, productScreenStack, &ProductScreenStack::nextScreen);
     connect(previous_button, &QPushButton::pressed, productScreenStack, &ProductScreenStack::prevScreen);

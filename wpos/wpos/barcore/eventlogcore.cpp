@@ -75,5 +75,5 @@ void EventLogCore::processEventLog(XmlConfig *xml){
 
     data.event_code = QString::number(db->getNextItemVal());
     data.timestamp = currentDateTimeString();
-    db->logData(&data);
+    db->logData(data);
 }

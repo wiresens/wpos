@@ -107,26 +107,25 @@ void KillTicketsWidget::refreshList(){
 
     ticketnum_treeview->clear();
     ticket_db->connect();
-    std::unique_ptr<QList<TicketResumeData*>> tickets { ticket_db->getTicketResume() };
+    QList<TicketResumeData> tickets { ticket_db->getTicketResume() };
     ticket_db->disConnect();
 
-    if ( ! tickets.get() )  return;
+    if ( tickets.isEmpty() )  return;
 
-    for ( auto& ticket : *tickets){
+    for ( TicketResumeData& ticket : tickets){
         auto item = new QTreeWidgetItem(ticketnum_treeview);
-        if (ticket->ticket_state == "cancelado")
+        if (ticket.ticket_state == "cancelado")
             item->setIcon(ResumeSection::Icon, anulation_pixmap);
-        else if ( ticket->ticket_state == "cobrado" )
+        else if ( ticket.ticket_state == "cobrado" )
             item->setIcon(ResumeSection::Icon,  null_pixmap);
-        else if ( ticket->ticket_state == "facturado" )
+        else if ( ticket.ticket_state == "facturado" )
             item->setIcon(ResumeSection::Icon, invoice_pixmap);
 
-
-        item->setText(ResumeSection::TicketId, ticket->ticket_code);
-        item->setText(ResumeSection::EmployeeName, ticket->employee_name);
-        item->setText(ResumeSection::Date, ticket->timestamp);
-        item->setText(ResumeSection::Total, ticket->total);
-        item->setText(ResumeSection::Status, ticket->ticket_state);
+        item->setText(ResumeSection::TicketId, ticket.ticket_code);
+        item->setText(ResumeSection::EmployeeName, ticket.employee_name);
+        item->setText(ResumeSection::Date, ticket.timestamp);
+        item->setText(ResumeSection::Total, ticket.total);
+        item->setText(ResumeSection::Status, ticket.ticket_state);
 
 //        item->setTextAlignment(ResumeSection::TicketId, Qt::AlignRight);
 //        item->setTextAlignment(ResumeSection::EmployeeName, Qt::AlignLeft);
@@ -137,8 +136,6 @@ void KillTicketsWidget::refreshList(){
         for(auto i = 0 ; i < ticketnum_treeview->header()->count(); i++ )
             item->setTextAlignment(i, Qt::AlignHCenter);
     }
-
-    tickets->clear();
 }
 
 void KillTicketsWidget::showEvent(QShowEvent *event){
@@ -196,8 +193,8 @@ void KillTicketsWidget::handleTicketSelected() {
     emit genericDataSignal (GDATASIGNAL::SETCORE_MODE, &xml);
 
     /* Get the ticket and Update the command */
-    std::unique_ptr<XmlConfig> xml2  {ticket_db->getTicketFromDatabase(ticket_id)};
-    order->changeData(xml2.get());
+    XmlConfig xml2  = ticket_db->getTicketFromDatabase(ticket_id);
+    order->changeData(&xml2);
     order->orderContent()->selectFirst();
     ticket_db->disConnect();
 }
@@ -207,26 +204,23 @@ void KillTicketsWidget::deleteTicket(){
     QTreeWidgetItem *item = 0;
 
     item = ticketnum_treeview->currentItem();
-    if (!item)
+    if (!item || !ticketnum_treeview->isItemSelected(item))
         return;
 
-    if (!ticketnum_treeview->isItemSelected(item))
-        return;
-
-    tid = item->text (1).toInt ();
+    tid = item->text(1).toInt ();
 
     ticket_db->connect();
-    std::unique_ptr<XmlConfig> xml  {ticket_db->getTicketFromDatabase (tid)};
+    XmlConfig xml = ticket_db->getTicketFromDatabase (tid);
     ticket_db->disConnect();
 
-    xml->doWrite ("employee.dni", authCore->userId());
-    xml->doWrite ("employee.name", authCore->userName());
-    setTicketNegative(xml.get());
-    emit genericDataSignal (GDATASIGNAL::BARCORE_CHANGE_XML, xml.get());
+    xml.doWrite("employee.dni", authCore->userId());
+    xml.doWrite("employee.name", authCore->userName());
+    setTicketNegative(&xml);
+    emit genericDataSignal (GDATASIGNAL::BARCORE_CHANGE_XML, &xml);
 
-    xml.reset( new XmlConfig());
-    xml->createElement ("pay_type", "anulacion");
-    emit genericDataSignal (GDATASIGNAL::BARCORE_PROCESS_CORE, xml.get());
+    xml.clear();
+    xml.createElement ("pay_type", "anulacion");
+    emit genericDataSignal (GDATASIGNAL::BARCORE_PROCESS_CORE, &xml);
 
     refreshList();
 }
@@ -261,14 +255,14 @@ void KillTicketsWidget::printTicket(){
 
     /* Get the ticket */
     ticket_db->connect();
-    std::unique_ptr<XmlConfig> xml { ticket_db->getTicketFromDatabase(tickect_id)};
+    XmlConfig xml = ticket_db->getTicketFromDatabase(tickect_id);
     ticket_db->disConnect();
 
     /* Update the command */
-    if (xml->wellFormed()){
-        PrinterManager printer(nullptr, "killTicketPrinter");
-        printer.printTicket( xml.get(), 1);
-        xml->debug();
+    if (xml.wellFormed()){
+        PrinterManager printer;
+        printer.printTicket( xml, 1);
+        xml.debug();
     }
 }
 
@@ -322,14 +316,14 @@ void KillTicketsWidget::printInvoice(){
 
     if ( tickect_id >= 0 && invoice_id >=0 ){
         ticket_db->connect();
-        std::unique_ptr<XmlConfig> xml { ticket_db->getTicketFromDatabase(tickect_id) };
+        XmlConfig xml = ticket_db->getTicketFromDatabase(tickect_id);
         ticket_db->disConnect();
 
-        xml->delDomain();
-        xml->createElement("invoicenumber", QString::number(invoice_id));
+        xml.delDomain();
+        xml.createElement("invoicenumber", QString::number(invoice_id));
 
-        PrinterManager printer(nullptr, "InvoicePrinter");
-        printer.printTicket(xml.get(), 2);
+        PrinterManager printer;
+        printer.printTicket(xml, 2);
         refreshList();
     }
 }
