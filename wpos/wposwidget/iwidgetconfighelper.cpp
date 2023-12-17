@@ -1,7 +1,8 @@
 #include "iwidgetconfighelper.h"
+#include <libbslxml/xmlconfig.h>
+
 #include <QLayout>
 #include <QLabel>
-
 
 const QMap<QString, QSizePolicy::Policy>
     IWidgetConfigHelper::sizePolicies = {
@@ -34,6 +35,22 @@ const QMap<QString, Qt::Alignment>
     {"Bottom" , Qt::AlignBottom},
     {"Right" , Qt::AlignRight},
     {"Center", Qt::AlignCenter}
+};
+
+const QMap<QString, QAbstractItemView::SelectionMode>
+    IWidgetConfigHelper::selectionModes = {
+    {"SingleRow" , QAbstractItemView::SingleSelection},
+    {"MultiRow" , QAbstractItemView::MultiSelection},
+    {"Contigus" , QAbstractItemView::ContiguousSelection},
+    {"Extended" , QAbstractItemView::ExtendedSelection},
+    {"No", QAbstractItemView::NoSelection}
+};
+
+const QMap<QString, Qt::ScrollBarPolicy>
+    IWidgetConfigHelper::scrolbarPolicies = {
+    {"off" , Qt::ScrollBarAlwaysOff},
+    {"on" , Qt::ScrollBarAlwaysOn},
+    {"auto" , Qt::ScrollBarAsNeeded}
 };
 
 void  IWidgetConfigHelper::setBackgroundColor(
@@ -77,6 +94,13 @@ void  IWidgetConfigHelper::setLayoutSpacing(
     if(layout) layout->setSpacing(space);
 }
 
+void  IWidgetConfigHelper::setLayoutMargin(QWidget& target,
+    uint margin)
+{
+    auto layout = target.layout();
+    if(layout) layout->setMargin(margin);
+}
+
 void  IWidgetConfigHelper::setFrameShape(
     QWidget& target,
     const QString &shape)
@@ -108,4 +132,54 @@ void  IWidgetConfigHelper::setFont(
     const QFont& font)
 {
     target.setFont(font);
+}
+
+void IWidgetConfigHelper::setFont(
+    QWidget& target,
+    XmlConfig &xmlDesc, int pos)
+{
+    QFont font ;
+    QString tag;
+
+    if( pos >= 0 )
+        tag = "label["+QString::number(pos)+"].";
+    auto tmpString = xmlDesc.readString( tag + "fontfamily");
+    font.setFamily("SansSerif");
+
+    tmpString = xmlDesc.readString( tag + "fontsize");
+    font.setPixelSize(tmpString.toInt());
+
+    tmpString = xmlDesc.readString( tag + "bold");
+    font.setBold(tmpString == "true");
+
+    tmpString = xmlDesc.readString( tag + "underline");
+    font.setUnderline(tmpString == "true");
+
+    tmpString = xmlDesc.readString( tag + "italic");
+    font.setItalic(tmpString == "true");
+
+    tmpString = xmlDesc.readString( tag + "strikeout");
+    font.setStrikeOut(tmpString == "true");
+    target.setFont(font);
+}
+
+void IWidgetConfigHelper::setSelectionMode(
+    QAbstractItemView& view,
+    const QString& mode)
+{
+    view.setSelectionMode(selectionModes[mode]);
+}
+
+void IWidgetConfigHelper::setHorizontalScrollBarPolicy(
+    QAbstractScrollArea& area,
+    const QString& policy)
+{
+    area.setHorizontalScrollBarPolicy(scrolbarPolicies[policy]);
+}
+
+void IWidgetConfigHelper::setVerticalScrollBarPolicy(
+    QAbstractScrollArea& area,
+    const QString& policy)
+{
+    area.setVerticalScrollBarPolicy(scrolbarPolicies[policy]);
 }

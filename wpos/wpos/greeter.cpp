@@ -81,8 +81,6 @@ Greeter::Greeter(
     createLoginButtons();
 }
 
-Greeter::~Greeter(){
-}
 
 void Greeter::loadPicture(){
 

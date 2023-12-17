@@ -189,9 +189,9 @@ SalesScreen::SalesScreen(MenuPage *parent,
 
     shortcutLayout = new QHBoxLayout(shortcut_buttons_frame);
 
-    connect(orderPicker->order(), &OrderView::dataChanged, barCore, &BarCore::dataChangedSlot);
+    connect(orderPicker->order(), &OrderView::orderChanged, barCore, &BarCore::addProductDefaultOption);
     connect(productScreenStack, &ProductScreenStack::productDefinition, this, &SalesScreen::receiveProduct);
-    connect(barCore, &BarCore::dataChanged, orderPicker->order(), &OrderView::changeData);
+    connect(barCore, &BarCore::dataChanged, orderPicker->order(), &OrderView::updateOrder);
     connect(barCore, &BarCore::ticket, ticketCore, &TicketCore::receiveCoreData);
 
     connect(next_button, &QPushButton::pressed, productScreenStack, &ProductScreenStack::nextScreen);

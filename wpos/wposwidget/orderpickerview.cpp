@@ -49,28 +49,28 @@ OrderPickerView::OrderPickerView(QWidget *parent, QString name):
     QPushButton *button = m_buttons.find("down_button");
     if (button){
         button->setAutoRepeat(true);
-        connect(button, &QPushButton::clicked, m_order->orderContent(), &OrderContentView::selectDown);
+        connect(button, &QPushButton::clicked, m_order->contentView(), &OrderContentView::selectDown);
     }
 
     button = m_buttons.find("up_button");
     if (button){
         button->setAutoRepeat(true);
-        connect(button, &QPushButton::clicked, m_order->orderContent(), &OrderContentView::selectUp);
+        connect(button, &QPushButton::clicked, m_order->contentView(), &OrderContentView::selectUp);
     }
 
     button = m_buttons.find("plus_button");
     if (button){
-        connect( button, &QPushButton::clicked, m_order->orderContent(), &OrderContentView::incrementQuantity);
+        connect( button, &QPushButton::clicked, m_order->contentView(), &OrderContentView::incrementQuantity);
     }
 
     button = m_buttons.find("less_button");
     if (button){
-        connect(button, &QPushButton::clicked, m_order->orderContent(), &OrderContentView::decrementQuantity);
+        connect(button, &QPushButton::clicked, m_order->contentView(), &OrderContentView::decrementQuantity);
     }
 
     button = m_buttons.find("del_row_button");
     if (button){
-        connect( button, &QPushButton::clicked, m_order->orderContent(), &OrderContentView::delRow);
+        connect( button, &QPushButton::clicked, m_order->contentView(), &OrderContentView::delRow);
     }
 
     button = m_buttons.find("clear_order_button");
@@ -85,7 +85,7 @@ OrderPickerView::OrderPickerView(QWidget *parent, QString name):
 
     button = m_buttons.find("printer_order_button");
     if (button){
-        connect(button, &QPushButton::clicked, m_order->orderContent(), &OrderContentView::printTicket);
+        connect(button, &QPushButton::clicked, m_order->contentView(), &OrderContentView::printTicket);
     }
 
     button = m_buttons.find("print_at_kitchen_button");
@@ -452,7 +452,7 @@ OrderView *OrderPickerView::order(){
 }
 
 void OrderPickerView::dataChangedSlot(XmlConfig *xml){
-    m_order->changeData(xml);
+    m_order->updateOrder(xml);
 }
 
 void OrderPickerView::exitMainWindowSlot(){
@@ -463,8 +463,8 @@ void OrderPickerView::exitMainWindowSlot(){
 
 void OrderPickerView::deleteReceiptSlot(){
     emit genericSignal(GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT);
-    m_order->orderContent()->reset();
-    m_order->orderHeader()->setStaffInfo(m_order->orderContent()->getLocalXml());
+    m_order->contentView()->reset();
+    m_order->headerView()->setStaffInfo(m_order->contentView()->orderAsXml());
 }
 
 void OrderPickerView::printAtKitchen(){

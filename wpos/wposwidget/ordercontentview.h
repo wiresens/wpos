@@ -37,7 +37,7 @@ class OrderContentView :
     Q_OBJECT
 public:
     OrderContentView(
-        XmlConfig *xml,
+        XmlConfig &contentXmlDesc,
         QWidget *parent,
         QString name
     );
@@ -45,8 +45,8 @@ public:
     ~OrderContentView();
 
     void usePartialSumsByRow(bool use_it);
-    void showColumn(QString name, bool show_it);
-    XmlConfig* getLocalXml();
+    void showColumn(const QString &name, bool visible);
+    XmlConfig* orderAsXml() const;
 
 public slots:
     void genericSignalSlot(const QString& signal);
@@ -72,11 +72,11 @@ public slots:
     void printTicket();
 
 signals:
-    void totalBillSignal(float amount);
-    void dataChanged(XmlConfig *xml);
+    void totalChanged(float amount);
+    void contentChanged(XmlConfig *xml);
 
-protected:
-    void parseXmlDescription(XmlConfig *xml);
+private:
+    void parseXmlDescription(XmlConfig &contentXmlDesc);
     void total();
     void buildProductsList();
     QString readOptions(QString optionsDomain);
@@ -96,7 +96,7 @@ private:
     HList<VisualProduct> *products{};
 
     // This list holds the column position at visual table
-    HList<int> *column_positions{};
+    QMap<QString, int> columnPositions{};
 
     // Used to manage color state at the gsignal_wrong_product
     QColor last_color;

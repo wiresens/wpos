@@ -27,24 +27,23 @@ class OrderView : public QFrame  {
 public:
     explicit OrderView(QWidget *parent, const QString& name = QString());
 
-    OrderContentView *orderContent();
-    OrderHeaderView *orderHeader();
+    OrderHeaderView *headerView() const { return m_header ;}
+    OrderContentView *contentView() const { return m_content ;}
+    OrderFooterView *footerView() const { return m_footer ;}
 
 signals:
-    void dataChanged(XmlConfig *xml);
+    void orderChanged(XmlConfig *xml);
     
 public slots:
-    void changeData(XmlConfig *xml);
+    void updateOrder(XmlConfig *xml);
     
-protected:
-    void parseXmlDescription(XmlConfig* xml);
+private:
+    void parseXmlDescription(XmlConfig& orderXmlDesc);
 
-    // Holds photo and the name of the waiter
-    OrderHeaderView *order_header;
-    // Holds information relative to the products, quantity, name, price, etc.
-    OrderContentView *order_content;
-    // Hols the total and the currency
-    OrderFooterView *order_total;
+private:
+    OrderHeaderView *m_header; // waiter's photo and the name, table name
+    OrderContentView *m_content; //product quantity, name, price, etc.
+    OrderFooterView *m_footer; // total and the currency
     QBoxLayout *layout;
 };
 

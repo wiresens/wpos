@@ -132,7 +132,7 @@ void ReceiptRecoverWidget::showEvent(QShowEvent *event){
     if ( ! refreshAndShow() ) return;
 
     XmlConfig xml;
-    order->changeData(&xml);
+    order->updateOrder(&xml);
     QFrame::showEvent(event);
 }
 
@@ -352,8 +352,8 @@ void ReceiptRecoverWidget::handleTicketSelected() {
         return;
     }
 
-    order->changeData(xml.get());
-    order->orderContent()->selectFirst();
+    order->updateOrder(xml.get());
+    order->contentView()->selectFirst();
 }
 
 void ReceiptRecoverWidget::getReceiptSlot(){

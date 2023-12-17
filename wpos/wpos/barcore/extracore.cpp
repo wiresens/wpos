@@ -242,14 +242,12 @@ void ExtraCore::readOptionFromXml(XmlConfig* xml){
     options.append(node, node->getOptionType() );
 }
 
-void ExtraCore::readFixedOptionFromXml(XmlConfig* xml){
+void ExtraCore::addProductOption(XmlConfig* xml){
 
-    QString name  {xml->readString("type")};
-    QString value = {xml->readString("value")};
+    QString name  = xml->readString("type");
+    QString value = xml->readString("value");
 
-    if (name.isEmpty() || value.isEmpty()) return;
-
-    ProductExtraInfo *node {new ProductExtraInfo(name)};
+    ProductExtraInfo *node {new ProductExtraInfo(name)}; //Memory leak because never free
     node->addOption(value, true);
     fixed_options.append(node, node->getOptionType() );
 }
@@ -289,13 +287,11 @@ bool ExtraCore::setDefaultOffer(const QString& offer_type, const QString& offer_
     return true;
 }
 
-bool ExtraCore::delDefaultOffer(){
-
+void ExtraCore::delDefaultOffer(){
     if (default_offer){
         delete default_offer;
         default_offer = nullptr;
     }
-    return true;
 }
 
 void ExtraCore::clearExtras(){

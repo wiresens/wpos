@@ -64,7 +64,7 @@ XmlConfig::XmlConfig(
     const QString& _file,
     QIODevice::OpenMode mode):
     impl { new XmlConfigPrivate(_file, mode)}
-{    
+{
     if (impl->ok()){
         doc = impl->domDocument();
         currentNode = doc.documentElement().firstChild();
@@ -296,7 +296,7 @@ int XmlConfig::howManyTags(const QString& tag, const QString& domain){
     return how_many;
 }
 
-int XmlConfig::howManyAttributes(const QString& tag){	
+int XmlConfig::howManyAttributes(const QString& tag){
     QDomElement elmt = nodeFromTagPrivate(tag).toElement();
 
     if (elmt.isNull())

@@ -96,7 +96,7 @@ KillTicketsWidget::KillTicketsWidget(
     connect(invoice_button, &QAbstractButton::released, this, &KillTicketsWidget::printInvoice);
     connect(trash_button, &QAbstractButton::clicked, this, &KillTicketsWidget::deleteTicket);
     connect(printer_button, &QAbstractButton::released, this, &KillTicketsWidget::printTicket);
-    connect(this, &KillTicketsWidget::genericDataSignal, order->orderContent(), &OrderContentView::genericDataSignalSlot);
+    connect(this, &KillTicketsWidget::genericDataSignal, order->contentView(), &OrderContentView::genericDataSignalSlot);
 }
 
 KillTicketsWidget::~KillTicketsWidget(){
@@ -146,7 +146,7 @@ void KillTicketsWidget::showEvent(QShowEvent *event){
         ticketnum_treeview->topLevelItem(0)->setHidden(false);
 
     XmlConfig xml;
-    if (event)  order->changeData(&xml);
+    if (event)  order->updateOrder(&xml);
     QFrame::showEvent(event);
 }
 
@@ -194,8 +194,8 @@ void KillTicketsWidget::handleTicketSelected() {
 
     /* Get the ticket and Update the command */
     XmlConfig xml2  = ticket_db->getTicketFromDatabase(ticket_id);
-    order->changeData(&xml2);
-    order->orderContent()->selectFirst();
+    order->updateOrder(&xml2);
+    order->contentView()->selectFirst();
     ticket_db->disConnect();
 }
 

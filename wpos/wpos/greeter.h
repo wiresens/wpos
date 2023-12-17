@@ -44,9 +44,9 @@ class XmlConfig;
 class MenuPage;
 
 class Greeter :
-        public QWidget,
-        public GreeterInterface,
-        private Ui::LoginWidget
+    public QWidget,
+    public GreeterInterface,
+    private Ui::LoginWidget
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wpos.Greeter")
@@ -56,7 +56,6 @@ public:
     static constexpr QSize LOGIN_BUTTON_SIZE = QSize{100,70};
 
     Greeter(MenuPage* parent, const QString& name);
-    ~Greeter();
 
 signals:
     void genericDataSignal(const QString& signal_name, XmlConfig *xml);

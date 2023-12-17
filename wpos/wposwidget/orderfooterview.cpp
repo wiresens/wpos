@@ -12,7 +12,7 @@ Modified by Carlos Manzanedo Rueda.
  ***************************************************************************/
 
 #include "orderfooterview.h"
-#include <iwidgetconfighelper.h>
+#include <wposwidget/iwidgetconfighelper.h>
 
 #include <QLayout>
 #include <QLabel>
@@ -23,102 +23,78 @@ Modified by Carlos Manzanedo Rueda.
 using namespace std;
 
 OrderFooterView::OrderFooterView(
-    XmlConfig *xml,
+    XmlConfig &footerXmlDesc,
     QWidget *parent,
     const QString& name)
     :QFrame(parent)
 {
     setObjectName(name);
-    parseXmlDescription(xml);
-    labels[2]->setVisible(false); //We hide the currency  symbol for the time being.
+    parseXmlDescription(footerXmlDesc);
+    currencyLabel->setVisible(false); //We hide the currency  symbol for the time being.
 }
 
-void OrderFooterView::parseXmlDescription(XmlConfig *xml){
+void OrderFooterView::parseXmlDescription(XmlConfig &footerXmlDesc){
 
-    IWidgetConfigHelper widgetConfigHelper;
-    xml->delDomain(); //releaseDomain() : Position ourself at the root of the XML tree
-    xml->setDomain("totaldescription.global");
-    auto aux_string = xml->readString("backgroundcolor");
-    if(!aux_string.isEmpty()) widgetConfigHelper.setBackgroundColor(*this, QColor(aux_string));
+    IWidgetConfigHelper widgetConfigurer;
+    footerXmlDesc.delDomain(); //releaseDomain() : Position ourself at the root of the XML tree
+    footerXmlDesc.setDomain("totaldescription.global");
+    auto aux_string = footerXmlDesc.readString("backgroundcolor");
+    if(!aux_string.isEmpty()) widgetConfigurer.setBackgroundColor(*this, QColor(aux_string));
 
-    widgetConfigHelper.setSize(*this, width(), 50);
+    widgetConfigurer.setSize(*this, width(), 50);
 
-    auto hsizepolicy = xml->readString("hsizepolicy");
-    auto vsizepolicy = xml->readString("vsizepolicy");
-    widgetConfigHelper.setSizePolicy(*this, hsizepolicy, vsizepolicy);
+    auto hsizepolicy = footerXmlDesc.readString("hsizepolicy");
+    auto vsizepolicy = footerXmlDesc.readString("vsizepolicy");
+    widgetConfigurer.setSizePolicy(*this, hsizepolicy, vsizepolicy);
 
     layout = new QHBoxLayout(this);
 
-    aux_string = xml->readString("margin");
-    if (!aux_string.isEmpty())
-        layout->setMargin(aux_string.toInt());
+    auto margin = footerXmlDesc.readString("margin");
+    auto spacing = footerXmlDesc.readString("spacing");
 
-    aux_string = xml->readString("spacing");
-    if (!aux_string.isEmpty())
-        layout->setSpacing(aux_string.toInt());
+    widgetConfigurer.setLayoutMargin(*this, margin.toInt());
+    widgetConfigurer.setLayoutSpacing(*this, spacing.toInt());
 
-    widgetConfigHelper.setFrameShape(*this, xml->readString("frameshape"));
-    widgetConfigHelper.setFrameShadow(*this, xml->readString("frameshadow"));
+    widgetConfigurer.setFrameShape(*this, footerXmlDesc.readString("frameshape"));
+    widgetConfigurer.setFrameShadow(*this, footerXmlDesc.readString("frameshadow"));
 
-    xml->delDomain();
-    xml->setDomain("totaldescription.labels"); //goto
+    footerXmlDesc.delDomain();
+    footerXmlDesc.setDomain("totaldescription.labels"); //goto
 
     // Looks for labels and create them
-    for(auto  i=0; i < xml->howManyTags("label") ; i++){
-        QString aux_name = xml->readString("label["+QString::number(i)+"].name");
-        QString aux_text = xml->readString("label["+QString::number(i)+"].text");
+    for(auto  i=0; i < footerXmlDesc.howManyTags("label") ; i++){
+        QString name = footerXmlDesc.readString("label["+QString::number(i)+"].name");
+        QString text = footerXmlDesc.readString("label["+QString::number(i)+"].text");
 
         QLabel* label = new QLabel(this);
-        label->setObjectName(aux_name);
-        labels.append(label, aux_name);
+        if( name == "total_amount") amountLabel = label;
+        else if( name == "currency_symbol") currencyLabel = label;
+
         layout->addWidget(label);
-        if(!aux_text.isEmpty()) label->setText(aux_text);
+        if(!text.isEmpty()) label->setText(text);
 
-        aux_string = xml->readString("label["+QString::number(i)+".backgroundcolor");
-        if(!aux_string.isEmpty()) widgetConfigHelper.setBackgroundColor(*this, QColor(aux_string));
+        auto backgroundcolor = footerXmlDesc.readString("label["+QString::number(i)+".backgroundcolor");
+        widgetConfigurer.setBackgroundColor(*label, QColor(backgroundcolor));
 
-        auto width_str = xml->readString("label["+QString::number(i)+".width");
-        auto height_str = xml->readString("label["+QString::number(i)+".height");
-        if ( !width_str.isEmpty() || !height_str.isEmpty())
-            widgetConfigHelper.setSize(*label, width_str.toInt(), height_str.toInt());
+        auto width = footerXmlDesc.readString("label["+QString::number(i)+".width");
+        auto height = footerXmlDesc.readString("label["+QString::number(i)+".height");
+        widgetConfigurer.setSize(*label, width.toInt(), height.toInt());
 
-        auto halign = xml->readString("label["+QString::number(i)+"].halign");
-        auto valign = xml->readString("label["+QString::number(i)+"].valign");
-        widgetConfigHelper.setAlignment(*label, halign, valign);
+        auto halign = footerXmlDesc.readString("label["+QString::number(i)+"].halign");
+        auto valign = footerXmlDesc.readString("label["+QString::number(i)+"].valign");
+        widgetConfigurer.setAlignment(*label, halign, valign);
 
-        auto hsizepolicy = xml->readString("label["+QString::number(i)+"].hsizepolicy");
-        auto vsizepolicy = xml->readString("label["+QString::number(i)+"].vsizepolicy");
+        auto hsizepolicy = footerXmlDesc.readString("label["+QString::number(i)+"].hsizepolicy");
+        auto vsizepolicy = footerXmlDesc.readString("label["+QString::number(i)+"].vsizepolicy");
 
-        auto  hstretch = xml->readString("label["+QString::number(i)+"].hstretch").toInt();
-        auto  vstretch = xml->readString("label["+QString::number(i)+"].vstretch").toInt();
-        widgetConfigHelper.setSizePolicy(*label, hsizepolicy, vsizepolicy, hstretch, vstretch);
+        auto  hstretch = footerXmlDesc.readString("label["+QString::number(i)+"].hstretch").toInt();
+        auto  vstretch = footerXmlDesc.readString("label["+QString::number(i)+"].vstretch").toInt();
+        widgetConfigurer.setSizePolicy(*label, hsizepolicy, vsizepolicy, hstretch, vstretch);
 
-        // Sets the font
-        QFont font("SansSerif");
-        aux_string = xml->readString("label["+QString::number(i)+"].fontfamily");
-        font.setFamily(aux_string);
-
-        aux_string = xml->readString("label["+QString::number(i)+"].fontsize");
-        font.setPointSize(aux_string.toInt() + 1);
-
-        aux_string = xml->readString("label["+QString::number(i)+"].bold");
-        font.setBold(  aux_string == "true" );
-
-        aux_string = xml->readString("label["+QString::number(i)+"].underline");
-        font.setUnderline(aux_string == "true");
-
-        aux_string = xml->readString("label["+QString::number(i)+"].italic");
-        font.setItalic(aux_string == "true");
-
-        aux_string = xml->readString("label["+QString::number(i)+"].strikeout");
-        font.setStrikeOut(aux_string == "true");
-        label->setFont(font);
+        widgetConfigurer.setFont(*label, footerXmlDesc, i);
     }
 }
 
-void OrderFooterView::totalBillSlot(float amount){
-    for( auto label :  labels){
-        if( label->objectName() == "total_amount")
-            label->setText(QString::number( amount, 'f', 2));
-    }
+void OrderFooterView::setTotal(float amount){
+    amountLabel->setText(QString::number( amount, 'f', 2));
 }

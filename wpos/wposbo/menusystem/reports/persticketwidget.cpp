@@ -91,9 +91,9 @@ PersTicketWidget::PersTicketWidget(QWidget *parent, const QString& name):
 
     // Establish standart connections
     connect(this, &PersTicketWidget::genericDataSignal,
-            order->orderContent(), &OrderContentView::genericDataSignalSlot);
+            order->contentView(), &OrderContentView::genericDataSignalSlot);
 
-    connect(ok_button, &QPushButton::clicked, order->orderContent(), &OrderContentView::printTicket);
+    connect(ok_button, &QPushButton::clicked, order->contentView(), &OrderContentView::printTicket);
 
     connect(down_type_button,  &QPushButton::clicked, this, &PersTicketWidget::downTicketSlot);
     connect(up_type_button,  &QPushButton::clicked, this, &PersTicketWidget::upTicketSlot);
@@ -101,8 +101,8 @@ PersTicketWidget::PersTicketWidget(QWidget *parent, const QString& name):
     connect(first_ticket_button,  &QPushButton::clicked, this, &PersTicketWidget::firstTicketSlot);
     connect(last_ticket_button,  &QPushButton::clicked, this, &PersTicketWidget::lastTicketSlot);
 
-    connect(order_down_button,   &QPushButton::clicked, order->orderContent(), &OrderContentView::selectDown);
-    connect(order_up_button,   &QPushButton::clicked, order->orderContent(), &OrderContentView::selectUp);
+    connect(order_down_button,   &QPushButton::clicked, order->contentView(), &OrderContentView::selectDown);
+    connect(order_up_button,   &QPushButton::clicked, order->contentView(), &OrderContentView::selectUp);
 
     connect(ticketnum_listview, &QTreeWidget::itemClicked, this, &PersTicketWidget::ticketSelectedSlot);
 
@@ -229,9 +229,8 @@ void PersTicketWidget::showEvent(QShowEvent *e){
 }
 
 void PersTicketWidget::clearOrder(){
-    XmlConfig *aux_xml = 0;
-    order->changeData (aux_xml = new XmlConfig ());
-    delete aux_xml;
+    XmlConfig xml;
+    order->updateOrder(&xml);
     ok_button->setEnabled(checkAllValues());
 }
 
@@ -274,8 +273,8 @@ void PersTicketWidget::ticketSelectedSlot(QTreeWidgetItem* item) {
     database.disConnect();
 
     if (!xml)  return;
-    order->changeData(xml);
-    order->orderContent()->selectFirst();
+    order->updateOrder(xml);
+    order->contentView()->selectFirst();
     delete xml;
     ok_button->setEnabled(checkAllValues());
 }
@@ -290,7 +289,7 @@ bool PersTicketWidget::checkAllValues(){
 
     if (init_date>finish_date)  return false;
 
-    std::unique_ptr<XmlConfig> xml {order->orderContent()->getLocalXml()};
+    std::unique_ptr<XmlConfig> xml {order->contentView()->orderAsXml()};
     if (!xml) return false;
 
     xml->pushDomain();

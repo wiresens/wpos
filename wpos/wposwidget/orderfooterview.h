@@ -24,14 +24,17 @@ class XmlConfig;
 class OrderFooterView : public QFrame  {
     Q_OBJECT
 public:
-    OrderFooterView(XmlConfig *xml, QWidget *parent, const QString& name);
+    OrderFooterView(XmlConfig &footerXmlDesc, QWidget *parent, const QString& name);
 
 public slots:
-    void totalBillSlot(float amount);
+    void setTotal(float amount);
 
-protected:
-    void parseXmlDescription(XmlConfig *xml);
-    HList<QLabel> labels;
+private:
+    void parseXmlDescription(XmlConfig &footerXmlDesc);
+
+private:
+    QLabel* amountLabel{};
+    QLabel* currencyLabel{};
     QHBoxLayout *layout{};
 };
 

@@ -25,23 +25,25 @@ class QHBoxLayout;
 class QVBoxLayout;
 class XmlConfig;
 
-class OrderHeaderView : public QFrame  {
+class OrderHeaderView : public QFrame{
     Q_OBJECT
 public:
-    OrderHeaderView(XmlConfig *xml, QWidget *parent, QString name);
-    ~OrderHeaderView();
+    OrderHeaderView(XmlConfig &headerXmlDesc, QWidget *parent, QString name);
 
 public slots:
     void showPhoto(bool show_it = true);
     void setStaffInfo(XmlConfig *xml);
 
 protected:
-    void parseXmlDescription(XmlConfig *xml);
+    void parseXmlDescription(XmlConfig &headerXmlDesc);
 
-    QHBoxLayout *total_layout {};
-    QFrame *labels_frame {};
-    QBoxLayout *layout {};
-    HList<QLabel> *widgets {};
+    QHBoxLayout *labelsLayout{};
+    QFrame *textFrame{};
+    QBoxLayout *textLayout{};
+    QLabel* photoLabel{};
+    QLabel* identityLabel{};
+    QLabel* descLabel{};
+
 };
 
 #endif

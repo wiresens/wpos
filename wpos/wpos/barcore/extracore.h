@@ -47,7 +47,7 @@ public:
     bool setOffer(const OfferData *offer);
     bool clearOffer();
     bool setDefaultOffer(const QString& offer_type,const QString& offer_name);
-    bool delDefaultOffer();
+    void delDefaultOffer();
 
     void clearExtras();
 
@@ -58,7 +58,7 @@ public slots:
 
     void readPriceFromXml(XmlConfig *xml);
     void readOptionFromXml(XmlConfig *xml);
-    void readFixedOptionFromXml(XmlConfig *xml);
+    void addProductOption(XmlConfig *xml);
     void readOfferFromXml(XmlConfig *xml);
 
 

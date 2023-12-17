@@ -55,7 +55,7 @@ public slots:
     void setDescription(const QString& description);
 
     void debug();
-    void dataChangedSlot(XmlConfig *_xml);
+    void addProductDefaultOption(XmlConfig *_xml);
 
 signals:
     void dataChanged(XmlConfig *xml);

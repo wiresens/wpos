@@ -20,7 +20,7 @@
 
 #include <QString>
 
-// decremets all anchor which value is greater than max
+// Decremets all anchor which value is greater than max
 struct VisualProduct {
     QString name;
     QString description;

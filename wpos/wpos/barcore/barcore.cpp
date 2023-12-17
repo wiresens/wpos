@@ -287,14 +287,10 @@ bool BarCore::setProduct(XmlConfig *product){
     return true;
 }
 
-void BarCore::dataChangedSlot(XmlConfig *_xml){
-    int count,i;
-    XmlConfig *aux_xml=0;
-    if (!_xml)
-        return;
+void BarCore::addProductDefaultOption(XmlConfig *_xml){
+    if (!_xml) return;
 
     delete xml;
-
     xml = new XmlConfig();
     xml->readXmlFromString(_xml->toString());
 
@@ -302,18 +298,15 @@ void BarCore::dataChangedSlot(XmlConfig *_xml){
     xml->pushDomain();
     xml->delDomain();
     xml->setDomain("products");
-    if (xml->setDomain("defaultoptions")){
-        count = xml->howManyTags("option");
-        for(i=0;i<count;i++){
-            QString type,value;
-            type = xml->readString("option["+QString::number(i)+"].type");
-            value = xml->readString("option["+QString::number(i)+"].value");
-            if ((!type.isEmpty())&&(!value.isEmpty())){
-                aux_xml = new XmlConfig();
-                aux_xml->createElement("type",type);
-                aux_xml->createElement("value",value);
-                extraCore->readFixedOptionFromXml(aux_xml);
-                delete aux_xml;
+    if ( xml->setDomain("defaultoptions") ){
+        for( auto i=0; i < xml->howManyTags("option"); i++){
+            auto type = xml->readString("option["+QString::number(i)+"].type");
+            auto value = xml->readString("option["+QString::number(i)+"].value");
+            if ( !type.isEmpty() && !value.isEmpty()){
+                XmlConfig optionXml;
+                optionXml.createElement("type", type);
+                optionXml.createElement("value", value);
+                extraCore->addProductOption(&optionXml);
             }
         }
     }
@@ -652,18 +645,18 @@ void BarCore::setLastReceipt(){
         return;
 
     if (receiptQuerier->receiptState(last_employee_id, last_start_time)){
-        this->reInitialise();
-        this->initExtras();
+        reInitialise();
+        initExtras();
         return;
     }
 
     aux_xml = receiptQuerier->getReceipt(last_employee_id,last_start_time);
     if (!aux_xml){
-        this->reInitialise();
-        this->initExtras();
+        reInitialise();
+        initExtras();
         return;
     }
-    this->dataChangedSlot(aux_xml);
+    addProductDefaultOption(aux_xml);
     delete aux_xml;
     receiptQuerier->lockRemoteReceipts(last_employee_id, last_start_time);
     emit dataChanged(xml);
@@ -741,7 +734,7 @@ void BarCore::genericDataSignalSlot(const QString& signal, XmlConfig *_xml){
         emit dataChanged(xml);
     }
     else if (signal == GDATASIGNAL::BARCORE_CHANGE_XML){
-        dataChangedSlot(_xml);
+        addProductDefaultOption(_xml);
         emit dataChanged(xml);
     }
     else if (signal == GDATASIGNAL::BARCORE_CHANGE_ORDER_DESCRIPTION){

@@ -51,8 +51,8 @@ TicketsHandlingWidget::TicketsHandlingWidget(
 
     connect(ticket_down_button, &QAbstractButton::clicked, this, &TicketsHandlingWidget::selectDown);
     connect(ticket_up_button, &QAbstractButton::clicked, this, &TicketsHandlingWidget::selectUp);
-    connect(order_down_button, &QAbstractButton::clicked, order->orderContent(), &OrderContentView::selectDown);
-    connect(order_up_button, &QAbstractButton::clicked, order->orderContent(), &OrderContentView::selectUp);
+    connect(order_down_button, &QAbstractButton::clicked, order->contentView(), &OrderContentView::selectDown);
+    connect(order_up_button, &QAbstractButton::clicked, order->contentView(), &OrderContentView::selectUp);
     connect(cancel_button, &QAbstractButton::clicked, this, &TicketsHandlingWidget::rejectChange);
     connect(ticketnum_treeview, &QTreeWidget::itemSelectionChanged, this, &TicketsHandlingWidget::handleTicketSelected);
 }

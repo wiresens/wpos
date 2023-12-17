@@ -189,3 +189,10 @@ wposbo/menusystem/reports/persticketwidget.cpp
 ProductScreenStack  Good candidate for catalog viewer
 uses ProductScreen as different navigation screen
 
+void ExtraCore::readFixedOptionFromXml(XmlConfig* xml){
+    ProductExtraInfo *node {new ProductExtraInfo(name)};
+    allocate with new but never frees
+
+}
+
+
