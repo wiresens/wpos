@@ -18,7 +18,7 @@
 #include "nkeyboard.h"
 #include <libbslxml/xmlconfig.h>
 #include <wposcore/productextrainfo.h>
-#include <wposwidget/global.h>
+#include <wposgui/common/global.h>
 
 #include <QSignalMapper>
 //#include <QLayout>
@@ -839,8 +839,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F1,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F1,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F1,Qt::NoModifier,state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F1, Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -849,8 +849,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F2,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F2,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F2,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F2,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -859,8 +859,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F3,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F3,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F3,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F3,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -869,8 +869,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F4,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F4,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F4,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F4,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -879,8 +879,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F5,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F5,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F5,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F5,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -889,8 +889,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F6,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F6,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F6,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F6,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -899,8 +899,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F7,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F7,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F7,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F7,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -909,8 +909,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F8,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F8,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F8,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F8,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -919,8 +919,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress, F9, 0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease, F9, 0,state);
+            kep = new QKeyEvent(QEvent::KeyPress, F9, Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease, F9, Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -929,8 +929,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress,F10,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F10,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress,F10,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F10,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -939,8 +939,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress, F11,0,state);
-            ker = new QKeyEvent(QEvent::KeyRelease,F11,0,state);
+            kep = new QKeyEvent(QEvent::KeyPress, F11,Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease,F11,Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }
@@ -949,8 +949,8 @@ void NKeyboard::keyClicked(int num){
         if ((has_send_events)&&(o_parent)){
             QKeyEvent *kep = 0;
             QKeyEvent *ker = 0;
-            kep = new QKeyEvent(QEvent::KeyPress, Qt::Key_F12 ,0, state);
-            ker = new QKeyEvent(QEvent::KeyRelease, F12, 0 ,state);
+            kep = new QKeyEvent(QEvent::KeyPress, Qt::Key_F12 , Qt::NoModifier, state);
+            ker = new QKeyEvent(QEvent::KeyRelease, F12, Qt::NoModifier, state);
             qApp->postEvent(o_parent,(QEvent *) kep);
             qApp->postEvent(o_parent,(QEvent *) ker);
         }

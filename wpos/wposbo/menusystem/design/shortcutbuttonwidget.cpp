@@ -24,7 +24,7 @@
 #include "database/productsmoduledb.h"
 
 #include <libbslxml/xmlconfig.h>
-#include <wposwidget/dragobjects.h>
+#include <wposgui/common/dragobjects.h>
 #include <wposcore/signals.h>
 #include <wposcore/config.h>
 
@@ -34,8 +34,6 @@
 #include <QSpinBox>
 #include <QLayout>
 #include <QPixmap>
-#include <QMatrix>
-
 #include <QHeaderView>
 #include <QLabel>
 #include <QCheckBox>
@@ -467,11 +465,7 @@ void ShortcutButtonWidget::showButtonsAtList(){
 
 void ShortcutButtonWidget::loadProductsSlot(){
     int index, count;
-    double width, height;
     QString  icon;
-    QMatrix *matrix = 0;
-    QPixmap *p = 0;
-    QPixmap *pixmap = 0;
 
     BslDDIconViewItem *item = 0;
     QString product_code;
@@ -533,14 +527,12 @@ void ShortcutButtonWidget::loadProductsSlot(){
 }
 
 void ShortcutButtonWidget::loadOffersSlot(){
-    int i,count;
-    double width, height, size;
+    int count;
+    double size;
     ProductOfferModule *offers_module = 0;
     QString xml_string;
     QString offer_type, offer_name,icon;
-    QMatrix *matrix = 0;
-    QPixmap *p = 0;
-    QPixmap *pixmap = 0;
+
 
     BslDDIconViewItem *item = 0;
 

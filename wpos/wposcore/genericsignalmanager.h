@@ -45,7 +45,6 @@ private:
     GenericSignalManager()  = default;
     ~GenericSignalManager() = default;
 
-    static GenericSignalManager* gsm;
     struct ObjectHub{
         QString shared_signal;
         HList<QObject> objs;

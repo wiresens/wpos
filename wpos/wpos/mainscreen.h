@@ -13,7 +13,7 @@
 #ifndef MAIN_SCREEN_H
 #define MAIN_SCREEN_H
 
-#include <wposwidget/menustack.h>
+#include <wposgui/windows/menustack.h>
 
 class XmlConfig;
 class Greeter;

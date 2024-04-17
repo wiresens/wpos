@@ -23,7 +23,7 @@
 #include <QMap>
 #include <QWidget>
 #include <xmlconfig.h>
-#include <wposwidget/global.h>
+#include <wposgui/common/global.h>
 
 /**
 *       This is the product, is compossed by list of lists of articles. It implements a state machine to

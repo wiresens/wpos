@@ -20,12 +20,12 @@
 #define RECEIPTDB_H
 
 #include <basicdatabase.h>
-#include <wposcore/hlist.h>
-#include <xmlconfig.h>
+
 /**
   *@author Carlos Manzanedo
   */
- 
+class XmlConfig;
+
 class ReceiptDB : public BasicDatabase  {
 public: 
         ReceiptDB(const QString& _connection_name,

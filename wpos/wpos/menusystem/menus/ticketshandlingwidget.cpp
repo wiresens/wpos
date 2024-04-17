@@ -2,9 +2,9 @@
 
 #include "database/killticketsdb.h"
 
-#include <wposwidget/orderview.h>
-#include <wposwidget/ordercontentview.h>
-#include <wposwidget/toolkit.h>
+#include <wposgui/order/orderview.h>
+#include <wposgui/order/ordercontentview.h>
+#include <wposgui/common/toolkit.h>
 #include <wposcore/config.h>
 
 TicketsHandlingWidget::TicketsHandlingWidget(

@@ -58,7 +58,7 @@ void Order::removeItem(ConstProductPtr product){
     }
 }
 
-void Order::removeItems(vector<ConstProductPtr> products){}
+void Order::removeItems(vector<ConstProductPtr>){}
 
 double Order::total() const{
     double tmp{};

@@ -93,22 +93,21 @@ void XmlRpcPrinter::processHttpResponse(int req ,const QVariant& variant){
     if (variant.type() == QVariant::String)
         qDebug() << "Received From " << server_name
              << "request_id : " << req << " "
-             << variant.toString()
-             << endl;
+             << variant.toString();
 
     else if (variant.type() == QVariant::Bool){
         if (variant.toBool())
             qDebug() << "Received From " << server_name
-                     << "request_id : "<< req << " boolean -> TRUE " << endl;
+                     << "request_id : "<< req << " boolean -> TRUE ";
         else
             qDebug() << "Received From "<< server_name
-                     << "request_id : "<< req << " boolean -> FALSE " << endl;
+                     << "request_id : "<< req << " boolean -> FALSE ";
     }
 }
 
 void XmlRpcPrinter::handleFault(int req, int fault_num, const QString& string){
     qDebug() << XRClient::USER_AGENT<<" : Remote Server Reply for Request N°" << req
-             << "-- XML RPC Error" << fault_num << ":" << string << endl;
+             << "-- XML RPC Error" << fault_num << ":" << string;
 }
 
 void XmlRpcPrinter::printerTicket(QString xml_string, int num){

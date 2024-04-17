@@ -121,7 +121,7 @@ int XRClient::call(const QString& method, const QList<QVariant>& params){
     //  Serialize the request
     QByteArray payload;
     QTextStream payload_stream(&payload, QIODevice::WriteOnly);
-    payload_stream.setCodec( QTextCodec::codecForLocale() );
+    payload_stream.setEncoding(QStringConverter::System);
 
     XRMethodCall xmlcall(method, params);
     xmlcall.save( payload_stream, XRClient::CONTENT_INDENTATION );

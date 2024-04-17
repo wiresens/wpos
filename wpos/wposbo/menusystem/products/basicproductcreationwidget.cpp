@@ -25,44 +25,42 @@
 #include "database/productsmoduledb.h"
 
 #include <wposcore/config.h>
-#include <wposwidget/dragobjects.h>
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/common/dragobjects.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 
 #include "productsmodule/productmodule.h"
 
 #include <libbslxml/xmlconfig.h>
 
-#include <QDataStream>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QGroupBox>
+// #include <QDataStream>
+// #include <QLineEdit>
+// #include <QComboBox>
+// #include <QGroupBox>
 #include <QMessageBox>
-#include <QFile>
-#include <QString>
-#include <QStringList>
-#include <QRegExp>
-#include <QPixmap>
-#include <QLabel>
+// #include <QFile>
+// #include <QString>
+// #include <QStringList>
+// #include <QPixmap>
+// #include <QLabel>
 #include <QButtonGroup>
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QColor>
-#include <QTableWidget>
-#include <QStackedWidget>
-#include <QCheckBox>
-#include <QRadioButton>
-#include <QTextEdit>
-#include <QLayout>
-#include <QFileDialog>
-#include <QPushButton>
-#include <QTabWidget>
+// #include <QListWidget>
+// #include <QListWidgetItem>
+// #include <QColor>
+// #include <QTableWidget>
+// #include <QStackedWidget>
+// #include <QCheckBox>
+// #include <QRadioButton>
+// #include <QTextEdit>
+// #include <QLayout>
+// #include <QFileDialog>
+// #include <QPushButton>
+// #include <QTabWidget>
 #include <QMenu>
-#include <QFile>
-#include <QLocale>
-#include <QImage>
-#include <QMatrix>
-#include <QEvent>
-#include <QHeaderView>
+#include <QDir>
+// #include <QLocale>
+// #include <QImage>
+// #include <QEvent>
+// #include <QHeaderView>
 
 #include <iostream>
 using  std::cerr;
@@ -324,11 +322,11 @@ void BasicProductCreationWidget::initTaxes(){
 }
 
 void BasicProductCreationWidget::productNameChanged(const QString &text){
-
     QString tmp_str = text;
+    static QRegularExpression re(" ");
     switch(product_mode){
     case UnitaryProduct:
-        tmp_str = tmp_str.replace(QRegExp(" "),"_");
+        tmp_str = tmp_str.replace(re,"_");
         if(tmp_str.isEmpty()){
             accept_button->setEnabled(false);
             next_button->setEnabled(false);

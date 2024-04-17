@@ -18,6 +18,8 @@
 
 #include "receiptdb.h"
 
+#include <xmlconfig.h>
+
 #include <QtSql/QSql>
 #include <QtSql/QSqlError>
 #include <QString>

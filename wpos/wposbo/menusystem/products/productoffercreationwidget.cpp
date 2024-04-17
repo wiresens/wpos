@@ -15,7 +15,7 @@
 
 #include "database/productoffersmoduledb.h"
 
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QDir>
@@ -30,7 +30,6 @@
 #include <QComboBox>
 #include <QMessageBox>
 #include <QListWidget>
-#include <QMatrix>
 #include <QPixmap>
 #include <QStackedWidget>
 #include <QLabel>

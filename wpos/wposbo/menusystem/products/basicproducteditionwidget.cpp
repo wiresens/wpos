@@ -22,7 +22,6 @@
 
 #include <QListView>
 #include <QPixmap>
-#include <QMatrix>
 #include <QLineEdit>
 #include <QPushButton>
 #include <QStackedWidget>
@@ -126,7 +125,7 @@ void BasicProductEditionWidget::init(){
     }
     xml.releaseDomain("products");
 
-    product_list_wgt->sortByColumn(Code);
+    product_list_wgt->sortByColumn(Code, Qt::AscendingOrder);
     if ( !last_name.isEmpty() )
         productNameChanged(last_name);
 

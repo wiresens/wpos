@@ -14,13 +14,12 @@
 
 #include "database/barcoredb.h"
 
-#include <wposwidget/global.h>
-
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 #include <wposcore/hlist.h>
-#include <productextrainfo.h>
-#include <wposwidget/effects.h>
+#include <wposcore/productextrainfo.h>
+#include <wposgui/common/global.h>
+#include <wposgui/common/effects.h>
 
 #include <QApplication>
 #include <QWidget>

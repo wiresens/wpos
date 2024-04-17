@@ -17,7 +17,7 @@ the code hasn't been modified.
 #include "nprofitreportwidget.h"
 #include "nprofitreportwidget_adaptor.h"
 
-#include <wposwidget/pdfviewer/pdfviewer.h>
+#include <wposgui/viewer/pdf_viewer.h>
 #include <libbslxml/xmlconfig.h>
 #include "usersmodule/usermodule.h"
 
@@ -101,7 +101,7 @@ void NProfitReportWidget::init(){
     save_report_button->setIcon(QPixmap("controls48:stick_48x48.png"));
     exit_button->setIcon(QPixmap("controls48:button_cancel.png"));
 
-    employee_listview->sortByColumn(2);
+    employee_listview->sortByColumn(2, Qt::AscendingOrder);
     employee_listview->header()->hide();
     employee_listview->setSelectionMode(QListView::SingleSelection);
     employee_listview->setAllColumnsShowFocus(true);

@@ -20,22 +20,9 @@ In this file we'll have several utils
 #ifndef UTILS_H
 #define UTILS_H
 
-
 #include <QString>
 
-//#if __GNUC__ ==2 && __GNUC_MINOR__ < 96
-//#define __builtin_expect(x,expected_value) (x)
-//#define __builtin_prefetch(address, read_write, locality) (x)
-//#endif
-//
-//#define likely(x)    __builtin_expect((x),1)
-//#define unlikely(x)  __builtin_expect((x),0)
-//
-//#define addToWriteCache(x) __builtin_prefetch(x,1,1)
-//#define addToReadCache(x) __builtin_prefetch(x,1,1)
-
 typedef long long sector;
-
 
  /******************************************************************************
 	* @short This class will implement the string -> long long --> string conversions
@@ -123,9 +110,4 @@ public:
 
 };
 
-
-
-
 #endif
-
-

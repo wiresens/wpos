@@ -17,7 +17,6 @@
 #include <QProcess>
 
 class QString;
-class QStringList;
 class DatabaseModule;
 class QTimer;
 

@@ -5,21 +5,20 @@ set(CMAKE_AUTOMOC ON)
 set(WS_SERVICE com.wiresens)
 
 include_directories(
-    /usr/include/libxml2
     ..
 )
 
-find_package(Qt5 REQUIRED COMPONENTS Core DBus Sql)
+find_package(Qt6 REQUIRED COMPONENTS Core DBus Sql)
 
 #Invoke qdbuscpp2xml to generate .xml spec files form .h
-qt5_generate_dbus_interface(
+qt6_generate_dbus_interface(
     dbusreceiptprimitive.h
     "${WS_SERVICE}.dbusreceiptprimitive.xml"
     OPTIONS -M  #export all Public Slot
 )
 
 #Invoke qdbuscpp2xml to generate .xml spec files form .h
-qt5_generate_dbus_interface(
+qt6_generate_dbus_interface(
     dbusreceiptmediator.h
     "${WS_SERVICE}.dbusreceiptmediator.xml"
     OPTIONS -M  #export all Public Slot
@@ -84,9 +83,19 @@ target_link_libraries(${MAIN_TARGET} PRIVATE
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
-    Qt5::Core Qt5::DBus Qt5::Sql
+    Qt::Core
+    Qt::DBus
+    Qt::Sql
 )
 
 install(TARGETS ${MAIN_TARGET}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+qt_generate_deploy_app_script(
+   TARGET ${MAIN_TARGET}
+   OUTPUT_SCRIPT deploy_script
+   NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})

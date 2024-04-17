@@ -19,7 +19,6 @@
 #include <QEvent>
 #include <QListView>
 
-class QStringList;
 class QPixmap;
 class XmlConfig;
 class NPopUpKeyboard;

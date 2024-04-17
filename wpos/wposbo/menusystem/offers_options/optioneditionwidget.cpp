@@ -2,8 +2,8 @@
 
 #include "productsmodule/optionsmodule/productoptionmodule.h"
 
-#include <wposwidget/floatkeyboard.h>
-#include <wposwidget/toolkit.h>
+#include <wposgui/keyboard/floatkeyboard.h>
+#include <wposgui/common/toolkit.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <iostream>

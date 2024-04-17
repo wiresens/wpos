@@ -13,8 +13,8 @@
 #include "freepricewidget.h"
 #include "salesscreen.h"
 
-#include <wposwidget/global.h>
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/common/global.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <wposcore/genericsignalmanager.h>
 #include <libbslxml/xmlconfig.h>
 

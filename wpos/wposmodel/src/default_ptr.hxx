@@ -30,4 +30,4 @@ SOFTWARE.
 ********************************************************************************/
 
 //#include <memory>
-#  include <bits/shared_ptr.h>
+#include <bits/shared_ptr.h>

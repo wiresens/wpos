@@ -15,7 +15,6 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "comp.h"   //to use the iostream classes
 #include "utils.h"
 
 Sector::Sector(){}

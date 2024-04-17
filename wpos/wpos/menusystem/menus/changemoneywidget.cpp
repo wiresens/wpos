@@ -13,9 +13,9 @@
 #include "salesscreen.h"
 #include "changemoneywidget.h"
 
-#include <wposwidget/global.h>
+#include <wposgui/common/global.h>
 
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 

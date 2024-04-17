@@ -18,8 +18,8 @@
 #include "database/productsmoduledb.h"
 
 #include <wposcore/config.h>
-#include <wposwidget/dragobjects.h>
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/common/dragobjects.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QLabel>
@@ -29,7 +29,6 @@
 #include <QStackedWidget>
 #include <QTableWidget>
 #include <QPixmap>
-#include <QMatrix>
 
 #include <iostream>
 using namespace std;

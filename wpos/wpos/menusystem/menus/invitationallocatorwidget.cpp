@@ -108,7 +108,6 @@ void InvitationAllocatorWidget::parseXmlDescription(){
         frame->setSizePolicy(QSizePolicy(QSizePolicy::Expanding,QSizePolicy::Expanding));
         frame_layout = new QVBoxLayout(frame);
         frame_layout->setSpacing(0);
-        frame_layout->setMargin(0);
         iconview = new QListWidget(frame);
         iconview->setObjectName("ICONVIEW_"+QString::number(i));
         iconviews.append(iconview);

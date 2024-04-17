@@ -18,7 +18,7 @@
 #include "fx2000enrollwidget.h"
 
 #include <libbslxml/xmlconfig.h>
-#include <wposwidget/poslabel.h>
+#include <wposgui/common/poslabel.h>
 
 #include <QPushButton>
 #include <QLineEdit>
@@ -61,14 +61,14 @@ FX2000EnrollWidget::FX2000EnrollWidget(QWidget *parent, const QString& name ):
 
     //init the fingerprint device fx2000 section.
     QHBoxLayout *llayout = new QHBoxLayout(l_hand_frame);
-    llayout->setMargin(0);
+    llayout->setContentsMargins(0,0,0,0);
     llayout->setSpacing(0);
     left_hand_label = new PosLabel(LH, l_hand_frame);
     llayout->addWidget(left_hand_label);
     left_hand_label->show();
 
     QHBoxLayout *rlayout = new QHBoxLayout(r_hand_frame);
-    rlayout->setMargin(0);
+    rlayout->setContentsMargins(0,0,0,0);
     rlayout->setSpacing(0);
     right_hand_label = new PosLabel( RH, r_hand_frame);
     rlayout->addWidget(right_hand_label);

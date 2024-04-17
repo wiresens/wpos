@@ -12,7 +12,7 @@
 
 #include "perszwidget.h"
 
-#include <wposwidget/toolkit.h>
+#include <wposgui/common/toolkit.h>
 #include <libbslxml/xmlconfig.h>
 
 

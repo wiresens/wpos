@@ -11,7 +11,7 @@
  ***************************************************************************/
 #include "readconfigscreen.h"
 
-#include <wposwidget/menupage.h>
+#include <wposgui/windows/menupage.h>
 #include <wposcore/genericsignalmanager.h>
 #include <xmlconfig.h>
 

@@ -5,9 +5,10 @@ namespace wpos{
 namespace model{
 
 UserPtr SessionManager::authenticate(const string& login, const string& pwd){
+
     UserPtr user_ptr = logIn(login, pwd);
     if (user_ptr){
-        if( !user_ptr->isConnected() ) user_ptr->updatelastLogin();
+        if( !user_ptr->isConnected()) user_ptr->updatelastLogin();
         startSession(*user_ptr);
     }
     else  notifyAuthFailiure();
@@ -15,12 +16,12 @@ UserPtr SessionManager::authenticate(const string& login, const string& pwd){
 }
 
 UserPtr SessionManager::logIn(const string &login, const string &pwd){
-    return User::exist(login, pwd);
+    return User::find(login, pwd);
 }
 
 void SessionManager::endSession(const User& user){ user.disconnect(); }
 
-UserPtr User::exist(const string& login, const string& pwd){
+UserPtr User::find(const string& login, const string& pwd){
     using query = odb::query<User>;
     return  db->query_one<User>( query::login == login  && query::password == pwd);
 }

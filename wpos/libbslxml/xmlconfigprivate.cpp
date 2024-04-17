@@ -14,7 +14,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#include "comp.h"
+
 #include "xmlconfigprivate.h"
 #include "utils.h"
 
@@ -23,7 +23,10 @@
 #include <QString>
 #include <QTextStream>
 
-using namespace std;
+#include <iostream>
+using std::cerr;
+using std::cout;
+using std::endl;
 
 const uint XmlConfigPrivate::XML_TAG_IDENTATION  {4};
 
@@ -36,7 +39,7 @@ XmlConfigPrivate::XmlConfigPrivate(
     int errorColumn;
 
     if ( init(file_name, mode) == -1 ){ //there's no opened file, no point continuing with the constructor
-        cerr << "Errors happened in the constructor, exiting without xml loaded" <<endl;
+        cerr << "Errors happened in the constructor, exiting without xml loaded" << endl;
         dev.close();
         return;
     }

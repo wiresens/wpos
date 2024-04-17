@@ -10,7 +10,7 @@ include_directories(
     ..
 )
 
-find_package(Qt5 REQUIRED COMPONENTS
+find_package(Qt6 REQUIRED COMPONENTS
     Core
     Gui
     Widgets
@@ -49,9 +49,9 @@ target_link_libraries(${MAIN_TARGET} PRIVATE
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
-    Qt5::Core
-    Qt5::Gui
-    Qt5::Widgets
+    Qt::Core
+    Qt::Gui
+    Qt::Widgets
 )
 
 install(TARGETS ${MAIN_TARGET}

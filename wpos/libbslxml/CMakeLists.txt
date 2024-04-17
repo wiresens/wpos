@@ -4,15 +4,18 @@ set(MAIN_TARGET wposxml)
 
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Xml)
+find_package(Qt6 REQUIRED COMPONENTS
+    Core5Compat
+    Xml
+)
 
+find_package( LibXml2 REQUIRED)
 include_directories(
-    /usr/include/libxml2
-    /usr/include/libxml2/libxml    
+    ${LIBXML2_INCLUDE_DIR}
 )
 
 set(HEADER_FILES
-    comp.h
+
     utils.h
     xmlconfig.h
     xmlconfigprivate.h
@@ -28,11 +31,15 @@ set(SOURCES_FILES
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../lib)
 
 add_library(
-    ${MAIN_TARGET} SHARED
+    ${MAIN_TARGET}
     ${HEADER_FILES}
     ${SOURCES_FILES}
 )
-target_link_libraries(${MAIN_TARGET} PRIVATE Qt5::Xml xml2)
+target_link_libraries(${MAIN_TARGET} PRIVATE
+    Qt::Core5Compat
+    Qt::Xml
+    LibXml2::LibXml2
+)
 
 set_target_properties (${MAIN_TARGET} PROPERTIES
     VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_PATCH}

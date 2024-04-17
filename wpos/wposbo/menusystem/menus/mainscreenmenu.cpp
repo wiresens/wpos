@@ -12,9 +12,9 @@
 #include "instantiator.h"
 
 #include <libbslxml/xmlconfig.h>
-#include <wposwidget/global.h>
-#include <wposwidget/menustack.h>
-#include <wposwidget/menupage.h>
+#include <wposgui/common/global.h>
+#include <wposgui/windows/menustack.h>
+#include <wposgui/windows/menupage.h>
 
 #include <QListWidget>
 #include <QListView>

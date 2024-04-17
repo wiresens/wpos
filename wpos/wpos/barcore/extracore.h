@@ -20,7 +20,6 @@ class XmlConfig;
 class QString;
 class ProductExtraInfo;
 
-class QStringList;
 class ProductPriceData;
 class OfferData;
 

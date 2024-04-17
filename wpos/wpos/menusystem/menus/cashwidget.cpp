@@ -15,7 +15,7 @@
 #include "salesscreen.h"
 #include "barcore/barcore.h"
 
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <wposcore/genericsignalmanager.h>
 
 #include <QLayout>

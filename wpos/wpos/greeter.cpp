@@ -16,7 +16,7 @@
 #include "mainscreen.h"
 #include "database/authcoredb.h"
 
-#include <wposwidget/menupage.h>
+#include <wposgui/windows/menupage.h>
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 #include <libbslxml/xmlconfig.h>
@@ -192,7 +192,7 @@ void Greeter::createLoginButtons(){
 
     layout = new QGridLayout(userGroupBox);
     layout->setSpacing(10);
-    layout->setMargin(10);
+    layout->setContentsMargins(10,10,10,10);
 
     auto i = 0;
     for( UserData& user :  userList){

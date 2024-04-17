@@ -51,11 +51,11 @@ protected:
     }
 
 protected:
+    AddressPtr address_;
     string code_;
     string name_;
-    string pictureFile_;
-    bool active_{false};
-    AddressPtr address_;
+    string pictureFile_;    
+    bool active_{false};   
 };
 
 class  Person : public Party{

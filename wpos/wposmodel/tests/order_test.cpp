@@ -29,9 +29,9 @@ TEST_F(OrderTest, ConstructorPersist)
     SessionManager sm;
 
     odb::transaction trans(db.begin());
-    UserPtr gilles = sm.authenticate("gilles", "D0rc4566$");
+    UserPtr user = sm.authenticate("gilles", "D0rc4566$");
 
-    OrderPtr order = std::make_shared<Order>(gilles->employeePtr());
+    OrderPtr order = std::make_shared<Order>(user->employeePtr());
     EXPECT_EQ( order->saler().name() , "BENE POUGOUE Gilles");
 
     auto fresco = db.query_one<Product>( query::name == "Extra Fresco Orange 300ml");
@@ -51,9 +51,9 @@ TEST_F(OrderTest, ConstructorPersist)
     });
 
     order->persist();
-    sm.logOut(*gilles);
+    sm.logOut(*user);
     EXPECT_NO_THROW({
-        db.update(gilles);
+        db.update(user);
     });
 
     trans.commit();

@@ -29,7 +29,7 @@
 #include <QDir>
 #include <QLabel>
 #include <QPixmap>
-#include <QMatrix>
+// #include <QMatrix>
 #include <QTimer>
 
 static const QString& INVITATION_XML = "/etc/ntpv_backoffice/invitations_description.xml";

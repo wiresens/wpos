@@ -23,44 +23,42 @@
 
 #include <libbslxml/xmlconfig.h>
 #include <wposcore/config.h>
-#include <wposwidget/toolkit.h>
-#include <wposwidget/dragobjects.h>
-#include <wposwidget/floatkeyboard.h>
-#include <wposwidget/numkeyboard.h>
+#include <wposgui/common/toolkit.h>
+#include <wposgui/common/dragobjects.h>
+#include <wposgui/keyboard/floatkeyboard.h>
+#include <wposgui/keyboard/numkeyboard.h>
 
-#include <QDataStream>
-#include <QLineEdit>
-#include <QComboBox>
-#include <QApplication>
-#include <QGroupBox>
+// #include <QDataStream>
+// #include <QLineEdit>
+// #include <QComboBox>
+// #include <QApplication>
+// #include <QGroupBox>
 #include <QMessageBox>
-#include <QFile>
+// #include <QFile>
 #include <QDir>
-#include <QString>
-#include <QStringList>
-#include <QRegExp>
-#include <QPixmap>
-#include <QLabel>
+// #include <QString>
+// #include <QStringList>
+// #include <QPixmap>
+// #include <QLabel>
 #include <QButtonGroup>
-#include <QCheckBox>
-#include <QListWidget>
-#include <QColor>
-#include <QTableWidget>
-#include <QLayout>
-#include <QPushButton>
-#include <QTabWidget>
+// #include <QCheckBox>
+// #include <QListWidget>
+// #include <QColor>
+// #include <QTableWidget>
+// #include <QLayout>
+// #include <QPushButton>
+// #include <QTabWidget>
 #include <QMenu>
-#include <QImage>
-#include <QMatrix>
-#include <QHeaderView>
+// #include <QImage>
+// #include <QHeaderView>
 #include <QTimer>
-#include <QStackedWidget>
-#include <QProgressBar>
-#include <QComboBox>
-#include <QTreeWidget>
-#include <QHeaderView>
-#include <QTimer>
-#include <QLocale>
+// #include <QStackedWidget>
+// #include <QProgressBar>
+// #include <QComboBox>
+// #include <QTreeWidget>
+// #include <QHeaderView>
+// #include <QTimer>
+// #include <QLocale>
 
 #include <iostream>
 using namespace std;

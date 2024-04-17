@@ -12,10 +12,10 @@
 #include "instantiator.h"
 #include "menusystem/design/submenuinfoframe.h"
 
-#include <wposwidget/global.h>
-#include <wposwidget/menustack.h>
-#include <wposwidget/menupage.h>
-#include <wposwidget/treeview.h>
+#include <wposgui/common/global.h>
+#include <wposgui/windows/menustack.h>
+#include <wposgui/windows/menupage.h>
+#include <wposgui/common/treeview.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QHeaderView>

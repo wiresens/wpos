@@ -1,0 +1,660 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>MainWindow</class>
+ <widget class="QMainWindow" name="MainWindow">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>882</width>
+    <height>625</height>
+   </rect>
+  </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>:/main/logo.png</normaloff>:/main/logo.png</iconset>
+  </property>
+  <property name="dockNestingEnabled">
+   <bool>true</bool>
+  </property>
+  <widget class="QWidget" name="centralwidget">
+   <layout class="QGridLayout" name="mainLayout">
+    <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
+     <number>0</number>
+    </property>
+    <property name="bottomMargin">
+     <number>0</number>
+    </property>
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <item row="0" column="0">
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <widget class="QTreeWidget" name="menu">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Expanding">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="maximumSize">
+        <size>
+         <width>300</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <property name="verticalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="horizontalScrollBarPolicy">
+        <enum>Qt::ScrollBarAlwaysOff</enum>
+       </property>
+       <property name="sizeAdjustPolicy">
+        <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+       </property>
+       <property name="editTriggers">
+        <set>QAbstractItemView::NoEditTriggers</set>
+       </property>
+       <property name="tabKeyNavigation">
+        <bool>true</bool>
+       </property>
+       <property name="showDropIndicator" stdset="0">
+        <bool>true</bool>
+       </property>
+       <property name="selectionBehavior">
+        <enum>QAbstractItemView::SelectRows</enum>
+       </property>
+       <property name="textElideMode">
+        <enum>Qt::ElideNone</enum>
+       </property>
+       <property name="autoExpandDelay">
+        <number>1</number>
+       </property>
+       <property name="wordWrap">
+        <bool>true</bool>
+       </property>
+       <attribute name="headerVisible">
+        <bool>false</bool>
+       </attribute>
+       <column>
+        <property name="text">
+         <string notr="true">Menus</string>
+        </property>
+       </column>
+       <item>
+        <property name="text">
+         <string>Produits</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../wposgui.qrc">
+          <normaloff>:/icons/icons/pharmacy-2.png</normaloff>:/icons/icons/pharmacy-2.png</iconset>
+        </property>
+        <item>
+         <property name="text">
+          <string>Familles</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/drug-category.png</normaloff>:/icons/icons/drug-category.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Médicaments</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/drugs.png</normaloff>:/icons/icons/drugs.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Lits</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/hospital.svg</normaloff>:/icons/icons/hospital.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Matériel Médical</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/hand-scalpel.svg</normaloff>:/icons/icons/hand-scalpel.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Fournisseurs</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/suppliers.png</normaloff>:/icons/icons/suppliers.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Paramétrage</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/settings.svg</normaloff>:/icons/icons/settings.svg</iconset>
+         </property>
+         <item>
+          <property name="text">
+           <string>Unités de Mesure</string>
+          </property>
+          <property name="icon">
+           <iconset resource="../wposgui.qrc">
+            <normaloff>:/icons/icons/uom.png</normaloff>:/icons/icons/uom.png</iconset>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Catégorie de Mesure</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Paramètres des Produits</string>
+          </property>
+         </item>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Gestion Hospitalière</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../wposgui.qrc">
+          <normaloff>:/icons/icons/health-center.svg</normaloff>:/icons/icons/health-center.svg</iconset>
+        </property>
+        <item>
+         <property name="text">
+          <string>Patients</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/patient.png</normaloff>:/icons/icons/patient.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Consultation</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/consultation.png</normaloff>:/icons/icons/consultation.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Rendez-Vous</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/appointment.svg</normaloff>:/icons/icons/appointment.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Soins Infirmier</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/nurse.jpeg</normaloff>:/icons/icons/nurse.jpeg</iconset>
+         </property>
+         <item>
+          <property name="text">
+           <string>Prise de Paramètre</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Soin Ambulatoire</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Ronde</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Hospitalisation</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/hospital.svg</normaloff>:/icons/icons/hospital.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Ordonance</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/prescription.svg</normaloff>:/icons/icons/prescription.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Laboratoire</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/lab.svg</normaloff>:/icons/icons/lab.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Imagerie Médicale</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/imaging.svg</normaloff>:/icons/icons/imaging.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Professionel de Santé</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/doctor.svg</normaloff>:/icons/icons/doctor.svg</iconset>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Stocks et Inventaires</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../wposgui.qrc">
+          <normaloff>:/icons/icons/product.svg</normaloff>:/icons/icons/product.svg</iconset>
+        </property>
+        <item>
+         <property name="text">
+          <string>Etat du Stock</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/medicament.svg</normaloff>:/icons/icons/medicament.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Inventaire</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/inventory.svg</normaloff>:/icons/icons/inventory.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Emplacement</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/archives.svg</normaloff>:/icons/icons/archives.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Expédition</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/carrier.svg</normaloff>:/icons/icons/carrier.svg</iconset>
+         </property>
+         <item>
+          <property name="text">
+           <string>Expédition Interne</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Expédition Cliente</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Expédition Fournisseur</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Mouvement</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/movement.svg</normaloff>:/icons/icons/movement.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Lots</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/barcode-scanner.svg</normaloff>:/icons/icons/barcode-scanner.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Règles d'Approvisionnement</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/calendar-view.png</normaloff>:/icons/icons/calendar-view.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Rapports</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/reporting.png</normaloff>:/icons/icons/reporting.png</iconset>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Commande et Livraison</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../wposgui.qrc">
+          <normaloff>:/icons/icons/suppliers.png</normaloff>:/icons/icons/suppliers.png</iconset>
+        </property>
+        <item>
+         <property name="text">
+          <string>Commande</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/purchase.png</normaloff>:/icons/icons/purchase.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Livraison</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/purchase.svg</normaloff>:/icons/icons/purchase.svg</iconset>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Tiers</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../wposgui.qrc">
+          <normaloff>:/icons/icons/party.svg</normaloff>:/icons/icons/party.svg</iconset>
+        </property>
+        <item>
+         <property name="text">
+          <string>Assurance</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Pharmacie</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/pharmacy.png</normaloff>:/icons/icons/pharmacy.png</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Institution</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../wposgui.qrc">
+           <normaloff>:/icons/icons/home.svg</normaloff>:/icons/icons/home.svg</iconset>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Employeur</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Moyens de Contact</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Contacts</string>
+          </property>
+         </item>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Ressources Humaines</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../wposgui.qrc">
+          <normaloff>:/icons/icons/human-resource.png</normaloff>:/icons/icons/human-resource.png</iconset>
+        </property>
+        <item>
+         <property name="text">
+          <string>Département</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Personnel</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Congés</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Planning</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Présence</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Enrollement</string>
+         </property>
+        </item>
+        <item>
+         <property name="text">
+          <string>Rapports</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Finance</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../wposgui.qrc">
+          <normaloff>:/icons/icons/financial.svg</normaloff>:/icons/icons/financial.svg</iconset>
+        </property>
+        <item>
+         <property name="text">
+          <string>Factures</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Factures Clients</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>Factures Fournisseurs</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Entrées</string>
+         </property>
+         <item>
+          <property name="text">
+           <string>Journaux Périodiques</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>Configuration</string>
+         </property>
+        </item>
+       </item>
+       <item>
+        <property name="text">
+         <string>Administration</string>
+        </property>
+        <property name="icon">
+         <iconset resource="../wposgui.qrc">
+          <normaloff>:/icons/icons/settings.svg</normaloff>:/icons/icons/settings.svg</iconset>
+        </property>
+       </item>
+      </widget>
+      <widget class="QStackedWidget" name="display">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Expanding" vsizetype="Preferred">
+         <horstretch>0</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="autoFillBackground">
+        <bool>false</bool>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Sunken</enum>
+       </property>
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="page1">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+       </widget>
+       <widget class="QTabWidget" name="page2">
+        <property name="documentMode">
+         <bool>true</bool>
+        </property>
+        <property name="tabsClosable">
+         <bool>true</bool>
+        </property>
+        <property name="movable">
+         <bool>true</bool>
+        </property>
+        <property name="tabBarAutoHide">
+         <bool>true</bool>
+        </property>
+        <widget class="QWidget" name="tab1">
+         <attribute name="title">
+          <string>Tab 1</string>
+         </attribute>
+        </widget>
+        <widget class="QWidget" name="tab2">
+         <attribute name="title">
+          <string>Tab 2</string>
+         </attribute>
+        </widget>
+       </widget>
+      </widget>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="QStatusBar" name="statusBar"/>
+  <widget class="QToolBar" name="notificationBar">
+   <property name="minimumSize">
+    <size>
+     <width>0</width>
+     <height>0</height>
+    </size>
+   </property>
+   <property name="windowTitle">
+    <string>Notification Bar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
+   </property>
+   <property name="iconSize">
+    <size>
+     <width>48</width>
+     <height>48</height>
+    </size>
+   </property>
+   <attribute name="toolBarArea">
+    <enum>RightToolBarArea</enum>
+   </attribute>
+   <attribute name="toolBarBreak">
+    <bool>false</bool>
+   </attribute>
+   <addaction name="separator"/>
+  </widget>
+  <widget class="QMenuBar" name="menuBar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>882</width>
+     <height>22</height>
+    </rect>
+   </property>
+   <property name="nativeMenuBar">
+    <bool>false</bool>
+   </property>
+   <widget class="QMenu" name="menuFile">
+    <property name="title">
+     <string>File</string>
+    </property>
+    <addaction name="actionExit"/>
+   </widget>
+   <widget class="QMenu" name="menuView">
+    <property name="title">
+     <string>View</string>
+    </property>
+   </widget>
+   <addaction name="menuFile"/>
+   <addaction name="menuView"/>
+  </widget>
+  <action name="actionExit">
+   <property name="text">
+    <string>Exit</string>
+   </property>
+  </action>
+ </widget>
+ <resources>
+  <include location="../wposgui.qrc"/>
+ </resources>
+ <connections/>
+</ui>

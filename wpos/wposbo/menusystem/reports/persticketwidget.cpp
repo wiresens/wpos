@@ -15,9 +15,9 @@
 
 
 
-#include <wposwidget/orderview.h>
-#include <wposwidget/ordercontentview.h>
-#include <wposwidget/toolkit.h>
+#include <wposgui/order/orderview.h>
+#include <wposgui/order/ordercontentview.h>
+#include <wposgui/common/toolkit.h>
 #include <wposcore/signals.h>
 
 #include <QDataStream>
@@ -86,7 +86,7 @@ PersTicketWidget::PersTicketWidget(QWidget *parent, const QString& name):
     clear();
     //        getPersTickets();
 
-    ticketnum_listview->sortByColumn(3);
+    ticketnum_listview->sortByColumn(3, Qt::AscendingOrder);
     ticketnum_listview->setSelectionMode(QListView::SingleSelection);
 
     // Establish standart connections

@@ -17,7 +17,7 @@
 #include "database/productoptionsmoduledb.h"
 
 #include <wposcore/config.h>
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QLineEdit>
@@ -31,7 +31,6 @@
 #include <QComboBox>
 #include <QMessageBox>
 #include <QListWidget>
-#include <QMatrix>
 #include <QPixmap>
 #include <QDir>
 #include <QLabel>

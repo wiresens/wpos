@@ -25,6 +25,7 @@
 //};
 
 //@BENES
+class QString;
 class GreeterInterface {
 public:
     virtual void getMatchResults(QString) = 0;

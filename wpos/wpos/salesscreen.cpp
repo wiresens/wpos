@@ -1,14 +1,7 @@
-/***************************************************************************
-                          pantallapresentacion.cpp  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  salesscreen.cpp
+// birth     :  06/19/2023
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #include "mainscreen.h"
 #include "salesscreen.h"
@@ -45,28 +38,18 @@
 #include "menusystem/menus/invitationallocatorwidget.h"
 #include "menusystem/menus/paymodeswidget.h"
 
-#include <wposwidget/menustack.h>
-#include <wposwidget/menupage.h>
-#include <wposwidget/numkeyboard.h>
-#include <wposwidget/orderpickerview.h>
-#include <wposwidget/orderview.h>
-#include <wposwidget/ordercontentview.h>
-#include <wposwidget/visualproduct.h>
+#include <wposgui/windows/menustack.h>
+#include <wposgui/windows/menupage.h>
+#include <wposgui/keyboard/numkeyboard.h>
+#include <wposgui/order/orderpickerview.h>
+#include <wposgui/order/orderview.h>
+#include <wposgui/order/ordercontentview.h>
+#include <wposgui/visualproduct.h>
 
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 
 #include <libbslxml/xmlconfig.h>
-
-//#include <QApplication>
-//#include <QSplashScreen>
-//#include <QPushButton>
-//#include <QCursor>
-//#include <QLayout>
-//#include <QTimer>
-//#include <QMap>
-//#include <QList>
-//#include <QFile>
 
 extern AuthCore *authCore;
 
@@ -90,8 +73,8 @@ const QString SalesScreen::GENERIC_PRODUCT_MENU {"GENERIC_PRODUCT_MENU"};
 const QString SalesScreen::PAY_MODE_MENU {"PAY_MODE_MENU"};
 
 SalesScreen::SalesScreen(MenuPage *parent,
-    QSplashScreen& splashScreen,
-    const QString& name ):
+                         QSplashScreen& splashScreen,
+                         const QString& name ):
     QWidget(parent)
 {
     setupUi(this);
@@ -113,7 +96,7 @@ SalesScreen::SalesScreen(MenuPage *parent,
     emit splashRequested(tr("Loading Modules ..."), Qt::AlignBottom | Qt::AlignRight , Qt::darkBlue);
 
     timer = new QTimer(this);
-    connect( timer, &QTimer::timeout, this, &SalesScreen::checkPendingEvents);
+    connect( timer, &QTimer::timeout, this, &SalesScreen::checkSuspend);
 
     authCore = new  AuthCore(this, "AuthCore");
     authCore->loadUserById(ROOT_ID);
@@ -307,19 +290,30 @@ void SalesScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *x
     }
 }
 
-void SalesScreen::checkPendingEvents(){
+// void SalesScreen::checkPendingEvents(){
 
-    if ( qApp->hasPendingEvents() )
+//     if ( qApp->hasPendingEvents() )
+//         counter = 0;
+//     else{
+//         counter++;
+//         if ( counter > TIMER_NO_EVENTS ){
+//             XmlConfig xml;
+//             xml.createElement("name", MainScreen::LOGIN_SCREEN);
+//             emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+//             counter = 0;
+//         }
+//     }
+// }
+
+void SalesScreen::checkSuspend(){
+    if(qApp->applicationState())
+    if ( counter > TIMER_NO_EVENTS ){
+        XmlConfig xml;
+        xml.createElement("name", MainScreen::LOGIN_SCREEN);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
         counter = 0;
-    else{
-        counter++;
-        if ( counter > TIMER_NO_EVENTS ){
-            XmlConfig xml;
-            xml.createElement("name", MainScreen::LOGIN_SCREEN);
-            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
-            counter = 0;
-        }
     }
+    else counter++;
 }
 
 void SalesScreen::showEvent(QShowEvent *event){

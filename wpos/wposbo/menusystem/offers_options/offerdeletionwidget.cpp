@@ -42,7 +42,7 @@ OfferDeletionWidget::OfferDeletionWidget(
     offer_listview->setColumnWidth( Icon, 80);
     offer_listview->setColumnWidth( Name, 300);
     offer_listview->setAllColumnsShowFocus(true);
-    offer_listview->sortByColumn(Name);
+    offer_listview->sortByColumn(Name, Qt::AscendingOrder);
 
     ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
     pix_label1->setPixmap(QPixmap("controls48:galeon.png"));

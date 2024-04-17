@@ -14,8 +14,8 @@
 #include "offereditionwidget.h"
 #include "menusystem/utils.h"
 
-#include <wposwidget/numkeyboard.h>
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/keyboard/numkeyboard.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QDir>

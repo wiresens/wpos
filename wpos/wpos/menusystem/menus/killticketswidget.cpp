@@ -14,8 +14,8 @@
 
 #include <wposcore/genericsignalmanager.h>
 #include <xmlconfig.h>
-#include <wposwidget/orderview.h>
-#include <wposwidget/ordercontentview.h>
+#include <wposgui/order/orderview.h>
+#include <wposgui/order/ordercontentview.h>
 
 #include "database/killticketsdb.h"
 
@@ -201,11 +201,8 @@ void KillTicketsWidget::handleTicketSelected() {
 
 void KillTicketsWidget::deleteTicket(){
     int tid = 0;
-    QTreeWidgetItem *item = 0;
-
-    item = ticketnum_treeview->currentItem();
-    if (!item || !ticketnum_treeview->isItemSelected(item))
-        return;
+    QTreeWidgetItem *item = ticketnum_treeview->currentItem();
+    if ( !item  || !item->isSelected()) return;
 
     tid = item->text(1).toInt ();
 
@@ -279,7 +276,7 @@ void KillTicketsWidget::printInvoice(){
 **/
 
     QTreeWidgetItem *item = ticketnum_treeview->currentItem();
-    if (  !item || !ticketnum_treeview->isItemSelected(item) )  return;
+    if (  !item || !item->isSelected() )  return;
 
     int tickect_id  { -1 };
     int invoice_id  { -1 };

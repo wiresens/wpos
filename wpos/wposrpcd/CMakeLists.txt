@@ -9,7 +9,7 @@ include_directories(
     ../libqutexr
 )
 
-find_package(Qt5 REQUIRED COMPONENTS
+find_package(Qt6 REQUIRED COMPONENTS
     Network
     Xml
 )
@@ -42,20 +42,20 @@ target_link_libraries(${MAIN_TARGET} PRIVATE
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
-    Qt5::Core
-    Qt5::Network
-    Qt5::Xml
+    Qt::Core
+    Qt::Network
+    Qt::Xml
 )
 
 install(TARGETS ${MAIN_TARGET}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-#qt_generate_deploy_app_script( // >= Qt 6.3
-#    TARGET ${MAIN_TARGET}
-#    OUTPUT_SCRIPT deploy_script
-#    NO_UNSUPPORTED_PLATFORM_ERROR
-#)
+qt_generate_deploy_app_script(
+   TARGET ${MAIN_TARGET}
+   OUTPUT_SCRIPT deploy_script
+   NO_UNSUPPORTED_PLATFORM_ERROR
+)
 
-#install(SCRIPT ${deploy_script})
+install(SCRIPT ${deploy_script})
 

@@ -3,10 +3,10 @@ project(wposrpc VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 set(MAIN_TARGET wposrpc)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Network Xml WebSockets)
-
-include_directories(
-    /usr/include/libxml2
+find_package(Qt6 REQUIRED COMPONENTS
+    Network
+    Xml
+    WebSockets
 )
 
 set(HEADER_FILES
@@ -42,16 +42,16 @@ set(SOURCES_FILES
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../lib)
 
 add_library(
-    ${MAIN_TARGET} SHARED
+    ${MAIN_TARGET}
     ${HEADER_FILES}
     ${SOURCES_FILES}
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
     wposxml
-    Qt5::Network
-    Qt5::Xml
-    Qt5::WebSockets
+    Qt::Network
+    Qt::Xml
+    Qt::WebSockets
 )
 
 target_include_directories(${MAIN_TARGET}

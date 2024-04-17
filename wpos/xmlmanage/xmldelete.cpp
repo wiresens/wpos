@@ -23,8 +23,6 @@
 //libbslnet library.
 #include <xmlconfig.h>
 
-
-
 #include <QString>
 #include <QRegExp>
 
@@ -88,7 +86,7 @@ void XmlDelete::delAttribute(QStringList *list){
     //get the file name
     arg = list->takeFirst();
 
-    this->getXml(arg);
+    getXml(arg);
 
     if (list->isEmpty()){
         errorExit("No domain has been specified");
@@ -112,7 +110,7 @@ void XmlDelete::delAttribute(QStringList *list){
 
     while (!list->isEmpty()){
         attr = list->takeFirst();
-        arg = xml->deleteAttribute(domain,attr);
+        xml->deleteAttribute(domain,attr);
     }
 
 

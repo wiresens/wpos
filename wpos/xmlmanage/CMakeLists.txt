@@ -3,13 +3,12 @@ project(xmlmanage VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 set(MAIN_TARGET wposxmlmanage)
 set(CMAKE_AUTOMOC ON)
 
-#find_package(Qt5 REQUIRED COMPONENTS Core)
-#qt_standard_project_setup() // >= Qt6.3
-find_package(Qt5 REQUIRED COMPONENTS Core)
-
-include_directories(
-    /usr/include/libxml2
+find_package(Qt6 REQUIRED COMPONENTS
+    Core
+    Core5Compat
 )
+
+qt_standard_project_setup()
 
 set(HEADER_FILES
     comon.h
@@ -40,9 +39,21 @@ add_executable(
     ${SOURCES_FILES}
 )
 
-target_link_libraries(${MAIN_TARGET} PRIVATE wposxml Qt5::Core)
+target_link_libraries(${MAIN_TARGET} PRIVATE
+    wposxml
+    Qt::Core5Compat
+    Qt::Core
+)
 
 install(TARGETS ${MAIN_TARGET}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+qt_generate_deploy_app_script(
+   TARGET ${MAIN_TARGET}
+   OUTPUT_SCRIPT deploy_script
+   NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})

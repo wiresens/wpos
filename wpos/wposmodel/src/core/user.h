@@ -37,7 +37,7 @@ public:
     User(User&&) = default;
     User& operator=(User&&) = default;
 
-    static UserPtr exist(const string& login, const string& pwd);
+    static UserPtr find(const string& login, const string& pwd);
     static User newUser(PersonPtr employee, const string& login, const string& pwd);
 
     User( PersonPtr employee, const string& login, const string& pwd):
@@ -45,7 +45,7 @@ public:
         pwd_timeout_{ nowLocal()}, employee_{employee}
     {
         if(login.empty() || pwd.empty()) throw EmptyValueException{};
-        if( exist(login_, password_)) throw DuplicateAuthTokenException{};
+        if( find(login_, password_)) throw DuplicateAuthTokenException{};
     }
 
     virtual void persist() override;

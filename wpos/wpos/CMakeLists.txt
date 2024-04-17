@@ -1,18 +1,19 @@
 project(wpos VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 set(MAIN_TARGET wpos)
-#set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--copy-dt-needed-entries")
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--copy-dt-needed-entries")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(WS_SERVICE com.wiresens)
 
-find_package(Qt5 REQUIRED COMPONENTS
+find_package(Qt6 REQUIRED COMPONENTS
     Widgets
     Network
     Sql
     DBus
     WebEngineWidgets
+    Core5Compat
 )
 
 #QtDbus stuff : not yet robbust, because depending on hardcoded directories and
@@ -65,7 +66,7 @@ foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
     get_filename_component(fileBase ${filePathLower} NAME_WE)
 
     # Invoke qdbuscpp2xml to generate .xml spec files form .h
-    qt5_generate_dbus_interface(
+    qt6_generate_dbus_interface(
         ${filePathLower}
         "${WS_SERVICE}.${fileBase}.xml"
         OPTIONS -m  # export all Scriptable Public Slot
@@ -83,8 +84,6 @@ foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
 endforeach()
 
 include_directories(
-    /usr/include
-    /usr/include/libxml2
     ../libbslxml
     ../wposcore
     ../libqutexr
@@ -232,11 +231,18 @@ add_executable(
 )
 
 target_compile_definitions(${MAIN_TARGET}
-    PRIVATE HAVE_LIBFREETYPE
+    PRIVATE HAVE_LIBFREETYPE #QT_DISABLE_DEPRECATED_UP_TO=0x050F00
 )
+
+add_compile_definitions(QT_DISABLE_DEPRECATED_UP_TO=0x050F00)
 
 target_include_directories(${MAIN_TARGET}
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
+)
+
+set_target_properties(${MAIN_TARGET} PROPERTIES
+    WIN32_EXECUTABLE TRUE
+    MACOSX_BUNDLE TRUE
 )
 
 target_link_libraries(${MAIN_TARGET}
@@ -245,25 +251,35 @@ target_link_libraries(${MAIN_TARGET}
     wposxml
     wposcore
     wposrpc
-    wposwidget
-    xml2
-    crypt
-    jpeg
-    png
-    gdc
-    gd
-    z
+    # wposwidget
+    wposgui
+    # xml2
+    libcrypt.a
+    libjpeg.a
+    libpng.a
+    libgdc.a
+    libgd.a
+    libz.a
 )
 
-target_link_libraries(${MAIN_TARGET} PRIVATE
-    Qt5::Widgets
-    Qt5::Network
-    Qt5::Sql
-    Qt5::DBus
-    Qt5::WebEngineWidgets
+target_link_libraries(${MAIN_TARGET} PUBLIC
+    Qt::Widgets
+    Qt::Network
+    Qt::Sql
+    Qt::DBus
+    Qt::WebEngineWidgets
+    Qt::Core5Compat
 )
 
 install(TARGETS ${MAIN_TARGET}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+qt_generate_deploy_app_script(
+   TARGET ${MAIN_TARGET}
+   OUTPUT_SCRIPT deploy_script
+   NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})

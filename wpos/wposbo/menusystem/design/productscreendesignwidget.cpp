@@ -18,7 +18,7 @@
 #include "database/productsmoduledb.h"
 
 #include <wposcore/config.h>
-#include <wposwidget/dragobjects.h>
+#include <wposgui/common/dragobjects.h>
 
 #include <QPushButton>
 #include <QStackedWidget>
@@ -27,7 +27,6 @@
 #include <QTableWidget>
 #include <QLayout>
 #include <QPixmap>
-#include <QMatrix>
 #include <QHeaderView>
 #include <QLabel>
 #include <QCheckBox>
@@ -599,11 +598,7 @@ void ProductScreenDesignWidget::draggedText(
 
 void ProductScreenDesignWidget::setProductScreen(const QString& screen_name){
     int i,count,max;
-    double width, height;
     QTableWidgetItem *item = 0;
-    QPixmap *p = 0;
-    QPixmap *pixmap = 0;
-    QMatrix *matrix = 0;
     ProductNode *product_node = 0;
 
     clearTable();

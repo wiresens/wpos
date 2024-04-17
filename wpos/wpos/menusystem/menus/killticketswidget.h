@@ -17,7 +17,6 @@
 #include <QEvent>
 #include <QListWidget>
 
-class QStringList;
 class QPixmap;
 class XmlConfig;
 class QAbstractButton;

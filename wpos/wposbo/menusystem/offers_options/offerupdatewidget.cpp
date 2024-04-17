@@ -20,8 +20,8 @@
 #include "productsmodule/offersmodule/productoffermodule.h"
 #include "database/productoffersmoduledb.h"
 
-#include <wposwidget/numkeyboard.h>
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/keyboard/numkeyboard.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QMessageBox>
@@ -40,8 +40,10 @@ OfferUpdateWidget::OfferUpdateWidget(QWidget *parent, const QString& name ) :
     offer_lineedit->hide();
     offer_combobox->setEditable(false);
 
-    connect(offer_combobox, QOverload<const QString&>::of(&QComboBox::activated), this, &OfferUpdateWidget::typeChangedSlot);
-    connect(offer_name_combobox, QOverload<const QString&>::of(&QComboBox::activated), this, &OfferUpdateWidget::offerChangedSlot);
+    connect(offer_combobox, &QComboBox::textActivated,
+            this, &OfferUpdateWidget::typeChangedSlot);
+    connect(offer_name_combobox, &QComboBox::textActivated,
+            this, &OfferUpdateWidget::offerChangedSlot);
 }
 
 void OfferUpdateWidget::clear(){

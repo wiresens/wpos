@@ -12,7 +12,7 @@
 
 #include "menubutton.h"
 #include "genericbutton.h"
-#include <wposwidget/global.h>
+#include <wposgui/common/global.h>
 #include <wposcore/genericsignalmanager.h>
 
 #include <QMenu>
@@ -89,7 +89,7 @@ void MenuButton::setOrientation(Qt::Orientation orientation)
     else
         frame_layout = new QVBoxLayout(frame);
 
-    frame_layout->setMargin(2);
+    frame_layout->setContentsMargins(2,2,2,2);
 
     for (auto button : buttons){
         frame_layout->addWidget(button);

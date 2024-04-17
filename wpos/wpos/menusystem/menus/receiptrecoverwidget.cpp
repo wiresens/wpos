@@ -19,8 +19,8 @@
 #include <wposcore/genericsignalmanager.h>
 #include <xmlconfig.h>
 #include <productextrainfo.h>
-#include <wposwidget/orderview.h>
-#include <wposwidget/ordercontentview.h>
+#include <wposgui/order/orderview.h>
+#include <wposgui/order/ordercontentview.h>
 #include "database/killticketsdb.h"
 
 #include "customize/npopupkeyboard.h"
@@ -218,7 +218,7 @@ void ReceiptRecoverWidget::refreshList(){
     }
 
     tickets->clear();
-    ticketnum_treeview->sortByColumn(OrderSection::TableCode);
+    ticketnum_treeview->sortByColumn(OrderSection::TableCode, Qt::AscendingOrder);
 }
 
 void ReceiptRecoverWidget::clickedSlot(QTreeWidgetItem* item, int column){
@@ -348,7 +348,7 @@ void ReceiptRecoverWidget::handleTicketSelected() {
     //get the xml from the receipt
     std::unique_ptr<XmlConfig> xml { receiptQuerier->getReceipt(employee_id, start_time)};
     if ( !xml.get() ){
-        qDebug() << "Failure trying to take the Order" << endl;
+        qDebug() << "Failure trying to take the Order";
         return;
     }
 

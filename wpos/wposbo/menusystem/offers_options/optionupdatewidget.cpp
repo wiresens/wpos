@@ -19,7 +19,7 @@
 //#include "optionupdatewidget_adapter.h"
 
 #include "productsmodule/optionsmodule/productoptionmodule.h"
-#include <wposwidget/floatkeyboard.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QtDBus/QDBusConnection>

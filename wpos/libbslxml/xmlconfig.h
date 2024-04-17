@@ -29,21 +29,9 @@
 class String;
 class QString;
 class QRegExp;
-class QStringList;
 class XmlConfigPrivate;
 
 #define _HAS_VALIDATE_METHOD_
-
-//extern "C"{
-#include <libxml2/libxml/xmlmemory.h>
-#include <libxml2/libxml/xmlversion.h>
-#include <libxml2/libxml/parser.h>
-#include <libxml2/libxml/tree.h>
-#include <libxml2/libxml/valid.h>
-#include <string.h>
-#include <unistd.h>
-#include <stdio.h>
-//}
 
 /**
     * @short this class give access to the xml files in a silly but easy way
@@ -76,7 +64,7 @@ public:
     * save the changes in the same file, so it's safe always to read from a XML without breaking it
     */
     explicit XmlConfig(
-        const QString& _file = QString(),
+        const QString& _file = QString{},
         QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
     );
 
@@ -96,7 +84,7 @@ public:
   */
     explicit XmlConfig(
         const QDomDocument &document,
-        const QString& _file = QString(),
+        const QString& _file = QString{},
         QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
     );
 
@@ -148,7 +136,7 @@ public:
   * @param domain : the domain we want to look for in . DO NOT set the domain
   * @return the list of the node names
   */
-    QStringList list( const QString& domain = QString());
+    QStringList list( const QString& domain = QString{});
 
     /**
     * @param tag It's the tag we look for, we return the number of the tags with this name
@@ -161,7 +149,7 @@ public:
     * howManyTags("partition", "disk[1]") returns 1
     * @return  the number of tags with name tag  in the domain domain
     */
-    int howManyTags(const QString& tag, const QString& domain = QString());
+    int howManyTags(const QString& tag, const QString& domain = QString{});
 
     /**
     * how many atributes has a tag, useful to navigate between the atributes
@@ -172,7 +160,7 @@ public:
     * @param tag in the form "x[n].y[m].z[p]"
     * @return the number of atributes of tag
     */
-    int howManyAttributes(const QString& tag = QString());
+    int howManyAttributes(const QString& tag = QString{});
 
     /**
     * Saves the xml data in a file named file and flush it to disk.
@@ -182,7 +170,7 @@ public:
     * @param file the file we want to save the XML data in
     * @return true if success or false otherwise
     */
-    bool save(const QString& file = QString());
+    bool save(const QString& file = QString{});
 
     /**
     * return the name of the file  we have taken the data from

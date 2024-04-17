@@ -13,14 +13,13 @@
 
 #include <xmlconfig.h>
 #include <wposcore/genericsignalmanager.h>
-#include <wposwidget/menupage.h>
+#include <wposgui/windows/menupage.h>
 #include <xmlconfig.h>
 
 #include "greeter.h"
 #include "salesscreen.h"
 #include "readconfigscreen.h"
 
-#include <iostream>
 using namespace std;
 
 const QString MainScreen::DBusService = QString{"com.wiresens.wpos.wpos"};

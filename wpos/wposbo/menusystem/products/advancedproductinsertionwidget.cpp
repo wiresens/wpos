@@ -14,9 +14,9 @@
 #include "productsmodule/offersmodule/productoffermodule.h"
 
 #include <wposcore/config.h>
-#include <wposwidget/dragobjects.h>
-#include <wposwidget/floatkeyboard.h>
-#include <wposwidget/numpad.h>
+#include <wposgui/common/dragobjects.h>
+#include <wposgui/keyboard/floatkeyboard.h>
+#include <wposgui/keyboard/numpad.h>
 
 
 #include <QPushButton>
@@ -24,7 +24,6 @@
 #include <QString>
 #include <QStringList>
 #include <QPixmap>
-#include <QMatrix>
 #include <QLabel>
 #include <QButtonGroup>
 #include <QColor>

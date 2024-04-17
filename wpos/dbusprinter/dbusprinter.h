@@ -26,7 +26,6 @@
 #include <QObject>
 #include <wposcore/hlist.h>
 
-class QStringList;
 class QString;
 class XmlRpcPrinter;
 class QFileSystemWatcher;

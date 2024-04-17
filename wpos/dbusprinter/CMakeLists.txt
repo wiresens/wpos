@@ -6,18 +6,22 @@ set(CMAKE_AUTOMOC ON)
 set(WS_SERVICE com.wiresens)
 
 include_directories(
-    /usr/include/libxml2
     ..
 )
 
-find_package(Qt5 REQUIRED COMPONENTS Core DBus Sql)
+find_package(Qt6 REQUIRED COMPONENTS
+    Core
+    DBus
+    Sql
+    Core5Compat
+)
 
 set(DBUS_HEADER_FILE
     dbusprinter
 )
 
 #Invoke qdbuscpp2xml to generate .xml spec files form .h
-qt5_generate_dbus_interface(
+qt6_generate_dbus_interface(
     "${DBUS_HEADER_FILE}.h"
     "${WS_SERVICE}.${DBUS_HEADER_FILE}.xml"
     OPTIONS -M  #export all Public Slot
@@ -72,18 +76,21 @@ target_link_libraries(${MAIN_TARGET} PRIVATE
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
-    Qt5::Core Qt5::DBus Qt5::Sql
+    Qt::Core
+    Qt::DBus
+    Qt::Sql
+    Qt::Core5Compat
 )
 
 install(TARGETS ${MAIN_TARGET}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-#qt_generate_deploy_app_script( // >= Qt 6.3
-#    TARGET ${MAIN_TARGET}
-#    OUTPUT_SCRIPT deploy_script
-#    NO_UNSUPPORTED_PLATFORM_ERROR
-#)
+qt_generate_deploy_app_script(
+   TARGET ${MAIN_TARGET}
+   OUTPUT_SCRIPT deploy_script
+   NO_UNSUPPORTED_PLATFORM_ERROR
+)
 
-#install(SCRIPT ${deploy_script})
+install(SCRIPT ${deploy_script})
 

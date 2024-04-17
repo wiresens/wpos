@@ -135,7 +135,7 @@ bool GenericButtonGroup::readConfigFrom(
     if ( xml->howManyTags("margin") )  margin = xml->readInt("margin");
 
     layout->setSpacing(spacing);
-    layout->setMargin(margin);
+    layout->setContentsMargins(margin,margin,margin,margin);
     xml->releaseDomain("layout");
 
     for ( i=0; i < xml->howManyTags("item"); i++){

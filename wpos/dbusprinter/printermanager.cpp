@@ -17,7 +17,7 @@ modified by Carlos Manzanedo Rueda
 #include <iostream>
 
 #include <QString>
-#include <QRegExp>
+// #include <QRegExp>
 #include <QStringList>
 
 using namespace std;

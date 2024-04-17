@@ -1,12 +1,13 @@
 project(wposbo VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 set(MAIN_TARGET wposbo)
+set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--copy-dt-needed-entries")
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(WS_SERVICE com.wiresens)
 
-find_package(Qt5 REQUIRED COMPONENTS
+find_package(Qt6 REQUIRED COMPONENTS
     Widgets
     Network
     Sql
@@ -14,6 +15,8 @@ find_package(Qt5 REQUIRED COMPONENTS
     WebEngineWidgets
     Xml
 )
+
+qt_standard_project_setup()
 
 # This is just a hack. We had to capitalized file names according
 # to class names to make qt_add_dbus_adaptor() work as it require
@@ -37,10 +40,11 @@ foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
     get_filename_component(fileBase ${filePathLower} NAME_WE)
 
     #Invoke qdbuscpp2xml to generate .xml spec files form .h
-    qt5_generate_dbus_interface(
+    #exporting all Scriptable Slot, all Scriptable Signals
+    qt6_generate_dbus_interface(
         ${filePathLower}
         "${WS_SERVICE}.${fileBase}.xml"
-        OPTIONS -m -s  #export all Scriptable Slot, all Scriptable Signals
+        OPTIONS -m -s
     )
 
     message("filePathLower  : ${filePathLower}")
@@ -59,9 +63,6 @@ foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
 endforeach()
 
 include_directories(
-    /usr/include
-    /usr/include/libxml2
-    /usr/include/gdchart
     ../libbslxml
     ../wposcore
     ../libqutexr
@@ -257,26 +258,34 @@ target_link_libraries(${MAIN_TARGET} PRIVATE
 #    wposmodel
     wposxml
     wposcore
-    wposwidget
+    wposgui
     xml2
-    jpeg
-    png
-    gdc
-    gd
-    z
-    m
+    libjpeg.a
+    libpng.a
+    libgdc.a
+    libgd.a
+    libz.a
+    libm.a
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
-    Qt5::Widgets
-    Qt5::Network
-    Qt5::Sql
-    Qt5::DBus
-    Qt5::WebEngineWidgets
-    Qt5::Xml
+    Qt::Widgets
+    Qt::Network
+    Qt::Sql
+    Qt::DBus
+    Qt::WebEngineWidgets
+    Qt::Xml
 )
 
 install(TARGETS ${MAIN_TARGET}
     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
+
+qt_generate_deploy_app_script(
+   TARGET ${MAIN_TARGET}
+   OUTPUT_SCRIPT deploy_script
+   NO_UNSUPPORTED_PLATFORM_ERROR
+)
+
+install(SCRIPT ${deploy_script})

@@ -37,7 +37,7 @@ public:
 
     void addItem(ConstProductPtr product, uint32_t quantity = 1);
     void removeItem(ConstProductPtr product);
-    void removeItems(vector<ConstProductPtr> products);
+    void removeItems(vector<ConstProductPtr>);
 
     double total() const;
     double totalRebate() const;

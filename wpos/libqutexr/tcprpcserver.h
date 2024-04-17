@@ -32,7 +32,6 @@ Ported to Qt 5.12.8 by Gilles Bene Pougoue <gilles.benepougoue@gmail.com>
 #include <QString>
 #include <QList>
 #include <QVariant>
-#include <QRegExp>
 #include <QtXml/QtXml>
 #include <QMap>
 

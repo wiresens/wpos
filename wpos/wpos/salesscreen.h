@@ -1,14 +1,7 @@
-/***************************************************************************
-                          pantallapresentacion.h  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright             : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  salesscreen.h
+// birth     :  06/19/2023
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #ifndef SALES_SCREEN_H
 #define SALES_SCREEN_H
@@ -74,7 +67,7 @@ signals:
     void splashRequested(const QString &, int, const QColor &);
 
 protected slots:
-    void checkPendingEvents();
+    void checkSuspend();
 
 protected:
     void showEvent(QShowEvent *event) override;

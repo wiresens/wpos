@@ -3,10 +3,14 @@ project(wposcore VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 set(MAIN_TARGET wposcore)
 set(CMAKE_AUTOMOC ON)
 
-find_package(Qt5 REQUIRED COMPONENTS Sql)
+find_package(Qt6 REQUIRED COMPONENTS
+    Sql
+)
+
+find_package( LibXml2 REQUIRED)
 
 include_directories(
-    /usr/include/libxml2
+    ${LIBXML2_INCLUDE_DIR}
 )
 
 set(HEADER_FILES
@@ -17,6 +21,8 @@ set(HEADER_FILES
     productextrainfo.h
     signals.h
     utility.h
+    authentication/credential.h
+    authentication/crypto_hasher.h
 )
 
 set(SOURCES_FILES
@@ -26,17 +32,23 @@ set(SOURCES_FILES
     productextrainfo.cpp
     signals.cpp
     utility.cpp
+    authentication/credential.cpp
+    authentication/crypto_hasher.cpp
 )
 
 # Make the project root directory the working directory when we run
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../lib)
 
 add_library(
-    ${MAIN_TARGET} SHARED
+    ${MAIN_TARGET}
     ${HEADER_FILES}
     ${SOURCES_FILES}
+
 )
-target_link_libraries(${MAIN_TARGET} PRIVATE wposxml Qt5::Sql)
+target_link_libraries(${MAIN_TARGET} PRIVATE
+    Qt::Sql
+    wposxml
+)
 
 target_include_directories(${MAIN_TARGET}
     INTERFACE ${CMAKE_CURRENT_SOURCE_DIR}

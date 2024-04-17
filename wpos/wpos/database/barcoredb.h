@@ -15,8 +15,6 @@
 
 #include <basicdatabase.h>
 class QString;
-class QStringList;
-
 struct ProductPriceData{
     QString price;
     QString tax_type;

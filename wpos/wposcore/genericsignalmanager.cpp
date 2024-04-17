@@ -22,13 +22,6 @@
 #include <QStringList>
 #include <QDebug>
 
-GenericSignalManager* GenericSignalManager::gsm { nullptr };
-
-//GenericSignalManager* GenericSignalManager::instance(){
-//    if( !gsm ) gsm = new GenericSignalManager();
-//    return gsm;
-//}
-
 // Simple alternative using C++11
 GenericSignalManager* GenericSignalManager::instance(){
     static GenericSignalManager gsm;

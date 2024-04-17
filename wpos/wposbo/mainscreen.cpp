@@ -11,15 +11,15 @@
  ***************************************************************************/
 
 #include <wposcore/config.h>
-#include <wposwidget/global.h>
+#include <wposgui/common/global.h>
 
 #include "mainscreen.h"
 
 #include "menusystem/menus/mainscreenmenu.h"
 
 #include <libbslxml/xmlconfig.h>
-#include <wposwidget/menustack.h>
-#include <wposwidget/menupage.h>
+#include <wposgui/windows/menustack.h>
+#include <wposgui/windows/menupage.h>
 
 #include <QLabel>
 #include <QLayout>

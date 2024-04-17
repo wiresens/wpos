@@ -18,29 +18,33 @@
 #include "xmlconfigprivate.h"
 #include "xmlconfig.h"
 #include "utils.h"
-#include "comp.h"
-
-#include <stdlib.h>
 
 #include <QString>
 #include <QStringList>
 #include <QRegExp>
 
+#define _HAS_VALIDATE_METHOD_
+
+#include <libxml2/libxml/xmlmemory.h>
+#include <libxml2/libxml/xmlversion.h>
+#include <libxml2/libxml/parser.h>
+#include <libxml2/libxml/tree.h>
+#include <libxml2/libxml/valid.h>
+
+#include <iostream>
+using std::cerr;
 
 #ifdef _HAS_VALIDATE_METHOD_
 /**
 *    QT does not admit DTD validation, and we really need it... this libraray is goint to be reimplemented in the future
 *    to use libxml2, but for now we will use that lib to make the validation and may be other funzy actions with the xml
 */
-//extern "C"{
-//        #include <libxml2/libxml/xmlmemory.h>
-//        #include <libxml2/libxml/parser.h>
-//        #include <libxml2/libxml/tree.h>
-//        #include <libxml2/libxml/valid.h>
-//        #include <string.h>
-//        #include <unistd.h>
-//        #include <stdio.h>
-//}
+#include <libxml2/libxml/xmlmemory.h>
+#include <libxml2/libxml/xmlversion.h>
+#include <libxml2/libxml/parser.h>
+#include <libxml2/libxml/tree.h>
+#include <libxml2/libxml/valid.h>
+
 #endif
 
 
@@ -86,8 +90,7 @@ XmlConfig::XmlConfig(
 }
 
 XmlConfig& XmlConfig::operator=(XmlConfig&& xml){
-    if(impl != xml.impl)
-        delete impl;
+    if(impl != xml.impl) delete impl;
 
     impl            = xml.impl;
     doc             = xml.doc;
@@ -97,6 +100,7 @@ XmlConfig& XmlConfig::operator=(XmlConfig&& xml){
     stack_domain    = xml.stack_domain;
 
     xml.impl = nullptr;
+    return *this;
 }
 
 XmlConfig::XmlConfig(XmlConfig&& xml)
@@ -933,7 +937,7 @@ bool XmlConfig::createElementRecursivePrivate(
     const QString& comment,
     bool set_domain)
 {
-    if ((node_name==0)||(node_name.isEmpty()))
+    if ( node_name.isNull() || node_name.isEmpty())
         return false;
 
     QDomNode node;

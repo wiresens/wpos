@@ -14,7 +14,7 @@
 #include "prodselect/product.h"
 #include "prodselect/productscreenstack.h"
 #include <xmlconfig.h>
-#include <wposwidget/global.h>
+#include <wposgui/common/global.h>
 
 #include <iostream>
 #include <QString>

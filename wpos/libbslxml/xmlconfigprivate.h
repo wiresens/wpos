@@ -22,13 +22,6 @@
 #include <QFile>
 #include <QDomDocument>
 
-extern "C" {
-#include <stdlib.h>
-#include <string.h>
-#include <stdio.h>
-#include <unistd.h>
-}
-
 class QString;
 class QFile;
 class QDomNode;

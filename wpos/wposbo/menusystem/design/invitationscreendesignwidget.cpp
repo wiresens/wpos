@@ -19,7 +19,7 @@
 
 #include "menusystem/products/productoffercreationwidget.h"
 
-#include <wposwidget/dragobjects.h>
+#include <wposgui/common/dragobjects.h>
 
 #include <QLabel>
 #include <QPushButton>
@@ -32,7 +32,6 @@
 #include <QColor>
 #include <QDir>
 #include <QPixmap>
-#include <QMatrix>
 #include <QLineEdit>
 #include <QCheckBox>
 #include <QFile>

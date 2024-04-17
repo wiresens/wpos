@@ -17,6 +17,7 @@
 #include <wposcore/hlist.h>
 
 #include <QMenu>
+#include <QRegExp>
 
 class ProductExtraInfo;
 class XmlConfig;
