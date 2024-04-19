@@ -5,10 +5,8 @@
 
 #include "mainscreen.h"
 #include "salesscreen.h"
-#include "menusmanager.h"
 
 #include "auth/authcore.h"
-#include "barcore/filemanager.h"
 #include "barcore/barcore.h"
 #include "barcore/cashdevice.h"
 #include "barcore/eventlogcore.h"
@@ -38,6 +36,7 @@
 #include "menusystem/menus/invitationallocatorwidget.h"
 #include "menusystem/menus/paymodeswidget.h"
 
+#include <wposgui/windows/menusmanager.h>
 #include <wposgui/windows/menustack.h>
 #include <wposgui/windows/menupage.h>
 #include <wposgui/keyboard/numkeyboard.h>
