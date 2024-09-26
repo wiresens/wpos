@@ -1,0 +1,19 @@
+<RCC>
+    <qresource prefix="/main">
+        <file alias="logo.png">icons/logo/ise.png</file>
+        <file alias="down_arrow">icons/signals/gtk-go-down.png</file>
+        <file alias="up_arrow">icons/signals/gtk-go-up.png</file>
+    </qresource>
+    <qresource prefix="/product">
+        <file alias="cancel.png">icons/cancel.png</file>
+        <file alias="clear.png">icons/clear.png</file>
+        <file alias="validate.png">icons/success.png</file>
+    </qresource>
+    <qresource prefix="/report">
+        <file alias="refresh.png">icons/toolbox/update_small.png</file>
+    </qresource>
+    <qresource prefix="/icons">
+        <file alias="panadol.jpeg">icons/panadol-extra.jpeg</file>
+        <file alias="drug.jpeg">icons/drug-capsule.jpeg</file>
+    </qresource>
+</RCC>
