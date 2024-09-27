@@ -5,6 +5,8 @@
 #include "exceptions.h"
 #include "uom.h"
 
+using ulong = unsigned long;
+
 namespace wpos{
 namespace model{
 

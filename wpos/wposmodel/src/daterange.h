@@ -29,16 +29,16 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ********************************************************************************/
 
-
 #ifndef DATERANGE_H
 #define DATERANGE_H
 
-#include <chrono>
-#include <memory>
-
-#include <odb/database.hxx>
 #include <boost/date_time.hpp>
+#include <chrono>
+// #include <memory>
 
+namespace odb{
+    class access;
+}
 namespace wpos{
 using std::string;
 

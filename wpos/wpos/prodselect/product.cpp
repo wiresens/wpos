@@ -272,10 +272,8 @@ bool Product::setProductPixmap(
 bool Product::setProductPixmap(
     const QPixmap& pixmap)
 {
-//    my_pixmap = pixmap;
     setIcon(pixmap);
     setIconSize(pixmap.rect().size());
-//    has_pixmap = true;
     return true;
 }
 

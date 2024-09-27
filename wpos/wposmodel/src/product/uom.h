@@ -34,6 +34,7 @@ SOFTWARE.
 
 #include "../persistable.h"
 #include "exceptions.h"
+using uint = unsigned int;
 
 namespace wpos{
 namespace model{

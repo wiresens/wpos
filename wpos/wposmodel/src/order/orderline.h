@@ -9,10 +9,11 @@
 
 #include "product.h"
 #include <odb/lazy-ptr.hxx>
+#include <memory>
 
-template<typename T, typename... Args>
-std::shared_ptr<T>
-std::make_shared(Args&&... args);
+// template<typename T, typename... Args>
+// std::shared_ptr<T>
+// std::make_shared(Args&&... args);
 
 namespace wpos{
 namespace model{

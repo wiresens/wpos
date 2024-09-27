@@ -51,7 +51,7 @@
      </property>
      <property name="icon">
       <iconset resource="../wposgui.qrc">
-       <normaloff>:/icons/icons/list.svg</normaloff>:/icons/icons/list.svg</iconset>
+       <normaloff>:/controls/icons/list.svg</normaloff>:/controls/icons/list.svg</iconset>
      </property>
      <property name="iconSize">
       <size>
@@ -106,7 +106,7 @@
       </property>
       <property name="icon">
        <iconset resource="../wposgui.qrc">
-        <normaloff>:/icons/icons/language-fr.png</normaloff>:/icons/icons/language-fr.png</iconset>
+        <normaloff>:/general/icons/language-fr.png</normaloff>:/general/icons/language-fr.png</iconset>
       </property>
      </item>
      <item>
@@ -115,7 +115,7 @@
       </property>
       <property name="icon">
        <iconset resource="../wposgui.qrc">
-        <normaloff>:/icons/icons/language-en.png</normaloff>:/icons/icons/language-en.png</iconset>
+        <normaloff>:/general/icons/language-en.png</normaloff>:/general/icons/language-en.png</iconset>
       </property>
      </item>
     </widget>
@@ -135,7 +135,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/notify.png</normaloff>:/icons/icons/notify.png</iconset>
+         <normaloff>:/general/icons/notify.png</normaloff>:/general/icons/notify.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -171,7 +171,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/profile.png</normaloff>:/icons/icons/profile.png</iconset>
+         <normaloff>:/party/icons/profile.png</normaloff>:/party/icons/profile.png</iconset>
        </property>
        <property name="iconSize">
         <size>

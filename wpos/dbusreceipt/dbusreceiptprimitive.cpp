@@ -144,7 +144,9 @@ void DBusReceiptPrimitive::fileDirtySlot(const QString& file){
 
     if (file == DB_CONNECTION_PATH){
         qDebug() << qApp->applicationName() <<": Rereading database configuration";
+#ifndef _WINDOWS
         usleep(2000);
+#endif
         XmlConfig xml (DB_CONNECTION_PATH);
         if (xml.wellFormed()){
             delete receipt_db;

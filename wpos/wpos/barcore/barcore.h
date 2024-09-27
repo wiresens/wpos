@@ -20,6 +20,7 @@
 #ifndef BARCORE_H
 #define BARCORE_H
 
+#include "database/barcoredb.h"
 #include <QObject>
 
 class ExtraCore;
@@ -92,7 +93,7 @@ private:
 
     QString last_employee_id;
     QString last_start_time;
-    static BarCoreDB db;
+    BarCoreDB *db;
 };
 
 #endif

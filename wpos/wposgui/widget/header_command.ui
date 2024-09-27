@@ -49,7 +49,7 @@
      </property>
      <property name="icon">
       <iconset resource="../wposgui.qrc">
-       <normaloff>:/icons/icons/list-add.png</normaloff>:/icons/icons/list-add.png</iconset>
+       <normaloff>:/controls/icons/list-add.png</normaloff>:/controls/icons/list-add.png</iconset>
      </property>
     </widget>
    </item>
@@ -63,7 +63,7 @@
      </property>
      <property name="icon">
       <iconset resource="../wposgui.qrc">
-       <normaloff>:/icons/icons/list-remove.png</normaloff>:/icons/icons/list-remove.png</iconset>
+       <normaloff>:/controls/icons/list-remove.png</normaloff>:/controls/icons/list-remove.png</iconset>
      </property>
     </widget>
    </item>

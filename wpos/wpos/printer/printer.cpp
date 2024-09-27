@@ -12,12 +12,11 @@ modified by Carlos Manzanedo Rueda
  ***************************************************************************/
 
 
-#include <iostream>
-
 extern "C"{
-#include <stdlib.h>
 #include <stdio.h>
+#ifndef _MSC_VER
 #include <unistd.h>
+#endif
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
@@ -25,7 +24,6 @@ extern "C"{
 #define KB 1024
 #define BUF 512 /* bytes */
 
-using namespace std;
 
 #include "printer.h"
 
@@ -77,7 +75,9 @@ void Printer::print(const QString& file) {
     int printer_fd = -1;
     char buf[BUF];
 
+#ifndef _MSC_VER
     printer_fd = open("/dev/lp0", O_RDWR | O_NONBLOCK | O_SYNC);
+#endif
     if (printer_fd < 0){
         perror ("Failed whe opening the printer");
         fclose(fd);
@@ -90,10 +90,15 @@ void Printer::print(const QString& file) {
     while (!feof (fd)) {
         memset(buf, 0 , BUF);
         readed = fread(buf, sizeof (char), BUF, fd);
+#ifndef _MSC_VER
         write(printer_fd, buf, readed);
+#endif
     }
 
+#ifndef _MSC_VER
     close(printer_fd);
+#endif
+
     fclose(fd);
     if (!(fd = tmpfile()))
         perror("failed while trying to open a tmp file for printer :");

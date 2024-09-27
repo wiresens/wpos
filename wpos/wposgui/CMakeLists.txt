@@ -5,9 +5,19 @@ set(TESTING_TARGET test_wposgui)
 set(EXEC_TARGET   wposviewer)
 set(PLUGIN_TARGET wposviewer)  #wposviewer.so
 
+# Adding custom odb CMake modules to CMake module search path
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake/Modules")
+
+find_package(ODB REQUIRED COMPONENTS
+    sqlite
+    pgsql
+    mysql
+)
+
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
+
 set(WS_SERVICE com.wiresens)
 
 find_package(Qt6 REQUIRED COMPONENTS
@@ -294,6 +304,11 @@ set(QRC_FILES
 # Make the project root directory the working directory when we run
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../lib)
 
+# qt_add_resources(${MAIN_TARGET}
+#     viewer/pdf_viewer.qrc
+#     wposgui.qrc
+# )
+
 #Consider adding target to build pdfviewer as a librarypluging and a standalone executable
 add_library(
     ${MAIN_TARGET}
@@ -305,13 +320,16 @@ add_library(
 )
 
 target_include_directories(${MAIN_TARGET}
-    PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+    PRIVATE ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR} ${ODB_INCLUDE_DIRS}
     #include-search paths as usage-requirements for consumers
     INTERFACE ${CMAKE_CURRENT_BINARY_DIR}/../wposmodel_autogen/include
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
-    wposxml wposcore
+    wposxml
+    wposcore
+    wposmodel
+    ${ODB_LIBRARIES}
 )
 
 add_dependencies(${MAIN_TARGET} wposprinter)
@@ -321,8 +339,7 @@ target_link_libraries(${MAIN_TARGET} PRIVATE
     Qt::DBus
     Qt::Pdf
     Qt::PdfWidgets
-    Qt::Core5Compat
-    wposmodel
+    Qt::Core5Compat    
 )
 
 # add_executable(${TESTING_TARGET}

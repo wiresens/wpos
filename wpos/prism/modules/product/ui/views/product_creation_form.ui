@@ -436,7 +436,7 @@
         <string>Enregister</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../views.qrc">
          <normaloff>:/product/validate.png</normaloff>:/product/validate.png</iconset>
        </property>
        <property name="autoDefault">
@@ -456,7 +456,7 @@
         <string>Effacer</string>
        </property>
        <property name="icon">
-        <iconset>
+        <iconset resource="../views.qrc">
          <normaloff>:/product/clear.png</normaloff>:/product/clear.png</iconset>
        </property>
        <property name="autoDefault">
@@ -473,8 +473,8 @@
         <string>Quiter</string>
        </property>
        <property name="icon">
-        <iconset>
-         <normaloff>:/sales/cancel.png</normaloff>:/sales/cancel.png</iconset>
+        <iconset resource="../views.qrc">
+         <normaloff>:/product/cancel.png</normaloff>:/product/cancel.png</iconset>
        </property>
        <property name="autoDefault">
         <bool>false</bool>
@@ -493,6 +493,8 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources/>
+ <resources>
+  <include location="../views.qrc"/>
+ </resources>
  <connections/>
 </ui>

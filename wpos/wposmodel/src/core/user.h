@@ -1,102 +1,87 @@
 #ifndef USER_H
 #define USER_H
 
-#include "../persistable.h"
+#include "persistable.h"
 #include "../daterange.h"
 #include "exceptions.h"
 #include "party.h"
-
+namespace odb{ class access;}
 namespace wpos {
 namespace model{
 
-using namespace odb::core;
-class User;
-using UserPtr = std::shared_ptr<User>;
-using ConstUserPtr = std::shared_ptr<const User>;
+    class User;
+    using UserPtr = std::shared_ptr<User>;
+    using ConstUserPtr = std::shared_ptr<const User>;
 
-class SessionManager{
-public:
-    UserPtr authenticate(const string &login, const string &pwd);
-    void logOut(const User& user){ endSession(user);}
+    //class User : public Persistable<User> {
+    class User : public Persistable{
+        friend class odb::access;
 
-    virtual ~SessionManager() = default;
+    public:
+        User(User&&) = default;
+        User& operator=(User&&) = default;
 
-protected:
-    virtual UserPtr logIn(const string& login, const string& pwd);
-    virtual void startSession(const User&){}
-    virtual void endSession(const User& user);
-    virtual void notifyAuthFailiure(){}
-};
+        static UserPtr find(const string& login, const string& pwd);
+        static UserPtr connect(const string& login, const string& pwd);
+        static User newUser(PersonPtr employee, const string& login, const string& pwd);
 
-//class User : public Persistable<User> {
-class User : public Persistable{
-    friend class odb::access;
-    friend UserPtr SessionManager::authenticate(const string&, const string&);
+        User( PersonPtr employee, const string& login, const string& pwd):
+            login_{login}, password_{pwdHash(pwd)},
+            pwd_timeout_{ nowLocal()}, employee_{employee}
+        {
+            if(login.empty() || pwd.empty()) throw EmptyValueException{};
+            if( find(login_, password_)) throw DuplicateAuthTokenException{};
+        }
 
-public:
-    User(User&&) = default;
-    User& operator=(User&&) = default;
+        virtual void persist() override;
 
-    static UserPtr find(const string& login, const string& pwd);
-    static User newUser(PersonPtr employee, const string& login, const string& pwd);
+        void setLogin(const string& login) { login_ = login ;}
+        const string& login() const { return  login_ ;}
 
-    User( PersonPtr employee, const string& login, const string& pwd):
-        login_{login}, password_{pwdHash(pwd)},
-        pwd_timeout_{ nowLocal()}, employee_{employee}
-    {
-        if(login.empty() || pwd.empty()) throw EmptyValueException{};
-        if( find(login_, password_)) throw DuplicateAuthTokenException{};
-    }
+        const TimeStamp& lastLogin() const { return last_login_ ;}
 
-    virtual void persist() override;
+        void setPassword(const string& pwd){  password_ = pwdHash(pwd);}
+        const string& password() const { return  password_ ;}
 
-    void setLogin(const string& login) { login_ = login ;}
-    const string& login() const { return  login_ ;}
+        Person& employee() const { return  *employee_ ;}
+        PersonPtr employeePtr() const { return  employee_ ;}
 
-    const TimeStamp& lastLogin() const { return last_login_ ;}
+        void enable() { enabeled_ = true; }
 
-    void setPassword(const string& pwd){  password_ = pwdHash(pwd);}
-    const string& password() const { return  password_ ;}
+        void disable() { enabeled_ = false;}
 
-    Person& employee() const { return  *employee_ ;}
-    PersonPtr employeePtr() const { return  employee_ ;}
+        bool isConnected() const{
+            return connected_;
+        }
 
-    void enable() { enabeled_ = true; }
+        void disconnect() const{
+            connected_ = false;
+        }
 
-    void disable() { enabeled_ = false;}
+    protected:
+        void updatelastLogin() const{
+            connected_  = true;
+            last_login_ = nowLocal();
+        }
 
-    bool isConnected() const{
-        return connected_;
-    }
+               //We will use a sha512 algorithm to has password
+        string pwdHash( const string& pwd){ return pwd;}
 
-    void disconnect() const{
-        connected_ = false;
-    }
+    private:
+        User() = default;
 
-protected:
-    void updatelastLogin() const{
-        connected_  = true;
-        last_login_ = nowLocal();
-    }
+    public:
+        const ulong id{0};
 
-    //We will use a sha512 algorithm to has password
-    string pwdHash( const string& pwd){ return pwd;}
-
-private:
-    User() = default;
-
-public:
-    const ulong id{0};
-
-private:
-    string login_;
-    string password_;
-    mutable TimeStamp last_login_;
-    TimeStamp pwd_timeout_;
-    bool enabeled_{true};
-    mutable bool connected_{false};
-    PersonPtr employee_;
-};
+    private:
+        string login_;
+        string password_;
+        mutable TimeStamp last_login_;
+        TimeStamp pwd_timeout_;
+        bool enabeled_{true};
+        mutable bool connected_{false};
+        PersonPtr employee_;
+    };
 
 }
 }

@@ -3,9 +3,11 @@
 // copyright :  Copyright (c) 2016-2023 WireSens Inc.
 // contact   :  contact@wiresens.com - +237 697 02 63 76
 
-#include "user.h"
-#include "user-odb.hxx"
+#include <core/user.h>
+#include <core/user-odb.hxx>
+#include <core/session_manager.h>
 #include <database.h>
+
 #include <odb/database.hxx>
 #include <odb/transaction.hxx>
 
@@ -15,7 +17,7 @@ namespace {
 // The fixture for testing User class.
 class UserTest : public ::testing::Test {
 protected:
-    odb::database& db{::database::instance()};
+    odb::database& db{ wpos::database::instance()};
 };
 
 using namespace wpos::model;
@@ -62,7 +64,7 @@ TEST_F(UserTest, ConstructorPersist)
 TEST_F(UserTest, Authenticate)
 {
     {
-        SessionManager sm;
+        wpos::SessionManager sm;
         odb::transaction trans(db.begin());
             UserPtr gilles = sm.authenticate("gilles","D0rc4566$");
             UserPtr alida = sm.authenticate("alida","D0alida$");

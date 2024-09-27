@@ -21,7 +21,7 @@
 #include <QDebug>
 
 
-QString PATH = Files::ConfigDir + "/";
+QString PATH = Files::CONFIG_DIR;
 
 #include <iostream>
 namespace std{}
@@ -57,7 +57,7 @@ bool FileManagerDB::loadXmlFile(const QString& file){
     bool ret = false;
     if (!isConnected()) return ret;
 
-    QString sql {"SELECT file_contents FROM xml_files WHERE file_name='"+file+"' ; "};
+    QString sql {"SELECT file_contents, file_path FROM xml_files WHERE file_name='"+file+"' ; "};
     QSqlQuery query {QSqlQuery(sql, getDB())};
 
     //prepare the query execution
@@ -66,15 +66,16 @@ bool FileManagerDB::loadXmlFile(const QString& file){
 
     query.first();
     auto xml_string = query.value(0).toString();
+    auto file_path = query.value(1).toString();
     xml_string.replace("*","\'");
 
     std::unique_ptr<XmlConfig> xml {new XmlConfig()};
     xml->readXmlFromString(xml_string);
 
     if (xml->wellFormed()){
-        xml->save(PATH+file);
+        xml->save(file_path+file);
         cout << "Retrieved file from the database : "
-             << QString(PATH+file).toStdString() << endl;
+             << QString(file_path+file).toStdString() << endl;
     }
     return true;
 }

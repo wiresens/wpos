@@ -36,13 +36,6 @@
 #include <QApplication>
 #include <QFont>
 
-extern "C"{
-#include "unistd.h"
-}
-
-#include <iostream>
-using namespace std;
-
 const QString& BLACK_FINGERPRINT    = "controls:black_fingerprint.jpg";
 const QString& BAD_FINGERPRINT      = "controls:bad_fingerprint.png";
 const QString& LOGO_CORP            = "controls:napsis_logo.png";

@@ -106,6 +106,7 @@ void RpcWebSocket::close(){
 
 qint64 RpcWebSocket::bytesAvailable() const {
 //    return socket->bytesAvailable();
+    return 0;
 }
 
 bool RpcWebSocket::canReadLine() const {
@@ -113,12 +114,14 @@ bool RpcWebSocket::canReadLine() const {
     return true;
 }
 
-QByteArray RpcWebSocket::readLine(qint64 maxlen ) {
+QByteArray RpcWebSocket::readLine(qint64 /*maxlen*/ ) {
 //    return socket->readLine(maxlen);
+    return QByteArray{};
 }
 
 QByteArray RpcWebSocket::readAll() {
 //    return socket->readAll();
+    return QByteArray{};
 }
 
 qint64 RpcWebSocket::write(const QByteArray &data) {

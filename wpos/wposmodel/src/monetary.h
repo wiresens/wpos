@@ -33,12 +33,15 @@ SOFTWARE.
 #ifndef MONETARY_H
 #define MONETARY_H
 
+#include <cstdint>
+
 #include <memory>
 #include <cmath>
 #include <odb/database.hxx>
 
 namespace wpos{
 using std::string;
+using uint = unsigned int;
 
 struct Currency{
     friend class odb::access;

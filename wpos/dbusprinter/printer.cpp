@@ -22,14 +22,14 @@ modified by Carlos Manzanedo Rueda
 #include <iostream>
 
 extern "C"{
-// #include <stdlib.h>
-// #include <stdio.h>
-// #include <unistd.h>
 #include <sys/stat.h>
 #include <sys/types.h>
 #include <fcntl.h>
-#include <cups/cups.h>
-#include <cups/ipp.h>
+
+#ifndef _WINDOWS
+    #include <cups/cups.h>
+    #include <cups/ipp.h>
+#endif
 }
 
 #define KB 1024
@@ -92,7 +92,10 @@ void Printer::printDirect(const QString& /*_file*/){
     int printer_fd = -1;
     char buf[BUF_SIZE];
 
+#ifndef _WINDOWS
     printer_fd = open(PRINTER_DEVICE.toStdString().c_str(), O_RDWR | O_SYNC);
+#endif
+
     if ( !printer_fd ){
         perror ("Failed when opening the printer");
         fclose(fd);
@@ -106,11 +109,15 @@ void Printer::printDirect(const QString& /*_file*/){
     while (!feof (fd)) {
         memset (buf, 0, BUF_SIZE);
         readed = fread (buf, sizeof (char), BUF_SIZE, fd);
+#ifndef _WINDOWS
         write(printer_fd, buf, readed);
+#endif
         cout << buf << endl;  //Added for debug purpose
     }
 
+#ifndef _WINDOWS
     close(printer_fd);
+#endif
     fclose(fd);
 
     if ( !(fd = tmpfile() ) )
@@ -148,19 +155,26 @@ void Printer::printCups(const QString& /*_file*/){
     QString tmp, printer_name;
     if ( pos ){
         tmp = device.mid( pos + 1, device.length()- pos );
+#ifndef _WINDOWS
         cupsSetServer(tmp.toStdString().c_str());
+#endif
         printer_name = device.mid(0, pos);
     }
     else
         printer_name = device;
 
     if (!user.isEmpty())
-        cupsSetUser(user.toStdString().c_str());
+#ifndef _WINDOWS
+        cupsSetUser(user.toStdString().c_str())
+#endif
+        ;
 
+#ifndef _WINDOWS
     if ( cupsPrintFile( printer_name.toStdString().c_str(), TMP_PRINTER_FILE, "ntpv_ticket", 0, 0) <= 0 ){
          ipp_status_t status {cupsLastError()};
         cerr << "problems trying to print wPOS ticket : " << ippErrorString(status) << endl;
     }
+#endif
 
     qfile.remove();
 }

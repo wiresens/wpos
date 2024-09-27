@@ -36,7 +36,7 @@ class BasicDatabase {
 public:
 
     static QString SQL_DRIVER;
-    static int SQL_PORT;
+    static unsigned int DEFAULT_SQL_PORT;
 
     /**
     *  constructor, the connection name should be different for each connection, the rest of parametters are:
@@ -55,7 +55,7 @@ public:
                   const QString& _database,
                   const QString& _username,
                   const QString& _passwd,
-                  int port = SQL_PORT);
+                  int port = DEFAULT_SQL_PORT);
     /**
     *  constructor, the connection name should be different for each connection.
     *  The XmlConfig should describethe connection.
@@ -96,20 +96,22 @@ public:
     bool rollback();
 
     const QString& connectionName() const;
+    QString lastError() const;
 
 protected:
-    void loadDBSettings(XmlConfig* xml);
+    void loadDBSettings(XmlConfig &xml);
     void initDB();
     void delConnection();
+
+private:
+    QSqlDatabase qsl_database;
 
     QString connection_name;
     QString hostname;
     QString dbname;
     QString user;
     QString passwd;
-    int port{SQL_PORT};
-
-    QSqlDatabase database;
+    unsigned int port{DEFAULT_SQL_PORT};
 };
 
 #endif

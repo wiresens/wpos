@@ -4,10 +4,14 @@
 // contact   :  contact@wiresens.com - +237 697 02 63 76
 
 
-#include "order/order.h"
-#include "core/user.h"
-#include "order-odb.hxx"
-#include "user-odb.hxx"
+#include <product/product.h>
+#include <order/order.h>
+#include <core/user.h>
+#include <product/product-odb.hxx>
+#include <order/order-odb.hxx>
+#include <core/user-odb.hxx>
+#include <core/session_manager.h>
+
 #include <database.h>
 #include <odb/database.hxx>
 #include <odb/transaction.hxx>
@@ -18,7 +22,7 @@ namespace {
 // The fixture for testing Order class.
 class OrderTest : public ::testing::Test {
 protected:
-    odb::database& db{::database::instance()};
+    odb::database& db{ wpos::database::instance()};
 };
 
 using namespace wpos::model;
@@ -26,7 +30,7 @@ using namespace wpos::model;
 TEST_F(OrderTest, ConstructorPersist)
 {
     using query = odb::query<Product>;
-    SessionManager sm;
+    wpos::SessionManager sm;
 
     odb::transaction trans(db.begin());
     UserPtr user = sm.authenticate("gilles", "D0rc4566$");

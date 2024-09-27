@@ -1,15 +1,19 @@
-cmake_minimum_required(VERSION 3.15)
 project(wposmodel VERSION ${PROJECT_VERSION})
 
 # Set compiler flags
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors")
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas") #To enable ODB #prama
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-multichar") #permit definition of multichar €,₦,£ as char
 
-#permit overflow in convertion from int to char ( multi char ar int , single car are char)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overflow")
+if(MSVC)
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /Qspectre")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
+else()
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas") #to enable ODB #pragma
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-multichar") #permit definition of multichar €, ₦, £
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overflow")
+endif()
+
 #set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") # Inibit all warning message
 
 set(MAIN_TARGET wposmodel)
@@ -30,33 +34,27 @@ list (APPEND ODB_ARGS
     --default-pointer std::shared_ptr
 )
 
-# find_package(Threads)
-# find_package(Git QUIET)
+find_package(Threads)
+find_package(Git QUIET)
 
 # Define all testing related content here
-# enable_testing()
+enable_testing()
 
-# # Bring in GoogleTest
-# include(FetchContent)
-# FetchContent_Declare(googletest
-#     GIT_REPOSITORY https://github.com/google/googletest.git
-#     GIT_TAG 703bd9caab50b139428cea1aaff9974ebee5742e  # release-1.10.0
-# )
+# Bring in GoogleTest
+include(FetchContent)
+FetchContent_Declare(googletest
+    GIT_REPOSITORY https://github.com/google/googletest.git
+    GIT_TAG 703bd9caab50b139428cea1aaff9974ebee5742e  # release-1.10.0
+)
 
-# FetchContent_GetProperties(googletest)
-# if(NOT googletest_POPULATED)
-#     FetchContent_Populate(googletest)
-#     add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
-# endif()
-# include_directories(${googletest_SOURCE_DIR}/googletest/include)
+FetchContent_GetProperties(googletest)
+if(NOT googletest_POPULATED)
+    FetchContent_Populate(googletest)
+    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+endif()
+include_directories(${googletest_SOURCE_DIR}/googletest/include)
 
 # Include project headers
-include_directories(
-    include
-    src
-    src/product
-    src/core
-)
 
 list (APPEND  ODB_INCLUDE_DIRS
     ${PROJECT_SOURCE_DIR}/include
@@ -89,6 +87,7 @@ set(HEADER_FILES
     src/exceptions.h
     src/order/orderline.h
     src/order/order.h
+    src/core/session_manager.h
 )
 
 set(SOURCE_FILES
@@ -106,6 +105,7 @@ set(SOURCE_FILES
     src/exceptions.cpp
     src/order/orderline.cpp
     src/order/order.cpp
+    src/core/session_manager.cpp
 )
 
 set (ODB_HEADER_FILES
@@ -122,14 +122,14 @@ set (ODB_HEADER_FILES
     src/order/order.hxx
 )
 
-# set(TESTING_SOURCE_FILES
-#     tests/main.cpp
-#     tests/uom_test.cpp
-#     tests/produt_test.cpp
-#     tests/party_test.cpp
-#     tests/user_test.cpp
-#     tests/order_test.cpp
-# )
+set(TESTING_SOURCE_FILES
+    tests/main.cpp
+    tests/uom_test.cpp
+    tests/produt_test.cpp
+    tests/party_test.cpp
+    tests/user_test.cpp
+    tests/order_test.cpp
+)
 
 set(ODB_TAGERT_INCLUDE_DIRS)
 odb_target_includes(ODB_TAGERT_INCLUDE_DIRS
@@ -143,9 +143,9 @@ odb_compile(SOURCE_FILES FILES ${ODB_HEADER_FILES}
     GENERATE_SCHEMA
 )
 
-message("ODB_INCLUDE_DIRS : ${ODB_INCLUDE_DIRS}")
-message("ODB_COMPILE_OUTPUT_DIR : ${ODB_COMPILE_OUTPUT_DIR}")
-message("ODB_TAGERT_INCLUDE_DIRS : ${ODB_TAGERT_INCLUDE_DIRS}")
+# message("ODB_INCLUDE_DIRS : ${ODB_INCLUDE_DIRS}")
+# message("ODB_COMPILE_OUTPUT_DIR : ${ODB_COMPILE_OUTPUT_DIR}")
+# message("ODB_TAGERT_INCLUDE_DIRS : ${ODB_TAGERT_INCLUDE_DIRS}")
 
 # Make the project root directory the working directory when we run
 #set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
@@ -155,7 +155,7 @@ set(CMAKE_LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}/../../lib)
 add_library(${MAIN_TARGET}
     ${SOURCE_FILES}
     ${HEADER_FILES}
-    ${ODB_HEADER_FILES}   
+    ${ODB_HEADER_FILES}
 )
 
 set_target_properties (${MAIN_TARGET} PROPERTIES
@@ -173,26 +173,38 @@ target_include_directories(${MAIN_TARGET}
     ${ODB_TAGERT_INCLUDE_DIRS}
 )
 
-target_link_libraries(${MAIN_TARGET}
+target_link_libraries(${MAIN_TARGET} PRIVATE
     ${ODB_LIBRARIES}
 )
 
-# add_executable(${TESTING_TARGET}
-#     ${TESTING_SOURCE_FILES}
-# )
+if(MSVC)
+    target_link_libraries(${MAIN_TARGET} PRIVATE
+        sqlite3
+        pq
+        mysqlclient
+        crypto
+        ssl
+        z
+    )
+endif()
 
-# add_dependencies(${TESTING_TARGET} gtest)
-# target_link_libraries(${TESTING_TARGET} PRIVATE
-#     ${MAIN_TARGET}
-#     gtest
-#     ${CMAKE_THREAD_LIBS_INIT}
-# )
+add_executable(${TESTING_TARGET}
+    ${TESTING_SOURCE_FILES}
+)
 
-# target_include_directories(${TESTING_TARGET}
-#     PRIVATE
-#     ${ODB_INCLUDE_DIRS}
-#     ${ODB_TAGERT_INCLUDE_DIRS}
-# )
+add_dependencies(${TESTING_TARGET} gtest)
+target_link_libraries(${TESTING_TARGET} PRIVATE
+    ${MAIN_TARGET}
+    ${ODB_LIBRARIES}
+    gtest
+    ${CMAKE_THREAD_LIBS_INIT}
+)
+
+target_include_directories(${TESTING_TARGET}
+    PRIVATE
+    ${ODB_INCLUDE_DIRS}
+    ${ODB_TAGERT_INCLUDE_DIRS}
+)
 
 # qt_generate_deploy_app_script(
 #    TARGET ${MAIN_TARGET}

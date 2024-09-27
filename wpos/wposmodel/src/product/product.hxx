@@ -36,6 +36,11 @@ SOFTWARE.
 #include "../version.hxx"
 using namespace wpos::model;
 
+#ifdef ODB_COMPILER
+    #include "../persistable.hxx"
+    #include "producttemplate.hxx"
+#endif
+
 #pragma db object(Product) polymorphic definition
 #pragma db member(Product::id) id auto
 #pragma db member(Product::name_) unique not_null
@@ -43,10 +48,5 @@ using namespace wpos::model;
 
 //#pragma db member(Product::tpl_) not_null on_delete (set_null)
 #pragma db member(Product::tpl_) not_null
-
-#ifdef ODB_COMPILER
-    #include "../persistable.hxx"
-    #include "producttemplate.hxx"
-#endif
 
 #endif // PRODUCT_HXX

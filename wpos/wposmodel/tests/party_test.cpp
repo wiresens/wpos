@@ -4,8 +4,8 @@
 // contact   :  contact@wiresens.com - +237 697 02 63 76
 
 
-#include "party.h"
-#include "party-odb.hxx"
+#include <core/party.h>
+#include <core/party-odb.hxx>
 #include <database.h>
 #include <odb/database.hxx>
 #include <odb/transaction.hxx>
@@ -16,12 +16,12 @@ namespace {
 // The fixture for testing Address class.
 class AddressTest : public ::testing::Test {
 protected:
-    odb::database& db{database::instance()};
+    odb::database& db{wpos::database::instance()};
 };
 
 class PersonTest : public ::testing::Test {
 protected:
-    odb::database& db{database::instance()};
+    odb::database& db{wpos::database::instance()};
 };
 
 using namespace wpos::model;

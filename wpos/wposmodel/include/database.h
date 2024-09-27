@@ -7,16 +7,20 @@
 #ifndef DATABASE_H
 #define DATABASE_H
 
-#include <odb/core.hxx>
 #include <string>
 #include <memory>
 
-using std::string;
+namespace odb{
+    class database;
+    class transaction;
+    using dbptr_t = std::unique_ptr<odb::database>;
+}
 
+using std::string;
+namespace wpos{
 class database{
 public:
     static odb::database& instance();
-    virtual ~database();
 
     struct Connector{
         string driver;
@@ -32,11 +36,11 @@ private:
     static void loadConnector(Connector &cntr);
 
 private:
-    static std::unique_ptr<odb::database> db;
+    static odb::dbptr_t dbptr;
     static Connector cntr;
 
 public:
-    static const string SqliteFile;
+    static const string SQLITE_FILE;
 };
-
+}
 #endif // DATABASE_H

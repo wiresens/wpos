@@ -282,11 +282,11 @@ void SalesScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *x
         setEnabledLateralWidgets(enabled);
         setVisibleLateralWidgets(enabled);
     }
-    else if ( signal_name == GDATASIGNAL::LATERALWIDGET_SET_VISIBLE){
-        xml->delDomain();
-        auto visible = ( xml->readString("visible") == "true" );
-        setVisibleLateralWidgets( visible);
-    }
+    // else if ( signal_name == GDATASIGNAL::LATERALWIDGET_SET_VISIBLE){
+    //     xml->delDomain();
+    //     auto visible = ( xml->readString("visible") == "true" );
+    //     setVisibleLateralWidgets( visible);
+    // }
 }
 
 // void SalesScreen::checkPendingEvents(){

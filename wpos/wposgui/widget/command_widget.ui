@@ -57,7 +57,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/button_ok.png</normaloff>:/icons/icons/button_ok.png</iconset>
+         <normaloff>:/controls/icons/button_ok.png</normaloff>:/controls/icons/button_ok.png</iconset>
        </property>
       </widget>
      </item>
@@ -68,7 +68,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/button_cancel.png</normaloff>:/icons/icons/button_cancel.png</iconset>
+         <normaloff>:/controls/icons/button_cancel.png</normaloff>:/controls/icons/button_cancel.png</iconset>
        </property>
       </widget>
      </item>

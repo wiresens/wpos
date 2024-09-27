@@ -12,6 +12,11 @@
 
 using namespace wpos::model;
 
+#ifdef ODB_COMPILER
+    #include "order.hxx"
+    #include "product.hxx"
+#endif
+
 #pragma db object(OrderLine) definition
 #pragma db member(OrderLine::id) id auto
 #pragma db member(OrderLine::quantity_) not_null options("CHECK(quantity > 0)")
@@ -23,10 +28,5 @@ using namespace wpos::model;
 #pragma db member(OrderLine::order_) on_delete( cascade ) not_null
 
 #pragma db index(OrderLine::"product_order_i") unique members ( product_ , order_ )
-
-#ifdef ODB_COMPILER
-    #include "order.hxx"
-    #include "product.hxx"
-#endif
 
 #endif // ORDERLINE_HXX

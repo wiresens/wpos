@@ -35,9 +35,6 @@
 
 #include <xmlconfig.h>
 
-#include <iostream>
-using namespace std;
-
 extern AuthCore *authCore;
 extern FileManager *file_manager;
 
@@ -66,8 +63,6 @@ AdminWidget::AdminWidget(ProductScreenStack *stack, QWidget* parent, const QStri
     process->setObjectName("backoffice_process");
 
 }
-
-AdminWidget::~AdminWidget(){}
 
 void AdminWidget::init(ProductScreenStack *stack){
 
@@ -221,12 +216,12 @@ void AdminWidget::cancelSlot(){
 void AdminWidget::launchBackOffice(){
     connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
             this, &AdminWidget::backOfficeEndSlot);
-    process->setProgram("/home/benes/Workspace/projets/wpos/bin/wposbo");
+    process->setProgram("wposbo");
     process->start();
 }
 
 int AdminWidget::launchXterm(){
-    return system("/usr/bin/xterm");
+    return system("xterm");
 }
 
 void AdminWidget::backOfficeEndSlot( ){

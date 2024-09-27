@@ -34,20 +34,19 @@ SOFTWARE.
 #define PRICELOG_HXX
 
 #include "pricelog.h"
-#include "../version.hxx"
+#include "version.hxx"
+
+#ifdef ODB_COMPILER
+#include "../persistable.hxx"
+#include "../daterange.hxx"
+#include "product.hxx"
+#endif
 
 using namespace wpos::model;
-
 #pragma db object(PriceLog) definition
 #pragma db member(PriceLog::id) id auto
 #pragma db member(PriceLog::product_) not_null on_delete(cascade)
 #pragma db member(PriceLog::effectivity_) not_null
 #pragma db index(PriceLog::"pricelog_i") unique members (product_ , effectivity_)
-
-#ifdef ODB_COMPILER
-    #include "../persistable.hxx"
-    #include "../daterange.hxx"
-    #include "product.hxx"
-#endif
 
 #endif // PRICELOG_HXX

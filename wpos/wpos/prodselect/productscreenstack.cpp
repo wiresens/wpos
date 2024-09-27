@@ -20,8 +20,6 @@
 #include <iostream>
 #include <QTimer>
 
-#include <unistd.h>
-
 using namespace std;
 
 //Normally the constructors  should throw if unable to read the config files

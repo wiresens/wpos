@@ -31,7 +31,6 @@ public slots:
 
 protected:
     void processEventLog(XmlConfig *xml);
-
     EventLogCoreDB *db;
 };
 
