@@ -6,8 +6,10 @@ set(CMAKE_AUTOMOC ON)
 set(WS_SERVICE com.wiresens)
 
 include_directories(
+    ../wposcore
     ..
 )
+
 
 find_package(Qt6 REQUIRED COMPONENTS
     Core
@@ -72,8 +74,16 @@ target_include_directories(${MAIN_TARGET}  PRIVATE
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
-    wposxml wposcore wposrpc cups
+    wposxml
+    wposcore
+    wposrpc
 )
+
+if(NOT MSVC)
+    target_link_libraries(${MAIN_TARGET} PRIVATE
+        cups
+    )
+endif()
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
     Qt::Core

@@ -18,7 +18,7 @@
 #include "main.h"
 #include "mainscreen.h"
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <wposcore/config.h>
 
 #include <QApplication>
@@ -238,7 +238,7 @@ int main(int argc, char *argv[]){
         qDebug() << "Unable to register D-Bus Service"
                  << "Some functionalities will be absent"
                  << dbus.lastError().message();
-        exit(EXIT_FAILURE);
+        // exit(EXIT_FAILURE);
     }
 
     MainScreen wpos (*splash_screen, "MainScreen");

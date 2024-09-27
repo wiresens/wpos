@@ -32,28 +32,18 @@
 #include <QDataStream>
 #include <string>
 
-//extern "C"{
-//     #include <unistd.h>
-#include <cstdlib>
-#include <cstdio>
-//}
-
 #include <iostream>
 using namespace std;
 
 extern AuthCore *authCore;
-
 extern QString CASHBOX_DEVICE;
 extern QString CASHBOX_TYPE;
 
-#define TMP_FILE_CORE "/tmp/bar_core.xml"
+// BarCoreDB BarCore::db{"BarCoreConnection", Files::configFilePath("database")};
 
-BarCoreDB BarCore::db{"BarCoreConnection", Files::configFilePath("database")};
-
-BarCore::BarCore(
-    QObject *parent,
-    const QString& name):
-    QObject(parent)
+BarCore::BarCore( QObject *parent, const QString& name):
+    QObject(parent),
+    db{ new BarCoreDB(QString("BarCoreConnection"), Files::configFilePath("database"))}
 {
     extraCore = new ExtraCore(this, "extraCore");
     receiptQuerier = new DBusReceiptQuerier(this);
@@ -72,22 +62,23 @@ BarCore::BarCore(
     gsm->subscribeToGenericSignal(GSIGNAL::BARCORE_DELETE_ACTUAL_RECEIPT, this);
 
     gsm->publishGenericSignal(GSIGNAL::WRONG_PRODUCT, this);
-    db.connect();
+    if (! db->connect()) qDebug() << db->lastError();
 }
 
 BarCore::~BarCore(){
     if (xml){
         xml->delDomain();
         delete xml;
-    }
+    }    
+    db->disConnect();
     delete receiptQuerier;
-    db.disConnect();
+    delete db;
 }
 
 void BarCore::reInitialise(bool flush_last){
-    if (!db.isConnected())
+    if (!db->isConnected())
         cerr << "Error trying to establish "
-             << db.connectionName().toStdString() << endl;
+             << db->connectionName().toStdString() << endl;
     delete xml;
     xml = 0;
 
@@ -346,7 +337,7 @@ void BarCore::setProductName(XmlConfig *_xml,const QString& product_code){
     product = _xml;
     product->pushDomain();
 
-    aux = db.getName(product_code);
+    aux = db->getName(product_code);
 
     if (aux.isEmpty())
         xml->createElement("name", product_code);
@@ -384,7 +375,7 @@ bool BarCore::setOptions(XmlConfig *_xml,const QString& product_code){
     for(i=0;i<count;i++){
         option_type = option_list[i];
         option_value = extraCore->getFixedOptionValue(option_type);
-        if (!db.checkOption(product_code,option_type,option_value))
+        if (!db->checkOption(product_code,option_type,option_value))
             continue;
         for(int j=0;j<(int) product->howManyTags("option");j++){
             aux = product->readString("option["+QString::number(j)+"].type");
@@ -400,7 +391,7 @@ bool BarCore::setOptions(XmlConfig *_xml,const QString& product_code){
     for(i=0;i<count;i++){
         option_type = option_list[i];
         option_value = extraCore->getOptionValue(option_type);
-        if (!db.checkOption(product_code,option_type,option_value))
+        if (!db->checkOption(product_code,option_type,option_value))
             return false;
         for(int j=0;j<(int) product->howManyTags("option");j++){
             aux = product->readString("option["+QString::number(j)+"].type");
@@ -426,7 +417,7 @@ bool BarCore::checkOffers(XmlConfig *_xml, const QString& product_code){
     //if there are no offers all's ok
     if (!offer)  return true;
 
-    OfferData offer_db =  db.getOffer(product_code, offer->offer_type, offer->offer_name);
+    OfferData offer_db =  db->getOffer(product_code, offer->offer_type, offer->offer_name);
     //now check that offer for that product
     if (offer_db.isNull())
         return false;
@@ -453,11 +444,11 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
         //if there are no customizable price, the price is set at the db
         //and is modified by the option of the product
         prod_price = new ProductPriceData;
-        prod_price->price = db.getPrice(product_code);
+        prod_price->price = db->getPrice(product_code);
         if ((prod_price->price).isEmpty())
             prod_price->price = "0.0";
-        prod_price->tax_type = db.getTaxName(product_code);
-        prod_price->tax = db.getTax(product_code);
+        prod_price->tax_type = db->getTaxName(product_code);
+        prod_price->tax = db->getTax(product_code);
         if (prod_price->tax.isEmpty())
             prod_price->tax="0.00";
 
@@ -468,7 +459,7 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
         for(i=0;i<count;i++){
             option_type = xml->readString("option["+QString::number(i)+"].type");
             option_value = xml->readString("option["+QString::number(i)+"].value");
-            mod = this->db.getOptionModifier(product_code,option_type,option_value);
+            mod = this->db->getOptionModifier(product_code,option_type,option_value);
             if (!mod.isEmpty()){
                 modifier = mod.toDouble();
                 r_price += modifier;
@@ -480,7 +471,7 @@ void BarCore::setPrice(XmlConfig *_xml,const QString& product_code){
         //also the special offers at the extra Core should be readed
         OfferData* tmp = extraCore->getOffer();
         if ( tmp){
-            OfferData offer_data = db.getOffer(product_code, tmp->offer_type, tmp->offer_name);
+            OfferData offer_data = db->getOffer(product_code, tmp->offer_type, tmp->offer_name);
             if (offer_data.offer_mode == "x"){
                 double discount = (offer_data.offer_discount).toDouble();
                 //FIXME   FIX THE ROUND TO 2 DECIMALS
@@ -758,7 +749,7 @@ void BarCore::genericDataSignalSlot(const QString& signal, XmlConfig *_xml){
 }
 
 void BarCore::setProductPrinterSection(const QString& product_code){
-    if (db.getProductAtPrinter(product_code, "kitchen")){
+    if (db->getProductAtPrinter(product_code, "kitchen")){
         xml->createElementSetDomain("printer");
         xml->createAttributeHere("type","kitchen");
         xml->releaseDomain("printer");

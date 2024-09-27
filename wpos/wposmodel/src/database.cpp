@@ -3,60 +3,67 @@
 // copiright :  Copyright (c) 2016-2023 WireSens Inc.
 // contact   :  contact@wiresens.com - +237 697 02 63 76
 
-#include <database.h>
-#include <exceptions.h>
+#include "database.h"
+#include "exceptions.h"
 
+#include <odb/core.hxx>
 #include <odb/database.hxx>
 #include <odb/pgsql/database.hxx>
 #include <odb/mysql/database.hxx>
-
 #include <odb/sqlite/database.hxx>
 #include <odb/connection.hxx>
 #include <odb/transaction.hxx>
 #include <odb/schema-catalog.hxx>
 
-std::unique_ptr<odb::database> database::db{nullptr};
+#include <iostream>
 
-database::Connector database::cntr{};
-const string database::SqliteFile{"wpos.db"};
+odb::dbptr_t wpos::database::dbptr{nullptr};
 
-void database::loadConnector(Connector &cntr){
+wpos::database::Connector wpos::database::cntr{};
+const string wpos::database::SQLITE_FILE{"wpos.db"};
+
+void wpos::database::loadConnector(Connector &cntr){
     Connector tmp_cntr{"SQLITE", "localhost","wpos","wpos","D0rc4566$", 5432};
     std::swap(cntr, tmp_cntr);
 }
 
 // Not thread safe
-odb::database& database::instance(){
-    if( !db) {
+odb::database& wpos::database::instance(){
+    std::cout << "In instance \n";
+    if( !dbptr){
         loadConnector(cntr);
 
         if( cntr.driver == string("PGSQL") )
-            db.reset(new odb::pgsql::database(cntr.user, cntr.pwd, cntr.db,cntr.host, cntr.port));
+            dbptr.reset(new odb::pgsql::database(cntr.user, cntr.pwd, cntr.db,cntr.host, cntr.port));
 
         else if( cntr.driver == string("MYSQL") )
-            db.reset(new odb::mysql::database(cntr.user, cntr.pwd, cntr.db,cntr.host, cntr.port));
+            dbptr.reset(new odb::mysql::database(cntr.user, cntr.pwd, cntr.db,cntr.host, cntr.port));
 
         else if( cntr.driver == string("SQLITE") )
         {
             auto mode = SQLITE_OPEN_READWRITE;
 
-            FILE *device = fopen(SqliteFile.c_str(), "rw");
+            FILE *device = fopen(SQLITE_FILE.c_str(), "rw");
 
             if( !device) mode |= SQLITE_OPEN_CREATE;
-            else fclose(device);
+            else {
+                fclose(device);
+                std::cout << "Using found \"" << SQLITE_FILE << "\" sqlite database file\n";
+            }
 
-            db.reset( new odb::sqlite::database(SqliteFile, mode));
+            dbptr.reset( new odb::sqlite::database(SQLITE_FILE, mode));
             if( !device){
+                std::cout << "sqlite database file \"" << SQLITE_FILE << "\" not present, creating new schema\n";
                 using namespace odb::core;
-                connection_ptr connection(db->connection());
+                connection_ptr connection(dbptr->connection());
                 connection->execute("PRAGMA foreign_keys=OFF");
                     transaction trans(connection->begin());
-                        schema_catalog::create_schema(*db);
+                        schema_catalog::create_schema(*dbptr);
                     trans.commit();
                connection->execute("PRAGMA foreign_keys=ON");
             }
         }
         else throw wpos::unknown_driver_exception{};
     }
-    return *db;
+    return *dbptr;
 }

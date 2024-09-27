@@ -42,7 +42,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/attach.svg</normaloff>:/icons/icons/attach.svg</iconset>
+         <normaloff>:/imports/icons/attach.svg</normaloff>:/imports/icons/attach.svg</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -65,7 +65,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/xlsx.png</normaloff>:/icons/icons/xlsx.png</iconset>
+         <normaloff>:/imports/icons/pdf-export.png</normaloff>:/imports/icons/pdf-export.png</iconset>
        </property>
        <property name="iconSize">
         <size>
@@ -88,7 +88,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/pdf-export.png</normaloff>:/icons/icons/pdf-export.png</iconset>
+         <normaloff>:/imports/icons/import.png</normaloff>:/imports/icons/import.png</iconset>
        </property>
        <property name="iconSize">
         <size>

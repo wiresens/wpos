@@ -37,7 +37,6 @@ SOFTWARE.
 #include "version.hxx"
 
 using namespace wpos::model;
-
 #pragma db object(Persistable) abstract definition
 #pragma db member(Persistable::birth_date_) not_null
 #pragma db member(Persistable::change_date_) not_null

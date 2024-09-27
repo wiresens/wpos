@@ -12,6 +12,11 @@
 
 using namespace wpos::model;
 
+#ifdef ODB_COMPILER
+    #include "party.hxx"
+    #include "orderline.hxx"
+#endif
+
 #pragma db object(Order) definition
 #pragma db member(Order::id) id auto
 #pragma db member(Order::date_) not_null
@@ -20,10 +25,5 @@ using namespace wpos::model;
 #pragma db member(Order::items_) inverse (order_) value_not_null
 
 #pragma db index(Order::"saler_date_i") unique members ( saler_ , date_ )
-
-#ifdef ODB_COMPILER
-    #include "party.hxx"
-    #include "orderline.hxx"
-#endif
 
 #endif // ORDER_HXX

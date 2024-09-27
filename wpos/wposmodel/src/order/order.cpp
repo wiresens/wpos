@@ -3,6 +3,7 @@
 // copiright :  Copyright (c) 2016-2023 WireSens Inc.
 // contact   :  contact@wiresens.com - +237 697 02 63 76
 
+#include<odb/database.hxx>
 
 #include "order.h"
 #include "order-odb.hxx"

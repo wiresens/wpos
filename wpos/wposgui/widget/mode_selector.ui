@@ -41,7 +41,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/list.svg</normaloff>:/icons/icons/list.svg</iconset>
+         <normaloff>:/controls/icons/list.svg</normaloff>:/controls/icons/list.svg</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -64,7 +64,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/form.png</normaloff>:/icons/icons/form.png</iconset>
+         <normaloff>:/controls/icons/form.png</normaloff>:/controls/icons/form.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -84,7 +84,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/calendar-view.png</normaloff>:/icons/icons/calendar-view.png</iconset>
+         <normaloff>:/controls/icons/kanban-view.png</normaloff>:/controls/icons/kanban-view.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>
@@ -104,7 +104,7 @@
        </property>
        <property name="icon">
         <iconset resource="../wposgui.qrc">
-         <normaloff>:/icons/icons/graph-view.png</normaloff>:/icons/icons/graph-view.png</iconset>
+         <normaloff>:/controls/icons/graph-view.png</normaloff>:/controls/icons/graph-view.png</iconset>
        </property>
        <property name="checkable">
         <bool>true</bool>

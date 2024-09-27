@@ -104,7 +104,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../wposwidget/views/views.qrc">
+         <iconset>
           <normaloff>:/icons/icons/go-previous-24.png</normaloff>:/icons/icons/go-previous-24.png</iconset>
         </property>
         <property name="flat">
@@ -130,7 +130,7 @@
          <string/>
         </property>
         <property name="icon">
-         <iconset resource="../../wposwidget/views/views.qrc">
+         <iconset>
           <normaloff>:/icons/icons/go-next-24.png</normaloff>:/icons/icons/go-next-24.png</iconset>
         </property>
         <property name="flat">
@@ -157,8 +157,6 @@
    <container>1</container>
   </customwidget>
  </customwidgets>
- <resources>
-  <include location="../../wposwidget/views/views.qrc"/>
- </resources>
+ <resources/>
  <connections/>
 </ui>

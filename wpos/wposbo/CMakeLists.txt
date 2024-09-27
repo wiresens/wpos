@@ -1,13 +1,17 @@
 project(wposbo VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 
 set(MAIN_TARGET wposbo)
-set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--copy-dt-needed-entries")
+
+if(NOT MSVC)
+    set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -Wl,--copy-dt-needed-entries")
+endif()
 
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(WS_SERVICE com.wiresens)
 
 find_package(Qt6 REQUIRED COMPONENTS
+    Core
     Widgets
     Network
     Sql
@@ -254,21 +258,35 @@ target_include_directories(${MAIN_TARGET}
     PRIVATE ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-target_link_libraries(${MAIN_TARGET} PRIVATE
+target_link_libraries(${MAIN_TARGET}  PRIVATE
 #    wposmodel
     wposxml
     wposcore
     wposgui
-    xml2
-    libjpeg.a
-    libpng.a
-    libgdc.a
-    libgd.a
-    libz.a
-    libm.a
 )
 
+if(MSVC)
+    target_link_libraries(${MAIN_TARGET}  PRIVATE
+        jpeg
+        libpng16
+        zlib
+        crypto
+        libgd
+        # libgdc
+    )
+else()
+    target_link_libraries(${MAIN_TARGET}  PRIVATE
+        libjpeg.a
+        libpng.a
+        libgdc.a
+        libgd.a
+        libz.a
+        libm.a
+    )
+endif()
+
 target_link_libraries(${MAIN_TARGET} PRIVATE
+    Qt::Core
     Qt::Widgets
     Qt::Network
     Qt::Sql

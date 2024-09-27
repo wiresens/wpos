@@ -299,7 +299,9 @@ to this new section.
         if (printer_state){
             //send the xml to the printer
             printer->printX(tmp_xml);
+#ifndef _MSC_VER
             usleep(100);
+#endif
             printer->printTicketTotal(tmp_xml);
         }
 
@@ -320,7 +322,9 @@ to this new section.
         emit genericDataSignal(GDATASIGNAL::Z, &tmp_xml);
         if (printer_state){
             printer->printZ(tmp_xml);
+#ifndef _MSC_VER
             usleep(100);
+#endif
             printer->printTicketTotal(tmp_xml);
         }
     }

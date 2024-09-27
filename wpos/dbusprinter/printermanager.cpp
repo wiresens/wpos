@@ -13,7 +13,11 @@ modified by Carlos Manzanedo Rueda
 
 #include <xmlconfig.h>
 #include <QFile>
+
+#ifndef _WINDOWS
 #include <cups/cups.h>
+#endif
+
 #include <iostream>
 
 #include <QString>
@@ -54,7 +58,11 @@ PrinterManager::PrinterManager(const QString& _type,
     device = _device;
     if (_device.isEmpty()){
         if (type == "ipp")
-            device = QString(cupsGetDefault());
+
+#ifndef _WINDOWS
+            device = QString(cupsGetDefault())
+#endif
+                ;
     }
 }
 
@@ -978,7 +986,7 @@ void PrinterManager::copy (XmlConfig* xml, XmlConfig **dest, QString domain) {
     (*dest)->createElement (domain+QString("REPLACE"));
     (*dest)->save (TMP_PRINTER_TEMPLATE);
 
-    system (PL_SHIT" "TMP_PRINTER_TEMPLATE" "TMP_PRINTER_DATA " >"TMP_PRINTER_TMPFILE);
+    system (PL_SHIT" " TMP_PRINTER_TEMPLATE" " TMP_PRINTER_DATA " > " TMP_PRINTER_TMPFILE);
     delete (*dest);
 
     (*dest) = new XmlConfig (TMP_PRINTER_TMPFILE);

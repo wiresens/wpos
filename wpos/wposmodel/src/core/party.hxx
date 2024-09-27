@@ -32,10 +32,14 @@ SOFTWARE.
 
 #ifndef PARTY_HXX
 #define PARTY_HXX
-
+#include "persistable.h"
 #include "party.h"
-#include "../version.hxx"
+#include "version.hxx"
 using namespace wpos::model;
+
+#ifdef ODB_COMPILER
+#include "../persistable.hxx"
+#endif
 
 #pragma db object(Party) abstract definition
 #pragma db member(Party::code_) unique not_null
@@ -54,8 +58,6 @@ using namespace wpos::model;
 #pragma db member(Address::country_) not_null
 #pragma db member(Address::city_) not_null
 
-#ifdef ODB_COMPILER
-    #include "../persistable.hxx"
-#endif
+
 
 #endif // PARTY_HXX

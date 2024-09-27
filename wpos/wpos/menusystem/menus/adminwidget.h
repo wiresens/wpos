@@ -24,17 +24,10 @@ class QProcess;
 class AdminWidget : public QWidget, private Ui::AdminWidget  {
     Q_OBJECT
 public:
-    explicit AdminWidget(ProductScreenStack *stack, QWidget* parent=nullptr, const QString& name = QString());
-    ~AdminWidget();
-
-    QPushButton *toggle_cash;
-    QPushButton *toggle_derrama;
-    QPushButton *toggle_anulation;
-    QPushButton *toggle_out_screen;
-    QPushButton *toggle_waiters;
-    QPushButton *toggle_printing;
-    QPushButton *toggle_fx2000;
-    QPushButton *toggle_double_printing;
+    explicit AdminWidget(
+        ProductScreenStack *stack,
+        QWidget* parent=nullptr,
+        const QString& name = QString());
 
 public slots:
     void cancelSlot();
@@ -56,14 +49,25 @@ protected:
     void raiseMainWidget();
     void raiseConfigWidget();
 
-    GenericButtonGroup *management;
-    GenericButtonGroup *operations;
-    GenericButtonGroup *cancel_operations;
-    GenericButtonGroup *printer_operations;
-    GenericButtonGroup *controls;
-    GenericButtonGroup *admin_operations;
+public:
+    QPushButton *toggle_cash{};
+    QPushButton *toggle_derrama{};
+    QPushButton *toggle_anulation{};
+    QPushButton *toggle_out_screen{};
+    QPushButton *toggle_waiters{};
+    QPushButton *toggle_printing{};
+    QPushButton *toggle_fx2000{};
+    QPushButton *toggle_double_printing{};
 
-    QProcess *process;
+private:
+    GenericButtonGroup *management{};
+    GenericButtonGroup *operations{};
+    GenericButtonGroup *cancel_operations{};
+    GenericButtonGroup *printer_operations{};
+    GenericButtonGroup *controls{};
+    GenericButtonGroup *admin_operations{};
+
+    QProcess *process{};
 };
 
 #endif

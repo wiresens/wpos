@@ -29,9 +29,11 @@
 #include <QString>
 #include <QFile>
 
-extern "C"{
-#include <cups/cups.h>
-}
+#ifndef _WINDOWS
+    extern "C"{
+        #include <cups/cups.h>
+    }
+#endif
 
 #include <iostream>
 using namespace std;
@@ -91,7 +93,9 @@ int main(int argc, char *argv[])
     if ( PRINTER_SYSTEM == "ipp" && PRINTER_NAME.isEmpty() ){
         QString aux = xml->readString("main.device");
         if ( aux.isEmpty() ){
+#ifndef _WINDOWS
             PRINTER_NAME = QString(cupsGetDefault());
+#endif
             xml->doWrite("main.device", PRINTER_NAME);
             cout << "Default printer will be used (DEFAULT PRINTER = " << PRINTER_NAME.toStdString() << ")" << endl;
         }

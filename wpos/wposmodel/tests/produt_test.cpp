@@ -4,12 +4,12 @@
 // contact   :  contact@wiresens.com - +237 697 02 63 76
 
 
-#include "product.h"
-#include "producttemplate.h"
-#include "producttemplate-odb.hxx"
-#include "product-odb.hxx"
-#include "database.h"
-#include "daterange.h"
+#include <product/product.h>
+#include <product/product-odb.hxx>
+#include <product/producttemplate.h>
+#include <product/producttemplate-odb.hxx>
+#include <database.h>
+#include <daterange.h>
 
 #include <odb/database.hxx>
 #include <odb/transaction.hxx>
@@ -20,12 +20,12 @@ namespace {
 // The fixture for testing ProductTemplate class.
 class ProductTemplateTest : public ::testing::Test {
 protected:
-    odb::database& db{database::instance()};
+    odb::database& db{ wpos::database::instance()};
 };
 
 class ProductTest : public ::testing::Test {
 protected:
-    odb::database& db{database::instance()};
+    odb::database& db{ wpos::database::instance()};
 };
 
 using namespace wpos::model;

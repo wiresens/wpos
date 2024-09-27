@@ -45,7 +45,7 @@ public:
 
     const Items& items() const { return items_;}
     TimeStamp date() const { return date_; }
-    int size() const { return items_.size(); }
+    size_t size() const { return items_.size(); }
 
     void persist() override;
 

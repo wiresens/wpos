@@ -29,7 +29,7 @@ OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 SOFTWARE.
 ********************************************************************************/
 
-
+#include <odb/database.hxx>
 #include "daterange.h"
 #include "daterange-odb.hxx"
 

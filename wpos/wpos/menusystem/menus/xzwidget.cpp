@@ -27,14 +27,14 @@
 #include <QFile>
 
 extern "C"{
+#ifndef _MSC_VER
     #include <gdc.h>
     #include <gdchart.h>
     #include <gdcpie.h>
+#endif
     #include <stdio.h>
     #include <stdlib.h>
 }
-
-#include <iostream>
 
 using namespace std;
 
@@ -527,11 +527,12 @@ bool XZWidget::createMainGraph(XmlConfig *xml, QString file_path, int width, int
     float *values = 0;
     char **t = 0;
     unsigned long   sc[1]    = { 0x8080FF };
-
+#ifdef _GDC_H
     GDC_BGColor   = 0xFFFFFFL;                  /* backgound color (white) */
     GDC_LineColor = 0x000000L;                  /* line color      (black) */
     GDC_SetColor  = &(sc[0]);                   /* assign set colors */
     GDC_stack_type = GDC_STACK_BESIDE;
+#endif
 
     QFile file (file_path);
     if (file.exists()) file.remove();
@@ -547,8 +548,10 @@ bool XZWidget::createMainGraph(XmlConfig *xml, QString file_path, int width, int
 
     values =(float *) malloc(count*sizeof(float));
     t =(char **) malloc(count*sizeof(char *));
+#ifdef _GDC_H
     bzero(values,count*sizeof(float));
     bzero(t,count*sizeof(char*));
+#endif
 
     for(auto i=0; i<count; i++){
         aux = xml->readString("paytype["+QString::number(i)+"].total_income");
@@ -556,10 +559,14 @@ bool XZWidget::createMainGraph(XmlConfig *xml, QString file_path, int width, int
         values[i] = aux_float;
         aux = xml->readString("paytype["+QString::number(i)+"].name");
         t[i] = (char *) malloc((aux.length()+1)*sizeof(char));
+#ifdef _GDC_H
         bzero( t[i], aux.length()+1 );
         strncpy( t[i], aux.toLatin1(), aux.length());
+#endif
     }
+#ifdef _GDC_H
     out_graph(width, height, fp, GDC_3DBAR,count, t, 1, values);
+#endif
 
     for (auto i=0; i< count; i++)
         free(t[i]);
@@ -580,11 +587,12 @@ bool XZWidget::createWaitersGraph(XmlConfig *xml, QString file_path, int width, 
     float *values = 0;
     char **t = 0;
     unsigned long   sc[1]    = { 0x8080FF };
-
+#ifdef _GDC_H
     GDC_BGColor   = 0xFFFFFFL;                  /* backgound color (white) */
     GDC_LineColor = 0x000000L;                  /* line color      (black) */
     GDC_SetColor  = &(sc[0]);                   /* assign set colors */
     GDC_stack_type = GDC_STACK_BESIDE;
+#endif
 
     QFile file (file_path);
     if (file.exists()) file.remove();
@@ -600,8 +608,10 @@ bool XZWidget::createWaitersGraph(XmlConfig *xml, QString file_path, int width, 
 
     values =(float *) malloc( count*sizeof(float));
     t = (char**) malloc( count*sizeof(char*) );
+#ifdef _GDC_H
     bzero(values, count*sizeof(float));
     bzero(t, count*sizeof(char*));
+#endif
 
     if (!count){
         free(t);
@@ -616,15 +626,18 @@ bool XZWidget::createWaitersGraph(XmlConfig *xml, QString file_path, int width, 
         xml->setDomain("employee["+QString::number(i)+"]");
         aux = xml->readString("name");
         t[i] = (char *) malloc((aux.length()+1)*sizeof(char));
+#ifdef _GDC_H
         bzero(t[i],aux.length()+1);
         strncpy(t[i],aux.toLatin1(),aux.length());
+#endif
         aux = xml->readString("total_income");
         aux_float = aux.toFloat();
         values[i] = aux_float;
         xml->releaseDomain("employee");
     }
-
+#ifdef _GDC_H
     out_graph(width, height, fp, GDC_3DBAR, count, t, 1, values);
+#endif
 
     for (auto i=0; i < count; i++)
         free(t[i]);
@@ -649,11 +662,12 @@ bool XZWidget::createOffersGraph(XmlConfig *xml,QString file_path,int width, int
     float *values = 0;
     char **t = 0;
     unsigned long   sc[1]    = { 0x8080FF };
-
+#ifdef _GDC_H
     GDC_BGColor   = 0xFFFFFFL;                  /* backgound color (white) */
     GDC_LineColor = 0x000000L;                  /* line color      (black) */
     GDC_SetColor  = &(sc[0]);                   /* assign set colors */
     GDC_stack_type = GDC_STACK_BESIDE;
+#endif
 
     QFile file (file_path);
     if (file.exists()) file.remove();
@@ -669,8 +683,10 @@ bool XZWidget::createOffersGraph(XmlConfig *xml,QString file_path,int width, int
 
     values =(float *) malloc( count*sizeof(float));
     t =(char **) malloc( count*sizeof(char *));
+#ifdef _GDC_H
     bzero(values, count*sizeof(float));
     bzero(t, count*sizeof(char*));
+#endif
 
     if (!count){
         free(t);
@@ -688,10 +704,14 @@ bool XZWidget::createOffersGraph(XmlConfig *xml,QString file_path,int width, int
         aux = xml->readString("offer["+QString::number(i)+"].type");
         aux+=" " + xml->readString("offer["+QString::number(i)+"].name");
         t[i] = (char *) malloc((aux.length()+1)*sizeof(char));
+#ifdef _GDC_H
         bzero(t[i], aux.length() + 1);
         strncpy( t[i], aux.toLatin1(), aux.length());
+#endif
     }
+#ifdef _GDC_H
     out_graph(width, height,fp,GDC_3DBAR,count,t,1,values);
+#endif
 
     for (auto i=0; i < count; i++)
         free(t[i]);
@@ -715,11 +735,12 @@ bool XZWidget::createOptionsGraph(XmlConfig *xml,QString file_path,int width, in
     char **t = 0;
     unsigned long   sc[1]    = { 0x8080FF };
     int count=0,i=0;
-
+#ifdef _GDC_H
     GDC_BGColor   = 0xFFFFFFL;                  /* backgound color (white) */
     GDC_LineColor = 0x000000L;                  /* line color      (black) */
     GDC_SetColor  = &(sc[0]);                   /* assign set colors */
     GDC_stack_type = GDC_STACK_BESIDE;
+#endif
 
     f = new QFile(file_path);
     if (f->exists())
@@ -740,8 +761,10 @@ bool XZWidget::createOptionsGraph(XmlConfig *xml,QString file_path,int width, in
 
     values =(float *) malloc(count*sizeof(float));
     t =(char **) malloc(count*sizeof(char *));
+#ifdef _GDC_H
     bzero(values,count*sizeof(float));
     bzero(t,count*sizeof(char*));
+#endif
 
     if (!count){
         free(t);
@@ -759,10 +782,14 @@ bool XZWidget::createOptionsGraph(XmlConfig *xml,QString file_path,int width, in
         aux = xml->readString("option["+QString::number(i)+"].type");
         aux+=" " + xml->readString("option["+QString::number(i)+"].name");
         t[i] = (char *) malloc((aux.length()+1)*sizeof(char));
+#ifdef _GDC_H
         bzero(t[i],aux.length()+1);
         strncpy(t[i],aux.toLatin1(),aux.length());
+#endif
     }
+#ifdef _GDC_H
     out_graph(width, height,fp,GDC_3DBAR,count,t,1,values);
+#endif
 
     for (i=0;i<count;i++){
         free(t[i]);

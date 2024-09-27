@@ -32,7 +32,7 @@ SOFTWARE.
 
 #include "pricelog.h"
 #include "pricelog-odb.hxx"
-#include "uom-odb.hxx"
+#include <odb/database.hxx>
 
 namespace wpos{
 namespace model{

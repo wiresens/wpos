@@ -9,9 +9,17 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 find_package( LibXml2 REQUIRED)
 
-include_directories(
-    ${LIBXML2_INCLUDE_DIR}
-)
+if(MSVC)
+    set(XML2_RELEASE_ROOT "C:/Users/user/Workspace/projets/libxml2/install/release")
+    include_directories(
+        ${XML2_RELEASE_ROOT}/include
+        ${XML2_RELEASE_ROOT}/include/libxml2
+    )
+else()
+    include_directories(
+        ${LIBXML2_INCLUDE_DIR}
+    )
+endif()
 
 set(HEADER_FILES
     basicdatabase.h

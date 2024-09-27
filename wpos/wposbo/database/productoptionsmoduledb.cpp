@@ -667,10 +667,10 @@ bool ProductOptionsModuleDB::existProductAndOption(const QString& product_code,
     return exist;
 }
 
-QPtrList<ProductOptionData>* ProductOptionsModuleDB::getProductOptions(const QString& product_code){
+QList<ProductOptionData *> *ProductOptionsModuleDB::getProductOptions(const QString& product_code){
     QSqlQuery *query = 0;
     QString sql, aux;
-    QPtrList<ProductOptionData> *options = 0;
+    QList<ProductOptionData*> *options = 0;
     ProductOptionData *option = 0;
 
     if(product_code.isEmpty()){

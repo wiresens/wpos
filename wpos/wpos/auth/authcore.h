@@ -56,7 +56,7 @@ protected:
     void processXml(XmlConfig& xml);
 
 private:
-    static AuthCoreDB db;
+    AuthCoreDB *db;
     UserData user;
 };
 

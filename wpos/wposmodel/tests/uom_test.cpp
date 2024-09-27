@@ -4,9 +4,10 @@
 // contact   :  contact@wiresens.com - +237 697 02 63 76
 
 
-#include "uom.h"
-#include "uom-odb.hxx"
+#include <product/uom.h>
+#include <product/uom-odb.hxx>
 #include <database.h>
+
 #include <odb/database.hxx>
 #include <odb/transaction.hxx>
 
@@ -19,7 +20,7 @@ namespace {
 // The fixture for testing UomType class.
 class UomTypeTest : public ::testing::Test {
 protected:
-    odb::database& db{database::instance()};
+    odb::database& db{wpos::database::instance()};
 
     UomType volume_t{"Volume"};
     UomType weight_t{"Weight"};
@@ -80,7 +81,7 @@ TEST_F(UomTypeTest, LoadAndPersist)
 // The fixture for testing Uom class.
 class UomTest : public ::testing::Test {
 protected:
-    odb::database& db{database::instance()};
+    odb::database& db{wpos::database::instance()};
 
     UomType* uom_type = new UomType{"Volume"};
     Uom uom1 {std::make_shared<UomType>("Volume"), "liter", "l"};
@@ -162,6 +163,4 @@ TEST_F(UomTest, QueryAndPersist)
     }
 
 }
-
-
 }

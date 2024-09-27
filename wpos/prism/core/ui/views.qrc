@@ -1,9 +1,4 @@
 <RCC>
-    <qresource prefix="/icons">
-        <file>icons/list-add.png</file>
-        <file>icons/list-remove.png</file>
-        <file>icons/drugs.png</file>
-        <file>icons/person.png</file>
-        <file>icons/person.jpg</file>
+    <qresource prefix="/menu">
     </qresource>
 </RCC>

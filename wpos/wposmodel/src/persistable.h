@@ -2,14 +2,15 @@
 #define PERSISTABLE_H
 
 #include "daterange.h"
-
-#include <odb/core.hxx>
 #include <boost/date_time.hpp>
 
 #include <string>
 #include <chrono>
+#include <sys/types.h>
 
-using DatabasePtr = odb::database*;
+namespace odb {
+class database;
+}
 
 namespace wpos{
 namespace model{
@@ -19,6 +20,7 @@ namespace greg  = boost::gregorian;
 namespace pt    = boost::posix_time;
 
 using std::string;
+using DatabasePtr = odb::database*;
 
 //template<typename T>
 class Persistable{
@@ -32,8 +34,8 @@ public :
     Persistable& operator=(Persistable&&) = default;
     Persistable(Persistable&&) = default;
 
-    virtual const string type() const { return string("Persistable") ;}
-    virtual void persist(){}
+    virtual const string type() const ;
+    virtual void persist();
 
 protected:
     static DatabasePtr db;

@@ -172,7 +172,7 @@ For CI/CD thing of .travis.sh .travis.yml in Doug Schmidt assignment files
 wposwidget depending on dbusprinter generated com.wiresens.dbusprinter.xml
 Find ways to remove this dependency
 
-Change Workspace/projets into Workspace/projetcs, projets -> projetcs
+Change Workspace/projets into Workspace/projetcs, (projets -> projetcs)
 Specify requirement for Qt 5.15 due to the use of
 QSignalMapper::mappedInt instead of obsolete QSignalMapper::mapped
 
@@ -194,5 +194,14 @@ void ExtraCore::readFixedOptionFromXml(XmlConfig* xml){
     allocate with new but never frees
 
 }
+
+**************************************
+09/26/2024 11:21 wposmodel/CMakeLists.txt
+*************************************
+make odb component : 
+	optional : qt, pgsql, mysql 
+	required : sqlite, boost
+
+rafactor file location :header wposmodel/
 
 

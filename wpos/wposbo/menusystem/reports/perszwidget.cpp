@@ -38,26 +38,20 @@
 #include <QTimer>
 
 #include <QLocale>
-#include <string>
 
 extern "C"{
-#include <gdc.h>
-#include <gdchart.h>
-#include <gdcpie.h>
+#ifndef _MSC_VER
+    #include <gdc.h>
+    #include <gdchart.h>
+    #include <gdcpie.h>
+#endif
 #include <stdio.h>
 #include <stdlib.h>
 }
 
 #include <iostream>
 using namespace std;
-
-const uint INIT_RES = 0;
 const uint TIMER_TIME = 2;
-
-//const QString &main_graph = "/tmp/ntpv_x_main_graph.png";
-//const QString &waiters_graph="/tmp/ntpv_x_waiter_graph.png";
-//const QString &offers_graph="/tmp/ntpv_x_offers_graph.png";
-//const QString &options_graph="/tmp/ntpv_x_options_graph.png";
 
 const uint PersZWidget::DEFAULT_WIDTH{200};
 const uint PersZWidget::DEFAULT_HEIGHT{250};
@@ -755,13 +749,12 @@ bool PersZWidget::createMainGraph(XmlConfig *xml,int width, int height){
     unsigned long   sc[1]    = { 0x8080FF };
     int count,i;
 
+#ifdef _GDC_H
     GDC_BGColor   = 0xFFFFFFL;                  /* backgound color (white) */
     GDC_LineColor = 0x000000L;                  /* line color      (black) */
     GDC_SetColor  = &(sc[0]);                   /* assign set colors */
     GDC_stack_type = GDC_STACK_BESIDE;
-
-
-
+#endif
 
     f = new QFile(main_graph);
     if (f->exists())
@@ -784,8 +777,10 @@ bool PersZWidget::createMainGraph(XmlConfig *xml,int width, int height){
 
     values =(float *) malloc(count*sizeof(float));
     t =(char **) malloc(count*sizeof(char *));
+#ifdef _GDC_H
     bzero(values,count*sizeof(float));
     bzero(t,count*sizeof(char*));
+#endif
 
     for(i=0; i<count; i++){
         aux = xml->readString("paytype["+QString::number(i)+"].total_income");
@@ -793,10 +788,14 @@ bool PersZWidget::createMainGraph(XmlConfig *xml,int width, int height){
         values[i] = aux_float;
         aux = xml->readString("paytype["+QString::number(i)+"].name");
         t[i] = (char *) malloc((aux.length()+1)*sizeof(char));
+#ifdef _GDC_H
         bzero(t[i],aux.length()+1);
+#endif
         strncpy(t[i],aux.toLatin1(),aux.length());
     }
+#ifdef _GDC_H
     out_graph(width, height,fp,GDC_3DBAR,count,t,1,values);
+#endif
 
     for (i=0;i<count;i++){
         free(t[i]);
@@ -821,11 +820,12 @@ bool PersZWidget::createWaitersGraph(XmlConfig *xml,int width, int height){
     unsigned long   sc[1]    = { 0x8080FF };
     int count=0;
     int i;
-
+#ifdef _GDC_H
     GDC_BGColor   = 0xFFFFFFL;                  /* backgound color (white) */
     GDC_LineColor = 0x000000L;                  /* line color      (black) */
     GDC_SetColor  = &(sc[0]);                   /* assign set colors */
     GDC_stack_type = GDC_STACK_BESIDE;
+#endif
 
     f = new QFile(waiters_graph);
     if (f->exists())
@@ -850,9 +850,10 @@ bool PersZWidget::createWaitersGraph(XmlConfig *xml,int width, int height){
 
     values =(float *) malloc(count*sizeof(float));
     t =(char **) malloc(count*sizeof(char *));
+#ifdef _GDC_H
     bzero(values,count*sizeof(float));
     bzero(t,count*sizeof(char*));
-
+#endif
     if (!count){
         free(t);
         free(values);
@@ -866,7 +867,9 @@ bool PersZWidget::createWaitersGraph(XmlConfig *xml,int width, int height){
         xml->setDomain("employee["+QString::number(i)+"]");
         aux = xml->readString("name");
         t[i] = (char *) malloc((aux.length()+1)*sizeof(char));
+#ifdef _GDC_H
         bzero(t[i],aux.length()+1);
+#endif
         strncpy(t[i],aux.toLatin1(),aux.length());
         aux = xml->readString("total_income");
         aux_float = aux.toFloat();
@@ -874,8 +877,9 @@ bool PersZWidget::createWaitersGraph(XmlConfig *xml,int width, int height){
         xml->releaseDomain("employee");
     }
 
+#ifdef _GDC_H
     out_graph(width, height,fp,GDC_3DBAR,count,t,1,values);
-
+#endif
 
     for (i=0;i<count;i++){
         free(t[i]);
@@ -902,11 +906,12 @@ bool PersZWidget::createOffersGraph(XmlConfig *xml,int width, int height){
     unsigned long   sc[1]    = { 0x8080FF };
     int count=0;
     int i;
-
+#ifdef _GDC_H
     GDC_BGColor   = 0xFFFFFFL;                  /* backgound color (white) */
     GDC_LineColor = 0x000000L;                  /* line color      (black) */
     GDC_SetColor  = &(sc[0]);                   /* assign set colors */
     GDC_stack_type = GDC_STACK_BESIDE;
+#endif
 
     f = new QFile(offers_graph);
     if (f->exists())
@@ -930,8 +935,10 @@ bool PersZWidget::createOffersGraph(XmlConfig *xml,int width, int height){
 
     values =(float *) malloc(count*sizeof(float));
     t =(char **) malloc(count*sizeof(char *));
+#ifdef _GDC_H
     bzero(values,count*sizeof(float));
     bzero(t,count*sizeof(char*));
+#endif
 
     if (!count){
         free(t);
@@ -949,10 +956,14 @@ bool PersZWidget::createOffersGraph(XmlConfig *xml,int width, int height){
         aux = xml->readString("offer["+QString::number(i)+"].type");
         aux+=" " + xml->readString("offer["+QString::number(i)+"].name");
         t[i] = (char *) malloc((aux.length()+1)*sizeof(char));
+#ifdef _GDC_H
         bzero(t[i],aux.length()+1);
+#endif
         strncpy(t[i],aux.toLatin1(),aux.length());
     }
+#ifdef _GDC_H
     out_graph(width, height,fp,GDC_3DBAR,count,t,1,values);
+#endif
 
     for (i=0;i<count;i++){
         free(t[i]);
@@ -977,37 +988,34 @@ bool PersZWidget::createOptionsGraph(XmlConfig *xml,int width, int height){
     char **t = 0;
     unsigned long   sc[1]    = { 0x8080FF };
     int count=0,i=0;
-
+#ifdef _GDC_H
     GDC_BGColor   = 0xFFFFFFL;                  /* backgound color (white) */
     GDC_LineColor = 0x000000L;                  /* line color      (black) */
     GDC_SetColor  = &(sc[0]);                   /* assign set colors */
     GDC_stack_type = GDC_STACK_BESIDE;
+#endif
 
     f = new QFile(options_graph);
-    if (f->exists())
-        f->remove();
+    if (f->exists()) f->remove();
     delete f;
 
     options_graph = "/tmp/ntpv_x_options_graph"+QString::number(rand()%65536)+".png";
 
     fp = fopen( options_graph.toLatin1() , "wb" );
-    if (!fp)
-        return false;
-
-    if (!xml)
-        return false;
-
+    if (!fp) return false;
+    if (!xml) return false;
 
     xml->pushDomain();
     xml->delDomain();
     xml->setDomain("options");
     count = xml->howManyTags("option");
 
-
     values =(float *) malloc(count*sizeof(float));
     t =(char **) malloc(count*sizeof(char *));
+#ifdef _GDC_H
     bzero(values,count*sizeof(float));
     bzero(t,count*sizeof(char*));
+#endif
 
     if (!count){
         free(t);
@@ -1025,10 +1033,14 @@ bool PersZWidget::createOptionsGraph(XmlConfig *xml,int width, int height){
         aux = xml->readString("option["+QString::number(i)+"].type");
         aux+=" " + xml->readString("option["+QString::number(i)+"].name");
         t[i] = (char *) malloc((aux.length()+1)*sizeof(char));
+#ifdef _GDC_H
         bzero(t[i],aux.length()+1);
+#endif
         strncpy(t[i],aux.toLatin1(),aux.length());
     }
+#ifdef _GDC_H
     out_graph(width, height,fp,GDC_3DBAR,count,t,1,values);
+#endif
 
     for (i=0;i<count;i++){
         free(t[i]);

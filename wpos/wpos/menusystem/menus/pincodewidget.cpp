@@ -16,6 +16,7 @@
 
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
+#include <wposcore/authentication/crypto_hasher.h>
 #include <xmlconfig.h>
 
 extern AuthCore *authCore;
@@ -151,14 +152,14 @@ void PinCodeWidget::echoPin(const QString& number){
     if ( ui->passwd_label->text().length() >= PIN_CODE_LENGTH) return;
 
     ui->passwd_label->setText(ui->passwd_label->text()+"*");
-    pinCode_ += number;
+    pinCode += number;
 }
 
 void PinCodeWidget::clear(){
     ui->similarity_progressbar->setValue(0);
     ui->fingerprint_label->setPixmap(QPixmap(NULL_FINGERPRINT));
     ui->passwd_label->setText("");
-    pinCode_.clear();
+    pinCode.clear();
 }
 
 void PinCodeWidget::accept(){
@@ -168,13 +169,13 @@ void PinCodeWidget::accept(){
         return;
     }
 
-    QFile p_file (Files::configFilePath("password"));
-    p_file.open(QIODevice::ReadOnly);
-    auto r_passwd = p_file.readLine(14);
-    p_file.close();
+    QFile password_file (Files::configFilePath("password"));
+    password_file.open(QIODevice::ReadOnly);
+    auto encrypted_passwd = password_file.readLine(33);
+    password_file.close();
 
-    auto c_passwd = QString ( crypt(pinCode_.toLatin1(), "YY"));
-    if( c_passwd == r_passwd ) setGranted(true);
+    MD5CryptoHasher hasher;
+    if( hasher.hash(pinCode) == encrypted_passwd) setGranted(true);
     else setGranted(false);
     clear();
 }
@@ -232,9 +233,9 @@ void PinCodeWidget::showEvent(QShowEvent *event){
 //        aquire_button->show();
 //    }
 //    else{
-        ui->fingerprint_label->hide();
-        ui->similarity_progressbar->hide();
-        ui->aquire_button->hide();
+        // ui->fingerprint_label->hide();
+        // ui->similarity_progressbar->hide();
+        // ui->aquire_button->hide();
 //    }
 
     clear();

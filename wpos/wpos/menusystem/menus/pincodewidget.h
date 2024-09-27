@@ -60,9 +60,9 @@ private:
     void setGranted(bool granted);
 
 private:
-    QSignalMapper* signalMapper;
-    Ui::PinCodeWidget* ui;
-    QString pinCode_;
+    QSignalMapper* signalMapper{};
+    Ui::PinCodeWidget* ui{};
+    QString pinCode;
 };
 
 #endif

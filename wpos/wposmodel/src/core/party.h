@@ -1,9 +1,10 @@
 #ifndef PARTY_H
 #define PARTY_H
 
-#include "persistable.h"
 #include "exceptions.h"
+#include "persistable.h"
 
+using ulong = unsigned long;
 namespace wpos {
 namespace model{
 

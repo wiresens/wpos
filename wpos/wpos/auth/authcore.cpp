@@ -19,22 +19,20 @@
 #include <QFile>
 #include <QString>
 
-#include <iostream>
-using namespace std;
-
-AuthCoreDB AuthCore::db{ "AuthCoreConnection", Files::configFilePath("database")};
 AuthCore::AuthCore(QObject *parent, QString name):
-    QObject(parent)
+    QObject(parent),
+    db{ new AuthCoreDB("AuthCoreConnection", Files::configFilePath("database"))}
 {
     setObjectName(name);
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::USER_CHANGED, this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::CHANGE_USER, this);
-    db.connect();
+    db->connect();
 }
 
 AuthCore::~AuthCore(){
-    db.disConnect();
+    db->disConnect();
+    delete db;
 }
 
 const QString& AuthCore::userId() const{
@@ -60,8 +58,8 @@ bool AuthCore::isRootUser() const{
 bool AuthCore::loadUserById(QString id){
     bool loaded {false};
 
-    if (db.isConnected()){
-        user = db.userById(id);
+    if (db->isConnected()){
+        user = db->userById(id);
         loaded = true;
         notifyUserChanged();
     }
@@ -70,8 +68,8 @@ bool AuthCore::loadUserById(QString id){
 
 bool AuthCore::loadUserByName(QString name){
     bool loaded {false};
-    if (db.isConnected()){
-        user = db.userByName(name);
+    if (db->isConnected()){
+        user = db->userByName(name);
         loaded = true;
         notifyUserChanged();
     }
@@ -80,8 +78,8 @@ bool AuthCore::loadUserByName(QString name){
 
 bool AuthCore::loadUserByLastName(QString last_name){
     bool loaded{false};
-    if (db.isConnected()){
-        user = db.userByLastName(last_name);
+    if (db->isConnected()){
+        user = db->userByLastName(last_name);
         loaded = true;
         notifyUserChanged();
     }

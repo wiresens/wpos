@@ -39,9 +39,6 @@ target_include_directories(${MAIN_TARGET}  PRIVATE
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
     wposrpc
-)
-
-target_link_libraries(${MAIN_TARGET} PRIVATE
     Qt::Core
     Qt::Network
     Qt::Xml

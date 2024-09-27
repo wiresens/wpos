@@ -6,8 +6,8 @@
 #ifndef SALES_SCREEN_H
 #define SALES_SCREEN_H
 
-#include <QtWidgets/QtWidgets>
 #include "ui_saleswidget.h"
+#include <QtWidgets/QtWidgets>
 
 class XmlConfig;
 class ProductScreenStack;

@@ -42,7 +42,7 @@ void FileManager::removeFile(const QString& file){
 void FileManager::saveFiles(){
 
     db->connect();
-    for (auto file : files){
+    for (auto& file : files){
         db->delXmlFile(file);
         db->saveXmlFile(file);
     }
@@ -52,7 +52,7 @@ void FileManager::saveFiles(){
 void FileManager::loadFiles(){
 
     db->connect();
-    for (auto file : files)
+    for (auto& file : files)
         db->loadXmlFile(file);
     db->disConnect();
 }

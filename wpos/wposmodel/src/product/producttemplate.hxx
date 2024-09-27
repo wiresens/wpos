@@ -34,9 +34,14 @@ SOFTWARE.
 #define PRODUCTTEMPLATE_HXX
 
 #include "producttemplate.h"
-#include "../version.hxx"
+#include "version.hxx"
 
 using namespace wpos::model;
+
+#ifdef ODB_COMPILER
+    #include "../persistable.hxx"
+    #include "uom.hxx"
+#endif
 
 #pragma db object(ProductTemplate) definition
 #pragma db member(ProductTemplate::id) id auto
@@ -46,9 +51,6 @@ using namespace wpos::model;
 //#pragma db member(ProductTemplate::uom_) not_null on_delete (set_null)
 #pragma db member(ProductTemplate::uom_) not_null
 
-#ifdef ODB_COMPILER
-    #include "../persistable.hxx"
-    #include "uom.hxx"
-#endif
+
 
 #endif // PRODUCTTEMPLATE_HXX

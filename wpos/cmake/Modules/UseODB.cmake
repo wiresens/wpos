@@ -155,7 +155,7 @@ function(odb_compile outvar)
         list(APPEND ODB_ARGS "-I${dir}")
     endforeach()
 
-    file(REMOVE_RECURSE "${ODB_COMPILE_OUTPUT_DIR}")
+    # file(REMOVE_RECURSE "${ODB_COMPILE_OUTPUT_DIR}")
     file(MAKE_DIRECTORY "${ODB_COMPILE_OUTPUT_DIR}")
 
     foreach(input ${PARAM_FILES})
@@ -185,7 +185,7 @@ function(odb_compile outvar)
 
 
 
-        message(output :${outputs})
+        # message(output : ${outputs})
         add_custom_command(OUTPUT ${outputs}
             COMMAND ${ODB_EXECUTABLE} ${ODB_ARGS} --output-dir "${output_dir}" "${input}"
             DEPENDS "${input}"

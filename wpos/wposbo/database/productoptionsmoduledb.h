@@ -81,7 +81,7 @@ public:
     bool existProductAndOption(const QString& product_code, const QString& option_type,
                                const QString& option_name);
 
-    QPtrList<ProductOptionData>* getProductOptions(const QString& product_code);
+    QList<ProductOptionData*>* getProductOptions(const QString& product_code);
 
     bool insertOptionToProduct(const QString& product_code, const QString& option_type,
                                const QString& option_name, double value, const QString& is_default);

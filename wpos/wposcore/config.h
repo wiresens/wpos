@@ -6,18 +6,10 @@
 
 struct Files{
 
-    inline static const QString& configFile(const QString& file){
-        return QString(ConfigDir).append(file);
-    }
-
-    inline static const QString& baseFile(const QString& key){
-        return files[key];
-    }
-
+    static const QString& configFile(const QString& file);
+    static const QString& baseFile(const QString& key);
     // key =  "bar" | "database" | "buttons" | "invitations" | "button_state" ...
-    inline static QString configFilePath(const QString& key){
-        return ConfigDir + "/" + files[key];
-    }
+    static QString configFilePath(const QString& key);
 
     static const QString BAR_XML;
     static const QString BAR_DATABASE_XML;
@@ -29,7 +21,7 @@ struct Files{
     static const QString ORDER_DESCRIPTION_XML;
     static const QString LOUNGE_XML;
 
-    static const QString ConfigDir;
+    static const QString CONFIG_DIR;
     static const QString RessourceDir;
     static const QString PicturesDir;
     static const QString ProductsDir;

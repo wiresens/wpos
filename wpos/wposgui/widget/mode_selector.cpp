@@ -46,5 +46,5 @@ QAbstractButton *ModeSelector::kanbanButton() const{
 }
 
 QAbstractButton *ModeSelector::graphButton() const{
-    ui->graphView;
+    return ui->graphView;
 }
