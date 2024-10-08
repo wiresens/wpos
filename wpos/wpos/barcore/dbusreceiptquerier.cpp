@@ -19,7 +19,7 @@
 
 using namespace std;
 using IReceiptPrimitive = com::wiresens::wpos::dbusreceipt::DBusReceiptPrimitive;
-using IReceiptMediator = com::wiresens::wpos::dbusreceipt::DBusReceiptMediator;
+using IReceiptMediator  = com::wiresens::wpos::dbusreceipt::DBusReceiptMediator;
 const QString dbusService        {"com.wiresens.wpos.dbusreceipt"};
 const QString dbusPrimitiveObject{"/wpos/dbusreceipt/DBusReceiptPrimitive"};
 const QString dbusMediatorObject {"/wpos/dbusreceipt/DBusReceiptMediator"};
@@ -28,8 +28,10 @@ DBusReceiptQuerier::DBusReceiptQuerier(QObject *parent):
     QObject(parent){}
 
 //Using IReceiptPrimitive : ReadOnly Access
-bool DBusReceiptQuerier::receiptExist(const QString &  employee_id, const QString & start_time){
-
+bool DBusReceiptQuerier::receiptExist(
+    const QString &  employee_id,
+    const QString & start_time)
+{
     auto bus = QDBusConnection::sessionBus();
     auto iface = new IReceiptPrimitive(dbusService, dbusPrimitiveObject, bus, this);
     auto method = "DBusReceiptQuerier::receiptExist(" + employee_id + "," + start_time + ")";
@@ -46,11 +48,13 @@ bool DBusReceiptQuerier::receiptExist(const QString &  employee_id, const QStrin
     return reply.value();
 }
 
-bool DBusReceiptQuerier::receiptState(const QString& employee_id, const QString& start_time){
-
+bool DBusReceiptQuerier::receiptState(
+    const QString& employee_id,
+    const QString& start_time)
+{
     auto bus = QDBusConnection::sessionBus();
     auto iface = new IReceiptPrimitive(dbusService, dbusPrimitiveObject, bus, this);
-    auto method = "DBusReceiptQuerier::receiptState(" + employee_id + "," + start_time + ")";
+    auto method = "DBusReceiptQuerier::receiptState( " + employee_id + " , " + start_time +" )";
     if (!iface->isValid()){
         log(dbusService, dbusPrimitiveObject, method);
         return false;
@@ -64,8 +68,10 @@ bool DBusReceiptQuerier::receiptState(const QString& employee_id, const QString&
     return reply.value();
 }
 
-XmlConfig* DBusReceiptQuerier::getReceipt(const QString& employee_id, const QString &start_time){
-
+XmlConfig* DBusReceiptQuerier::getReceipt(
+    const QString& employee_id,
+    const QString &start_time)
+{
     auto bus = QDBusConnection::sessionBus();
     auto iface = new IReceiptPrimitive(dbusService, dbusPrimitiveObject, bus, this);
     auto method = "DBusReceiptQuerier::getReceipt(" + employee_id + "," + start_time + ")";
@@ -145,8 +151,8 @@ bool DBusReceiptQuerier::createReceipt(XmlConfig *xml){
     return reply.value();
 }
 
-bool DBusReceiptQuerier::saveReceipt(XmlConfig *xml){
-
+bool DBusReceiptQuerier::saveReceipt(XmlConfig *xml)
+{
     auto bus = QDBusConnection::sessionBus();
     IReceiptMediator *iface;
     iface = new IReceiptMediator(dbusService, dbusMediatorObject, bus, this);
@@ -164,8 +170,10 @@ bool DBusReceiptQuerier::saveReceipt(XmlConfig *xml){
     return reply.value();
 }
 
-bool DBusReceiptQuerier::deleteReceipt(const QString employee_id, const QString start_time){
-
+bool DBusReceiptQuerier::deleteReceipt(
+    const QString employee_id,
+    const QString start_time)
+{
     auto bus = QDBusConnection::sessionBus();
     auto iface = new IReceiptMediator(dbusService, dbusMediatorObject, bus, this);
     auto method = "DBusReceiptQuerier::deleteReceipt(" + employee_id + "," + start_time + ")";
@@ -175,34 +183,47 @@ bool DBusReceiptQuerier::deleteReceipt(const QString employee_id, const QString 
     }
     auto reply = iface->deleteReceiptByStartDate(employee_id, start_time);
     if( reply.isError()){
-        log(dbusService, dbusMediatorObject, method, reply.error().message() );
+        log(dbusService, dbusMediatorObject,
+            method, reply.error().message() );
         return false;
     }
     return reply.value();
 }
 
-bool DBusReceiptQuerier::lockRemoteReceipts(const QString &employee_id, const QString& start_time){
-
+bool DBusReceiptQuerier::lockRemoteReceipts(
+    const QString &employee_id,
+    const QString& start_time)
+{
     auto bus = QDBusConnection::sessionBus();
-    auto iface = new IReceiptMediator(dbusService, dbusMediatorObject, bus, this);
-    auto method = "DBusReceiptQuerier::lockRemoteReceipts(" + employee_id + "," + start_time + ")";
+    auto iface = new IReceiptMediator(dbusService,
+        dbusMediatorObject, bus, this);
+
+    auto method = "DBusReceiptQuerier::lockRemoteReceipts(" +
+            employee_id + "," + start_time + ")";
     if (!iface->isValid()){
         log(dbusService, dbusMediatorObject, method);
         return false;
     }
     auto reply = iface->lockRemoteByStartDate(employee_id, start_time);
     if( reply.isError()) {
-        log(dbusService, dbusMediatorObject, method, reply.error().message() );
+        log(dbusService, dbusMediatorObject,
+            method, reply.error().message() );
         return false;
     }
     return reply.value();
 }
 
-bool DBusReceiptQuerier::unlockRemoteReceipts(const QString &employee_id, const QString& start_time){
-
+bool DBusReceiptQuerier::unlockRemoteReceipts(
+    const QString &employee_id,
+    const QString& start_time)
+{
     auto bus = QDBusConnection::sessionBus();
-    auto iface = new IReceiptMediator(dbusService, dbusMediatorObject, bus, this);
-    auto method = "DBusReceiptQuerier::unlockRemoteReceipts(" + employee_id + "," + start_time + ")";
+    auto iface = new IReceiptMediator(
+        dbusService, dbusMediatorObject,
+        bus, this);
+
+    auto method = "DBusReceiptQuerier::unlockRemoteReceipts("
+        + employee_id + "," + start_time + ")";
     if (!iface->isValid()){
         log(dbusService, dbusMediatorObject, method);
         return false;
@@ -215,7 +236,12 @@ bool DBusReceiptQuerier::unlockRemoteReceipts(const QString &employee_id, const 
     return reply.value();
 }
 
-void DBusReceiptQuerier::log(const QString& svc, const QString& obj, const QString& method, const QString& msg ){
+void DBusReceiptQuerier::log(
+    const QString& svc,
+    const QString& obj,
+    const QString& method,
+    const QString& msg )
+{
     qDebug() << "DBus Service: " << svc << " for object: " << obj
              << "Requested by " << method;
     if( msg.isNull() || msg.isEmpty())

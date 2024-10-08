@@ -36,13 +36,15 @@ class DBusReceiptManager : public QObject {
 public:
     static const QString DBusService;
 
-    explicit DBusReceiptManager(QObject *parent = nullptr, const QString& name = QString());
-    ~DBusReceiptManager();
+    explicit DBusReceiptManager(
+        QObject *parent = nullptr,
+        const QString& name = QString()
+    );
 
 private:
-    DBusReceiptPrimitive *primitive;
-    DBusReceiptMediator *mediator;
-    ReceiptChangeNotifiyer *notifiyer;
+    DBusReceiptPrimitive    *m_receipt_primitive;
+    DBusReceiptMediator     *m_receipt_mediator;
+    ReceiptChangeNotifiyer  *m_receipt_change_notifiyer;
 };
 
 #endif

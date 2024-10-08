@@ -30,7 +30,10 @@
 
 class QFileSystemWatcher;
 
-class DBusReceiptPrimitive : public QObject, virtual public ReceiptPrimitiveInterface  {
+class DBusReceiptPrimitive :
+    public QObject,
+    virtual public ReceiptPrimitiveInterface
+{
 
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.dbusreceipt.DBusReceiptPrimitive")
@@ -39,7 +42,11 @@ public:
 
     static const QString DBusObject;
 
-    explicit DBusReceiptPrimitive(QObject *parent=nullptr,const QString& name = QString());
+    explicit DBusReceiptPrimitive(
+        QObject *parent=nullptr,
+        const QString& name = QString()
+    );
+
     ~DBusReceiptPrimitive();
 
 public slots:
@@ -128,7 +135,9 @@ signals:
 protected slots:
     void fileDirtySlot(const QString& file);
 
-protected:
+private:
+    const QString CON_NAME;
+    const QString CON_CFG_FILE;
     ReceiptDB *receipt_db;
     QFileSystemWatcher* file_watcher;
 };

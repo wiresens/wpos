@@ -58,7 +58,7 @@ QVector<TicketResumeData> HistoricDB::getTicketResume(
     QString sql  =  "SELECT ticket_code, employee_name, employee_id, end_time, total, ticket_state ";
     sql += "FROM get_pers_tickets('"+start_date+"','"+end_date+"');";
 
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     if (!query.isActive()) return QVector<TicketResumeData>();
 
     QSqlError error = query.lastError();
@@ -111,7 +111,7 @@ QList<ZResumeData*>* HistoricDB::getZResume(
     sql += "FROM get_z();";
 
 
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     if (!query.isActive()) return nullptr;
 
     QSqlError error { query.lastError()};
@@ -155,7 +155,7 @@ XmlConfig *HistoricDB::getTicketFromDatabase (int ticket_number)
     sql += "FROM (pers_tickets i JOIN staff e USING (employee_id)) LEFT JOIN pers_ticket_table t USING ";
     sql += "(ticket_code) WHERE ticket_code=" + QString::number(ticket_number) + ";";
 
-     QSqlQuery query(sql, getDB());
+     QSqlQuery query(sql, dbHandle());
     if (!query.isActive ()) return nullptr;
 
     query.first();
@@ -173,7 +173,7 @@ XmlConfig *HistoricDB::getTicketFromDatabase (int ticket_number)
     sql = "SELECT product_code, price, units, order_time, tax, tax_rate, item_code FROM pers_ticket_items WHERE ticket_code = ";
     sql += QString::number (ticket_number) +";";
 
-    query = QSqlQuery (sql, getDB());
+    query = QSqlQuery (sql, dbHandle());
     if (!query.isActive ()) return nullptr;
 
     XmlConfig *xml = new XmlConfig();
@@ -215,7 +215,7 @@ XmlConfig *HistoricDB::getTicketFromDatabase (int ticket_number)
         xml->createElement ("timestamps.ordertime", order_time.toString ("dd/MM/yyyy hh:mm:ss"));
 
         /* Get the product name */
-        QSqlQuery sub_query("SELECT product FROM products WHERE product_code = '"+product_code+"'", getDB());
+        QSqlQuery sub_query("SELECT product FROM products WHERE product_code = '"+product_code+"'", dbHandle());
         if (!sub_query.isActive ()) continue;
 
         sub_query.first();
@@ -229,7 +229,7 @@ XmlConfig *HistoricDB::getTicketFromDatabase (int ticket_number)
         xml->createAttribute ("billing.tax", "type", tax);
         xml->createElement ("articles");
 
-        sub_query = QSqlQuery ("SELECT ingredient_code FROM prod_composition WHERE product_code = '"+product_code+"'", getDB());
+        sub_query = QSqlQuery ("SELECT ingredient_code FROM prod_composition WHERE product_code = '"+product_code+"'", dbHandle());
 
         if (!sub_query.isActive ())  continue;
 
@@ -238,7 +238,7 @@ XmlConfig *HistoricDB::getTicketFromDatabase (int ticket_number)
             xml->createElement ( "articles.article[" + QString::number(i) + "].name" , ingredient);
         }
 
-        sub_query = QSqlQuery("SELECT option_type, prod_option FROM pers_ticket_item_opts WHERE item_code='"+item_code+"'",this->getDB());
+        sub_query = QSqlQuery("SELECT option_type, prod_option FROM pers_ticket_item_opts WHERE item_code='"+item_code+"'",this->dbHandle());
         if (!sub_query.isActive ()) continue;
 
         if ( sub_query.size() > 0){
@@ -249,7 +249,7 @@ XmlConfig *HistoricDB::getTicketFromDatabase (int ticket_number)
                 xml->createElement( "options.option[" + QString::number(i) + "].value" , o_value);
             }
         }
-        sub_query = QSqlQuery("SELECT offer_type, prod_offer FROM pers_ticket_item_offers WHERE item_code='"+item_code+"'",this->getDB());
+        sub_query = QSqlQuery("SELECT offer_type, prod_offer FROM pers_ticket_item_offers WHERE item_code='"+item_code+"'",this->dbHandle());
         if (!sub_query.isActive ()) continue;
 
         if ( sub_query.size() > 0){
@@ -270,7 +270,7 @@ double HistoricDB::getMoneyInCash ()
     if (!isConnected()) return -1;
 
     QString sql = "SELECT sum(quantity) FROM v_cash_movements;";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
 
     if (!query.isActive()) return -1;
 
@@ -282,7 +282,7 @@ bool HistoricDB::createTempZ(const QString& code){
     if ( !isConnected() )  return false;
 
     QString sql = "SELECT create_z_view('"+code+"')";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     return query.isActive();
 }
 
@@ -300,7 +300,7 @@ bool HistoricDB::getXEmployeeData(XmlConfig *xml)
     }
 
     QString sql = "SELECT employee, employee_id, num_tickets, total_income FROM z_employee;";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     QSqlError error{query.lastError()};
     if (!query.isActive() || error.type() != QSqlError::NoError || !query.size()){
         qDebug() << error.nativeErrorCode()+" : "+ error.text();
@@ -339,7 +339,7 @@ int HistoricDB::getEmployeeProductInvitations(
     QString sql = "SELECT offer_type, prod_offer,num_products ";
     sql += "FROM z_employee_offers ";
     sql += "WHERE employee_id='"+employee_id+"' order by offer_type;";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
 
     if (!query.isActive() || !query.size()) return 0;
 
@@ -367,7 +367,7 @@ int HistoricDB::getEmployeeProductOptions(const QString& employee_id,XmlConfig *
     sql += "FROM z_employee_options ";
     sql += "WHERE employee_id='"+employee_id+"' order by option_type;";
 
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
 
     if (!query.isActive() || !query.size()){
         cout << "Problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ << endl;
@@ -398,7 +398,7 @@ int HistoricDB::getEmployeeEvent(const QString& employee_id,const QString& event
     QString sql =   "SELECT num_events FROM z_employee_events ";
     sql += "WHERE (employee_id='"+employee_id+"') AND (event_type='"+event_type+"');";
 
-     QSqlQuery query(sql, getDB());
+     QSqlQuery query(sql, dbHandle());
      if (!query.isActive() || !query.size()){
          cout << "Problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ << endl;
          return 0;
@@ -423,7 +423,7 @@ bool HistoricDB::getXMain(XmlConfig *xml){
 
     QString sql = "SELECT pay_type, num_tickets, total_income FROM z_pay_type;";
 
-    QSqlQuery query (sql, getDB());
+    QSqlQuery query (sql, dbHandle());
     if (!query.isActive() || !query.size()){
         cout << "Problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ << endl;
         xml->popDomain();
@@ -461,7 +461,7 @@ bool HistoricDB::getXOfferSection(XmlConfig *xml)
     }
 
     QString sql = "SELECT offer_type, prod_offer, num_products FROM z_offers order by offer_type; ";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
 
     if ( !query.isActive() ){
         xml->popDomain();     
@@ -503,7 +503,7 @@ bool HistoricDB::getXOptionSection(XmlConfig *xml)
     }
 
     QString sql = "SELECT option_type, prod_option, num_products, total FROM z_options order by option_type; ";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     if (!query.isActive()){
         cout << "problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ << endl;
         xml->popDomain();

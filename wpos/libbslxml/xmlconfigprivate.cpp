@@ -35,20 +35,20 @@ XmlConfigPrivate::XmlConfigPrivate(
     QIODevice::OpenMode mode)
 {
     QString errorMsg;
-    int errorLine;
-    int errorColumn;
+    int errorLine{};
+    int errorColumn{};
 
     if ( init(file_name, mode) == -1 ){ //there's no opened file, no point continuing with the constructor
-        cerr << "Errors happened in the constructor, exiting without xml loaded" << endl;
-        dev.close();
+        cerr << "XmlConfigPrivate::XmlConfigPrivate rrrors happened in the constructor, exiting without xml loaded" << endl;
+        m_qfile.close();
         return;
     }
 
-    if ( !(is_xml_file_parsed_succesfully = m_domDocument.setContent( &dev, &errorMsg, &errorLine, &errorColumn )) ) {
+    if ( !(is_xml_file_parsed_succesfully = m_domDocument.setContent( &m_qfile, &errorMsg, &errorLine, &errorColumn )) ) {
         cerr << "Parse error in XML file : " << file_name.toStdString() << endl;
         cerr <<  errorMsg.toStdString() << " Line: " << errorLine << ", Col: " << errorColumn << endl;
     }
-    dev.close();
+    m_qfile.close();
 }
 
 XmlConfigPrivate::XmlConfigPrivate(
@@ -61,7 +61,10 @@ XmlConfigPrivate::XmlConfigPrivate(
 }
 
 //the private shared constructor
-int XmlConfigPrivate::init(const QString& file_name, QIODevice::OpenMode mode){
+int XmlConfigPrivate::init(
+    const QString& file_name,
+    QIODevice::OpenMode mode)
+{
 
     //if we open in writeonly mode , bad things (tmp) will happen
     if (mode == QIODevice::WriteOnly)  mode = QIODevice::ReadWrite;
@@ -74,27 +77,27 @@ int XmlConfigPrivate::init(const QString& file_name, QIODevice::OpenMode mode){
             exit(-1);
         }
 
-        if ( ! dev.open(tmp_fd , mode | QIODevice::Text) ){
+        if ( ! m_qfile.open(tmp_fd , mode | QIODevice::Text) ){
             cerr << "XML initialisation: Unable to open the tempory file" << endl;
             exit(-1);
         }
 
-        setXmlHeaderAndFooter(dev);
+        setXmlHeaderAndFooter(m_qfile);
         has_tempory_file = true;
     }
     else{ //a file name has been given.
-        dev.setFileName(file_name);
-        if (!dev.exists()){    //the file with path to file does not exists
-            if(!dev.open(QIODevice::ReadWrite | QIODevice::Text)){
+        m_qfile.setFileName(file_name);
+        if (!m_qfile.exists()){    //the file with path to file does not exists
+            if(!m_qfile.open(QIODevice::ReadWrite | QIODevice::Text)){
                 cerr << "XML initialisation: Unable to create a new file " << file_name.toStdString()
                      << " in the mode "
                      << QFlags<QIODevice::OpenModeFlag>(mode) << endl;
                 return -1;
             }
-            setXmlHeaderAndFooter(dev);
+            setXmlHeaderAndFooter(m_qfile);
         }
         else{ // the file exists, so we'll try to open it in the mode specified
-            if ( !dev.open( mode | QIODevice::Text) ){
+            if ( !m_qfile.open( mode | QIODevice::Text) ){
                 cerr << "XML initialisation: Unable to create a new file " << file_name.toStdString() \
                      << " in the mode " \
                      << QFlags<QIODevice::OpenModeFlag>(mode) << endl;
@@ -102,20 +105,21 @@ int XmlConfigPrivate::init(const QString& file_name, QIODevice::OpenMode mode){
             }
         }
     }
+    m_mode = m_qfile.openMode();
     return 0;
 }
 
 //XmlConfigPrivate::~XmlConfigPrivate(){
 //    if (has_tempory_file)
 //        fclose(tmp_fd);
-//    else dev.close();
+//    else m_qfile.close();
 //}
 
 XmlConfigPrivate::~XmlConfigPrivate(){
     if (tmp_fd)
         fclose(tmp_fd);
     else
-        dev.close();
+        m_qfile.close();
 }
 
 bool XmlConfigPrivate::ok(){
@@ -123,7 +127,7 @@ bool XmlConfigPrivate::ok(){
 }
 
 bool XmlConfigPrivate::save(const QString& file_name){
-    if (!file_name.isEmpty()) dev.setFileName(file_name);
+    if (!file_name.isEmpty()) m_qfile.setFileName(file_name);
 
     if (has_tempory_file){
         fclose(tmp_fd);
@@ -131,19 +135,23 @@ bool XmlConfigPrivate::save(const QString& file_name){
         tmp_fd = nullptr;
     }
 
-    if( !dev.open(QIODevice::WriteOnly )){
-        cerr << "Unable to save XML file. We can't open " << dev.fileName().toStdString() << " in write mode\n" ;
+    if( !m_qfile.open( QIODevice::WriteOnly )){
+        qDebug() << "XmlConfigPrivate::save() : Unable to save XML file "
+                 <<  m_qfile.fileName()
+                 << "\nI/O error : " <<  m_qfile.errorString();
         return false;
     }
 
-    QTextStream stream(&dev);
+    QTextStream stream(&m_qfile);
     m_domDocument.save(stream, XML_TAG_IDENTATION);
-    dev.close();
+    qDebug() << "Saved " << m_qfile.fileName();
+
+    m_qfile.close();
     return true;
 }
 
 QString XmlConfigPrivate::fileName() const{
-    return dev.fileName();
+    return m_qfile.fileName();
 }
 
 QString XmlConfigPrivate::toString() const{
@@ -165,7 +173,7 @@ const QDomDocument& XmlConfigPrivate::domDocument() const {
 }
 
 QIODevice::OpenMode XmlConfigPrivate::openedMode() const{
-    return mode;
+    return m_qfile.openMode();
 }
 
 void XmlConfigPrivate::setXmlHeaderAndFooter(QFile &dev){

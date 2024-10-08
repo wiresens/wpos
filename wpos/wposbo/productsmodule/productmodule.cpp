@@ -1070,7 +1070,7 @@ void ProductModule::saveBarXml(){
             xml->createElementSetDomain("product");
             xml->createElement("name",ingredient->ingredient_code);
             if (!aux_product->logo.isEmpty())
-                xml->createElement("icon", Files::ProductsDir + aux_product->logo);
+                xml->createElement("icon", cfg::PRODUCT_DIR + aux_product->logo);
             delete aux_product;
         }
         else{

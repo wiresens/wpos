@@ -70,7 +70,7 @@ bool ProductOffersModuleDB::existOffer(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -112,7 +112,7 @@ bool ProductOffersModuleDB::existOfferType(const QString& offer_type)
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     if(!query->isActive()){
         delete query;
         disConnect();
@@ -162,7 +162,7 @@ bool ProductOffersModuleDB::deleteOffer(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -195,7 +195,7 @@ bool ProductOffersModuleDB::deleteOfferType(const QString& offer_type)
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -229,7 +229,7 @@ QString ProductOffersModuleDB::getDescriptionOffer(
         return description;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -265,7 +265,7 @@ QString ProductOffersModuleDB::getDescriptionOfferType(
         return description;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -300,7 +300,7 @@ QString ProductOffersModuleDB::getCppOperator(const QString& offer_type)
         return cpp_operator;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -349,7 +349,7 @@ QString ProductOffersModuleDB::getLogoOffer(
         return logo;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql : " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -398,7 +398,7 @@ ProductOfferData* ProductOffersModuleDB::getOffer(
         return offer;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql : " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -440,7 +440,7 @@ QList<ProductOfferData*>* ProductOffersModuleDB::getAllOffers()
         return offers;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -490,7 +490,7 @@ QList<ProductOfferData*>* ProductOffersModuleDB::getOffers(
         return offers;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -541,7 +541,7 @@ ProductOfferData* ProductOffersModuleDB::getOfferType(
         return offer;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -587,7 +587,7 @@ QStringList* ProductOffersModuleDB::getOfferTypes()
         return offer_types;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -645,7 +645,7 @@ bool ProductOffersModuleDB::insertOffer(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -684,7 +684,7 @@ bool ProductOffersModuleDB::insertOfferType(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -713,7 +713,7 @@ int ProductOffersModuleDB::getNumOfferTypes()
         return count;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     if(query->next())
         count = query->value(0).toInt();
 
@@ -755,7 +755,7 @@ bool ProductOffersModuleDB::updateOffer(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -794,7 +794,7 @@ bool ProductOffersModuleDB::updateOfferType(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -834,7 +834,7 @@ QList<ProductOfferData*>* ProductOffersModuleDB::getProductOffers(
         return offers;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -899,7 +899,7 @@ bool ProductOffersModuleDB::existProductAndOffer(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -960,7 +960,7 @@ bool ProductOffersModuleDB::insertOfferToProduct(
     sql +=                 "'" + QString::number(value) + "', ";
     sql +=                 "'" + is_default + "');";
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -1001,7 +1001,7 @@ bool ProductOffersModuleDB::deleteOfferToProduct(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     error = query->lastError();
     delete query;
     disConnect();
@@ -1056,7 +1056,7 @@ bool ProductOffersModuleDB::updateOfferToProduct(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -1099,7 +1099,7 @@ bool ProductOffersModuleDB::setAllProductOfferValue(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     error = query->lastError();
     delete query;
     disConnect();
@@ -1143,7 +1143,7 @@ bool ProductOffersModuleDB::updateAllProductOfferValue(
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     error = query->lastError();
     delete query;
     disConnect();

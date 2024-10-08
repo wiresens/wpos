@@ -48,7 +48,7 @@ int KillTicketsDB::getNextInvoiceVal(){
     if (!isConnected()) return ret;
 
     QString query {"SELECT nextval('invoices_invoice_code_seq');"};
-    QSqlQuery query_obj  {QSqlQuery(query,this->getDB())};
+    QSqlQuery query_obj  {QSqlQuery(query,this->dbHandle())};
     if (!query_obj.isActive()){
         qDebug() << "problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ ;
         return ret;
@@ -75,7 +75,7 @@ bool KillTicketsDB::setNextInvoiceVal(int val){
     if (!isConnected()) return ret;
 
     QString query {"SELECT setval('invoices_invoice_code_seq','"+QString::number(val)+"',false);"};
-    QSqlQuery query_obj =  QSqlQuery(query,this->getDB());
+    QSqlQuery query_obj =  QSqlQuery(query,this->dbHandle());
     if (!query_obj.isActive()){
         qDebug() << "BslKillTicketsDB::setNextInvoiceVal() problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ ;
         return ret;
@@ -90,7 +90,7 @@ QList<TicketResumeData> KillTicketsDB::getTicketResume(){
     QString sql  {"SELECT ticket_code, employee_name, employee_id, end_time, total, ticket_state "};
     sql += "FROM get_tickets();";
 
-    QSqlQuery query {QSqlQuery(sql, getDB())};
+    QSqlQuery query {QSqlQuery(sql, dbHandle())};
     if ( query.isActive()){
         QSqlError error{query.lastError()};
         if ( error.type() != QSqlError::NoError)
@@ -118,7 +118,7 @@ QList<TicketResumeData> KillTicketsDB::getReceiptResume(QString employee_id){
         QString sql {"SELECT employee_id, start_time, blocked, name, description "};
         sql += "FROM orders JOIN staff USING (employee_id) WHERE employee_id = '"+employee_id+"';";
 
-        QSqlQuery query =  QSqlQuery(sql, getDB());
+        QSqlQuery query =  QSqlQuery(sql, dbHandle());
 
         if ( query.isActive()){
 
@@ -150,7 +150,7 @@ QList<TicketResumeData> KillTicketsDB::getReceiptResume(){
         sql += "FROM orders JOIN staff USING (employee_id);";
         //       query += "FROM orders GROUP BY employee_id ORDER BY employee_id,start_time ;";
 
-        QSqlQuery query =  QSqlQuery(sql, getDB());
+        QSqlQuery query =  QSqlQuery(sql, dbHandle());
         if ( query.isActive()){
             QSqlError error{query.lastError()};
             if ( error.type()!= QSqlError::NoError)
@@ -177,7 +177,7 @@ bool KillTicketsDB::ticketHasNegative (int ticket){
         return true;
 
     QString query{ "SELECT price FROM ticket_items WHERE ticket_code = "+ QString::number(ticket)+";"};
-    QSqlQuery query_obj =  QSqlQuery (query, this->getDB());
+    QSqlQuery query_obj =  QSqlQuery (query, this->dbHandle());
 
     if (!query_obj.isActive ()) return true;
 
@@ -337,7 +337,7 @@ XmlConfig KillTicketsDB::getTicketFromDatabase(int ticket_number){
     sql += "FROM (tickets i JOIN staff e USING (employee_id)) LEFT JOIN ticket_table t USING ";
     sql += "(ticket_code) WHERE ticket_code="+QString::number(ticket_number)+";";
 
-    QSqlQuery query =  QSqlQuery (sql, getDB());
+    QSqlQuery query =  QSqlQuery (sql, dbHandle());
 
     if (query.isActive ()){
         query.first();
@@ -380,7 +380,7 @@ XmlConfig KillTicketsDB::getTicketFromDatabase(int ticket_number){
         sql += QString::number (ticket_number) +";";
 
         query.finish();
-        query =  QSqlQuery (sql, getDB());
+        query =  QSqlQuery (sql, dbHandle());
 
         if ( query.isActive ()){
             int product_i{0};
@@ -399,7 +399,7 @@ XmlConfig KillTicketsDB::getTicketFromDatabase(int ticket_number){
                 xml.createElement("timestamps.ordertime", dateTimeString(order_time));
 
                 /* Get the product name */
-                QSqlQuery sub_query {QSqlQuery ("SELECT product FROM products WHERE product_code = '"+product_code+"'", getDB())};
+                QSqlQuery sub_query {QSqlQuery ("SELECT product FROM products WHERE product_code = '"+product_code+"'", dbHandle())};
                 if (!sub_query.isActive ()) continue;
 
                 sub_query.first ();
@@ -414,7 +414,7 @@ XmlConfig KillTicketsDB::getTicketFromDatabase(int ticket_number){
 
                 xml.createElement("articles");
 
-                sub_query =  QSqlQuery ("SELECT ingredient_code FROM prod_composition WHERE product_code = '"+product_code+"'", getDB());
+                sub_query =  QSqlQuery ("SELECT ingredient_code FROM prod_composition WHERE product_code = '"+product_code+"'", dbHandle());
                 if (!sub_query.isActive()) continue;
 
                 for (auto art_i = 0; sub_query.next(); art_i++) {
@@ -422,7 +422,7 @@ XmlConfig KillTicketsDB::getTicketFromDatabase(int ticket_number){
                     xml.createElement("articles.article["+QString::number (art_i)+"].name", ingredient);
                 }
 
-                sub_query =  QSqlQuery("SELECT option_type, prod_option FROM ticket_item_opts WHERE item_code='"+item_code+"'",getDB());
+                sub_query =  QSqlQuery("SELECT option_type, prod_option FROM ticket_item_opts WHERE item_code='"+item_code+"'",dbHandle());
                 if (!sub_query.isActive ()) continue;
 
                 if ( sub_query.size() >0 )
@@ -433,7 +433,7 @@ XmlConfig KillTicketsDB::getTicketFromDatabase(int ticket_number){
                         xml.createElement("options.option["+QString::number (art_i)+"].value", o_value);
                     }
 
-                sub_query =  QSqlQuery("SELECT offer_type, prod_offer FROM ticket_item_offers WHERE item_code='"+item_code+"'",this->getDB());
+                sub_query =  QSqlQuery("SELECT offer_type, prod_offer FROM ticket_item_offers WHERE item_code='"+item_code+"'",this->dbHandle());
                 if (!sub_query.isActive ()) continue;
 
                 if (sub_query.size() > 0){
@@ -458,7 +458,7 @@ int KillTicketsDB::getInvoiceFromTicket(int ticket){
     if ( !isConnected() ) return ret;
 
     QString query {"SELECT invoice_code from invoices where ticket_code="+QString::number(ticket)+";"};
-    QSqlQuery query_obj =  QSqlQuery(query,this->getDB());
+    QSqlQuery query_obj =  QSqlQuery(query,this->dbHandle());
     if (!query_obj.isActive())
         return ret;
 
@@ -479,7 +479,7 @@ bool KillTicketsDB::groupInvoiceWithTicket(int ticket_code, int invoice_code){
 
     startTransaction();
     QString query  {"UPDATE tickets SET ticket_state='facturado' WHERE ticket_code="+QString::number(ticket_code)+";"};
-    QSqlQuery query_obj =  QSqlQuery(query, getDB());
+    QSqlQuery query_obj =  QSqlQuery(query, dbHandle());
 
     QSqlError error{query_obj.lastError()};
     if ( error.type()!= QSqlError::NoError){
@@ -491,7 +491,7 @@ bool KillTicketsDB::groupInvoiceWithTicket(int ticket_code, int invoice_code){
     query = "INSERT INTO invoices (invoice_code, moment, ticket_code) ";
     query+= "VALUES ("+QString::number(invoice_code)+",now(),"+QString::number(ticket_code)+");";
 
-    query_obj =  QSqlQuery(query,this->getDB());
+    query_obj =  QSqlQuery(query,this->dbHandle());
     error = query_obj.lastError();
 
     if ( error.type()!= QSqlError::NoError){

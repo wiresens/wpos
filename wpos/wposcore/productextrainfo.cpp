@@ -18,7 +18,8 @@
 #include "productextrainfo.h"
 #include <QString>
 
-ProductExtraInfo::ProductExtraInfo(const QString option_type)
+ProductExtraInfo::ProductExtraInfo(
+    const QString option_type)
     :m_option_type(option_type)
 {}
 
@@ -51,15 +52,10 @@ bool ProductExtraInfo::setDefaultOption(int pos){
     return true;
 }
 
-bool ProductExtraInfo::contains(const QString& option){
-    int i, count;
-    count = m_option_values.count();
-    for (i=0;i<count;i++){
-        if (option == m_option_values[i])
-            return true;
-    }
-    return false;
-
+bool ProductExtraInfo::contains(
+    const QString& option)
+{
+    return m_option_values.contains(option);
 }
 
 QStringList ProductExtraInfo::getValues(){

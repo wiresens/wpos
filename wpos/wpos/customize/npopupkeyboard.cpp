@@ -27,16 +27,16 @@ NPopUpKeyboard::NPopUpKeyboard(
     QMenu(parent)
 {
     setObjectName(name);
-    keyboard = new NKeyboard(this, "Keyboard");
-    keyboard->setSendEvents(false);
-    keyboard->setExitWithEnter(true);
+    m_nkeyboard = new NKeyboard(this, "NKeyBoard");
+    m_cmds = addMenu(m_nkeyboard);
+    m_nkeyboard->setSendEvents(false);
+    m_nkeyboard->setExitWithEnter(true);
 
-    connect(keyboard, &NKeyboard::textChanged, this, &NPopUpKeyboard::textChanged);
-    connect(keyboard, &NKeyboard::enterPressed, this, &NPopUpKeyboard::enterPressedSlot);
-    connect(keyboard, &NKeyboard::loungeSignal, this, &NPopUpKeyboard::loungeSignal);
-    connect(keyboard, &NKeyboard::exitClicked, this, &NPopUpKeyboard::exitClicked);
-
-    addMenu(keyboard);
+    // connect(this, &NPopUpKeyboard::loungeSignal, m_cmds, &QAction::setVisible);
+    connect(m_nkeyboard, &NKeyboard::textChanged,  this, &NPopUpKeyboard::textChanged);
+    connect(m_nkeyboard, &NKeyboard::enterPressed, this, &NPopUpKeyboard::enterPressedSlot);
+    connect(m_nkeyboard, &NKeyboard::loungeRequested, this, &NPopUpKeyboard::loungeRequested);
+    connect(m_nkeyboard, &NKeyboard::exitClicked,  this, &NPopUpKeyboard::exitClicked);
 }
 
 NPopUpKeyboard::NPopUpKeyboard(
@@ -45,7 +45,7 @@ NPopUpKeyboard::NPopUpKeyboard(
     const QString& name):
     NPopUpKeyboard{parent, name}
 {
-    keyboard->setText(text);
+    m_nkeyboard->setText(text);
 }
 
 void NPopUpKeyboard::enterPressedSlot(const QString &text){
@@ -53,8 +53,12 @@ void NPopUpKeyboard::enterPressedSlot(const QString &text){
     emit exitClicked();
 }
 
+void NPopUpKeyboard::showMenu(const QPoint& pos){
+    m_nkeyboard->popup( pos, m_cmds );
+}
+
 void NPopUpKeyboard::showEvent(QShowEvent *event){
-    keyboard->clearSlot();
+    m_nkeyboard->clearSlot();
     QMenu::showEvent(event);
 }
 
@@ -64,33 +68,36 @@ void NPopUpKeyboard::hideEvent(QHideEvent *event){
 }
 
 void NPopUpKeyboard::setText(const QString& text){
-    keyboard->setText(text);
+    m_nkeyboard->setText(text);
 }
 
 void NPopUpKeyboard::loungeButtonClicked(){
-    keyboard->showLounge();
+    m_nkeyboard->showLounge();
 }
 
 void NPopUpKeyboard::kbButtonClicked(){
-    keyboard->kbButtonClicked();
+    m_nkeyboard->showKeyBoard();
 }
 
 void NPopUpKeyboard::setUsedList(QStringList list){
-    keyboard->setUsedTables(list);
+    m_nkeyboard->setUsedTables(list);
 }
 
 bool NPopUpKeyboard::isAtTable(){
-    return keyboard->isAtTable();
+    return m_nkeyboard->isAtTable();
 }
 
 QString NPopUpKeyboard::getLounge(){
-    return keyboard->getLounge();
+    return m_nkeyboard->getLounge();
 }
 
 int NPopUpKeyboard::getTable(){
-    return keyboard->getTable();
+    return m_nkeyboard->getTable();
 }
 
-HList<ProductExtraInfo>* NPopUpKeyboard::getOptionsFromLounge(const QString& lounge){
-    return keyboard->getOptionsFromLounge(lounge);
+HList<ProductExtraInfo>*
+NPopUpKeyboard::getOptionsFromLounge(
+    const QString& lounge)
+{
+    return m_nkeyboard->getOptionsFromLounge(lounge);
 }

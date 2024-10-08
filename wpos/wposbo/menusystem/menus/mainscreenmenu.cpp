@@ -163,7 +163,7 @@ void MainScreenMenu::setStyles(QListView& listView, XmlConfig& xml){
     int tmpInt = 0;
     if (!tmpStr.isEmpty()){
         tmpInt = tmpStr.toInt(&ok);
-        if (ok)  font.setPixelSize(tmpInt);
+        if (ok && tmpInt > 0)  font.setPixelSize(tmpInt);
     }
 
     tmpStr = xml.readString("bold");

@@ -22,11 +22,8 @@ Ported to Qt 5.12.8 by Gilles Bene Pougoue <gilles.benepougoue@gmail.com>
 
 */
 
-#include "rpcsocket.h"
 #include "rpcserver.h"
 #include "rpcserverimp.h"
-
-#include <iostream>
 
 RpcServer::RpcServer(RpcServerImp* imp, QObject * parent)
     : QObject(parent),
@@ -40,14 +37,13 @@ bool RpcServer::start(Port port, const QHostAddress &address){
 
     if( port == 0 ) port = serverPort();
     if ( listen( port, address) ){
-        std::cout
-            << "\nStarting " << serverName().toStdString()
-            << " Server listening on : "
-            << port << "\n";
+        qDebug()<< "Starting " << serverName()
+                << " listening on : " << port ;
         return true;
     }
 
-    std::cout << "Failed to Start  XML RPC Server. Error : " + server_imp->errorString().toStdString();
+    qDebug() << "Failed to Start  XML RPC Server. Error : "
+             << server_imp->errorString();
     return false;
 }
 

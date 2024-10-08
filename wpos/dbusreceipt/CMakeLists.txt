@@ -79,7 +79,9 @@ target_include_directories(${MAIN_TARGET}  PRIVATE
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE
-    wposxml wposcore wposrpc
+    wposxml
+    wposcore
+    wposrpc
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE

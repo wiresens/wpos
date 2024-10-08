@@ -18,32 +18,36 @@
 
 #include "dbusreceiptprimitive.h"
 #include "dbusreceiptprimitive_adaptor.h"
-#include <xmlconfig.h>
+
+#include <libbslxml/xmlconfig.h>
+#include <wposcore/config.h>
 
 #include <QFileSystemWatcher>
 #include <QCoreApplication>
 #include <QString>
 
-#define DB_CONNECTION_NAME "Db_Receipt"
-#define DB_CONNECTION_PATH "/etc/ntpv/bar_database.xml"
-
 const QString DBusReceiptPrimitive::DBusObject  = QString{"/wpos/dbusreceipt/DBusReceiptPrimitive"};
 
-DBusReceiptPrimitive::DBusReceiptPrimitive(QObject *parent, const QString& name):
-    QObject(parent)
+DBusReceiptPrimitive::DBusReceiptPrimitive(
+    QObject *parent,
+    const QString& name
+):
+    QObject(parent),
+    CON_NAME{name},
+    CON_CFG_FILE{cfg::xmlFileByKey(cfg::XMLKey::Database)},
+    receipt_db {new ReceiptDB(CON_NAME, CON_CFG_FILE)}
 {
     new DBusReceiptPrimitiveAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
     dbus.registerObject(DBusReceiptPrimitive::DBusObject, this);
 
-    receipt_db = new ReceiptDB(DB_CONNECTION_NAME, DB_CONNECTION_PATH);
     setObjectName(name);
 
     //it should be used by other modules so please be sure that if not implemented here it
     //should be created before all the modules are created.
     file_watcher = new QFileSystemWatcher(this);
+    file_watcher->addPath(CON_CFG_FILE);
 
-    file_watcher->addPath(DB_CONNECTION_PATH);
     connect(file_watcher, &QFileSystemWatcher::fileChanged,
             this, &DBusReceiptPrimitive::fileDirtySlot);
 }
@@ -134,7 +138,7 @@ bool DBusReceiptPrimitive::existsReceiptByStartDate(QString employee_id, QString
 
 bool DBusReceiptPrimitive::getReceiptStateByStartDate(QString employee_id, QString start_time){
     bool exists = false;
-    exists =receipt_db->getReceiptStateByDate(employee_id, start_time);
+    exists = receipt_db->getReceiptStateByDate(employee_id, start_time);
     if (exists)
         emit receiptChangedByStartDate(employee_id,start_time);
     return exists;
@@ -142,15 +146,15 @@ bool DBusReceiptPrimitive::getReceiptStateByStartDate(QString employee_id, QStri
 
 void DBusReceiptPrimitive::fileDirtySlot(const QString& file){
 
-    if (file == DB_CONNECTION_PATH){
-        qDebug() << qApp->applicationName() <<": Rereading database configuration";
+    if (file == CON_CFG_FILE){
+        qDebug() << qApp->applicationName() <<" : Rereading database configuration";
 #ifndef _WINDOWS
         usleep(2000);
 #endif
-        XmlConfig xml (DB_CONNECTION_PATH);
+        XmlConfig xml (CON_CFG_FILE);
         if (xml.wellFormed()){
             delete receipt_db;
-            receipt_db = new ReceiptDB(DB_CONNECTION_NAME, DB_CONNECTION_PATH);
+            receipt_db = new ReceiptDB(CON_NAME, CON_CFG_FILE);
         }
     }
 }

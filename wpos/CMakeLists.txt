@@ -15,8 +15,7 @@ else()
     add_compile_definitions(__PRETTY_FUNCTION__ __FUNCSIG__)
 endif()
 
-set(BUILD_SHARED_LIBS Yes)
-
+option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") #Inibit all warning message
 
 # Add subdirectories if PROJECT_IS_TOP_LEVEL

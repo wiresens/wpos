@@ -14,12 +14,6 @@ modified by Carlos Manzanedo Rueda
 #ifndef PRINTERMANAGER_H
 #define PRINTERMANAGER_H
 
-#define XML_TICKET_HTML_PATH "/etc/ntpv/printerhtml.xml"
-#define XML_INVOICE_HTML_PATH "/etc/ntpv/invoice.xml"
-#define XML_KITCHEN_HTML_PATH "/etc/ntpv/kitchen_printerhtml.xml"
-#define XML_Z_HTML_PATH "/etc/ntpv/printerz.xml"
-#define XML_TICKET_TOTAL_HTML_PATH "/etc/ntpv/printertickettotal.xml"
-
 #include <QList>
 
 class QString;

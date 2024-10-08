@@ -37,7 +37,7 @@ double ChangeMoneyWidgetDB::getMoneyInCash () {
     double result = -1;
     if (isConnected()){
         QString sql = "SELECT sum(quantity) FROM cash_movements;";
-        QSqlQuery query (sql, getDB());
+        QSqlQuery query (sql, dbHandle());
 
         if (query.isActive()){
            query.first();
@@ -54,7 +54,7 @@ double ChangeMoneyWidgetDB::getMoneyPayType(const QString& type){
         sql+= "tickets t JOIN cash_movements c ";
         sql+= "USING (ticket_code) ";
         sql+= "WHERE t.pay_type='"+type+"' ;";
-        QSqlQuery query( sql, getDB());
+        QSqlQuery query( sql, dbHandle());
 
         if (query.isActive()){
            query.first ();

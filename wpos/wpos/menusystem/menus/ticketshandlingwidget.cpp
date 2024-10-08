@@ -11,7 +11,7 @@ TicketsHandlingWidget::TicketsHandlingWidget(
         QWidget *parent, const QString& name):
 
     QFrame(parent),
-    ticket_db { new KillTicketsDB(name, Files::configFilePath("database")) }
+    ticket_db { new KillTicketsDB(name, cfg::xmlFileByKey(cfg::XMLKey::Database)) }
 
 {
     setupUi(this);

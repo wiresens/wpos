@@ -13,11 +13,18 @@
 #ifndef FILEMANAGERDB_H
 #define FILEMANAGERDB_H
 
-#include <basicdatabase.h>
+#include <wposcore/basicdatabase.h>
 #include <wposcore/hlist.h>
 
 class XmlConfig;
 
+struct FileRecord{
+    QString m_file_path;
+    QString m_file_name;
+    QString m_file_contents;
+};
+
+using ResultSet = QVector<FileRecord>;
 class FileManagerDB : public BasicDatabase  {
 public:
     FileManagerDB(
@@ -36,9 +43,9 @@ public:
         const QString& configFile);
 
     bool exists(const QString& file);
-    bool loadXmlFile(const QString& file);
-    bool saveXmlFile(const QString& file);
-    bool delXmlFile(const QString& file);
+    ResultSet loadXmlFiles(const QStringList &files);
+    bool saveXmlFile(const QString& file_name);
+    bool delXmlFile(const QString& file_name);
 };
 
 #endif

@@ -25,6 +25,8 @@ Ported to Qt 5.12.8 by Gilles Bene Pougoue <gilles.benepougoue@gmail.com>
 #include "rpcserverimp.h"
 #include "rpcsocket.h"
 #include "rpcencoder.h"
+
+#include "xrfaultcodes.h"
 #include <iostream>
 
 const QString RpcServerImp::SERVER_NAME{"WiresensRPC"};
@@ -32,7 +34,8 @@ const RpcServerImp::Port RpcServerImp::SERVER_DEFAULT_PORT{18300};
 const size_t RpcServerImp::PLAINTEXT_MAX_SIZE{64};
 
 RpcServerImp::RpcServerImp(QObject*parent)
-    : QObject(parent){}
+    : QObject(parent)
+{}
 
 RpcServerImp::~RpcServerImp(){}
 

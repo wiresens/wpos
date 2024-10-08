@@ -61,7 +61,7 @@ ButtonSetWidget::ButtonSetWidget(
 ButtonSetWidget::~ButtonSetWidget(){}
 
 void ButtonSetWidget::initButtons(){
-    auto configFile = Files::configFilePath("buttons");
+    auto configFile = cfg::xmlFileByKey(cfg::XMLKey::Buttons);
     if (!generic_button_group){
         generic_button_group = new GenericButtonGroup(stacked_product_screen, this, "upper_layout");
         generic_button_group->readConfigFrom("upper_buttons", configFile);

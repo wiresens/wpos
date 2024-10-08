@@ -21,38 +21,45 @@ class QString;
 class XmlConfig;
 class QPushButton;
 
-class PayModes : public QWidget, private Ui::PayModesWidget  {
-    Q_OBJECT
-public: 
-    PayModes(QPushButton *_toggle_cash,
-                  BarCore *core,
-                  QWidget *parent=0,
-                  const QString& name = QString());
+class PayModes :
+    public QWidget,
+    private Ui::PayModesWidget {
 
-    ~PayModes();
+    Q_OBJECT
+public:
+    PayModes(
+        QPushButton *_toggle_cash,
+        BarCore *core,
+        QWidget *parent=0,
+        const QString& name = QString{});
+
+    ~PayModes() = default;
 
 public slots:
-    void mastercardClickedSlot(); //payByMastercard()
-    void visaClickedSlot(); //payByVisa()
-    void amexClickedSlot(); //payByAmex()
-    void fourbClickedSlot();
-    void cashClickedSlot(); //payByCash()
-    void gourmetClickedSlot();
-    void restaurantClickedSlot();
-    void sodexhoClickedSlot();
-    void proceccionCivilClickedSlot();
+    void mastercardPay(); //payByMastercard()
+    void visaPay(); //payByVisa()
+    void amexPay(); //payByAmex()
+    void fourbPay();
+    void cashPay(); //payByCash()
+    void gourmetPay();
+    void restaurantPay();
+    void sodexhoPay();
+    void proceccionPay();
 
-    void cancelClickedSlot(); //cancelPayment()
+    void cancelPayment(); //cancelPayment()
 
 signals:
     void genericDataSignal(const QString& signal_name,XmlConfig *xml);
 
 protected:
-    void setNewPrice(double price);
-    void sendTicketSignal(const QString& pay_mode);
-
     void showEvent(QShowEvent *e);
 
+private:
+    void setNewPrice(double price);
+    void sendTicketSignal(const QString& pay_mode);
+    void connectButtons();
+
+private:
     BarCore *core;
     QPushButton *toggle_cash;
 };

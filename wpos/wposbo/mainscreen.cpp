@@ -43,7 +43,7 @@ MainScreen::MainScreen(QWidget *parent):
 
 void MainScreen::setupApplication(){
     setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-    auto configFile = Files::configFilePath("buttons");
+    auto configFile = cfg::xmlFileByKey(cfg::XMLKey::Buttons);
     if (QFile::exists(configFile)){
         XmlConfig xml (configFile);
         if ( xml.wellFormed() && xml.setDomain("initscreen")){

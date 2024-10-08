@@ -19,7 +19,7 @@
 #ifndef RECEIPTCHANGENOTIFIYER_H
 #define RECEIPTCHANGENOTIFIYER_H
 
-#include <QObject>
+#include <QtCore/QObject>
 
 /**
   *@author Carlos Manzanedo

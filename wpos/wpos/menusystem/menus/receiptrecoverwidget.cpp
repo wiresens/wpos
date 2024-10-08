@@ -41,6 +41,7 @@
 #include <QTimer>
 #include <QList>
 
+#include<wposcore/config.h>
 #include <iostream>
 using namespace std;
 
@@ -58,8 +59,9 @@ static const QString dbusMediatorObject = "/wpos/dbusreceipt/DBusReceiptMediator
 const QString ReceiptRecoverWidget::DBusObject  = QString{"/wpos/wpos/ReceiptRecover"};
 
 ReceiptRecoverWidget::ReceiptRecoverWidget(
-        QWidget *parent, const QString& name):
-    TicketsHandlingWidget(parent, name)
+    QWidget *parent,
+    const QString& name)
+    :TicketsHandlingWidget(parent, name)
 {
     new ReceiptRecoverAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
@@ -67,8 +69,8 @@ ReceiptRecoverWidget::ReceiptRecoverWidget(
 
     invoice_button->hide();
     caption_label->setText(tr("Retrieve Commands"));
-    receiptQuerier = new DBusReceiptQuerier(this);
-    if ( QFile("/etc/ntpv/lounges.xml").exists() ) use_lounges = true;
+    m_receiptQuerier = new DBusReceiptQuerier(this);
+    if ( QFile( cfg::xmlFileByKey(cfg::XMLKey::Lounges)).exists() )  m_use_lounges = true;
 
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
@@ -79,53 +81,60 @@ ReceiptRecoverWidget::ReceiptRecoverWidget(
 
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::RECEIPTWIDGET_ALL_SETENABLED, this);
 
-    lounge_button->setText(tr("Open\nCommand"));
-    lounge_button->setIcon(null_pixmap);
-    lounge_button->setIconSize(null_pixmap.size());
-    lounge_button->setFixedSize(160, 60);
+    m_lounge_button->setText(tr("Open\nCommand"));
+    m_lounge_button->setIcon(null_pixmap);
+    m_lounge_button->setIconSize(null_pixmap.size());
+    m_lounge_button->setFixedSize(160, 60);
 
-    pay_button->setIcon(pay_pixmap);
-    allusers_button->setIcon(allusers_pixmap);
-    pay_button->setIconSize(pay_button->size());
-    allusers_button->setIconSize(allusers_pixmap.size());
+    m_pay_button->setIcon(m_pay_pixmap);
+    allusers_button->setIcon(m_allusers_pixmap);
+    m_pay_button->setIconSize(m_pay_button->size());
+    allusers_button->setIconSize(m_allusers_pixmap.size());
 
     ticketnum_treeview->setSortingEnabled(true);
     ticketnum_treeview->setSelectionMode(QAbstractItemView::SingleSelection);
     ticketnum_treeview->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
-    ticketnum_treeview->setColumnWidth(OrderSection::Icon, 40);
-    ticketnum_treeview->setColumnWidth(OrderSection::EmployeeName, 80);
-    ticketnum_treeview->setColumnWidth(OrderSection::CommandId, 90);
-    ticketnum_treeview->setColumnWidth(OrderSection::Date, 130);
-    ticketnum_treeview->setColumnWidth(OrderSection::Status, 45);
+
+    ticketnum_treeview->setColumnWidth(OrderSection::Icon,          40);
+    ticketnum_treeview->setColumnWidth(OrderSection::EmployeeName,  80);
+    ticketnum_treeview->setColumnWidth(OrderSection::CommandId,     90);
+    ticketnum_treeview->setColumnWidth(OrderSection::Date,          130);
+    ticketnum_treeview->setColumnWidth(OrderSection::Status,        45);
 
     ticketnum_treeview->setHeaderLabels(
-                QStringList()
-                << QString("")
-                << tr("Employee Name")
-                << tr("Command N°")
-                << tr("Employee Id")
-                << tr("Date")
-                << tr("Ticket Status")
-                << tr("Table Code"));
+        QStringList()
+        << QString("")
+        << tr("Waiter's Name")
+        << tr("Command N°")
+        << tr("Waiter's Id")
+        << tr("Date")
+        << tr("Ticket Status")
+        << tr("Table N°")
+    );
 
     ticketnum_treeview->hideColumn(OrderSection::EmployeeId);
 //    ticketnum_treeview->hideColumn(OrderSection::Date);
     ticketnum_treeview->hideColumn(OrderSection::TableCode);
 
-    connect(allusers_button, &QPushButton::toggled, this, &ReceiptRecoverWidget::usersButtonSlot);
-    connect(pay_button, &QPushButton::clicked,this , &ReceiptRecoverWidget::getReceiptSlot);
-    connect(lounge_button, &QPushButton::clicked, this, &ReceiptRecoverWidget::newOrderClickedSlot);
-    connect(ticketnum_treeview, &QTreeWidget::itemClicked, this, &ReceiptRecoverWidget::clickedSlot);
+    connect(allusers_button, &QPushButton::toggled,
+        this, &ReceiptRecoverWidget::usersButtonSlot);
+
+    connect(m_pay_button, &QPushButton::clicked,this ,
+        &ReceiptRecoverWidget::getReceiptSlot);
+
+    connect(m_lounge_button, &QPushButton::clicked,
+        this, &ReceiptRecoverWidget::newOrderClickedSlot);
+
+    connect(ticketnum_treeview, &QTreeWidget::itemClicked,
+        this, &ReceiptRecoverWidget::clickedSlot);
 }
 
 ReceiptRecoverWidget::~ReceiptRecoverWidget(){
     ticketnum_treeview->clear();
-    delete keyboard;
-    delete receiptQuerier;
+    delete m_receiptQuerier;
 }
 
 void ReceiptRecoverWidget::showEvent(QShowEvent *event){
-
     if ( ! allusers_button->isDown() )
         allusers_button->toggle();
 
@@ -138,12 +147,18 @@ void ReceiptRecoverWidget::showEvent(QShowEvent *event){
 
 void ReceiptRecoverWidget::hideEvent(QHideEvent *event){
     ticketnum_treeview->clear();
-    if (keyboard){
-        disconnect(keyboard, &NPopUpKeyboard::exitClicked, this, &ReceiptRecoverWidget::kbExitClickedSlot);
-        disconnect(keyboard, &NPopUpKeyboard::textChanged, this, &ReceiptRecoverWidget::kbTextChanged);
-        disconnect(keyboard, &NPopUpKeyboard::loungeSignal, this, &ReceiptRecoverWidget::loungeSlot);
-        keyboard->deleteLater();
-        keyboard=0;
+    if (m_keyboard){
+        disconnect(m_keyboard, &NPopUpKeyboard::exitClicked,
+            this, &ReceiptRecoverWidget::kbExitClickedSlot);
+
+        disconnect(m_keyboard, &NPopUpKeyboard::textChanged,
+            this, &ReceiptRecoverWidget::kbTextChanged);
+
+        disconnect(m_keyboard, &NPopUpKeyboard::loungeRequested,
+            this, &ReceiptRecoverWidget::loungeSlot);
+
+        m_keyboard->deleteLater();
+        m_keyboard=0;
 
         ticketnum_treeview->setEnabled(true);
     }
@@ -159,12 +174,12 @@ void ReceiptRecoverWidget::receiptChanged(
     qDebug() <<"Start Time : " << start_time;
 
     refreshAndShow();
-    if (keyboard)  keyboard->setUsedList(getUsedTableCodes());
+    if (m_keyboard)  m_keyboard->setUsedList(getUsedTableCodes());
 }
 
 bool ReceiptRecoverWidget::refreshAndShow(){
 
-    pay_button->setEnabled(true);
+    m_pay_button->setEnabled(true);
 
     auto bus = QDBusConnection::sessionBus();
     auto remote_iface = new IReceiptPrimitive(dbusService, dbusPrimitiveObject, bus, this);
@@ -221,112 +236,130 @@ void ReceiptRecoverWidget::refreshList(){
     ticketnum_treeview->sortByColumn(OrderSection::TableCode, Qt::AscendingOrder);
 }
 
-void ReceiptRecoverWidget::clickedSlot(QTreeWidgetItem* item, int column){
-
+void ReceiptRecoverWidget::clickedSlot(
+    QTreeWidgetItem* item,
+    int column)
+{
     if (!item) return;
-    if ( column == OrderSection::Icon && item->text(OrderSection::Status) == "unlocked" ){
+    if ( column == OrderSection::Icon &&
+        item->text( OrderSection::Status ) == "unlocked" )
+    {
         ticketnum_treeview->setEnabled(false);
-        keyboard = new NPopUpKeyboard(this, "kb");
-        keyboard->installEventFilter(this);
-        connect(keyboard, &NPopUpKeyboard::exitClicked, this, &ReceiptRecoverWidget::kbExitClickedSlot);
+        m_keyboard = new NPopUpKeyboard(this, "NPopUpKeyboard");
+        m_keyboard->installEventFilter(this);
 
-        connect(keyboard, &NPopUpKeyboard::textChanged, this, &ReceiptRecoverWidget::kbTextChanged);
-        connect(keyboard, &NPopUpKeyboard::loungeSignal, this, &ReceiptRecoverWidget::loungeSlot);
+        connect(m_keyboard, &NPopUpKeyboard::exitClicked,
+            this, &ReceiptRecoverWidget::kbExitClickedSlot);
+
+        connect(m_keyboard, &NPopUpKeyboard::textChanged,
+            this, &ReceiptRecoverWidget::kbTextChanged);
+
+        connect(m_keyboard, &NPopUpKeyboard::loungeRequested,
+            this, &ReceiptRecoverWidget::loungeSlot);
+
         handleTicketSelected();
+        showMenu();
 
-        keyboard->popup(QPoint(0, 408));
-        keyboard->setText(item->text(OrderSection::TableCode));
-        keyboard->setUsedList(this->getUsedTableCodes());
+        m_keyboard->setText( item->text( OrderSection::TableCode ) );
+        m_keyboard->setUsedList( getUsedTableCodes());
 
-        if (use_lounges) keyboard->loungeButtonClicked();
-        else keyboard->kbButtonClicked();
+        if (m_use_lounges) m_keyboard->loungeButtonClicked();
+        else m_keyboard->kbButtonClicked();
     }
 }
 
 void ReceiptRecoverWidget::kbExitClickedSlot(){
-    int count,i;
-    QString employee_id,aux;
-    QString start_time,lounge,table;
-    QTreeWidgetItem *item = 0;
-    XmlConfig *xml = 0;
-    HList<ProductExtraInfo> *options = 0;
-    ProductExtraInfo *node=0;
+    int count, i;
+    QString employee_id, aux;
+    QString start_time, lounge, table;
+    QTreeWidgetItem *item{};
+    XmlConfig *xml {};
+    HList<ProductExtraInfo> *options{};
+    ProductExtraInfo *node {};
 
-    aux="";
     ticketnum_treeview->setEnabled(false);
-    input_text = input_text.simplified();
-    input_text = input_text.simplified();
-    if (!input_text.isEmpty()){
+    m_input_text = m_input_text.simplified();
+    m_input_text = m_input_text.simplified();
+
+    if (!m_input_text.isEmpty()){
         item = ticketnum_treeview->currentItem();
         employee_id = item->text(OrderSection::EmployeeId);
-        start_time = item->text(OrderSection::Date);
-        if (receiptQuerier->receiptState(employee_id,start_time))
+        start_time  = item->text(OrderSection::Date);
+
+        if ( m_receiptQuerier->receiptState(employee_id,start_time) )
             return;
-        receiptQuerier->lockRemoteReceipts(employee_id,start_time);
-        xml = receiptQuerier->getReceipt(employee_id,start_time);
-        if (!xml)
-            return;
-        aux = input_text;
+
+        m_receiptQuerier->lockRemoteReceipts(employee_id,start_time);
+        xml = m_receiptQuerier->getReceipt(employee_id,start_time);
+
+        if (!xml) return;
+        aux = m_input_text;
 
         xml->delDomain();
-        xml->doWrite("description",input_text);
-        if (keyboard->isAtTable()){
+        xml->doWrite("description",m_input_text);
+        if (m_keyboard->isAtTable()){
             //write lounges
-            lounge = keyboard->getLounge();
+            lounge = m_keyboard->getLounge();
             xml->doWrite("location.lounge",lounge);
-            table = QString::number(keyboard->getTable());
+            table = QString::number(m_keyboard->getTable());
             xml->doWrite("location.table",table);
             //write options
-            options = keyboard->getOptionsFromLounge(lounge);
+            options = m_keyboard->getOptionsFromLounge(lounge);
             if (options){
                 count = options->count();
                 xml->setDomain("products");
                 xml->deleteElement("defaultoptions");
                 xml->createElementSetDomain("defaultoptions");
-                for(i=0;i<count;i++){
-                    node = options->at(i);
+                for(auto* node : *options){
+                    // node = options->at(i);
                     xml->createElementSetDomain("option");
-                    xml->createElement("type",node->getOptionType());
-                    xml->createElement("value",node->getDefaultOption());
+                    xml->createElement("type", node->getOptionType());
+                    xml->createElement("value", node->getDefaultOption());
                     xml->releaseDomain("option");
                 }
                 xml->releaseDomain("defaultoptions");
             }
         }
         xml->delDomain();
-        receiptQuerier->saveReceipt(xml);
-        receiptQuerier->unlockRemoteReceipts(employee_id,start_time);
+        m_receiptQuerier->saveReceipt(xml);
+        m_receiptQuerier->unlockRemoteReceipts(employee_id,start_time);
         delete xml;
-        //                id_text = "";
-        this->refreshList();
+        refreshList();
     }
-    disconnect(keyboard, &NPopUpKeyboard::exitClicked, this, &ReceiptRecoverWidget::kbExitClickedSlot);
-    disconnect(keyboard, &NPopUpKeyboard::textChanged, this, &ReceiptRecoverWidget::kbTextChanged);
-    disconnect(keyboard, &NPopUpKeyboard::loungeSignal, this, &ReceiptRecoverWidget::loungeSlot);
-    keyboard->deleteLater();
-    keyboard=0;
+    disconnect(m_keyboard, &NPopUpKeyboard::exitClicked,
+        this, &ReceiptRecoverWidget::kbExitClickedSlot);
+
+    disconnect(m_keyboard, &NPopUpKeyboard::textChanged,
+        this, &ReceiptRecoverWidget::kbTextChanged);
+
+    disconnect(m_keyboard, &NPopUpKeyboard::loungeRequested,
+        this, &ReceiptRecoverWidget::loungeSlot);
+
+    m_keyboard->deleteLater();
+    m_keyboard=0;
 
     if (!aux.isEmpty())
-        QTimer::singleShot(TIME_OUT, this, &ReceiptRecoverWidget::setSelectedSlot);
+        QTimer::singleShot(TIME_OUT, this,
+        &ReceiptRecoverWidget::setSelectedSlot);
     ticketnum_treeview->setEnabled(true);
 
 }
 
 void ReceiptRecoverWidget::setSelectedSlot(){
     QTreeWidgetItem *item = 0;
-    if (!input_text.isEmpty()){
-        item = ticketnum_treeview->findItems(input_text, Qt::MatchExactly, OrderSection::TableCode).first();
+    if (!m_input_text.isEmpty()){
+        item = ticketnum_treeview->findItems(m_input_text, Qt::MatchExactly, OrderSection::TableCode).first();
         if (item){
             ticketnum_treeview->setCurrentItem(item);
             item->setHidden(false);
             item->setSelected(true);
         }
-        input_text.clear();
+        m_input_text.clear();
     }
 }
 
 void ReceiptRecoverWidget::kbTextChanged(const QString& text){
-    input_text = text;
+    m_input_text = text;
 }
 
 void ReceiptRecoverWidget::handleTicketSelected() {
@@ -343,10 +376,10 @@ void ReceiptRecoverWidget::handleTicketSelected() {
     auto start_time = item->text(OrderSection::Date);
     auto status = item->text(OrderSection::Status);
 
-    pay_button->setEnabled(  ! (status == "locked") );
+    m_pay_button->setEnabled(  ! (status == "locked") );
 
     //get the xml from the receipt
-    std::unique_ptr<XmlConfig> xml { receiptQuerier->getReceipt(employee_id, start_time)};
+    std::unique_ptr<XmlConfig> xml { m_receiptQuerier->getReceipt(employee_id, start_time)};
     if ( !xml.get() ){
         qDebug() << "Failure trying to take the Order";
         return;
@@ -365,14 +398,14 @@ void ReceiptRecoverWidget::getReceiptSlot(){
     auto start_time = item->text(OrderSection::Date);
 
     //get the xml from the receipt
-    std::unique_ptr<XmlConfig> xml {receiptQuerier->getReceipt(employee_id, start_time)};
+    std::unique_ptr<XmlConfig> xml {m_receiptQuerier->getReceipt(employee_id, start_time)};
     if ( !xml.get() ){
         cout << "Something is wrong. I tried to take the Order and failed..." << endl;
         return;
     }
 
     emit genericDataSignal (GDATASIGNAL::BARCORE_CHANGE_XML, xml.get());
-    receiptQuerier->lockRemoteReceipts(employee_id, start_time);
+    m_receiptQuerier->lockRemoteReceipts(employee_id, start_time);
 
     xml.reset( new XmlConfig());
     xml->createElement("name", SalesScreen::PAY_MODE_MENU);
@@ -400,7 +433,10 @@ void ReceiptRecoverWidget::usersButtonSlot(bool on){
     refreshAndShow();
 }
 
-void ReceiptRecoverWidget::genericDataSignalSlot(const QString& signal_name, XmlConfig *xml){
+void ReceiptRecoverWidget::genericDataSignalSlot(
+    const QString& signal_name,
+    XmlConfig *xml)
+{
     if (signal_name == GDATASIGNAL::RECEIPTWIDGET_ALL_SETENABLED){
         QString aux;
         xml->delDomain();
@@ -418,11 +454,10 @@ void ReceiptRecoverWidget::genericDataSignalSlot(const QString& signal_name, Xml
 }
 
 void ReceiptRecoverWidget::loungeSlot(bool on){
-    use_lounges = on;
+    m_use_lounges = on;
 }
 
 QStringList ReceiptRecoverWidget::getUsedTableCodes(){
-
     QStringList table_codes;
     ticket_db->connect();
     QList<TicketResumeData> tickets  {ticket_db->getReceiptResume()};
@@ -436,117 +471,141 @@ QStringList ReceiptRecoverWidget::getUsedTableCodes(){
     return table_codes;
 }
 
-void ReceiptRecoverWidget::newOrderClickedSlot(){
-
+void ReceiptRecoverWidget::newOrderClickedSlot()
+{
     ticketnum_treeview->setEnabled(false);
-    keyboard = new NPopUpKeyboard(this, "kb");
-    keyboard->installEventFilter(this);
-    connect(keyboard, &NPopUpKeyboard::exitClicked, this, &ReceiptRecoverWidget::openOrderKbExitClickedSlot);
-    connect(keyboard, &NPopUpKeyboard::textChanged, this, &ReceiptRecoverWidget::kbTextChanged);
-    connect(keyboard, &NPopUpKeyboard::loungeSignal, this, &ReceiptRecoverWidget::loungeSlot);
+    m_keyboard = new NPopUpKeyboard(this, "NPopUpKeyboard");
+    m_keyboard->installEventFilter(this);
 
-    auto x = ticket_down_button->mapToGlobal(QPoint(0,0)).x();
-    auto y = ticket_down_button->mapToGlobal(QPoint(0,0)).y();
-    keyboard->popup(QPoint(x, y));
-    keyboard->setUsedList(getUsedTableCodes());
+    connect(m_keyboard, &NPopUpKeyboard::exitClicked,
+        this, &ReceiptRecoverWidget::openOrderKbExitClickedSlot);
 
-    if (use_lounges) keyboard->loungeButtonClicked();
-    else keyboard->kbButtonClicked();
+    connect(m_keyboard, &NPopUpKeyboard::textChanged,
+        this, &ReceiptRecoverWidget::kbTextChanged);
+
+    connect(m_keyboard, &NPopUpKeyboard::loungeRequested,
+        this, &ReceiptRecoverWidget::loungeSlot);
+
+    showMenu();
+
+    m_keyboard->setUsedList(getUsedTableCodes());
+
+
+    if (m_use_lounges) m_keyboard->loungeButtonClicked();
+    else m_keyboard->kbButtonClicked();
 }
 
 void ReceiptRecoverWidget::openOrderKbExitClickedSlot(){
-
-    XmlConfig *xml = 0;
-
-    input_text = input_text.simplified();
-    if (!input_text.isEmpty()){
-        xml = new XmlConfig();
-        xml->delDomain();
-        xml->doWrite("description", input_text);
+    XmlConfig *xml{};
+    m_input_text = m_input_text.simplified();
+    if (!m_input_text.isEmpty()){
+        XmlConfig xml;
+        xml.delDomain();
+        xml.doWrite("description", m_input_text);
         auto name = authCore->userName()+" "+authCore->userLastName();
-        xml->createElementSetDomain("employee");
-        xml->createElement("name",name);
-        xml->createElement("dni", authCore->userId());
-        xml->delDomain();
+        xml.createElementSetDomain("employee");
+        xml.createElement("name",name);
+        xml.createElement("dni", authCore->userId());
+        xml.delDomain();
 
         auto start_date = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);
-        xml->createElement("timestamps.start", start_date);
+        xml.createElement("timestamps.start", start_date);
         auto last_date = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);;
-        xml->createElement("timestamps.last", last_date);
+        xml.createElement("timestamps.last", last_date);
 
-        xml->createElement("location.lounge", "venta directa");
-        xml->createElement("location.table", "0");
-        if (keyboard->isAtTable()){
+        xml.createElement("location.lounge", "venta directa");
+        xml.createElement("location.table", "0");
+        if (m_keyboard->isAtTable()){
             //write lounges
-            auto lounge = keyboard->getLounge();
-            xml->doWrite("location.lounge",lounge);
-            auto table = QString::number(keyboard->getTable());
-            xml->doWrite("location.table", table);
+            auto lounge = m_keyboard->getLounge();
+            xml.doWrite("location.lounge",lounge);
+            auto table = QString::number(m_keyboard->getTable());
+            xml.doWrite("location.table", table);
             //write options
-            auto options = keyboard->getOptionsFromLounge(lounge);
+            auto options = m_keyboard->getOptionsFromLounge(lounge);
             if (options){
-                if (!xml->setDomain("products"))
-                    xml->createElementSetDomain("products");
+                if (!xml.setDomain("products"))
+                    xml.createElementSetDomain("products");
 
-                xml->deleteElement("defaultoptions");
-                xml->createElementSetDomain("defaultoptions");
+                xml.deleteElement("defaultoptions");
+                xml.createElementSetDomain("defaultoptions");
 
                 for(auto node : *options){
-                    xml->createElementSetDomain("option");
-                    xml->createElement("type", node->getOptionType());
-                    xml->createElement("value", node->getDefaultOption());
-                    xml->releaseDomain("option");
+                    xml.createElementSetDomain("option");
+                    xml.createElement("type", node->getOptionType());
+                    xml.createElement("value", node->getDefaultOption());
+                    xml.releaseDomain("option");
                 }
-                xml->releaseDomain("defaultoptions");
+                xml.releaseDomain("defaultoptions");
             }
         }
-        xml->delDomain();
-        receiptQuerier->createReceipt(xml);
+        xml.delDomain();
+        m_receiptQuerier->createReceipt(&xml);
         refreshList();
     }
 
-    disconnect(keyboard, &NPopUpKeyboard::exitClicked, this, &ReceiptRecoverWidget::openOrderKbExitClickedSlot);
-    disconnect(keyboard, &NPopUpKeyboard::textChanged, this, &ReceiptRecoverWidget::kbTextChanged);
-    disconnect(keyboard, &NPopUpKeyboard::loungeSignal, this, &ReceiptRecoverWidget::loungeSlot);
+    disconnect(m_keyboard, &NPopUpKeyboard::exitClicked,
+        this, &ReceiptRecoverWidget::openOrderKbExitClickedSlot);
 
-    keyboard->deleteLater();
-    keyboard=0;
+    disconnect(m_keyboard, &NPopUpKeyboard::textChanged,
+        this, &ReceiptRecoverWidget::kbTextChanged);
 
-    if ( !input_text.isEmpty() )
-        QTimer::singleShot( TIME_OUT, this, &ReceiptRecoverWidget::setSelectedSlot);
+    disconnect(m_keyboard, &NPopUpKeyboard::loungeRequested,
+        this, &ReceiptRecoverWidget::loungeSlot);
+
+    m_keyboard->deleteLater();
+    m_keyboard=0;
+
+    if ( !m_input_text.isEmpty() )
+        QTimer::singleShot( TIME_OUT, this,
+            &ReceiptRecoverWidget::setSelectedSlot);
 
     ticketnum_treeview->setEnabled(true);
 }
 
-bool ReceiptRecoverWidget::eventFilter(QObject *watched, QEvent *event){
+bool ReceiptRecoverWidget::eventFilter(
+        QObject *watched,
+        QEvent *event)
+{
+    auto filtered = event->type() == QEvent::Hide &&
+                    watched == m_keyboard;
 
-    auto filtered = event->type() == QEvent::Hide && watched == keyboard;
     if ( filtered ){
-        keyboard->close();
-        disconnect(keyboard, &NPopUpKeyboard::exitClicked, this, &ReceiptRecoverWidget::openOrderKbExitClickedSlot);
-        disconnect(keyboard, &NPopUpKeyboard::textChanged, this, &ReceiptRecoverWidget::kbTextChanged);
-        disconnect(keyboard, &NPopUpKeyboard::loungeSignal, this, &ReceiptRecoverWidget::loungeSlot);
-        keyboard->deleteLater();
-        keyboard=0;
+        m_keyboard->close();
+        disconnect(m_keyboard, &NPopUpKeyboard::exitClicked,
+            this, &ReceiptRecoverWidget::openOrderKbExitClickedSlot);
+
+        disconnect(m_keyboard, &NPopUpKeyboard::textChanged,
+            this, &ReceiptRecoverWidget::kbTextChanged);
+
+        disconnect(m_keyboard, &NPopUpKeyboard::loungeRequested,
+            this, &ReceiptRecoverWidget::loungeSlot);
+
+        m_keyboard->deleteLater();
+        m_keyboard=0;
         ticketnum_treeview->setEnabled(true);
     }
     TicketsHandlingWidget::eventFilter(watched, event);
     return filtered;
 }
 
-QList<TicketResumeData*>* ReceiptRecoverWidget::employeeReceiptResume(const QString& employee_id){
-
-    return receiptResumeFromXml( receiptQuerier->getReceiptResume(employee_id) );
+QList<TicketResumeData*>*
+ReceiptRecoverWidget::employeeReceiptResume(
+    const QString& employee_id)
+{
+    return receiptResumeFromXml( m_receiptQuerier->getReceiptResume(employee_id) );
 }
 
-QList<TicketResumeData*>* ReceiptRecoverWidget::allEmployeeReceiptResume(){
-
-    return receiptResumeFromXml(receiptQuerier->getReceiptResume());
+QList<TicketResumeData*>*
+ReceiptRecoverWidget::allEmployeeReceiptResume(){
+    return receiptResumeFromXml(m_receiptQuerier->getReceiptResume());
 }
 
-QList<TicketResumeData*>* ReceiptRecoverWidget::receiptResumeFromXml(XmlConfig* xml){
-
-    if( !xml) return nullptr;
+QList<TicketResumeData*>*
+ReceiptRecoverWidget::receiptResumeFromXml(
+    XmlConfig* xml)
+{
+    if( !xml) return {};
 
     auto ticket_resume_list = new QList<TicketResumeData*>;
     xml->delDomain();
@@ -562,7 +621,7 @@ QList<TicketResumeData*>* ReceiptRecoverWidget::receiptResumeFromXml(XmlConfig* 
         if ( aux=="true" || aux=="TRUE" )
             ticket_resume->receipt_state = true;
         else
-            ticket_resume->receipt_state=false;
+            ticket_resume->receipt_state = false;
 
         ticket_resume->employee_name = xml->readString("employee_name");
         ticket_resume->table_code = xml->readString("description");
@@ -570,4 +629,13 @@ QList<TicketResumeData*>* ReceiptRecoverWidget::receiptResumeFromXml(XmlConfig* 
         ticket_resume_list->append(ticket_resume);
     }
     return ticket_resume_list;
+}
+
+void ReceiptRecoverWidget::showMenu(){
+    auto x1  = m_lounge_button->mapToGlobal( QPoint(0,0));
+    auto x2  = ticketnum_treeview->mapToGlobal( QPoint(0,0));
+
+    // auto pos = QPoint( 0, (x1.y() + x2.y()) / 2);
+    auto pos = ticketnum_treeview->mapToGlobal(  QPoint( 0, (x1.y() + x2.y()) / 2));
+    m_keyboard->showMenu( pos );
 }

@@ -188,7 +188,7 @@ SalesScreen::SalesScreen(MenuPage *parent,
     createOpenCashDeviceButton();
     numkey->setFocus();
 
-    FileAlterationWatcher *watcher = new FileAlterationWatcher(this, "watcher");
+    FileAlterationWatcher *watcher = new FileAlterationWatcher(this, "FileAlterationWatcher");
     watcher->startWatching();
 }
 
@@ -280,7 +280,7 @@ void SalesScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *x
         xml->delDomain();
         auto enabled =  ( xml->readString("enabled") == "true");
         setEnabledLateralWidgets(enabled);
-        setVisibleLateralWidgets(enabled);
+        // setVisibleLateralWidgets(enabled);
     }
     // else if ( signal_name == GDATASIGNAL::LATERALWIDGET_SET_VISIBLE){
     //     xml->delDomain();
@@ -305,14 +305,14 @@ void SalesScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *x
 // }
 
 void SalesScreen::checkSuspend(){
-    if(qApp->applicationState())
-    if ( counter > TIMER_NO_EVENTS ){
-        XmlConfig xml;
-        xml.createElement("name", MainScreen::LOGIN_SCREEN);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
-        counter = 0;
-    }
-    else counter++;
+    // if(qApp->applicationState())
+    // if ( counter > TIMER_NO_EVENTS ){
+    //     XmlConfig xml;
+    //     xml.createElement("name", MainScreen::LOGIN_SCREEN);
+    //     emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    //     counter = 0;
+    // }
+    // else counter++;
 }
 
 void SalesScreen::showEvent(QShowEvent *event){
@@ -357,7 +357,7 @@ void SalesScreen::createProductDialog(){
     productScreenStack = new ProductScreenStack(page, "ProductScreenStack");
 
     connect(productScreenStack, &ProductScreenStack::splashRequested, this, &SalesScreen::splashRequested);
-    productScreenStack->initScreenStack(Files::configFilePath("bar"));
+    productScreenStack->initScreenStack(cfg::xmlFileByKey(cfg::XMLKey::Bar));
     disconnect(productScreenStack, &ProductScreenStack::splashRequested, this, &SalesScreen::splashRequested);
 
     page->addWidget(productScreenStack, "ProductScreenStack");
@@ -476,7 +476,7 @@ void SalesScreen::createShortcutButton(){
         shortcutGroup = new GenericButtonGroup(productScreenStack, shortcut_buttons_frame, "buttongroup");
     else
         shortcutGroup->clear();
-    shortcutGroup->readConfigFrom("shortcut_buttons_frame", Files::configFilePath("buttons"));
+    shortcutGroup->readConfigFrom("shortcut_buttons_frame", cfg::xmlFileByKey(cfg::XMLKey::Buttons));
 }
 
 void SalesScreen::createOpenCashDeviceButton(){
@@ -484,5 +484,5 @@ void SalesScreen::createOpenCashDeviceButton(){
         paymodeGroup = new GenericButtonGroup(productScreenStack, openbox_and_payment_mode_buttons_frame,"buttongroup");
     else
         paymodeGroup->clear();
-    paymodeGroup->readConfigFrom("openbox_and_payment_mode_buttons_frame", Files::configFilePath("buttons"));
+    paymodeGroup->readConfigFrom("openbox_and_payment_mode_buttons_frame", cfg::xmlFileByKey(cfg::XMLKey::Buttons));
 }

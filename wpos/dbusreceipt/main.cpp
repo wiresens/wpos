@@ -16,14 +16,20 @@
  ***************************************************************************/
 
 #include "dbusreceiptmanager.h"
-#include <QCoreApplication>
-#include <QFileInfo>
+
+#include <QtCore/QCoreApplication>
+#include <QtCore/QFileInfo>
+#include <QtCore/QDir>
 
 int main(int argc, char *argv[])
 {
-    auto appname = QFileInfo(QFile(argv[0]).fileName()).baseName();
     QCoreApplication app(argc, argv);
-    app.setApplicationName(appname);
+    auto appPath = app.applicationDirPath();
+    auto appName = QFileInfo(QFile(argv[0]).fileName()).baseName();
+
+    QDir::setSearchPaths( "xmldocs",  QStringList( appPath ) );
+    QDir::setSearchPaths( "dtddocs",  QStringList( appPath ) );
+    app.setApplicationName(appName);
 
     DBusReceiptManager dbusreceipt(&app, app.applicationName());
     return app.exec();

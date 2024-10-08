@@ -29,15 +29,15 @@ class ProductScreenStack:
     Q_OBJECT
 
 public:
-    explicit ProductScreenStack(
-        const QString& xmlDescriptionFile,
-        QWidget *parent=0,
-        const QString& name = QString());
+    // explicit ProductScreenStack(
+    //     const QString& xmlDescriptionFile,
+    //     QWidget *parent=0,
+    //     const QString& name = QString());
 
-    explicit ProductScreenStack(
-        XmlConfig *xml,
-        QWidget *parent=0,
-        const QString& name = QString());
+    // explicit ProductScreenStack(
+    //     XmlConfig *xml,
+    //     QWidget *parent=0,
+    //     const QString& name = QString());
 
     explicit ProductScreenStack(
         QWidget *parent=0,

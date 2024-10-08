@@ -10,56 +10,53 @@
 %LICENCIA%
  ***************************************************************************/
 
+#include "ui_cashwidget.h"
 #include "cashwidget.h"
+
 #include "mainscreen.h"
 #include "salesscreen.h"
 #include "barcore/barcore.h"
 
 #include <wposgui/keyboard/floatkeyboard.h>
 #include <wposcore/genericsignalmanager.h>
+#include <libbslxml/xmlconfig.h>
 
-#include <QLayout>
-#include <QPushButton>
-#include <QLabel>
-#include <QFile>
-#include <QApplication>
-#include <QTimer>
-#include <QPixmap>
+#include <QtWidgets/QLayout>
+#include <QtWidgets/QPushButton>
+#include <QtWidgets/QLabel>
+#include <QtWidgets/QApplication>
+#include <QtGui/QPixmap>
+#include <QtCore/QFile>
+#include <QtCore/QTimer>
 
-#include <xmlconfig.h>
-
-#include <iostream>
-namespace std{}
-using namespace std;
-
-#define LOOK_DELAY 3000
-#define DECIMALS 2
-
-static const uint TIME_OUT {25};
+static const quint16 LOOK_DELAY {3000};
+static const quint16 DECIMALS   {2};
+static const quint16 TIME_OUT   {25};
 
 CashWidget::CashWidget(BarCore *barCore,
     QWidget *parent,
     const QString& name):
     QWidget(parent),
+    ui{ new Ui::CashWidget},
     barCore{barCore}
 {
-    setupUi(this);
+    ui->setupUi(this);
     setObjectName(name);
     float_keyboard  = new FloatKeyboard(this);
     float_keyboard->setObjectName("change_cash_numpad");
     float_keyboard->hideDisplay();
-    QHBoxLayout *numpad_layout = qobject_cast<QHBoxLayout *>( numpad_frame->layout() );
+    QHBoxLayout *numpad_layout = qobject_cast<QHBoxLayout *>( ui->numpad_frame->layout() );
 
     if (!numpad_layout)
-        numpad_layout = new QHBoxLayout(numpad_frame);
+        numpad_layout = new QHBoxLayout(ui->numpad_frame);
     numpad_layout->addWidget(float_keyboard);
 
     // Initialize all images
     auto pixmap = QPixmap("payments:pay.jpeg");
-    ok_button->setIcon(pixmap);
-//    ok_button->setIconSize(pixmap.rect().size());
-//    ok_button->setFixedWidth(150);
-    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
+    ui->ok_button->setIcon(pixmap);
+//    ui->ok_button->setIconSize(pixmap.rect().size());
+//    ui->ok_button->setFixedWidth(150);
+    ui->cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
     //generic signal connector
     auto gsm = GenericSignalManager::instance();
@@ -71,45 +68,49 @@ CashWidget::CashWidget(BarCore *barCore,
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::CASH_MENU_SPEED,this);
 
     //normal signals and slots
-    connect(cancel_button, &QPushButton::released, this, &CashWidget::cancelSlot);
-    connect(ok_button, &QPushButton::released, this, &CashWidget::accepSlot);
+    connect(ui->cancel_button, &QPushButton::released, this, &CashWidget::cancelSlot);
+    connect(ui->ok_button, &QPushButton::released, this, &CashWidget::accepSlot);
     connect(float_keyboard, &FloatKeyboard::valueChanged, this, &CashWidget::numkeyChangedSlot);
     //     connect(quick_button, SIGNAL(released()), this, SLOT(quickAccept()));
     //  button->addContent("name",PRODUCT_SCREEN);
 }
 
+CashWidget::~CashWidget(){
+    delete ui;
+}
+
 void CashWidget::setNewPrice(double price){
-    total_receivable_value_label->clear();
+    ui->total_receivable_value_label->clear();
     QFont font = QApplication::font();
     font.setBold(true);
     font.setPointSize(30);
 
-    total_receivable_value_label->setFont(font);
-    total_receivable_value_label->setText(QString::number(price,'f', 2));
+    ui->total_receivable_value_label->setFont(font);
+    ui->total_receivable_value_label->setText(QString::number(price,'f', 2));
 
     cash = 0;
-    to_return_value_label->setFont(font);
-    to_return_value_label->setText(QString::number(cash));
+    ui->to_return_value_label->setFont(font);
+    ui->to_return_value_label->setText(QString::number(cash));
 
-    delivered_value_label->setFont(font);
-    delivered_value_label->setText(QString::number(cash));
+    ui->delivered_value_label->setFont(font);
+    ui->delivered_value_label->setText(QString::number(cash));
 }
 
 void CashWidget::numkeyChangedSlot(double _cash){
     QString aux;
     aux = QString::number(_cash,'f', 2);
-    delivered_value_label->setText(aux);
+    ui->delivered_value_label->setText(aux);
 
     cash = _cash - actual_price;
 
     if ( cash < 0.0 ){
-        ok_button->setEnabled(false);
-        to_return_value_label->setText(QString::number(0));
+        ui->ok_button->setEnabled(false);
+        ui->to_return_value_label->setText(QString::number(0));
         return;
     }
 
-    ok_button->setEnabled(true);
-    to_return_value_label->setText(QString::number(cash,'f',2));
+    ui->ok_button->setEnabled(true);
+    ui->to_return_value_label->setText(QString::number(cash,'f',2));
 }
 
 void CashWidget::accepSlot(){
@@ -119,9 +120,9 @@ void CashWidget::accepSlot(){
     emit genericSignal(GSIGNAL::OPEN_CASHBOX);
     sendTicketSignal();
     cashing_completed = true;
-    cancel_button->setIcon(QPixmap("controls:button_ok_48.png"));
+    ui->cancel_button->setIcon(QPixmap("controls:button_ok_48.png"));
     float_keyboard->setEnabled(false);
-    ok_button->hide();
+    ui->ok_button->hide();
 }
 
 void CashWidget::cancelSlot(){
@@ -156,9 +157,9 @@ void CashWidget::cancelSlot(){
 void CashWidget::showEvent(QShowEvent *event){
 
     float_keyboard->clear();
-    ok_button->setEnabled(false);
-    ok_button->show();
-    cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
+    ui->ok_button->setEnabled(false);
+    ui->ok_button->show();
+    ui->cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
     float_keyboard->setEnabled(true);
     cashing_completed = false;
 
@@ -195,7 +196,7 @@ void CashWidget::showEvent(QShowEvent *event){
         return;
     }
 
-    ok_button->setEnabled(false);
+    ui->ok_button->setEnabled(false);
     setNewPrice(actual_price);
     QWidget::showEvent(event);
 }

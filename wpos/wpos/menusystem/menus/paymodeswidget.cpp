@@ -31,12 +31,18 @@
 #include <iostream>
 using namespace std;
 
+struct PayRecord{
+    QPushButton* btn;
+    const QString icon;
+};
+
 PayModes::PayModes(
     QPushButton* _toggle_cash,
     BarCore *_core,
     QWidget *parent,
     const QString& name ):
-    QWidget(parent), core{_core},
+    QWidget(parent),
+    core{_core},
     toggle_cash{_toggle_cash}
 {
     setupUi(this);
@@ -47,100 +53,81 @@ PayModes::PayModes(
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
 
     cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
-
     //proteccion_civil_button->hide();
 
-    QVector<QPushButton*> paymode_buttons {
-        mastercard_button,
-        visa_button,
-        amex_button,
-        fourb_button,
-        cash_button,
-        gourmet_button,
-        restaurant_button,
-        sodexho_button,
-        proteccion_civil_button
+    QVector<PayRecord> pay_records{
+        { cash_button,              QString("1000xaf.jpeg") } ,
+        { proteccion_civil_button , QString("orange_money.png") } ,
+        { fourb_button,             QString("mtn_momo.png") } ,
+        { restaurant_button,        QString("airtel.svg") } ,
+        { mastercard_button,        QString("master_card.png") } ,
+        { visa_button,              QString("visa.png") } ,
+        { gourmet_button,           QString("google_pay.png") } ,
+        { amex_button,              QString("american_express.svg") } ,
+        { sodexho_button,           QString("paypal.svg") }
     };
 
-    QVector<QString> paymode_pixmap {
-        QString("master_card.png"),
-        QString("visa.svg"),
-        QString("american_express.svg"),
-        QString("orange_money.png"),
-        QString("google_pay.png") ,
-        QString("airtel.svg"),
-        QString("paypal.svg")
-    };
-
-    for( auto i = 0; i < paymode_pixmap.size(); i++ ){
-        auto pixmap_str = QString("payments:") + paymode_pixmap[i];
-        paymode_buttons[i]->setIcon(QPixmap(pixmap_str));
-        paymode_buttons[i]->setIconSize(QSize{150, 100});
+    for( auto &record : pay_records){
+        auto icon_file_name = QString("payments:") + record.icon;
+        record.btn->setIcon(QPixmap(icon_file_name));
+        record.btn->setIconSize(QSize{150, 100});
     }
-
-    connect(mastercard_button, &QPushButton::clicked, this, &PayModes::mastercardClickedSlot);
-    connect(visa_button, &QPushButton::clicked,this, &PayModes::visaClickedSlot);
-    connect(amex_button, &QPushButton::clicked,this, &PayModes::amexClickedSlot);
-    connect(fourb_button, &QPushButton::clicked,this, &PayModes::fourbClickedSlot);
-    connect(cash_button, &QPushButton::clicked,this, &PayModes::cashClickedSlot);
-    connect(gourmet_button, &QPushButton::clicked,this, &PayModes::gourmetClickedSlot);
-    connect(restaurant_button, &QPushButton::clicked,this, &PayModes::restaurantClickedSlot);
-    connect(sodexho_button, &QPushButton::clicked,this, &PayModes::sodexhoClickedSlot);
-    connect(proteccion_civil_button, &QPushButton::clicked,this, &PayModes::proceccionCivilClickedSlot);
-
-    connect(cancel_button, &QPushButton::clicked,this, &PayModes::cancelClickedSlot);
-
+    connectButtons();
 }
-
-PayModes::~PayModes(){}
 
 void PayModes::setNewPrice(double price){
     total_receivable_value_label->setText((QString::number(price,'f',2))+" € ");
 }
 
-void PayModes::mastercardClickedSlot(){
+void PayModes::mastercardPay(){
     sendTicketSignal("mastercard");
 }
 
-void PayModes::visaClickedSlot(){
+void PayModes::visaPay(){
     sendTicketSignal("visa");
 }
 
-void PayModes::amexClickedSlot(){
+void PayModes::amexPay(){
     sendTicketSignal("american express");
 }
 
-void PayModes::fourbClickedSlot(){
+void PayModes::fourbPay(){
     sendTicketSignal("4b");
 }
 
-void PayModes::gourmetClickedSlot(){
+void PayModes::gourmetPay(){
     sendTicketSignal("cheque gourmet");
 }
 
-void PayModes::restaurantClickedSlot(){
+void PayModes::restaurantPay(){
     sendTicketSignal("ticket restaurant");
 }
 
-void PayModes::sodexhoClickedSlot(){
+void PayModes::sodexhoPay(){
     sendTicketSignal("sodexho pass");
 }
 
-void PayModes::proceccionCivilClickedSlot(){
+void PayModes::proceccionPay(){
     sendTicketSignal("proteccion civil");
 }
 
-void PayModes::cashClickedSlot(){
+void PayModes::cashPay(){
     XmlConfig xml ;
-    if (!toggle_cash->isDown())
-        sendTicketSignal("metalico");
-    else{
-        xml.createElement("name", SalesScreen::CASH_MENU);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
-    }
+    xml.createElement("name", SalesScreen::CASH_MENU);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
 }
 
-void PayModes::cancelClickedSlot(){
+// void PayModes::cashPay(){
+//     XmlConfig xml ;
+//     if (!toggle_cash->isDown())
+//         sendTicketSignal("metalico");
+//     else{
+//         xml.createElement("name", SalesScreen::CASH_MENU);
+//         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+//     }
+// }
+
+void PayModes::cancelPayment(){
     XmlConfig xml ;
     xml.createElement("name", SalesScreen::PRODUCT_MENU);
     emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
@@ -169,7 +156,7 @@ void PayModes::showEvent(QShowEvent *e){
 
     double actual_price = 0.0;
     if ( !core->hasProducts() ){
-        QTimer::singleShot(50, this, &PayModes::cancelClickedSlot);
+        QTimer::singleShot(50, this, &PayModes::cancelPayment);
         return;
     }
 
@@ -184,4 +171,18 @@ void PayModes::showEvent(QShowEvent *e){
     }
     else
         setNewPrice(actual_price);
+}
+
+void PayModes::connectButtons(){
+    connect(mastercard_button, &QPushButton::clicked, this, &PayModes::mastercardPay);
+    connect(visa_button, &QPushButton::clicked,this, &PayModes::visaPay);
+    connect(amex_button, &QPushButton::clicked,this, &PayModes::amexPay);
+    connect(fourb_button, &QPushButton::clicked,this, &PayModes::fourbPay);
+    connect(cash_button, &QPushButton::clicked, this, &PayModes::cashPay);
+    connect(gourmet_button, &QPushButton::clicked,this, &PayModes::gourmetPay);
+    connect(restaurant_button, &QPushButton::clicked,this, &PayModes::restaurantPay);
+    connect(sodexho_button, &QPushButton::clicked,this, &PayModes::sodexhoPay);
+    connect(proteccion_civil_button, &QPushButton::clicked,this, &PayModes::proceccionPay);
+
+    connect(cancel_button, &QPushButton::clicked,this, &PayModes::cancelPayment);
 }

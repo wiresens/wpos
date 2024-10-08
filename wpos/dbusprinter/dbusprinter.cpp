@@ -19,7 +19,9 @@
 #include "dbusprinter_adaptor.h"
 #include "printermanager.h"
 #include "xmlrpcprinter.h"
-#include <xmlconfig.h>
+
+#include <libbslxml/xmlconfig.h>
+#include <wposcore/config.h>
 
 #include <QString>
 #include <QFile>
@@ -27,41 +29,40 @@
 #include <QtDBus/QDBusConnection>
 #include <QCoreApplication>
 
-#include <iostream>
 using namespace std;
 
 #define DEFAULT_TYPE "direct"
 #define DEFAULT_DEVICE "/dev/lp0"
 
-const int BSLKXMLRPC_PORT = 18300;
-const QString& DEFAULT_TOKEN = QString("0123456789ABCDEF");
-const QString& CONFIG_FILE_DTD = QString("/etc/ntpv/dtds/dcopprinter_config.dtd");
-const QString& CONFIG_FILE = QString("/etc/ntpv/dcopprinter_config.xml");
-
+const int WPOSD_RPC_PORT = 18300;
+const  QString& DEFAULT_TOKEN = QString("0123456789ABCDEF");
 extern QString PRINTER_DEVICE;
 extern QString PRINTER_SYSTEM;
 extern QString PRINTER_NAME;
 
-const QString DBusPrinter::DBusService = QString{"com.wiresens.wpos.dbusprinter"};
-const QString DBusPrinter::DBusObject  = QString{"/wpos/dbusprinter/DBusReceiptPrinter"};
+const QString DBusPrinter::DBusService  {QString{"com.wiresens.wpos.dbusprinter"}};
+const QString DBusPrinter::DBusObject   {QString{"/wpos/dbusprinter/DBusReceiptPrinter"}};
+const QString DBusPrinter::DTD_CFG_FILE {QFile(cfg::dtdFileByKey(cfg::DTDKey::Printer)).fileName()};
+const QString DBusPrinter::XML_CFG_FILE {QFile(cfg::xmlFileByKey(cfg::XMLKey::Printer)).fileName()};
 
-DBusPrinter::DBusPrinter(QObject *parent, const QString& name):
-    QObject(parent)
+DBusPrinter::DBusPrinter(QObject *parent, const QString& name)
+    :QObject(parent)
 {
     setObjectName(name);
     new DBusReceiptPrinterAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
     dbus.registerObject(DBusPrinter::DBusObject, this);
 
-    if (conf_file_name.isEmpty()) conf_file_name = CONFIG_FILE;
-    readConfig(conf_file_name);
+    m_xml_file = QFile(cfg::xmlFileByKey(cfg::XMLKey::Printer)).fileName();
+    m_dtd_file = QFile(cfg::dtdFileByKey(cfg::DTDKey::Printer)).fileName();
+    readConfig(m_xml_file);
 
     //it should be used by other modules so please be sure that if not implemented here it
     //should be created before all the modules are created.
     file_watcher = new QFileSystemWatcher(this);
 
-    file_watcher->addPath(conf_file_name);
-    file_watcher->addPath(CONFIG_FILE_DTD);
+    file_watcher->addPath(m_xml_file);
+    file_watcher->addPath(m_dtd_file);
     connect(file_watcher, &QFileSystemWatcher::fileChanged,
             this, &DBusPrinter::fileDirtySlot);
 }
@@ -79,7 +80,7 @@ DBusPrinter::~DBusPrinter(){
 void DBusPrinter::readConfig(const QString& path){
 
     XmlConfig xml(path);
-    if (!xml.wellFormed() || !xml.validateXmlWithDTD(CONFIG_FILE_DTD, true))
+    if (!xml.wellFormed() || !xml.validateXmlWithDTD(QFile(DTD_CFG_FILE).fileName(), true))
         return;
 
     xml.delDomain();
@@ -98,7 +99,7 @@ void DBusPrinter::readConfig(const QString& path){
             auto xr_client = new XmlRpcPrinter(
                  aux,
                  qApp->applicationName(),
-                 BSLKXMLRPC_PORT,
+                 WPOSD_RPC_PORT,
                  this,
                  aux.toStdString().c_str()
              );
@@ -243,16 +244,16 @@ bool DBusPrinter::realPrintKitchenOrder(QString xml_string){
 }
 
 void DBusPrinter::fileDirtySlot(const QString& file){
-    if (file == conf_file_name){
+    if (file == m_xml_file){
         rpc_printers.clear();
-        readConfig(conf_file_name);
+        readConfig(m_xml_file);
 
         qDebug() << "DCOPPrinter::fileDirtySlot() :"
                  << QDateTime::currentDateTime().toString()
                  << ": File "+ file +" has changed. Rereading configuration ...";
     }
 
-    if ( file == CONFIG_FILE_DTD)
+    if ( file == DTD_CFG_FILE)
         qDebug() << "DCOPPrinter::fileDirtySlot() :"
                  << QDateTime::currentDateTime().toString()
                   << " DTD "+ file +" has been modified !!!";

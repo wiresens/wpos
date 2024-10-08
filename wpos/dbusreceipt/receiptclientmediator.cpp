@@ -17,7 +17,9 @@
 
 #include "receiptclient.h"
 #include "receiptclientmediator.h"
-#include <xmlconfig.h>
+
+#include <libbslxml/xmlconfig.h>
+#include <wposcore/config.h>
 
 #include <string>
 using std::string;
@@ -26,25 +28,27 @@ using std::string;
 #include <QFileSystemWatcher>
 #include <QDebug>
 
-const int BSLKXMLRPC_PORT = 18300;
-const QString& DEFAULT_TOKEN = QString("0123456789ABCDEF");
-const QString& CONFIG_FILE_DTD = QString("/etc/ntpv/dtds/dcopreceipt_config.dtd");
-const QString& CONFIG_FILE = QString("/etc/ntpv/dcopreceipt_config.xml");
+const int WPOSD_RPC_PORT        = 18300;
+const QString& DEFAULT_TOKEN    = QString("0123456789ABCDEF");
+const QString& DTD_CFG_FILE     = cfg::dtdFileByKey(cfg::DTDKey::Receipt);
+const QString& XML_CFG_FILE     = cfg::xmlFileByKey(cfg::XMLKey::Receipt);
 
-ReceiptClientMediator::ReceiptClientMediator(QObject *parent, QString name):
-    QObject(parent)
+ReceiptClientMediator::ReceiptClientMediator(
+    QObject *parent,
+    QString name)
+    :QObject(parent),
+    m_xml_cfg_file {QFile(XML_CFG_FILE).fileName()},
+    m_dtd_cfg_file {QFile(DTD_CFG_FILE).fileName()}
 {
     setObjectName(std::move(name));
-    if (file_path.isEmpty()) file_path = CONFIG_FILE;
 
     file_watcher = new QFileSystemWatcher(this);
-    file_watcher->addPath(file_path);
-    file_watcher->addPath(CONFIG_FILE_DTD);
+    file_watcher->addPath(m_xml_cfg_file);
 
     connect(file_watcher, &QFileSystemWatcher::fileChanged,
-            this, &ReceiptClientMediator::fileDirtySlot);
+            this, &ReceiptClientMediator::updateClients);
 
-    readConfig(file_path);
+    createReceiptClients(m_xml_cfg_file);
 }
 
 ReceiptClientMediator::~ReceiptClientMediator(){
@@ -59,14 +63,9 @@ ReceiptClientMediator::~ReceiptClientMediator(){
 *       with an xml-rpc server. You can export dbusreceipt modules by using the
 *       kxmlrpcd daemon or the bslkxmlrpc daemon if you don't want to autenticate.
 */
-bool ReceiptClientMediator::readConfig(const QString& path){
+bool ReceiptClientMediator::createReceiptClients(const QString& xml_file){
 
-   XmlConfig xml (path);
-
-    if ( !xml.wellFormed()
-         || !xml.validateXmlWithDTD(CONFIG_FILE_DTD, true))
-        return false;
-
+    XmlConfig xml (xml_file, m_dtd_cfg_file);
     xml.delDomain();
     auth_token = DEFAULT_TOKEN;
     if ( xml.howManyTags("authtoken") ){
@@ -76,14 +75,20 @@ bool ReceiptClientMediator::readConfig(const QString& path){
     }
 
     xml.setDomain("servers");
-    auto count = xml.howManyTags("server");
-
-    for (auto i = 0; i < count; i++){
+    for (auto i = 0; i < xml.howManyTags("server"); i++){
         auto server_name = xml.readString("server["+QString::number(i)+"].ip");
         if ( !server_name.isEmpty() ){
-            if ( server_name == "localhost" || server_name.startsWith("127.0.0") )
+
+            if ( server_name == "localhost" ||
+                server_name.startsWith("127.0.0")
+            )
                 continue;
-            auto xr_client = new ReceiptClient( server_name, qApp->applicationName(), BSLKXMLRPC_PORT, this, server_name);
+
+            auto xr_client = new ReceiptClient(
+                server_name, qApp->applicationName(),
+                WPOSD_RPC_PORT, this, server_name
+            );
+
             xr_client->setAuthToken( auth_token );
             rpc_clients.append(xr_client, server_name);
         }
@@ -122,15 +127,21 @@ void ReceiptClientMediator::saveReceipt(QString _xml_receipt){
         xr_client->saveReceipt(_xml_receipt);
 }
 
-void ReceiptClientMediator::fileDirtySlot(const QString& file){
+void ReceiptClientMediator::updateClients(const QString& file){
+    if (file == m_xml_cfg_file){
+        qDebug() << "ReceiptClientMediator::updateClients() :"
+                << QDateTime::currentDateTime().toString()
+                << ": File "+ file +" has changed. Rereading configuration ...";
 
-    if (file == file_path){
-        qDebug() << "ReceiptClientMediator::fileDirtySlot() :" << QDateTime::currentDateTime().toString() << ": File "+ file +" has changed. Rereading configuration ...";
+        for (auto* xr_client : rpc_clients)
+            xr_client->deleteLater();
         rpc_clients.clear();
-        if( readConfig(file_path))
+
+        if( createReceiptClients(m_xml_cfg_file))
             qDebug() << "File "+ file +" configuration reloaded succesfully.";
     }
-
-    if ( file == CONFIG_FILE_DTD)
-        qDebug() << "ReceiptClientMediator::fileDirtySlot() :" << QDateTime::currentDateTime().toString() <<": dbusreceipt's DTD has been modified !!!";
+    else if ( file == m_dtd_cfg_file)
+        qDebug() << "ReceiptClientMediator::updateClients() :"
+                 << QDateTime::currentDateTime().toString()
+                 <<": dbusreceipt's DTD has been modified !!!";
 }

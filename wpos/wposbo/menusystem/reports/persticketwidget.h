@@ -68,7 +68,7 @@ private:
     QPixmap error_pixmap{"controls:stop.png"};
     QPixmap anulation_pixmap{"controls:view_text_red.png"};
 
-    HistoricDB database{"historicTicketConnection", Files::configFilePath("database")};
+    HistoricDB database{"HistoricTicketConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
     OrderView *order{};
     QTimer *timer{};
     int progress_step{};

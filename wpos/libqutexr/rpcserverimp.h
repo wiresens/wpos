@@ -35,8 +35,6 @@ Ported to Qt 5.12.8 by Gilles Bene Pougoue <gilles.benepougoue@gmail.com>
 #include <QMap>
 
 #include "xrmethodcall.h"
-#include "xrmethodresponse.h"
-#include "xrfaultcodes.h"
 
 /**
  * Provides a minimal HTTP Server to handle XML-RPC

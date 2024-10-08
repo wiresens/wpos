@@ -11,7 +11,8 @@ modified by Carlos Manzanedo Rueda
 %LICENCIA%
  ***************************************************************************/
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
+#include <wposcore/config.h>
 #include <QFile>
 
 #ifndef _WINDOWS
@@ -19,50 +20,54 @@ modified by Carlos Manzanedo Rueda
 #endif
 
 #include <iostream>
-
-#include <QString>
-// #include <QRegExp>
 #include <QStringList>
-
-using namespace std;
 
 #include "printermanager.h"
 #include "printerticket.h"
 
-#define TMP_PRINTER "/tmp/printermanager_products.xml"
-#define TMP_PRINTER_PAYTYPES "/tmp/printermanager_paytypes.xml"
-#define TMP_PRINTER_CAMAREROS "/tmp/printermanager_camareros.xml"
-#define TMP_PRINTER_OFFERS "/tmp/printermanager_offers.xml"
-#define TMP_PRINTER_TOTAL_OFFERS "/tmp/printermanager_total_offers.xml"
-#define TMP_PRINTER_PROD "/tmp/print.xml"
-#define TMP_PRINTER_DATA "/tmp/printertmpvalue.xml"
-#define TMP_PRINTER_TEMPLATE "/tmp/printertmptemplate.xml"
-#define TMP_PRINTER_TMPFILE "/tmp/printertmp.xml"
-#define PL_SHIT "/usr/share/dcopprinter/replace.pl"
+using  std::string;
 
-#define DEFAULT_TYPE "direct"
-#define DEFAULT_DEVICE "/dev/lp0"
+static const QString XML_TICKET_HTML_PATH       { cfg::xmlFileByKey(cfg::XMLKey::PrinterHtml) };
+static const QString XML_INVOICE_HTML_PATH      { cfg::xmlFileByKey(cfg::XMLKey::Invoice) };
+static const QString XML_KITCHEN_HTML_PATH      { cfg::xmlFileByKey(cfg::XMLKey::Kitchen) };
+static const QString XML_Z_HTML_PATH            { cfg::xmlFileByKey(cfg::XMLKey::PrinterZeta) };
+static const QString XML_TICKET_TOTAL_HTML_PATH { cfg::xmlFileByKey(cfg::XMLKey::PrinterTotal) };
 
-PrinterManager::PrinterManager(const QString& _type,
-                               const QString& _device,
-                               const QString& _user,
-                               const QString& _passwd):
-    type {DEFAULT_TYPE},
+static const QString TMP_PRINTER                 {"/tmp/printermanager_products.xml"};
+static const QString TMP_PRINTER_PAYTYPES        {"/tmp/printermanager_paytypes.xml"};
+static const QString TMP_PRINTER_CAMAREROS       {"/tmp/printermanager_camareros.xml"};
+static const QString TMP_PRINTER_OFFERS          {"/tmp/printermanager_offers.xml"};
+static const QString TMP_PRINTER_TOTAL_OFFERS    {"/tmp/printermanager_total_offers.xml"};
+static const QString TMP_PRINTER_PROD            {"/tmp/print.xml"};
+static const QString TMP_PRINTER_DATA            {"/tmp/printertmpvalue.xml"};
+static const QString TMP_PRINTER_TEMPLATE        {"/tmp/printertmptemplate.xml"};
+static const QString TMP_PRINTER_TMPFILE         {"/tmp/printertmp.xml"};
+
+static const QString PL_SHIT                     {"/usr/share/dcopprinter/replace.pl"};
+
+static const QString DEFAULT_TYPE                {"direct"};
+static const QString DEFAULT_DEVICE              {"/dev/lp0"};
+
+PrinterManager::PrinterManager(
+    const QString& _type,
+    const QString& _device,
+    const QString& _user,
+    const QString& _passwd)
+    :type {DEFAULT_TYPE},
     device { DEFAULT_DEVICE},
     user {_user},
     passwd {_passwd}
 {
 
-    if (_type == "ipp") type = _type;
-
+    if (_type == "ipp") type = _type;    
     device = _device;
     if (_device.isEmpty()){
         if (type == "ipp")
 
 #ifndef _WINDOWS
-            device = QString(cupsGetDefault())
+        device = QString(cupsGetDefault())
 #endif
-                ;
+            ;
     }
 }
 
@@ -78,7 +83,12 @@ void PrinterManager::setXmlPartData (XmlConfig* xml) {
     xml_data = xml;
 }
 
-void PrinterManager::printTicket (XmlConfig* xml, int times, bool print, bool dont_change_html) {
+void PrinterManager::printTicket (
+    XmlConfig* xml,
+    int times,
+    bool print,
+    bool dont_change_html)
+{
     int i;
     bool finish = false;
     QString tag;
@@ -124,7 +134,7 @@ void PrinterManager::printTicket (XmlConfig* xml, int times, bool print, bool do
         }
         if (finish)
             break;
-        value = getValueFromXml (xml, path);
+        value = getValueFromXml(xml, path);
         addDataTag ("tickets", tag, value);
     }
     /* Copy the products part */
@@ -867,15 +877,14 @@ QString PrinterManager::getValueFromXml (XmlConfig* xml, const QString& path) {
 }
 
 void PrinterManager::debug () {
-    cout << "--[ HTML ]--------------------" << endl;
-    if (xml_html)
-        xml_html->debug();
-    cout << "--[ DATA ]--------------------" << endl;
-    if (xml_data)
-        xml_data->debug();
-    cout << "--[ PRODUCTS ]--------------------" << endl;
-    if (products)
-        products->debug();
+    std::cout << "--[ HTML ]--------------------\n";
+    if (xml_html) xml_html->debug();
+
+    std::cout << "--[ DATA ]--------------------\n";
+    if (xml_data) xml_data->debug();
+
+    std::cout << "--[ PRODUCTS ]--------------------\n";
+    if (products)        products->debug();
 }
 
 void PrinterManager::print(int copies) {
@@ -970,9 +979,7 @@ void PrinterManager::realPrint(XmlConfig* xml, int copies){
  **/
 
 void PrinterManager::copy (XmlConfig* xml, XmlConfig **dest, QString domain) {
-    QFile *file=0;
-
-    file = new QFile(TMP_PRINTER_DATA);
+    QFile *file = new QFile(TMP_PRINTER_DATA);
     if (file->exists())
         file->remove();
     delete file;
@@ -986,7 +993,7 @@ void PrinterManager::copy (XmlConfig* xml, XmlConfig **dest, QString domain) {
     (*dest)->createElement (domain+QString("REPLACE"));
     (*dest)->save (TMP_PRINTER_TEMPLATE);
 
-    system (PL_SHIT" " TMP_PRINTER_TEMPLATE" " TMP_PRINTER_DATA " > " TMP_PRINTER_TMPFILE);
+    //@benes system (PL_SHIT" " TMP_PRINTER_TEMPLATE" " TMP_PRINTER_DATA " > " TMP_PRINTER_TMPFILE);
     delete (*dest);
 
     (*dest) = new XmlConfig (TMP_PRINTER_TMPFILE);
@@ -996,12 +1003,13 @@ void PrinterManager::copy (XmlConfig* xml, XmlConfig **dest, QString domain) {
  **** LIST MANAGEMENT ***
  ************************/
 
-void ProductDataList::addProduct (const QString& name,
-                                  const QString& price,
-                                  int iva,
-                                  float iva_percentage,
-                                  const QString& options,
-                                  bool _already_printed)
+void ProductDataList::addProduct (
+    const QString& name,
+    const QString& price,
+    int iva,
+    float iva_percentage,
+    const QString& options,
+    bool _already_printed)
 {
     int i, count;
     bool ok;
@@ -1016,9 +1024,9 @@ void ProductDataList::addProduct (const QString& name,
     for (i = 0; i < count; i++) {
         data = list.at(i);
         if ((data->name == name) &&
-                (data->price == p) &&
-                (data->options == options) &&
-                (_already_printed == data->already_printed))
+            (data->price == p) &&
+            (data->options == options) &&
+            (_already_printed == data->already_printed))
         {
             data->quantity++;
             return;
@@ -1037,9 +1045,9 @@ void ProductDataList::addProduct (const QString& name,
 }
 
 void ProductDataList::addProduct (const QString& name,
-                                  const QString& price,
-                                  int iva,
-                                  float iva_percentage)
+                                 const QString& price,
+                                 int iva,
+                                 float iva_percentage)
 {
     int i, count;
     bool ok;

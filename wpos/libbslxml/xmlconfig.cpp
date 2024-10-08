@@ -89,6 +89,18 @@ XmlConfig::XmlConfig(
     }
 }
 
+XmlConfig::XmlConfig(
+    const QString& xml_cfg_file,
+    const QString& dtd_cfg_file,
+    QIODevice::OpenMode mode):
+    XmlConfig(xml_cfg_file)
+{
+    if ( !wellFormed() ||
+        !validateXmlWithDTD(dtd_cfg_file, true)
+    )
+        throw XmlDtdValidationException{};
+}
+
 XmlConfig& XmlConfig::operator=(XmlConfig&& xml){
     if(impl != xml.impl) delete impl;
 
@@ -127,7 +139,8 @@ void XmlConfig::clear(){
 //PUBLIC
 //************************************************************************************
 
-bool XmlConfig::readXmlFromString(const QString& xml_str){
+bool XmlConfig::readXmlFromString(const QString& xml_str)
+{
     QDomDocument tmpDoc;
 
     if (!tmpDoc.setContent(xml_str)) return false;
@@ -313,7 +326,7 @@ bool XmlConfig::save(const QString& file){
     return impl->save(file);
 }
 
-QString XmlConfig::file(){
+QString XmlConfig::fileName(){
     return impl->fileName();
 }
 

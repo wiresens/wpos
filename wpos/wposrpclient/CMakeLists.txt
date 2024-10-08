@@ -54,9 +54,9 @@ target_link_libraries(${MAIN_TARGET} PRIVATE
     Qt::Widgets
 )
 
-install(TARGETS ${MAIN_TARGET}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+# install(TARGETS ${MAIN_TARGET}
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+# )
 
 #qt_generate_deploy_app_script( // >= Qt 6.3
 #    TARGET ${MAIN_TARGET}

@@ -44,7 +44,7 @@ using namespace std;
 
 static const QString& SCREEN_PRODUCTS_LIST_DTD =  "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
 static const QString& SCREENS_XML = "/etc/ntpv/bar.xml";
-static const QString& ICON_PATH = Files::ProductsDir;
+static const QString& ICON_PATH = cfg::PRODUCT_DIR;
 static QString DEFAULT_NAME = QObject::tr("Current Screen");
 
 static const double SIZE_CONST = 40.00;

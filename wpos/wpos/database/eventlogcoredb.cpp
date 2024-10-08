@@ -40,7 +40,7 @@ int EventLogCoreDB::getNextItemVal(){
     if (!isConnected()) return ret;
 
     QString sql  {"SELECT nextval('event_log_event_code_seq');"};
-    QSqlQuery query {QSqlQuery(sql, getDB())};
+    QSqlQuery query {QSqlQuery(sql, dbHandle())};
 
     if (!query.isActive() || !query.size() ) return ret;
 
@@ -60,7 +60,7 @@ void EventLogCoreDB::logData(const EventLogData &data){
     sql += "'"+data.event_type+"'";
     sql += ");";
 
-    QSqlQuery query {QSqlQuery(sql, getDB())};
+    QSqlQuery query {QSqlQuery(sql, dbHandle())};
     if (!query.isActive()){
         cerr << "FAILURE IN " << __PRETTY_FUNCTION__ << ":" << __LINE__ << endl;
         return;
@@ -75,7 +75,7 @@ void EventLogCoreDB::logData(const EventLogData &data){
     sql += data.event_code+", ";
     sql += data.quantity+");";
 
-    query =  QSqlQuery(sql, getDB());
+    query =  QSqlQuery(sql, dbHandle());
     if (!query.isActive()){
         cerr << "FAILURE IN " << __PRETTY_FUNCTION__ << ":" << __LINE__ << endl;
         return;
@@ -89,7 +89,7 @@ void EventLogCoreDB::logData(const EventLogData &data){
     sql += "SET ticket_code="+data.ticket_number+" ";
     sql += "WHERE event_code="+data.event_code+";";
 
-    query = QSqlQuery(sql, getDB());
+    query = QSqlQuery(sql, dbHandle());
     if (!query.isActive()){
         cerr << "FAILURE IN " << __PRETTY_FUNCTION__ << ":" << __LINE__ << endl;
         return;

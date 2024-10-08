@@ -169,10 +169,10 @@ void PinCodeWidget::accept(){
         return;
     }
 
-    QFile password_file (Files::configFilePath("password"));
-    password_file.open(QIODevice::ReadOnly);
-    auto encrypted_passwd = password_file.readLine(33);
-    password_file.close();
+    QFile passwd_file (cfg::xmlFileByKey(cfg::XMLKey::Password));
+    passwd_file.open(QIODevice::ReadOnly);
+    auto encrypted_passwd = passwd_file.readLine(33);
+    passwd_file.close();
 
     MD5CryptoHasher hasher;
     if( hasher.hash(pinCode) == encrypted_passwd) setGranted(true);

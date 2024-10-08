@@ -173,7 +173,7 @@ set(SOURCES_FILES
     keyboard/numkeyboard.cpp
     keyboard/numpad.cpp
     keyboard/popupkeyboard.cpp #not used
-    keyboard/spkeyboard.cpp    #not used
+    keyboard/spkeyboard.cpp    #not used, nkeyboard.cpp(wpos/customize)
 
     menu/abstract_menu_tree.cpp
 
@@ -365,10 +365,10 @@ set_target_properties (${MAIN_TARGET} PROPERTIES
     VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_PATCH}
 )
 
-install(TARGETS ${MAIN_TARGET}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+# install(TARGETS ${MAIN_TARGET}
+#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+# )
 
 # qt_generate_deploy_app_script(
 #    TARGET ${MAIN_TARGET}

@@ -15,7 +15,9 @@
  *                                                                         *
  ***************************************************************************/
 
-#include "main.h"
+// #include "main.h"
+#include "barcore/filemanager.h"
+#include "auth/authcore.h"
 #include "mainscreen.h"
 
 #include <libbslxml/xmlconfig.h>
@@ -38,51 +40,57 @@
 #include <QDir>
 #include <QDebug>
 
-#include <iostream>
-using namespace std;
+// Global variables( extern in used in other .cpp files ()
+AuthCore    *authCore;
+FileManager *file_manager;
+QString     CASHBOX_DEVICE;
+QString     CASHBOX_TYPE;
 
-static const QString config_dir = "/etc/ntpv/";
-
-static const QString version{"2.0"};
-
-extern FileManager *file_manager;
-
-extern QString PATH;
-extern QString CASHBOX_DEVICE;
-extern QString CASHBOX_TYPE;
-
-bool saveReportmanDeff(
+void save_reportman_cfg(
     const QString& host,
     const QString& db_name,
     const QString& user,
     const QString& passwd);
 
+static const QString APP_VERSION    {"2.0-rc1"};
+static const QString WINDOW_TITLE   {"wPOS"};
+static const QString CFG_XML_DIR    {"etc/wpos/wpos/"};
+static const QString CFG_DTD_DIR    {"etc/wpos/wpos/dtds/"};
+static const QString PIXMAP_DIR     {"share/wpos/"};
+
 int main(int argc, char *argv[]){
 
     QApplication app(argc, argv);
-    QDir::setSearchPaths("controls", QStringList(Files::ControlsDir));
-    QDir::setSearchPaths("payments", QStringList(Files::PaymentsDir));
-    QDir::setSearchPaths("products", QStringList(Files::ProductsDir));
+    auto appPath = app.applicationDirPath();
+    QDir::setSearchPaths( "controls", QStringList( appPath + "/" + cfg::CONTROLS_DIR ) );
+    QDir::setSearchPaths( "products", QStringList( appPath + "/" + cfg::PRODUCT_DIR ) );
+    QDir::setSearchPaths( "payments", QStringList( appPath + "/" + cfg::PAYMENT_DIR) );
+
+    QDir::setSearchPaths( "xmldocs",  QStringList( appPath ) );
+    QDir::setSearchPaths( "dtddocs",  QStringList( appPath ) );
+    QDir::setSearchPaths( "pixmaps",  QStringList( appPath ) );
 
     app.setApplicationName(QFileInfo(QFile(argv[0]).fileName()).baseName());
-    app.setApplicationVersion(version);
+    app.setApplicationVersion(APP_VERSION);
+    app.setWindowIcon(QIcon("pixmaps:wpos.png"));
 
     QCommandLineParser parser;
     parser.addVersionOption();
     parser.addHelpOption();
-    QCommandLineOption hostOp({ {"o","host"}, QObject::tr("Machine to which you want to connect the database."),"<host>"});
-    QCommandLineOption databaseOp({ {"d","database"}, QObject::tr("Database name."),"<database>"});
-    QCommandLineOption userOp({ {"u","user"}, QObject::tr("User for the connection to the database."),"<user>"});
-    QCommandLineOption passwdOp({ {"p","passwd"}, QObject::tr("User passwd."),"<password>"});
-    QCommandLineOption cashboxOp({ {"c","cashbox"}, QObject::tr("Device to which the drawer is connected."),"<device>"});
-    QCommandLineOption cashtypeOp({ {"t","cashtype"}, QObject::tr("Drawer types <serial,cash_drawer,p_samsung_350>:Cash drawer is the drawer\n\that is connected to a printer port or similar, the serial type are \n\the drawers that are connected to serial ports. By default the type is serial."),"<type>","serial"});
 
-    parser.addOption(hostOp);
-    parser.addOption(databaseOp);
-    parser.addOption(userOp);
-    parser.addOption(passwdOp);
-    parser.addOption(cashboxOp);
-    parser.addOption(cashtypeOp);
+    QCommandLineOption hostOp({ {"o","host"}, app.tr("Server hosting the database."),"<host>"});
+    QCommandLineOption databaseOp({ {"d","database"}, app.tr("Database name."),"<database>"});
+    QCommandLineOption userOp({ {"u","user"}, app.tr("Database User."),"<user>"});
+    QCommandLineOption passwdOp({ {"p","passwd"}, app.tr("User password."),"<password>"});
+    QCommandLineOption cashboxOp({ {"c","cashbox"}, app.tr("Device to which the drawer is connected."),"<device>"});
+    QCommandLineOption cashtypeOp({ {"t","cashtype"}, app.tr("Drawer type <serial,cash_drawer,p_samsung_350>:Cash drawer is the drawer\n\that is connected to a printer port or similar, the serial type are \n\the drawers that are connected to serial ports. By default the type is serial."),"<type>","serial"});
+
+    parser.addOptions(
+        {hostOp, databaseOp, userOp,
+         passwdOp, cashboxOp, cashtypeOp
+        }
+    );
+
     parser.process(app);
 
     QString cashbox;
@@ -120,95 +128,100 @@ int main(int argc, char *argv[]){
         passwd = parser.value(passwdOp);
 
     {
-        XmlConfig xml (Files::configFilePath("database"));
-        if (!xml.wellFormed()){
-            qDebug() << "Incorrect database configuration file : "+Files::configFilePath("database");
-            exit (1);
+        // File containing db connection string.
+        auto db_con_file = cfg::xmlFileByKey(cfg::XMLKey::Database);
+        XmlConfig xml ( db_con_file );
+        if (!xml.wellFormed() || !xml.setDomain("database")){
+            qDebug() << "Fatal : Incorrect Database connection file "
+                     << db_con_file;
+            exit (1);  // Exit code for incorrect db conf file
         }
 
-        if (!xml.setDomain("database")){
-            cout << "The xml that defines the database is not correct" << endl;
-            exit (1);
-        }
-
+        // Cmd line options have precedence over conf file
         if ( !host.isEmpty() )      xml.doWrite("hostname", host);
         if ( !database.isEmpty() )  xml.doWrite("dbname",database);
         if ( !user.isEmpty() )      xml.doWrite("user",user);
         if ( !passwd.isEmpty() )    xml.doWrite("passwd",passwd);
 
-        host =      xml.readString("hostname");
+        host     =  xml.readString("hostname");
         database =  xml.readString("dbname");
-        user =      xml.readString("user");
-        passwd =    xml.readString("passwd");
+        user     =  xml.readString("user");
+        passwd   =  xml.readString("passwd");
         xml.save();
     }
 
     //device section
-    XmlConfig xml (Files::configFilePath("devices"));
-    if ( !xml.wellFormed() ){
-        cout << "The xml that defines the devices is not correct" << endl;
-        exit (2);
-    }
+    {
+        auto device_con_file = cfg::xmlFileByKey(cfg::XMLKey::Devices);
+        XmlConfig xml ( device_con_file );
+        if ( !xml.wellFormed() ){
+            qDebug() << "Fatal : Incorrect Devices conf file ";
+            exit (2); // Exit code for incorrect device conf file
+        }
 
-    xml.delDomain();
+        xml.delDomain();
 
-    bool write_devices {false};
-    if (cashtype.isEmpty()){
-        cashtype = xml.readString("cashbox.type");
+        bool write_devices {false};
         if (cashtype.isEmpty()){
-            xml.doWrite("cashbox.type","cash_drawer");
-            CASHBOX_TYPE = "cash_drawer";
+            cashtype = xml.readString("cashbox.type");
+            if (cashtype.isEmpty()){
+                xml.doWrite("cashbox.type","cash_drawer");
+                CASHBOX_TYPE = "cash_drawer";
+                write_devices = true;
+            }
+            else
+                CASHBOX_TYPE = cashtype;
+        }
+        else{
+            xml.doWrite("cashbox.type", cashtype);
             write_devices = true;
         }
-        else
-            CASHBOX_TYPE = cashtype;
-    }
-    else{
-        xml.doWrite("cashbox.type", cashtype);
-        write_devices = true;
-    }
 
-    if (cashbox.isEmpty()){
-        cashbox = xml.readString("cashbox.dev");
         if (cashbox.isEmpty()){
-            xml.doWrite("cashbox.dev","/dev/lp0");
-            CASHBOX_DEVICE = "/dev/lp0";
+            cashbox = xml.readString("cashbox.dev");
+            if (cashbox.isEmpty()){
+                xml.doWrite("cashbox.dev","/dev/lp0");
+                CASHBOX_DEVICE = "/dev/lp0";
+                write_devices = true;
+            }
+            else
+                CASHBOX_DEVICE = cashbox;
+        }
+        else{
+            xml.doWrite("cashbox.dev",cashbox);
             write_devices = true;
         }
-        else
-            CASHBOX_DEVICE = cashbox;
-    }
-    else{
-        xml.doWrite("cashbox.dev",cashbox);
-        write_devices = true;
+
+        if (write_devices){
+            qDebug() << "saving device configuration";
+            xml.save();
+        }
     }
 
-    if (write_devices){
-        cout << "saving device configuration" << endl;
-        xml.save();
-    }
-
-    saveReportmanDeff(host, database, user, passwd);
+    save_reportman_cfg(host, database, user, passwd);
 
     file_manager = new FileManager(nullptr, "file_manager");
-    file_manager->addFile("advanced_order_description.xml");
-    file_manager->addFile("order_description.xml");
-    file_manager->addFile("bar.xml");
-    file_manager->addFile("button_state.xml");
-    file_manager->addFile("company_ticket_data.xml");
-    file_manager->addFile("dcopprinter_config.xml");
-    file_manager->addFile("dcopreceipt_config.xml");
-    file_manager->addFile("invitations_description.xml");
-    file_manager->addFile("ntpv_buttons.xml");
-    file_manager->addFile("printerhtml.xml");
-    file_manager->addFile("printertickettotal.xml");
-    file_manager->addFile("printerz.xml");
-    file_manager->addFile("invoice.xml");
-    file_manager->addFile("lounges.xml");
-    file_manager->addFile("devices_config.xml");
-    file_manager->addFile("kitchen_printerhtml.xml");
+    QStringList cfg_files{
+        "advanced_order_description.xml",
+        "order_description.xml",
+        "bar.xml",
+        "button_state.xml",
+        "company_ticket_data.xml",
+        "dcopprinter_config.xml",
+        "dcopreceipt_config.xml",
+        "invitations_description.xml",
+        "ntpv_buttons.xml",
+        "printerhtml.xml",
+        "printertickettotal.xml",
+        "printerz.xml",
+        "invoice.xml",
+        "lounges.xml",
+        "devices_config.xml",
+        "kitchen_printerhtml.xml"
+    };
 
-    file_manager->loadFiles();
+    file_manager->registerFiles(cfg_files);
+    file_manager->fetchConfigFiles(cfg_files);
 
     // Check if the file to be show at splash screen exists
     // If true create a splash screen
@@ -242,7 +255,7 @@ int main(int argc, char *argv[]){
     }
 
     MainScreen wpos (*splash_screen, "MainScreen");
-    wpos.setWindowTitle("wPOS");
+    wpos.setWindowTitle(WINDOW_TITLE);
     wpos.setAttribute(Qt::WA_QuitOnClose, true);
     wpos.show();
 
@@ -255,29 +268,30 @@ int main(int argc, char *argv[]){
     return app.exec();
 }
 
-bool saveReportmanDeff(const QString& host,
-                       const QString& db_name,
-                       const QString& user,
-                       const QString& passwd)
+void
+save_reportman_cfg(
+    const QString& host,
+    const QString& db_name,
+    const QString& user,
+    const QString& passwd)
 {
-
-    QDir dir = QDir::home();
+    QDir dir = QDir::current();
     if (!dir.cd(".borland") && !dir.mkdir(".borland") ){
-        cout << "There is no borland directory in"
-             << dir.path().toStdString()
-             << " and could not be created"<< endl;
-        return false;
+        qDebug() << "Warning : There is no borland directory in "
+                 << dir.path().toStdString()
+                 << " and could not be created";
+        return;
     }
 
     QFile file (dir.path() + "/dbxconnections");
     if (file.exists() && !file.remove()){
-        cout << "Cannot delete file dbxconnections from rerportman" << endl;
-        return false;
+        qDebug() << "Warning : Cannot delete file dbxconnections from reportman";
+        return;
     }
 
     if (!file.open(QIODevice::WriteOnly | QIODevice::Text)){
-        cout << "Unable to create rportman dbxconnections file" << endl;
-        return false;
+        qDebug() << "Warning : Unable to create reportman dbxconnections file";
+        return;
     }
 
     QTextStream stream(&file);
@@ -301,5 +315,4 @@ bool saveReportmanDeff(const QString& host,
     stream << "Property9=\n";
 
     file.close();
-    return true;
 }

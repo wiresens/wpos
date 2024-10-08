@@ -38,6 +38,8 @@ class DBusPrinter : public QObject , virtual public DBusPrinterInterface
 public:
     static const QString DBusService;
     static const QString DBusObject;
+    static const QString DTD_CFG_FILE;
+    static const QString XML_CFG_FILE;
 
     explicit DBusPrinter(QObject* parent=nullptr, const QString& name = QString());
     ~DBusPrinter();
@@ -65,13 +67,17 @@ protected slots:
 protected:
     HList<XmlRpcPrinter> rpc_printers{};
     QFileSystemWatcher* file_watcher{};
-    QString conf_file_name;
+
     QString auth_token;
 
     QString main_device;
     QString main_type;
     QString kitchen_device;
     QString kitchen_type;
+
+private:
+    QString m_xml_file;
+    QString m_dtd_file;
 };
 
 #endif

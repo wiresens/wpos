@@ -257,7 +257,7 @@ void AdvancedProductInsertionWidget::setLogo(const QString& _logo){
         return;
     }
 
-    logo_button->setIcon(cropedIcon(Files::ProductsDir + logo, ICON_BUTTON_SIZE ));
+    logo_button->setIcon(cropedIcon(cfg::PRODUCT_DIR + logo, ICON_BUTTON_SIZE ));
 }
 
 void AdvancedProductInsertionWidget::showEvent(QShowEvent *e){

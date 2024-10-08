@@ -11,81 +11,95 @@
  ***************************************************************************/
 
 #include "filemanagerdb.h"
-#include <wposcore/config.h>
 
-#include <xmlconfig.h>
+#include <wposcore/config.h>
+#include <libbslxml/xmlconfig.h>
+
 #include <QFile>
 #include <QSqlError>
 #include <QSqlQuery>
+#include <QSqlRecord>
 #include <QVariant>
 #include <QDebug>
-
-
-QString PATH = Files::CONFIG_DIR;
-
-#include <iostream>
-namespace std{}
-using namespace std;
 
 FileManagerDB::FileManagerDB(
     const QString& connection,
     const QString& hostname,
     const QString& database,
     const QString& username,
-    const QString& passwd):
-    BasicDatabase(connection,hostname,database,username,passwd){}
+    const QString& passwd)
+    :    BasicDatabase(
+          connection,
+          hostname,
+          database,
+          username,
+          passwd)
+{}
 
-FileManagerDB::FileManagerDB(const QString& connection,
-                             XmlConfig *xml):
-    BasicDatabase(connection,xml){}
+FileManagerDB::FileManagerDB(
+    const QString& connection,
+    XmlConfig *xml
+):  BasicDatabase(connection,xml){}
 
-FileManagerDB::FileManagerDB(const QString& connection, const QString& configFile):
-    BasicDatabase(connection,configFile){}
+FileManagerDB::FileManagerDB(
+    const QString& connection,
+    const QString& configFile)
+    : BasicDatabase(
+          connection,
+          configFile)
+{}
 
-bool FileManagerDB::exists(const QString& file){
-
+bool FileManagerDB::exists(
+    const QString& file)
+{
     if (!isConnected()) return false;
 
     QString sql {"SELECT file_name FROM xml_files WHERE file_name='"+file+"' ; "};
-    QSqlQuery query {QSqlQuery(sql, getDB())};
+    QSqlQuery query {QSqlQuery(sql, dbHandle())};
 
     //prepare the query execution
     return  (query.isActive() && query.size());
 }
 
-bool FileManagerDB::loadXmlFile(const QString& file){
-    bool ret = false;
-    if (!isConnected()) return ret;
+ResultSet FileManagerDB::loadXmlFiles(
+    const QStringList &files)
+{
+    if (!isConnected()) ResultSet{}; // We shall throw an exception here
 
-    QString sql {"SELECT file_contents, file_path FROM xml_files WHERE file_name='"+file+"' ; "};
-    QSqlQuery query {QSqlQuery(sql, getDB())};
+    QString sql {"SELECT  file_path, file_name, file_contents FROM xml_files ORDER BY file_name ASC ;"};
+    QSqlQuery query(sql, dbHandle());
+    // query.setForwardOnly(true);
 
-    //prepare the query execution
-    if (!query.isActive() || !query.size())
-        return ret;
+    ResultSet res;    
+    while (query.next()) {
+        auto file_name = query.value("file_name").toString();
+        if( ! files.contains( file_name ) ) continue;
 
-    query.first();
-    auto xml_string = query.value(0).toString();
-    auto file_path = query.value(1).toString();
-    xml_string.replace("*","\'");
+        auto file_path = query.value("file_path").toString();
+        auto file_full_name = query.value("file_path").toString().append(file_name);
+        auto xml_contents = query.value("file_contents").toString();
+        xml_contents.replace("*","\'");
 
-    std::unique_ptr<XmlConfig> xml {new XmlConfig()};
-    xml->readXmlFromString(xml_string);
+        FileRecord fr;
+        fr.m_file_path      = file_path;
+        fr.m_file_name      = file_name;
+        fr.m_file_contents  = xml_contents;
+        res.push_back(fr);
 
-    if (xml->wellFormed()){
-        xml->save(file_path+file);
-        cout << "Retrieved file from the database : "
-             << QString(file_path+file).toStdString() << endl;
+        qDebug() << "Fetched file " << file_name << " Located at "
+                 << QFile(file_full_name).fileName();
     }
-    return true;
+    return res;
 }
 
-bool FileManagerDB::saveXmlFile(const QString& file){
+bool FileManagerDB::saveXmlFile(
+    const QString& file_name)
+{
+    QString file_path{ cfg::xmlFileByName(file_name) };
+    if ( !isConnected() || !QFile::exists(file_path))
+        return false;
 
-    QFile qfile {QFile(PATH+file)};
-    if ( !isConnected() || !qfile.exists()) return false;
-
-    XmlConfig xml(PATH + file);
+    XmlConfig xml(file_path);
 
     QString xml_string = xml.toString();
     xml_string.replace("\'","*");
@@ -93,11 +107,11 @@ bool FileManagerDB::saveXmlFile(const QString& file){
 
     QString sql {"INSERT INTO xml_files (file_path, file_name, file_contents)"};
     sql += "VALUES (";
-    sql += "'"+PATH+"',";
-    sql += "'"+file+"',";
-    sql += "'"+xml_string+"');";
+    sql += "'"+ cfg::CFG_XML_DIR + "',";
+    sql += "'" + file_name + "',";
+    sql += "'" + xml_string + "');";
 
-    QSqlQuery query {QSqlQuery( sql, getDB() ) };
+    QSqlQuery query {QSqlQuery( sql, dbHandle() ) };
 
     QSqlError error{ query.lastError() };
     if ( error.type()!= QSqlError::NoError){
@@ -107,12 +121,13 @@ bool FileManagerDB::saveXmlFile(const QString& file){
     return true;
 }
 
-bool FileManagerDB::delXmlFile(const QString& file){
-
+bool FileManagerDB::delXmlFile(
+    const QString& file_name)
+{
     if ( !isConnected() ) return false;
 
-    QString sql {"DELETE FROM xml_files WHERE file_name='"+file+"';"};
-    QSqlQuery query { QSqlQuery( sql, getDB() ) };
+    QString sql {"DELETE FROM xml_files WHERE file_name='"+file_name+"';"};
+    QSqlQuery query { QSqlQuery( sql, dbHandle() ) };
     QSqlError error{ query.lastError() };
 
     if ( error.type()!= QSqlError::NoError){

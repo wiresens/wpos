@@ -20,113 +20,113 @@
 #include <QSqlError>
 #include <QFile>
 
-QString BasicDatabase::SQL_DRIVER {"QPSQL"};
-unsigned int BasicDatabase::DEFAULT_SQL_PORT {5432};
+const QString BasicDatabase::SQL_DRIVER {"QPSQL"};
+size_t BasicDatabase::DEFAULT_SQL_PORT {5434};
+
+
+void BasicDatabase::initDB()
+{
+    if(!QSqlDatabase::contains(m_con_name))
+        m_qsl_db = QSqlDatabase::addDatabase(SQL_DRIVER, m_con_name);
+    m_qsl_db.setHostName(m_host);
+    m_qsl_db.setDatabaseName(m_db);
+    m_qsl_db.setUserName(user);
+    m_qsl_db.setPassword(m_pwd);
+    m_qsl_db.setPort(m_port);
+}
 
 BasicDatabase::BasicDatabase(
-    const QString& _connection_name,
-    const QString& _hostname,
-    const QString& _database,
-    const QString& _username,
-    const QString& _passwd,
-    int _port)
-    :connection_name { _connection_name},
-    hostname { _hostname},
-    dbname { _database},
-    user  {_username},
-    passwd { _passwd},
-    port  {_port}
+    const QString& con_name,
+    const QString& host,
+    const QString& db,
+    const QString& user,
+    const QString& pwd,
+    size_t port
+)
+    :m_con_name { con_name},
+    m_host { host},
+    m_db { db},
+    user  {user},
+    m_pwd { pwd},
+    m_port  {port}
 {}
 
 //FIXME the passwd should be crypted at the xml
 BasicDatabase::BasicDatabase(
-    const QString& _connection_name,
-    XmlConfig *xml):
-    connection_name {_connection_name}
+    const QString& con_name,
+    XmlConfig *xml
+)
+    :m_con_name {con_name}
 {
     loadDBSettings(*xml);
 }
 
 BasicDatabase::BasicDatabase(
-    const QString& _connection_name,
-    const QString& configuration_path):
-    connection_name {_connection_name}
+    const QString& con_name,
+    const QString& config_path
+)
+    :m_con_name {con_name}
 {
-    if ( QFile::exists(configuration_path) ){
-        XmlConfig xml(configuration_path) ;
+
+    if ( QFile::exists( config_path) ){
+        XmlConfig xml(config_path) ;
         loadDBSettings(xml);
     }  
 }
 
-void BasicDatabase::loadDBSettings(XmlConfig &xml){
-
+void BasicDatabase::loadDBSettings(
+    XmlConfig &xml
+)
+{
     xml.pushDomain();
     xml.delDomain();
-    hostname = xml.readString("database.hostname");
-    dbname = xml.readString("database.dbname");
-    user = xml.readString("database.user");
-    passwd = xml.readString("database.passwd");
+        m_host = xml.readString("database.hostname");
+        m_db = xml.readString("database.dbname");
+        user = xml.readString("database.user");
+        m_pwd = xml.readString("database.passwd");
 
-    bool portExist;
-    port = xml.readString("database.port").toInt( &portExist );
-    if ( !portExist ) port = DEFAULT_SQL_PORT;
+        bool portExist;
+        m_port = xml.readString("database.port").toInt( &portExist );
+        if ( !portExist ) m_port = DEFAULT_SQL_PORT;
     xml.delDomain();
     xml.popDomain();
 }
 
-void BasicDatabase::initDB(){
-    qsl_database = QSqlDatabase::addDatabase(SQL_DRIVER, connection_name);
-    qsl_database.setHostName(hostname);
-    qsl_database.setDatabaseName(dbname);
-    qsl_database.setUserName(user);
-    qsl_database.setPassword(passwd);
-    qsl_database.setPort(port);
-}
-
-const QSqlDatabase& BasicDatabase::getDB() const{
-    return qsl_database;
+const QSqlDatabase& BasicDatabase::dbHandle() const{
+    return m_qsl_db;
 }
 
 bool BasicDatabase::connect(){
     initDB();
-    return qsl_database.open();
+    return m_qsl_db.open();
 }
 
 void BasicDatabase::disConnect(){
-    if (qsl_database.isOpen()){
-        qsl_database.close();
-        //        QSqlDatabase::removeDatabase(connection_name);
+    if (m_qsl_db.isOpen()){
+        m_qsl_db.close();
     }
 }
 
 bool BasicDatabase::isConnected() const{
-    return qsl_database.isOpen();
-}
-
-void BasicDatabase::delConnection(){
-
-    if (qsl_database.isOpen()){
-        qsl_database.close();
-        //        QSqlDatabase::removeDatabase(connection_name);
-    }
+    return m_qsl_db.isOpen();
 }
 
 const QString& BasicDatabase::connectionName() const{
-    return connection_name;
+    return m_con_name;
 }
 
 bool BasicDatabase::startTransaction(){
-    return qsl_database.transaction();
+    return m_qsl_db.transaction();
 }
 
 bool BasicDatabase::commit(){
-    return qsl_database.commit();
+    return m_qsl_db.commit();
 }
 
 bool BasicDatabase::rollback(){
-    return qsl_database.rollback();
+    return m_qsl_db.rollback();
 }
 
 QString BasicDatabase::lastError() const{
-    return qsl_database.lastError().text();
+    return m_qsl_db.lastError().text();
 }

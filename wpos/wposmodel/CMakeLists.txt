@@ -37,22 +37,26 @@ list (APPEND ODB_ARGS
 find_package(Threads)
 find_package(Git QUIET)
 
-# Define all testing related content here
-enable_testing()
+if(NOT MSVC)
+    # Define all testing related content here
+    enable_testing()
 
-# Bring in GoogleTest
-include(FetchContent)
-FetchContent_Declare(googletest
-    GIT_REPOSITORY https://github.com/google/googletest.git
-    GIT_TAG 703bd9caab50b139428cea1aaff9974ebee5742e  # release-1.10.0
-)
+    # Bring in GoogleTest
+    include(FetchContent)
+    FetchContent_Declare(googletest
+        # GIT_REPOSITORY https://github.com/google/googletest.git
+        GIT_REPOSITORY file:///home/benes/Workspace/study/googletest
+        # GIT_TAG 703bd9caab50b139428cea1aaff9974ebee5742e  # release-1.10.0
+        GIT_TAG main
+    )
 
-FetchContent_GetProperties(googletest)
-if(NOT googletest_POPULATED)
-    FetchContent_Populate(googletest)
-    add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+    FetchContent_GetProperties(googletest)
+    if(NOT googletest_POPULATED)
+        FetchContent_Populate(googletest)
+        add_subdirectory(${googletest_SOURCE_DIR} ${googletest_BINARY_DIR})
+    endif()
+    include_directories(${googletest_SOURCE_DIR}/googletest/include)
 endif()
-include_directories(${googletest_SOURCE_DIR}/googletest/include)
 
 # Include project headers
 
@@ -122,14 +126,16 @@ set (ODB_HEADER_FILES
     src/order/order.hxx
 )
 
-set(TESTING_SOURCE_FILES
-    tests/main.cpp
-    tests/uom_test.cpp
-    tests/produt_test.cpp
-    tests/party_test.cpp
-    tests/user_test.cpp
-    tests/order_test.cpp
-)
+if(NOT MSVC)
+    set(TESTING_SOURCE_FILES
+        tests/main.cpp
+        tests/uom_test.cpp
+        tests/produt_test.cpp
+        tests/party_test.cpp
+        tests/user_test.cpp
+        tests/order_test.cpp
+    )
+endif()
 
 set(ODB_TAGERT_INCLUDE_DIRS)
 odb_target_includes(ODB_TAGERT_INCLUDE_DIRS
@@ -188,23 +194,25 @@ if(MSVC)
     )
 endif()
 
-add_executable(${TESTING_TARGET}
-    ${TESTING_SOURCE_FILES}
-)
+if(NOT MSVC)
+    add_executable(${TESTING_TARGET}
+        ${TESTING_SOURCE_FILES}
+    )
 
-add_dependencies(${TESTING_TARGET} gtest)
-target_link_libraries(${TESTING_TARGET} PRIVATE
-    ${MAIN_TARGET}
-    ${ODB_LIBRARIES}
-    gtest
-    ${CMAKE_THREAD_LIBS_INIT}
-)
+    add_dependencies(${TESTING_TARGET} gtest)
+    target_link_libraries(${TESTING_TARGET} PRIVATE
+        ${MAIN_TARGET}
+        ${ODB_LIBRARIES}
+        gtest
+        ${CMAKE_THREAD_LIBS_INIT}
+    )
 
-target_include_directories(${TESTING_TARGET}
-    PRIVATE
-    ${ODB_INCLUDE_DIRS}
-    ${ODB_TAGERT_INCLUDE_DIRS}
-)
+    target_include_directories(${TESTING_TARGET}
+        PRIVATE
+        ${ODB_INCLUDE_DIRS}
+        ${ODB_TAGERT_INCLUDE_DIRS}
+    )
+endif()
 
 # qt_generate_deploy_app_script(
 #    TARGET ${MAIN_TARGET}

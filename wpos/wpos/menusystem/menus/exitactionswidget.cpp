@@ -24,9 +24,6 @@
 #include <QDateTime>
 #include <QApplication>
 
-#include <iostream>
-using namespace std;
-
 extern FileManager *file_manager;
 
 ExitActionsWidget::ExitActionsWidget(QWidget *parent, const QString& name) :
@@ -34,7 +31,7 @@ ExitActionsWidget::ExitActionsWidget(QWidget *parent, const QString& name) :
 {
     setupUi(this);
     setObjectName(name);
-    initDialog();
+    initializeDialogBox();
 
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
@@ -44,7 +41,7 @@ ExitActionsWidget::ExitActionsWidget(QWidget *parent, const QString& name) :
 
     cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
     ok_button->setIcon(QPixmap("controls:button_ok_48.png"));
-    connect(ok_button, &QPushButton::clicked, this, &ExitActionsWidget::shutdownSlot);
+    connect(ok_button, &QPushButton::clicked, this, &ExitActionsWidget::shutdown);
     connect(cancel_button, &QPushButton::clicked, this, &ExitActionsWidget::returnToADMmenuSlot);
 }
 
@@ -56,7 +53,7 @@ void ExitActionsWidget::returnToADMmenuSlot(){
     emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
 }
 
-void ExitActionsWidget::shutdownSlot(){
+void ExitActionsWidget::shutdown(){
 
     XmlConfig xml;
     xml.createElement("event_type","shutdown");
@@ -69,13 +66,12 @@ void ExitActionsWidget::shutdownSlot(){
     exit (0);
 }
 
-void ExitActionsWidget::initDialog(){
-
+void ExitActionsWidget::initializeDialogBox(){
     auto dateTime = QDateTime::currentDateTime();
-    main_title_label->setText(tr("ATTENTION: It will turn off the box"));
+    main_title_label->setText(tr("Warning: You are about to turn off this POS"));
     auto abstract = tr("By clicking on the accept button, the box will turn off.<br><br>\
-                  Make sure you have made the Z corresponding to today (<font color=\"yellow\">\
-                  %1 </font> at <font color=\"yellow\"> %2 </font>).Otherwise the Z will drag\
+                  Make sure you have made the Zeta corresponding of today's (<font color=\"yellow\">\
+                  %1 </font> operations at <font color=\"yellow\"> %2 </font>).Otherwise the Zeta will drag\
                   to the next opening of the box.<br><br> Are you sure of <u>want to turn off \
-                  box</u>?").arg(dateTime.date().toString()).arg(dateTime.time().toString());                                                                                                                                       abstract_label->setText(abstract);
+                  the POS</u>?").arg(dateTime.date().toString()).arg(dateTime.time().toString());                                                                                                                                       abstract_label->setText(abstract);
 }

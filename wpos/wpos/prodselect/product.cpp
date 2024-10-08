@@ -39,7 +39,7 @@ using namespace std;
 *    this constructor create a list with id, and empty lists.
 */
 
-BarCoreDB Product::db{"ProductConnection", Files::configFilePath("database")};
+BarCoreDB Product::db{"ProductConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
 
 Product::Product(
     const QString& name,

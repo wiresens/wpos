@@ -37,7 +37,7 @@ const QString& UPDATE_COMPOSITION_DTD = "/etc/ntpv_backoffice/dtds/products_comp
 const QString& UPDATE_PRODUCTS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
 const QString& UPDATE_OPTIONS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_optionslist.dtd";
 const QString& UPDATE_OFFERS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_offerslist.dtd";
-const QString& UPDATE_OFFER_ICON_PATH = Files::ProductsDir;
+const QString& UPDATE_OFFER_ICON_PATH = cfg::PRODUCT_DIR;
 
 BasicProductUpdateWidget::BasicProductUpdateWidget(
         ProductModule *_product_mod,

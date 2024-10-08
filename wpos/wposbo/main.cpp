@@ -25,23 +25,21 @@
 #include <QDir>
 #include <QFileInfo>
 
-#include <iostream>
-using namespace std;
-
-static const QString& VERSION {"2.0rc1"};
+static const QString& APP_VERSION {"2.0-rc1"};
 static const QString& SPLASH_PIXMAP {"/usr/share/ntpv_backoffice/apps/ntpv_backoffice_splash.png"};
 
 QSplashScreen *splash{};
 int main(int argc, char *argv[])
 {
     QApplication app{argc, argv};
-    QDir::setSearchPaths("controls32", QStringList(Files::Controls32Dir));
-    QDir::setSearchPaths("controls48", QStringList(Files::Controls48Dir));
-    QDir::setSearchPaths("controls64", QStringList(Files::Controls64Dir));
-    QDir::setSearchPaths("hands", QStringList(Files::HandsDir));
-    QDir::setSearchPaths("products", QStringList(Files::ProductsDir));
+    QDir::setSearchPaths("controls32", QStringList(cfg::CONTROLS_32_DIR));
+    QDir::setSearchPaths("controls48", QStringList(cfg::CONTROLS_48_DIR));
+    QDir::setSearchPaths("controls64", QStringList(cfg::CONTROLS_64_DIR));
+    QDir::setSearchPaths("hands", QStringList(cfg::HANDS_DIR));
+    QDir::setSearchPaths("products", QStringList(cfg::PRODUCT_DIR));
 
     app.setApplicationName(QFileInfo(QFile(argv[0]).fileName()).baseName());
+    app.setApplicationVersion(APP_VERSION);
 //    DCOPClient *client = a.dcopClient();
 
 //    client->attach();

@@ -35,12 +35,25 @@ const QString XRClient::USER_AGENT{"Wiresens QuteRpc/0.0"};
 const int XRClient::CONTENT_INDENTATION{0};
 const size_t XRClient::PLAINTEXT_MAX_SIZE{64};
 
-XRClient::XRClient(const QUrl& server_url, QObject* parent):
-    QObject(parent), m_server_url{server_url}{
+XRClient::XRClient(
+    const QUrl& server_url,
+    QObject* parent,
+    const QString &client_name
+)
+    :QObject(parent),
+    m_server_url{server_url},
+    m_client_name{client_name}
+{
 
-    if( ! m_server_url.isValid() || m_server_url.port() <= 1024) throw QException{};
+    if( ! m_server_url.isValid() ||
+        m_server_url.port() <= 1024
+    )
+        throw QException{};
+    if( m_client_name.isEmpty()) m_client_name = qApp->applicationName();
 
-    qDebug() << "Starting XML RPC Client User Agent : " << XRClient::USER_AGENT;
+    qDebug() << "Starting XML RPC Client " << "[" + m_client_name + "]";
+    qDebug() << "User Agent : " << XRClient::USER_AGENT;
+    qDebug() << "Remote Server at : " << m_server_url.host() + ":" + QString::number(m_server_url.port());
 //    QNetworkProxy proxy;
 //    proxy.setType(QNetworkProxy::HttpProxy);
 //    proxy.setHostName("172.16.174.2");

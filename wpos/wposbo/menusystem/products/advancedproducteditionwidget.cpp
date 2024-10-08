@@ -127,7 +127,7 @@ void AdvancedProductEditionWidget::loadList(){
 
         auto item = new QTreeWidgetItem(product_listview);
         if( !xml.readString("logo").isEmpty() ){
-            auto icon_path = Files::ProductsDir + xml.readString("logo");
+            auto icon_path = cfg::PRODUCT_DIR + xml.readString("logo");
             item->setIcon(Icon, cropedIcon(icon_path, ICON_SIZE));
         }
         item->setText(Name, name);

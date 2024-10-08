@@ -54,7 +54,7 @@ UserEditionWidget::UserEditionWidget(
 void UserEditionWidget::setUserPicture(){
     picture_path = QFileDialog::getOpenFileName(
         this,
-        tr("Choose a photo for the user"), Files::PicturesDir,
+        tr("Choose a photo for the user"), cfg::PICTURE_DIR,
         tr("Images (*.png *.xpm *.jpg)"));
 
     picture_button->setIcon(QPixmap(picture_path));

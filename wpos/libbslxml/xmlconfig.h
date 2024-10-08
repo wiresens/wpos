@@ -33,6 +33,8 @@ class XmlConfigPrivate;
 
 #define _HAS_VALIDATE_METHOD_
 
+struct XmlDtdValidationException : std::exception{};
+
 /**
     * @short this class give access to the xml files in a silly but easy way
   * @version 0.1.1
@@ -85,6 +87,12 @@ public:
     explicit XmlConfig(
         const QDomDocument &document,
         const QString& _file = QString{},
+        QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
+    );
+
+    XmlConfig(
+        const QString& xml_cfg_file,
+        const QString& dtd_cfg_file,
         QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
     );
 
@@ -164,9 +172,9 @@ public:
 
     /**
     * Saves the xml data in a file named file and flush it to disk.
-    * If the filename is null it will write the data to the same file it reads
+    * If the filename is null it will write the data to the same file it read
     * it from. Note that the constructor of this object needs to be said
-    * explicitely that you want to save data with IO_ReadWrite
+    * explicitely that you want to save data with QIODevice::ReadWrite
     * @param file the file we want to save the XML data in
     * @return true if success or false otherwise
     */
@@ -180,7 +188,7 @@ public:
     * in disk (surely not updated)
     * @return the name of the file
     */
-    QString file();
+    QString fileName();
 
     /**
   * Simply print in stdout what's in the xml right now, it prints the in memory representation

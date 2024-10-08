@@ -19,46 +19,86 @@
 
 #include "database/filemanagerdb.h"
 #include <wposcore/config.h>
+#include <QCoreApplication>
+#include <libbslxml/xmlconfig.h>
 
 FileManager::FileManager(QObject *parent, const QString& name ) :
     QObject(parent),
-    db {new FileManagerDB("FileManagerConnection", Files::configFilePath("database"))}
+    m_dataSource { std::move(FileManagerDB("FileManagerConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)))}
 {
     setObjectName(name);
 }
 
 FileManager::~FileManager(){
-    files.clear();
+    // delete dataStore;
 }
 
 void FileManager::addFile(const QString& file){
-    files.append(file);
+    m_files.append(file);
+}
+
+void FileManager::registerFiles(const QStringList& files){
+    m_files = files;
 }
 
 void FileManager::removeFile(const QString& file){
-    files.removeAll(file);
+    m_files.removeAll(file);
 }
 
 void FileManager::saveFiles(){
+    m_dataSource.connect();
+    m_dataSource.startTransaction();
+        for (auto& file : m_files){
+            m_dataSource.delXmlFile(file);
+            m_dataSource.saveXmlFile(file);
+        }
+    m_dataSource.commit();
+    m_dataSource.disConnect();
+}
 
-    db->connect();
-    for (auto& file : files){
-        db->delXmlFile(file);
-        db->saveXmlFile(file);
+// void FileManager::fetchConfigFiles(
+//     const QStringList& files)
+// {
+//     m_dataSource.connect();
+//         auto res = m_dataSource.loadXmlFiles(files);
+//         saveFilesLocaly(res, cfg::CFG_XML_DIR);
+//     m_dataSource.disConnect();
+// }
+
+void FileManager::fetchConfigFiles(
+    const QStringList& files)
+{
+    m_dataSource.connect();
+    auto res = m_dataSource.loadXmlFiles(files);
+    saveFilesLocaly(res);
+    m_dataSource.disConnect();
+}
+
+// void FileManager::saveFilesLocaly(
+//     const QVector<FileRecord>& records,
+//     const QString& dir)
+// {
+//     for( auto &rec : records){
+//         XmlConfig xml;
+//         xml.readXmlFromString(rec.m_file_contents);
+//         if (xml.wellFormed()){
+//             auto abs_file_path = dir + rec.m_file_name;
+//             if (xml.save(abs_file_path))
+//                 qDebug() << "Saved " << rec.m_file_name
+//                          << " to disk at " << xml.fileName();
+//         }
+//     }
+// }
+
+void FileManager::saveFilesLocaly(
+    const QVector<FileRecord>& records)
+{
+    for( auto &rec : records){
+        XmlConfig xml;
+        xml.readXmlFromString(rec.m_file_contents);
+        if (xml.wellFormed()){
+            auto abs_file_path = rec.m_file_path + rec.m_file_name;
+            xml.save(abs_file_path);
+        }
     }
-    db->disConnect();
 }
-
-void FileManager::loadFiles(){
-
-    db->connect();
-    for (auto& file : files)
-        db->loadXmlFile(file);
-    db->disConnect();
-}
-
-
-
-
-
-

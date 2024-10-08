@@ -145,7 +145,7 @@ set(HEADER_FILES
     ticket/ticketcore.h
     greeter.h
     greeterinterface.h
-    main.h
+
     mainscreen.h
     salesscreen.h
     readconfigscreen.h
@@ -285,10 +285,10 @@ target_link_libraries(${MAIN_TARGET} PUBLIC
     Qt::Core5Compat
 )
 
-install(TARGETS ${MAIN_TARGET}
-    LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
-    RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
-)
+# install(TARGETS ${MAIN_TARGET}
+#     LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR}
+#     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
+# )
 
 qt_generate_deploy_app_script(
    TARGET ${MAIN_TARGET}

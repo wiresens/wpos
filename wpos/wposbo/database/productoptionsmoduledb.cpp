@@ -51,7 +51,7 @@ bool ProductOptionsModuleDB::existOption(const QString& option_type, const QStri
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(query->next()){
         delete query;
@@ -80,7 +80,7 @@ bool ProductOptionsModuleDB::existOptionType(const QString& option_type){
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(query->next()){
         delete query;
@@ -111,7 +111,7 @@ bool ProductOptionsModuleDB::deleteOption(const QString& option_type, const QStr
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -150,7 +150,7 @@ bool ProductOptionsModuleDB::deleteOptionType(const QString& option_type){
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -186,7 +186,7 @@ QString ProductOptionsModuleDB::getDescriptionOption(const QString& option_type,
         return description;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -220,7 +220,7 @@ QString ProductOptionsModuleDB::getDescriptionOptionType(const QString& option_t
         return description;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -255,7 +255,7 @@ ProductOptionData* ProductOptionsModuleDB::getOption(const QString& option_type,
         return option;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -298,7 +298,7 @@ QStringList* ProductOptionsModuleDB::getOptions(const QString& option_type){
         return options;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -335,7 +335,7 @@ QPtrList<ProductOptionData>* ProductOptionsModuleDB::getAllOptions(){
         return ret;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -380,7 +380,7 @@ ProductOptionData* ProductOptionsModuleDB::getOptionType(const QString& option_t
         return option;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -416,7 +416,7 @@ QStringList* ProductOptionsModuleDB::getOptionTypes(){
         return option_types;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -467,7 +467,7 @@ bool ProductOptionsModuleDB::insertOption(const QString& option_type, const QStr
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -506,7 +506,7 @@ bool ProductOptionsModuleDB::insertOptionType(const QString& option_type,
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -550,7 +550,7 @@ bool ProductOptionsModuleDB::updateOption(const QString& option_type,
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -594,7 +594,7 @@ bool ProductOptionsModuleDB::updateOptionType(const QString& option_type,
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -648,7 +648,7 @@ bool ProductOptionsModuleDB::existProductAndOption(const QString& product_code,
         return exist;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -691,7 +691,7 @@ QList<ProductOptionData *> *ProductOptionsModuleDB::getProductOptions(const QStr
         return options;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -778,7 +778,7 @@ bool ProductOptionsModuleDB::insertOptionToProduct(const QString& product_code,
     if((is_default == "t")||(is_default == "true"))
         sql += "'t');";
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -842,7 +842,7 @@ bool ProductOptionsModuleDB::updateOptionToProduct(const QString& product_code,
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -890,7 +890,7 @@ bool ProductOptionsModuleDB::setAllProductOptionValue(const QString& option_type
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     error = query->lastError();
     delete query;
     disConnect();
@@ -930,7 +930,7 @@ bool ProductOptionsModuleDB::updateAllProductOptionValue(const QString& option_t
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     error = query->lastError();
     delete query;
     disConnect();
@@ -969,7 +969,7 @@ bool ProductOptionsModuleDB::deleteOptionToProduct(const QString& product_code,c
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     error = query->lastError();
     delete query;
     disConnect();

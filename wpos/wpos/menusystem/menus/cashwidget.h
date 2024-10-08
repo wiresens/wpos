@@ -13,22 +13,28 @@
 #ifndef CASHWIDGET_H
 #define CASHWIDGET_H
 
-#include "ui_cashwidget.h"
-#include <QWidget>
+#include <QtWidgets/QWidget>
+
+namespace Ui {
+class CashWidget;
+} // namespace Ui
 
 class FloatKeyboard;
 class BarCore;
 class XmlConfig;
 
 class CashWidget :
-    public QWidget,
-    private Ui::CashWidget  {
+    public QWidget{
     Q_OBJECT
+
 public:
     CashWidget(
         BarCore *barCore,
         QWidget *parent,
-        const QString& name = QString());
+        const QString& name = QString()
+    );
+
+    ~CashWidget();
 
     void setNewPrice(double price);
 
@@ -48,6 +54,9 @@ signals:
 protected:
     void showEvent(QShowEvent *event);
     void sendTicketSignal();
+
+private:
+    Ui::CashWidget *ui;
 
     FloatKeyboard *float_keyboard;
     BarCore *barCore{};

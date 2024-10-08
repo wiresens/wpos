@@ -67,8 +67,8 @@ protected:
     QString module_name;
     QString auth_token;
 
-    XRClient *client{};
-    unsigned int port;
+    XRClient     *client{};
+    unsigned int port{};
 };
 
 #endif

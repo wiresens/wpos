@@ -83,7 +83,7 @@ static const QColor BUTTON_ON = QColor(107, 181, 251);
 static const QString& DEFAULT_TAX {"iva16"};
 
 static const QString& DEFAULT_QUANTITY {"1.0"};
-static const QString& ICON_PATH {Files::ProductsDir};
+static const QString& ICON_PATH {cfg::PRODUCT_DIR};
 static const double ICON_BUTTON_SIZE  = 50.00;
 static const double ICON_SIZE = 32.00;
 static const uint TIME_OUT {10};

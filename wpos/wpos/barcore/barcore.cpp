@@ -39,11 +39,12 @@ extern AuthCore *authCore;
 extern QString CASHBOX_DEVICE;
 extern QString CASHBOX_TYPE;
 
-// BarCoreDB BarCore::db{"BarCoreConnection", Files::configFilePath("database")};
+// BarCoreDB BarCore::db{"BarCoreConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
 
 BarCore::BarCore( QObject *parent, const QString& name):
     QObject(parent),
-    db{ new BarCoreDB(QString("BarCoreConnection"), Files::configFilePath("database"))}
+    db{ new BarCoreDB(QString("BarCoreConnection"),
+    cfg::xmlFileByKey(cfg::XMLKey::Database))}
 {
     extraCore = new ExtraCore(this, "extraCore");
     receiptQuerier = new DBusReceiptQuerier(this);
@@ -231,7 +232,7 @@ bool BarCore::setProduct(XmlConfig *product){
 
     product_code = getProductCode(product);
 
-    /*
+    /* @benes
     //This function calls a function
     // BareCoreDB::getProductAtPrinter(product, printer) which makes access to a the table
     // "product_printer_types" which is not present in the database we downloaded.

@@ -14,20 +14,18 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
-#define VERSION "1.2rc2"
-#define DCOPPRINTER_XML_CONFIG "/etc/ntpv/dcopprinter_config.xml"
 
 #include "main.h"
 #include "dbusprinter.h"
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
-#include <QCoreApplication>
-#include <QCommandLineParser>
-#include <QCommandLineOption>
+#include <QtCore/QCoreApplication>
+#include <QtCore/QCommandLineParser>
+#include <QtCore/QCommandLineOption>
+#include <QtCore/QDebug>
+#include <QtCore/QString>
+#include <QtCore/QFile>
 #include <QtDBus/QtDBus>
-#include <QDebug>
-#include <QString>
-#include <QFile>
 
 #ifndef _WINDOWS
     extern "C"{
@@ -36,18 +34,22 @@
 #endif
 
 #include <iostream>
-using namespace std;
 
 extern QString PRINTER_DEVICE;
 extern QString PRINTER_SYSTEM;
 extern QString PRINTER_NAME;
 
-static const QString version = VERSION;
-
 int main(int argc, char *argv[])
 {
+    static const QString version{"2.0.0"};
+
     QCoreApplication app(argc, argv);
-    app.setApplicationName(QFileInfo(QFile(argv[0]).fileName()).baseName());
+    auto appPath = app.applicationDirPath();
+    auto appName = QFileInfo(QFile(argv[0]).fileName()).baseName();
+
+    QDir::setSearchPaths( "xmldocs",  QStringList( appPath ) );
+    QDir::setSearchPaths( "dtddocs",  QStringList( appPath ) );
+    app.setApplicationName(appName);
 
     app.setApplicationVersion(version);
 
@@ -62,15 +64,15 @@ int main(int argc, char *argv[])
     parser.addOption(addressOp);
     parser.process(app);
 
-    std::unique_ptr<XmlConfig> xml {new XmlConfig(DCOPPRINTER_XML_CONFIG)};
-    xml->delDomain();
+    XmlConfig xml (DBusPrinter::XML_CFG_FILE);
+    xml.delDomain();
 
     PRINTER_SYSTEM = "direct";
     if (parser.isSet(systemOp)){
         QString system {parser.value(systemOp)};
         if (system == "direct" || system == "ipp")
             PRINTER_SYSTEM = system;
-        xml->doWrite("main.type",PRINTER_SYSTEM);
+        xml.doWrite("main.type", PRINTER_SYSTEM);
     }
 
     PRINTER_DEVICE = "/dev/lp0";
@@ -79,7 +81,7 @@ int main(int argc, char *argv[])
         QFile file(device_node);
         if (file.exists())
             PRINTER_DEVICE = device_node;
-        xml->doWrite("main.type", PRINTER_DEVICE);
+        xml.doWrite("main.type", PRINTER_DEVICE);
     }
 
     PRINTER_NAME = "";
@@ -87,21 +89,21 @@ int main(int argc, char *argv[])
         QString address {parser.value(addressOp)};
         if (! address.isEmpty())
             PRINTER_NAME = address;
-        xml->doWrite("main.device", PRINTER_NAME);
+        xml.doWrite("main.device", PRINTER_NAME);
     }
 
     if ( PRINTER_SYSTEM == "ipp" && PRINTER_NAME.isEmpty() ){
-        QString aux = xml->readString("main.device");
+        QString aux = xml.readString("main.device");
         if ( aux.isEmpty() ){
 #ifndef _WINDOWS
             PRINTER_NAME = QString(cupsGetDefault());
 #endif
-            xml->doWrite("main.device", PRINTER_NAME);
-            cout << "Default printer will be used (DEFAULT PRINTER = " << PRINTER_NAME.toStdString() << ")" << endl;
+            xml.doWrite("main.device", PRINTER_NAME);
+            std::cout << "Default printer will be used (DEFAULT PRINTER = "
+                 << PRINTER_NAME.toStdString() << ")\n";
         }
     }
-
-    xml->save();
+    xml.save();
 
     //We try to register the service to the dbus-daemon session buss
     QDBusConnection dbus = QDBusConnection::sessionBus();

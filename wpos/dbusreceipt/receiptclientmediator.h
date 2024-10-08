@@ -37,8 +37,6 @@ public:
     explicit ReceiptClientMediator(QObject *parent = nullptr, QString name = QString());
     ~ReceiptClientMediator();
 
-    bool readConfig(const QString& path);
-
     /**
         *       all changes are done via xml-rpc at the remotes machines shorted in list.
         *       these machines should run the bslkxmlrpcd and the dbusreceipt module.
@@ -97,13 +95,17 @@ public:
     void deleteReceiptByStartDate(QString employee_id, QString start_time);
 
 protected slots:
-    void fileDirtySlot(const QString& file);
-protected:
-    HList<ReceiptClient> rpc_clients;
-    QString file_path;
-    QString auth_token;
+    void updateClients(const QString& file);
 
-    QFileSystemWatcher *file_watcher;
+private:
+    bool createReceiptClients(const QString& xml_file);
+
+private:
+    QFileSystemWatcher *file_watcher{};
+    HList<ReceiptClient> rpc_clients;
+    QString m_xml_cfg_file;
+    QString m_dtd_cfg_file;
+    QString auth_token;   
 };
 
 #endif

@@ -26,11 +26,20 @@ Ported to Qt 5.12.8 by Gilles Bene Pougoue <gilles.benepougoue@gmail.com>
 #include "rpcsocket.h"
 #include <iostream>
 
-TcpRpcServer::TcpRpcServer(PayloadFormater& encoder, Port port, QObject* parent)
-    : RpcServerImp(parent), m_encoder{encoder}, m_port{port}
+TcpRpcServer::TcpRpcServer(
+    PayloadFormater& encoder,
+    Port port,
+    QObject* parent)
+    : RpcServerImp(parent),
+    m_encoder{encoder},
+    m_port{port}
 {
     listener = new QTcpServer(this);
-    connect(listener, &QTcpServer::newConnection, this, &TcpRpcServer::newConnection);
+    connect(listener,
+            &QTcpServer::newConnection,
+            this,
+            &TcpRpcServer::newConnection
+    );
 }
 
 TcpRpcServer::~TcpRpcServer(){

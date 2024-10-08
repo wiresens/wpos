@@ -57,8 +57,8 @@ public slots:
     bool unlockRemoteByStartDate(QString employee_id, QString start_time);
 
 protected:
-    DBusReceiptPrimitive *primitive;
-    ReceiptClientMediator *mediator;
+    DBusReceiptPrimitive    *m_receipt_primitive;
+    ReceiptClientMediator   *m_receipt_client_mediator;
 };
 
 #endif

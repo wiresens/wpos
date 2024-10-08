@@ -36,7 +36,7 @@ TicketCore::TicketCore(QObject *parent, const QString& name):
     QObject(parent)
 {
     setObjectName(name);
-    db = new TicketCoreDB("TicketCoreConnection", Files::configFilePath("database"));
+    db = new TicketCoreDB("TicketCoreConnection", cfg::xmlFileByKey(cfg::XMLKey::Database));
     db->connect();
     printer = new PrinterManager(this, "ticketPrinter");
 
@@ -269,7 +269,7 @@ bool TicketCore::dailyCashOperations(bool partial){
 
 
     //there is a new section at the xml that with the cash at the cashbox
-    ChangeMoneyWidgetDB tmp_db("TicketCoreCashInWidget", Files::configFilePath("database"));
+    ChangeMoneyWidgetDB tmp_db("TicketCoreCashInWidget", cfg::xmlFileByKey(cfg::XMLKey::Database));
     tmp_db.connect();
     tmp_xml.createElement("money_at_cashbox", QString::number(tmp_db.getMoneyInCash(),'f',2));
     tmp_db.disConnect();

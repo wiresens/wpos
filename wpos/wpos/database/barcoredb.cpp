@@ -41,7 +41,7 @@ QString BarCoreDB::getName(const QString& product_code){
     if (!isConnected()) return QString();
 
     QString sql {"SELECT product FROM products WHERE product_code='"+product_code+"';"};
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
 
     //prepare the query execution
     if (!query.isActive() || !query.size()){
@@ -65,7 +65,7 @@ QString BarCoreDB::getPrice(const QString& product_code){
 
     QString sql = "SELECT price FROM products WHERE product_code='"+product_code+"';";
 
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     //prepare the query execution
     if (!query.isActive() || !query.size()){
         return QString("0.0");
@@ -81,7 +81,7 @@ QString BarCoreDB::getTax(const QString& product_code){
     QString sql = "SELECT t.rate FROM products p, taxes t ";
     sql += "WHERE (p.product_code='"+product_code+"') AND (t.tax=p.tax);";
 
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     //prepare the query execution
     if (!query.isActive() || !query.size())
         return QString("0.0");
@@ -94,7 +94,7 @@ QString  BarCoreDB::getTaxName(const QString& product_code){
     if (!isConnected())  return QString();
 
     QString sql = "SELECT tax FROM products WHERE product_code='"+product_code+"';";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
 
     //prepare the query execution
     if (!query.isActive() || !query.size())
@@ -116,7 +116,7 @@ QString BarCoreDB::getOptionModifier(
     sql += "(option_type='"+option_type+"') AND ";
     sql += "(prod_option='"+option_value+"') ;";
 
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
 
     //prepare the query execution
     if (!query.isActive()  || !query.size())  return QString("");
@@ -142,7 +142,7 @@ bool BarCoreDB::checkOption(
     QString sql =   "SELECT count(*) FROM init_prod_options ";
     sql += "WHERE product_code='"+product_code+"' AND ";
     sql += "option_type='"+option_type+"' AND prod_option='"+option_value+"';";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
 
     //prepare the query execution
     if (!query.isActive() || !query.size()) return false;
@@ -186,7 +186,7 @@ OfferData BarCoreDB::getOffer(
         sql += "WHERE (o.offer_type=i.offer_type) AND ";
         sql += "(i.product_code='"+product_code+"') ";
         sql += "AND (i.prod_offer='"+offer_name+"') ;";
-        QSqlQuery query(sql, getDB());
+        QSqlQuery query(sql, dbHandle());
 
         //prepare the query execution
         if ( query.isActive() && query.size()){
@@ -209,6 +209,6 @@ bool BarCoreDB::getProductAtPrinter(
     sql += " WHERE (product_code='"+product_code+"') AND ";
     sql += "(printer_type='"+printer+"') ;";
 
-    QSqlQuery query (sql, getDB());
+    QSqlQuery query (sql, dbHandle());
     return  ( query.isActive() && query.size() );
 }

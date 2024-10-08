@@ -42,7 +42,7 @@ QMap<QString, ProductExtraInfo> AuxDB::productExtra(){
     QMap<QString, ProductExtraInfo> extra;
     if ( isConnected() ){
         QString sql = "SELECT option_type, prod_option from products_options_list;";
-        QSqlQuery query(sql, getDB());
+        QSqlQuery query(sql, dbHandle());
 
         //prepare the query execution
         if ( query.isActive() && query.size()){

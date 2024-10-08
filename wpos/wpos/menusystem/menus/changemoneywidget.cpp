@@ -32,8 +32,6 @@
 #include <iostream>
 using namespace std;
 
-
-
 ChangeMoneyWidget::ChangeMoneyWidget(QWidget *parent, const QString& name) :
     QWidget(parent)
 {
@@ -53,7 +51,7 @@ ChangeMoneyWidget::ChangeMoneyWidget(QWidget *parent, const QString& name) :
     cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
     // Create the connection to the database
-    db = new ChangeMoneyWidgetDB ("BslChangeMoneyWidgetConnection",Files::configFilePath("database"));
+    db = new ChangeMoneyWidgetDB ("ChangeMoneyWidgetDBConnection",cfg::xmlFileByKey(cfg::XMLKey::Database));
 
     numpad_frame_layout->addWidget(keyPad);
 

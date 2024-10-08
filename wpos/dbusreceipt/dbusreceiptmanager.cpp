@@ -33,14 +33,12 @@ DBusReceiptManager::DBusReceiptManager(QObject *parent, const QString& name) :
         exit(EXIT_FAILURE);
     }
 
-    //initialize the interfaces...
-    primitive = new DBusReceiptPrimitive(this, "DBusReceiptPrimitive");
-    mediator = new DBusReceiptMediator(primitive, this);
-    mediator->setObjectName("DBusReceiptMediator");
-    notifiyer = new ReceiptChangeNotifiyer(this, "ReceiptChangeNotifiye");
+    // Initialize the interfaces...
+    m_receipt_primitive   = new DBusReceiptPrimitive(this, "DBusReceiptPrimitive");
+    m_receipt_mediator    = new DBusReceiptMediator(m_receipt_primitive, this);
+    m_receipt_mediator->setObjectName("DBusReceiptMediator");
+    m_receipt_change_notifiyer   = new ReceiptChangeNotifiyer(this, "ReceiptChangeNotifiye");
 
-    connect(primitive, &DBusReceiptPrimitive::receiptChangedByStartDate,
-            notifiyer, &ReceiptChangeNotifiyer::receiptChangedSlotByDate);
+    connect(m_receipt_primitive, &DBusReceiptPrimitive::receiptChangedByStartDate,
+            m_receipt_change_notifiyer, &ReceiptChangeNotifiyer::receiptChangedSlotByDate);
 }
-
-DBusReceiptManager::~DBusReceiptManager(){}

@@ -20,24 +20,30 @@
 
 #include <QObject>
 #include <QStringList>
-
-
-class FileManagerDB;
+#include "database/filemanagerdb.h"
 
 class FileManager : public QObject  {
     Q_OBJECT
 public:
-    explicit FileManager(QObject *parent=nullptr, const QString& name = QString());
+    explicit FileManager(
+        QObject *parent=nullptr,
+        const QString& name = QString{});
+
     ~FileManager();
 
     void addFile(const QString& file);
+    void registerFiles(const QStringList& files);
     void removeFile(const QString& file);
     void saveFiles();
-    void loadFiles();
+    void fetchConfigFiles(const QStringList& files);
 
-protected:
-    QStringList files;
-    FileManagerDB *db;
+private:
+    // void saveFilesLocaly(const QVector<FileRecord>& records, const QString &dir);
+    void saveFilesLocaly(const QVector<FileRecord>& records);
+
+private:
+    QStringList m_files;
+    FileManagerDB m_dataSource;
 };
 
 #endif

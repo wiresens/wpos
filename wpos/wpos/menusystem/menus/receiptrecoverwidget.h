@@ -26,14 +26,13 @@ class DBusReceiptQuerier;
 class TicketResumeData;
 
 class ReceiptRecoverWidget :
-        public TicketsHandlingWidget,
-        virtual public ReceiptInterface
+    public TicketsHandlingWidget,
+    virtual public ReceiptInterface
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wpos.ReceiptRecover")
 
 public:
-
     enum OrderSection{
         Icon            = 0,
         EmployeeName    = 1,
@@ -46,13 +45,18 @@ public:
 
     static const QString DBusObject;
 
-    explicit ReceiptRecoverWidget(QWidget *parent = nullptr,
-                         const QString& name = QString());
+    explicit ReceiptRecoverWidget(
+        QWidget *parent = nullptr,
+        const QString& name = QString{}
+    );
+
     ~ReceiptRecoverWidget();
 
 public slots:
-    Q_SCRIPTABLE void receiptChanged(QString employee_id,
-                                     QString start_time) override;
+    Q_SCRIPTABLE void receiptChanged(
+        QString employee_id,
+        QString start_time) override;
+
 public slots:
     virtual void rejectChange() override;
     virtual void handleTicketSelected() override;
@@ -87,24 +91,27 @@ protected:
     bool refreshAndShow();
     QStringList getUsedTableCodes();
 
-    virtual QList<TicketResumeData*>* employeeReceiptResume(const QString& employee_id);
-    virtual QList<TicketResumeData*>* allEmployeeReceiptResume();
+    virtual QList<TicketResumeData*>*
+    employeeReceiptResume(const QString& employee_id);
+
+    virtual QList<TicketResumeData*>*
+    allEmployeeReceiptResume();
 
 private :
-    QList<TicketResumeData*> *receiptResumeFromXml(XmlConfig* xml);
+    QList<TicketResumeData*>*
+    receiptResumeFromXml(XmlConfig* xml);
+    void showMenu();
 
 private:
-    DBusReceiptQuerier *receiptQuerier{};
-    NPopUpKeyboard *keyboard{};
+    DBusReceiptQuerier  *m_receiptQuerier{};
+    NPopUpKeyboard      *m_keyboard{};
+    QAbstractButton     *m_lounge_button    {printer_or_lounges_button};
+    QAbstractButton     *m_pay_button       {trash_button};
 
-    QAbstractButton* lounge_button{printer_or_lounges_button};
-    QAbstractButton* pay_button{trash_button};
-
-//    QPixmap pay_pixmap {"controls:redo.png"};
-    QPixmap pay_pixmap {"payments:mix_mobile_paymodes.png"};
-    QPixmap allusers_pixmap {"controls:kuser.png"};
-
-    QString input_text;
-    bool use_lounges{false};
+//    QPixmap m_pay_pixmap {"controls:redo.png"};
+    QPixmap             m_pay_pixmap        {"payments:mix_mobile_paymodes.png"};
+    QPixmap             m_allusers_pixmap   {"controls:kuser.png"};
+    QString             m_input_text;
+    bool                m_use_lounges       {false};
 };
 #endif

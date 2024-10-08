@@ -57,7 +57,7 @@ static const QString& PRODUCTS_DTD {"/etc/ntpv_backoffice/dtds/products_products
 static const QString& OFFERS_DTD {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
 static const QString& OPTIONS_DTD {"/etc/ntpv_backoffice/dtds/products_optionslist.dtd"};
 static const QString& SHORTCUT_XML {"/etc/ntpv/ntpv_buttons.xml"};
-static const QString& ICON_PATH {Files::ProductsDir};
+static const QString& ICON_PATH {cfg::PRODUCT_DIR};
 static const QString& OFFERS_ICON_PATH {"controls:offers/"};
 
 static const int SIZE_CONST = 50.00;

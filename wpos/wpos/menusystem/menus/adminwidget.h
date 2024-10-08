@@ -28,11 +28,14 @@ public:
         ProductScreenStack *stack,
         QWidget* parent=nullptr,
         const QString& name = QString());
+signals:
+    void genericSignal(const QString& signal);
+    void genericDataSignal(const QString& signal ,XmlConfig *xml);
 
-public slots:
+private slots:
     void cancelSlot();
     void launchBackOffice();
-    void backOfficeEndSlot();
+    void restoreState();
     int launchXterm();
 
     void loadToggleButtonStatus();
@@ -40,11 +43,7 @@ public slots:
 
     void genericSignalSlot(const QString& signal);
 
-signals:
-    void genericSignal(const QString& signal);
-    void genericDataSignal(const QString& signal ,XmlConfig *xml);
-
-protected:
+private:
     void init(ProductScreenStack *stack);
     void raiseMainWidget();
     void raiseConfigWidget();
@@ -68,6 +67,7 @@ private:
     GenericButtonGroup *admin_operations{};
 
     QProcess *process{};
+    const QString wposbo;
 };
 
 #endif

@@ -362,7 +362,7 @@ void ProductOfferCreationWidget::setOffer(const QString& offer_type, const QStri
         if( !items.isEmpty())
             logo->setCurrentItem(items.first());
     }
-    float_keyboard_offer->receiveDigit(xml.readString("value").toDouble());
+    float_keyboard_offer->reeadKey(xml.readString("value").toDouble());
 }
 
 void ProductOfferCreationWidget::showError(const QString& offer_type, const QString& offer_name){

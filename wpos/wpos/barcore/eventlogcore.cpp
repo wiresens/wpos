@@ -34,7 +34,7 @@ extern AuthCore *authCore;
 
 EventLogCore::EventLogCore(QObject *parent,  const QString& name ):
     QObject(parent),
-    db{new EventLogCoreDB("EventLogCoreConnection", Files::configFilePath("database"))}
+    db{new EventLogCoreDB("EventLogCoreConnection", cfg::xmlFileByKey(cfg::XMLKey::Database))}
 {
     setObjectName(name);
     db->connect();

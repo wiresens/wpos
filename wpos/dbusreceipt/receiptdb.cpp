@@ -26,10 +26,6 @@
 #include <QStringList>
 #include <QDebug>
 
-#include <iostream>
-namespace std{}
-using namespace std;
-
 ReceiptDB::ReceiptDB(
         const QString& _connection_name,
         const QString& _hostname,
@@ -91,7 +87,7 @@ bool ReceiptDB::create(XmlConfig &xml, bool lock){
     sql += "'"+xml_string+"'";
     sql+= ");";
 
-    QSqlQuery query (sql, getDB());
+    QSqlQuery query (sql, dbHandle());
 
     bool ret = false;
     switch ( query.lastError().type() ){
@@ -122,7 +118,7 @@ bool ReceiptDB::existReceiptByDate(QString employee_id, QString start_date){
     QString sql = "SELECT xml FROM orders ";
     sql += "WHERE employee_id ='"+employee_id+"' AND start_time = '"+start_date+"' ;";
 
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     if (!query.isActive()){
         disConnect();
         return false;
@@ -152,7 +148,7 @@ bool ReceiptDB::lockReceiptByDate(QString employee_id, QString start_date){
     //        query += "AND blocked = 'false' ";
     sql += ";";
 
-    QSqlQuery query (sql, getDB());
+    QSqlQuery query (sql, dbHandle());
     switch ( query.lastError().type() ){
     case QSqlError::NoError :
         ret = true;
@@ -180,7 +176,7 @@ bool ReceiptDB::unlockReceiptByDate(QString employee_id, QString start_date){
     //        query += "AND blocked = 'true' ";
     sql += ";";
 
-    QSqlQuery query (sql, getDB() );
+    QSqlQuery query (sql, dbHandle() );
 
     switch ( query.lastError().type() ){
     case QSqlError::NoError :
@@ -210,7 +206,7 @@ bool ReceiptDB::getReceiptStateByDate(QString employee_id, QString start_date){
     sql += "FROM orders ";
     sql += "WHERE employee_id ='"+employee_id+"' AND start_time = '"+start_date+"' ;";
 
-    QSqlQuery query(sql,getDB());
+    QSqlQuery query(sql,dbHandle());
     if (!query.isActive()){
         disConnect();
         return ret;
@@ -242,7 +238,7 @@ bool ReceiptDB::deleteReceiptByDate(QString employee_id, QString start_date){
     sql += "AND start_time = '"+start_date+"' ";
     sql += ";";
 
-    QSqlQuery query (sql, getDB());
+    QSqlQuery query (sql, dbHandle());
 
     switch ( query.lastError().type() ){
     case QSqlError::NoError:
@@ -286,7 +282,7 @@ bool ReceiptDB::saveReceipt(XmlConfig& xml){
     sql += "AND start_time = '"+start_time+"' ";
     sql += ";";
 
-    QSqlQuery query (sql, getDB());
+    QSqlQuery query (sql, dbHandle());
     bool ret = false;
     switch ( query.lastError().type() ){
 
@@ -313,7 +309,7 @@ QString ReceiptDB::getReceiptByDate(QString employee_id, QString start_date){
     QString sql  =  "SELECT xml FROM orders ";
     sql += "WHERE employee_id ='"+employee_id+"' AND start_time = '"+start_date+"' ;";
 
-    QSqlQuery query (sql, getDB());
+    QSqlQuery query (sql, dbHandle());
     if (!query.isActive()){
         disConnect();
         return QString();
@@ -346,7 +342,7 @@ QString ReceiptDB::getReceiptResume(){
     QString sql = "SELECT employee_id, start_time, blocked, blocker, name, description ";
     sql += "FROM orders JOIN staff USING (employee_id);";
 
-    QSqlQuery query(sql , getDB());
+    QSqlQuery query(sql , dbHandle());
     if (!query.isActive()){
         disConnect();
         return QString();
@@ -397,7 +393,7 @@ QString ReceiptDB::getReceiptResume(QString employee_id){
     QString sql =  "SELECT employee_id, start_time, blocked, blocker, name, description ";
     sql += "FROM orders JOIN staff USING (employee_id) WHERE employee_id = '"+employee_id+"';";
 
-    QSqlQuery query( sql, getDB());
+    QSqlQuery query( sql, dbHandle());
     if (!query.isActive()){
         disConnect();
         return QString();

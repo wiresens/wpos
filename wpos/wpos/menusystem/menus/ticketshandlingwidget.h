@@ -12,8 +12,10 @@ class TicketsHandlingWidget :
         protected Ui::KillTicketsWidget
 {
 public:
-    explicit TicketsHandlingWidget(QWidget* parent = nullptr,
-            const QString& name = QString());
+    explicit TicketsHandlingWidget(
+        QWidget* parent = nullptr,
+        const QString& name = QString{}
+    );
 
     virtual ~TicketsHandlingWidget();
 

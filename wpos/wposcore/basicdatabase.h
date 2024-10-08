@@ -28,15 +28,11 @@
 
 class XmlConfig;
 
-//#define SQL_DRIVER "QPSQL"
-//#define SQL_PORT 5432
-
-
 class BasicDatabase {
 public:
 
-    static QString SQL_DRIVER;
-    static unsigned int DEFAULT_SQL_PORT;
+    static const QString SQL_DRIVER;
+    static size_t DEFAULT_SQL_PORT;
 
     /**
     *  constructor, the connection name should be different for each connection, the rest of parametters are:
@@ -50,12 +46,14 @@ public:
 
     BasicDatabase() = default ;
 
-    BasicDatabase(const QString& _connection_name,
-                  const QString& _hostname,
-                  const QString& _database,
-                  const QString& _username,
-                  const QString& _passwd,
-                  int port = DEFAULT_SQL_PORT);
+    BasicDatabase(
+        const QString& con_name,
+        const QString& host,
+        const QString& db,
+        const QString& user,
+        const QString& pwd,
+        size_t port = DEFAULT_SQL_PORT
+    );
     /**
     *  constructor, the connection name should be different for each connection.
     *  The XmlConfig should describethe connection.
@@ -69,7 +67,10 @@ public:
     *  <!ELEMENT passwd (#PCDATA)>
     *  <!ELEMENT port (#PCDATA)>
     */
-    BasicDatabase(const QString& _connection_name, XmlConfig *xml);
+    BasicDatabase(
+        const QString& con_name,
+        XmlConfig *xml
+    );
 
     /**
     *  constructor, the connection name should be different for each connection.
@@ -78,13 +79,13 @@ public:
     *  @param  A path to an Xml with the description of the connection.
     *  The Xml Should validate against the basicDatabase Connection DTD
     **/
-    BasicDatabase(const QString& _connection_name,
-                  const QString& configuration_path);
-
-//    ~BasicDatabase(){ QSqlDatabase::removeDatabase(connection_name);}
+    BasicDatabase(
+        const QString& con_name,
+        const QString& config_path
+    );
 
     //use this to create queries outside this class
-    const QSqlDatabase &getDB() const;
+    const QSqlDatabase &dbHandle() const;
 
     bool connect();
     void disConnect();
@@ -101,17 +102,15 @@ public:
 protected:
     void loadDBSettings(XmlConfig &xml);
     void initDB();
-    void delConnection();
 
 private:
-    QSqlDatabase qsl_database;
-
-    QString connection_name;
-    QString hostname;
-    QString dbname;
+    QSqlDatabase m_qsl_db;
+    QString m_con_name;
+    QString m_host;
+    QString m_db;
     QString user;
-    QString passwd;
-    unsigned int port{DEFAULT_SQL_PORT};
+    QString m_pwd;
+    size_t m_port{DEFAULT_SQL_PORT};
 };
 
 #endif

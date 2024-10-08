@@ -28,12 +28,12 @@ DBusReceiptMediator::DBusReceiptMediator(DBusReceiptPrimitive *receiptManager,
         QObject *parent):
 
     QObject(parent),
-    primitive{ receiptManager }
+    m_receipt_primitive{ receiptManager }
 {
     new DBusReceiptMediatorAdaptor(this);
     QDBusConnection dbus = QDBusConnection::sessionBus();
     dbus.registerObject(DBusReceiptMediator::DBusObject, this);
-    mediator = new ReceiptClientMediator(this, "remote");
+    m_receipt_client_mediator = new ReceiptClientMediator(this, "remote");
 }
 
 DBusReceiptMediator::~DBusReceiptMediator(){}
@@ -51,11 +51,11 @@ bool DBusReceiptMediator::createReceipt(QString xml_string){
         return false;
 
     //check the receipt status.
-    if (primitive->getReceiptStateByStartDate(employee_id, start_time))
+    if (m_receipt_primitive->getReceiptStateByStartDate(employee_id, start_time))
         return false;
 
-    primitive->createReceipt(xml_string);
-    mediator->createReceipt(xml_string);
+    m_receipt_primitive->createReceipt(xml_string);
+    m_receipt_client_mediator->createReceipt(xml_string);
     return true;
 }
 
@@ -73,25 +73,25 @@ bool DBusReceiptMediator::saveReceipt(QString xml_string){
         return false;
 
     //Check the receipt status.
-    if (primitive->getReceiptStateByStartDate(employee_id, start_time))
+    if (m_receipt_primitive->getReceiptStateByStartDate(employee_id, start_time))
         return false;
 
-    primitive->saveReceipt(xml_string);
-    mediator->unlockReceiptByStartDate(employee_id, start_time);
-    mediator->saveReceipt(xml_string);
+    m_receipt_primitive->saveReceipt(xml_string);
+    m_receipt_client_mediator->unlockReceiptByStartDate(employee_id, start_time);
+    m_receipt_client_mediator->saveReceipt(xml_string);
     return true;
 }
 
 bool DBusReceiptMediator::deleteReceiptByStartDate(QString employee_id, QString start_time){
     if ( employee_id.isEmpty() ||
          start_time.isEmpty() ||
-         primitive->getReceiptStateByStartDate(employee_id, start_time))
+         m_receipt_primitive->getReceiptStateByStartDate(employee_id, start_time))
 
         return false;
 
-    primitive->deleteReceiptByStartDate(employee_id, start_time);
-    mediator->unlockReceiptByStartDate(employee_id, start_time);
-    mediator->deleteReceiptByStartDate(employee_id, start_time);
+    m_receipt_primitive->deleteReceiptByStartDate(employee_id, start_time);
+    m_receipt_client_mediator->unlockReceiptByStartDate(employee_id, start_time);
+    m_receipt_client_mediator->deleteReceiptByStartDate(employee_id, start_time);
 
     return true;
 }
@@ -99,26 +99,26 @@ bool DBusReceiptMediator::deleteReceiptByStartDate(QString employee_id, QString 
 QString DBusReceiptMediator::getReceiptByStartDate(QString employee_id, QString start_time){
     if ( employee_id.isEmpty() ||
          start_time.isEmpty() ||
-         primitive->getReceiptStateByStartDate(employee_id, start_time))
+         m_receipt_primitive->getReceiptStateByStartDate(employee_id, start_time))
         return QString();
 
-    return primitive->getReceiptByStartDate(employee_id, start_time);
+    return m_receipt_primitive->getReceiptByStartDate(employee_id, start_time);
 }
 
 bool DBusReceiptMediator::lockRemoteByStartDate(QString employee_id, QString start_time){
-    mediator->lockReceiptByStartDate(employee_id, start_time);
+    m_receipt_client_mediator->lockReceiptByStartDate(employee_id, start_time);
     return true;
 }
 
 bool DBusReceiptMediator::unlockRemoteByStartDate(QString employee_id, QString start_time){
-    mediator->unlockReceiptByStartDate(employee_id, start_time);
+    m_receipt_client_mediator->unlockReceiptByStartDate(employee_id, start_time);
     return true;
 }
 
 QString DBusReceiptMediator::getReceiptResume(){
-    return primitive->getReceiptResume();
+    return m_receipt_primitive->getReceiptResume();
 }
 
 QString DBusReceiptMediator::getReceiptResume(QString employee_id){
-    return primitive->getReceiptResume(employee_id);
+    return m_receipt_primitive->getReceiptResume(employee_id);
 }

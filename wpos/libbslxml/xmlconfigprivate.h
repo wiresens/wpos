@@ -116,8 +116,8 @@ private:
 
     FILE* tmp_fd{};
     QDomDocument m_domDocument;
-    QFile dev;         //the file we are working with
-    QIODevice::OpenMode mode;         //the mode in which we open the file
+    QFile m_qfile;         //the file we are working with
+    QIODevice::OpenMode m_mode;         //the mode in which we open the file
     bool has_tempory_file{false};  // Are we working with is tempory file or not
     bool is_xml_file_parsed_succesfully{false};
 };

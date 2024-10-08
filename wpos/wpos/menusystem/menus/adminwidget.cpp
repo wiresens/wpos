@@ -35,11 +35,15 @@
 
 #include <xmlconfig.h>
 
-extern AuthCore *authCore;
-extern FileManager *file_manager;
+extern AuthCore     *authCore;
+extern FileManager  *file_manager;
 
-AdminWidget::AdminWidget(ProductScreenStack *stack, QWidget* parent, const QString& name):
-    QWidget(parent)
+AdminWidget::AdminWidget(
+    ProductScreenStack *stack,
+    QWidget* parent,
+    const QString& name):
+    QWidget(parent),
+    wposbo{QCoreApplication::applicationDirPath().append("/wposbo")}
 {
     setupUi(this);
     setObjectName(name);
@@ -60,13 +64,13 @@ AdminWidget::AdminWidget(ProductScreenStack *stack, QWidget* parent, const QStri
     loadToggleButtonStatus();
 
     process = new QProcess(this);
-    process->setObjectName("backoffice_process");
+    process->setObjectName("wposbo");
 
 }
 
 void AdminWidget::init(ProductScreenStack *stack){
 
-    auto configFile = Files::configFilePath("buttons");
+    auto configFile = cfg::xmlFileByKey(cfg::XMLKey::Buttons);
 
     management = new GenericButtonGroup(stack, gestion_inside_frame, "admin_management");
     management->readConfigFrom("admin_management", configFile);
@@ -135,14 +139,14 @@ void AdminWidget::init(ProductScreenStack *stack){
 
     toggle_fx2000 = controls->find("toggle_fx2000");
     if (!toggle_fx2000){
-        qDebug() << "wpos::error toggle_fx2000" << Qt::endl;
+        qDebug() << "wpos::error toggle_fx2000\n";
         QMessageBox::warning(this, caption.arg("toggle_fx2000"), text.arg("toggle_fx2000"), QMessageBox::NoButton);
         exit(1);
     }
 
     toggle_printing = printer_operations->find("toggle_printing");
     if (! toggle_printing){
-        qDebug() << "wpos::error toggle_printing" << Qt::endl;
+        qDebug() << "wpos::error toggle_printing\n";
         QMessageBox::warning(this, caption.arg("toggle_printing"), text.arg("toggle_printing"), QMessageBox::NoButton);
         exit(1);
     }
@@ -161,18 +165,19 @@ void AdminWidget::init(ProductScreenStack *stack){
 
 void AdminWidget::loadToggleButtonStatus(){
 
-    QFile file ( Files::configFilePath("button_state"));
+    auto file_name = cfg::xmlFileByKey(cfg::XMLKey::ButtonState);
+    QFile file ( file_name);
     if (!file.exists())  return;
 
-    std::unique_ptr<XmlConfig> xml { new XmlConfig( Files::configFilePath("button_state")) };
-    xml->delDomain();
-    if (!xml->setDomain("admin_buttons"))
+    XmlConfig xml ( file.fileName() ) ;
+    xml.delDomain();
+    if (!xml.setDomain("admin_buttons"))
         return;
 
-    auto count = xml->howManyTags("button");
+    auto count = xml.howManyTags("button");
     for (auto i=0; i<count; i++){
-        auto aux = xml->readString("button["+QString::number(i)+"].name");
-        auto aux_state = xml->readString("button["+QString::number(i)+"].state");
+        auto aux = xml.readString("button["+QString::number(i)+"].name");
+        auto aux_state = xml.readString("button["+QString::number(i)+"].state");
 
         if ( aux == "toggle_cash" && aux_state=="on" )
             toggle_cash->toggle();
@@ -192,7 +197,7 @@ void AdminWidget::loadToggleButtonStatus(){
         else if ( aux == "toggle_out_screen" && aux_state=="on" )
             toggle_out_screen->toggle();
     }
-    xml->delDomain();
+    xml.delDomain();
 }
 
 void AdminWidget::cancelSlot(){
@@ -214,19 +219,23 @@ void AdminWidget::cancelSlot(){
 }
 
 void AdminWidget::launchBackOffice(){
-    connect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-            this, &AdminWidget::backOfficeEndSlot);
-    process->setProgram("wposbo");
-    process->start();
+    connect(process, QOverload<int,QProcess::ExitStatus>::of(&QProcess::finished),
+            this, &AdminWidget::restoreState);
+
+    process->start( wposbo );
 }
 
 int AdminWidget::launchXterm(){
     return system("xterm");
 }
 
-void AdminWidget::backOfficeEndSlot( ){
-    disconnect(process, QOverload<int, QProcess::ExitStatus>::of(&QProcess::finished),
-               this, &AdminWidget::backOfficeEndSlot);
+void AdminWidget::restoreState( ){
+    disconnect(
+        process,
+        QOverload<int,QProcess::ExitStatus>::of(&QProcess::finished),
+        this,
+        &AdminWidget::restoreState);
+
     raiseConfigWidget();
     emit genericSignal(GSIGNAL::LOAD_BUTTONS);
     emit genericSignal(GSIGNAL::LOAD_PRODUCTS);
@@ -238,11 +247,10 @@ void AdminWidget::backOfficeEndSlot( ){
 
 void AdminWidget::saveToggleButtonStatus(){
 
-    QFile file( Files::configFilePath("button_state"));
+    QFile file(cfg::xmlFileByKey(cfg::XMLKey::ButtonState));
     if (file.exists()) file.remove();
 
-    XmlConfig xml( Files::configFilePath("button_state"));
-    xml.delDomain();
+    XmlConfig xml(file.fileName());
     xml.createElementSetDomain("admin_buttons");
 
     //toggle_cash
@@ -263,7 +271,6 @@ void AdminWidget::saveToggleButtonStatus(){
     else
         xml.createElement("state","off");
     xml.releaseDomain("button");
-
 
     //toggle_printing
     xml.createElementSetDomain("button");
@@ -300,7 +307,6 @@ void AdminWidget::saveToggleButtonStatus(){
         xml.createElement("state","off");
     xml.releaseDomain("button");
 
-    xml.delDomain();
     xml.save();
 }
 

@@ -79,7 +79,7 @@ bool UsersModuleDB::addUser(const UserData *user_data){
         cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return false;
     }
-    q = new QSqlQuery(query, this->getDB());
+    q = new QSqlQuery(query, this->dbHandle());
     error = q->lastError();
     if (error.type()!=QSqlError::NoError){
         switch (error.type()){
@@ -126,7 +126,7 @@ bool UsersModuleDB::updateUser(const UserData *user_data){
         cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return false;
     }
-    q = new QSqlQuery(query, this->getDB());
+    q = new QSqlQuery(query, this->dbHandle());
     error = q->lastError();
     if (error.type()!=QSqlError::NoError){
         switch (error.type()){
@@ -175,7 +175,7 @@ bool UsersModuleDB::realDelUser(const QString& id){
     if (getUserAdminPermission(id))
         this->setUserAdminPermission(id,false);
 
-    q = new QSqlQuery(query, this->getDB());
+    q = new QSqlQuery(query, this->dbHandle());
     error = q->lastError();
     if (error.type()!=QSqlError::NoError){
         switch (error.type()){
@@ -210,7 +210,7 @@ QVector<UserData> UsersModuleDB::getUserList(bool all){
     //    if (all) sql += "FROM staff ORDER BY employee_id;";
     //    else sql += "FROM staff WHERE active='t' ORDER BY employee_id;";
     QString sql = "SELECT s.employee_id, name, last_name, address, nss, phone, cellular, email, company_id, picture, permission FROM staff s, acl a WHERE s.employee_id = a.employee_id ORDER BY s.employee_id;";
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     if ( !query.isActive() || !query.size()){
         disConnect();
         return QVector<UserData>();
@@ -247,7 +247,7 @@ UserData UsersModuleDB::getUserInfo(QString employee_id){
         return UserData();
     }
 
-    QSqlQuery query(sql, getDB());
+    QSqlQuery query(sql, dbHandle());
     if ( !query.isActive() || !query.size()){
         disConnect();
         return UserData();
@@ -290,7 +290,7 @@ bool UsersModuleDB::setUserAdminPermission(const QString& employee_id, bool perm
             cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
             return false;
         }
-        q = new QSqlQuery(query, this->getDB());
+        q = new QSqlQuery(query, this->dbHandle());
         error = q->lastError();
         if (error.type()!=QSqlError::NoError){
             switch (error.type()){
@@ -320,7 +320,7 @@ bool UsersModuleDB::setUserAdminPermission(const QString& employee_id, bool perm
             cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
             return false;
         }
-        q = new QSqlQuery(query, this->getDB());
+        q = new QSqlQuery(query, this->dbHandle());
         error = q->lastError();
         if (error.type()!=QSqlError::NoError){
             switch (error.type()){
@@ -357,7 +357,7 @@ bool UsersModuleDB::getUserAdminPermission(const QString& employee_id){
         return ret;
     }
 
-    q= new QSqlQuery(query, this->getDB());
+    q= new QSqlQuery(query, this->dbHandle());
     if (!q->isActive()){
         delete q;
         return ret;
@@ -387,7 +387,7 @@ bool UsersModuleDB::getActiveFlag(const QString& employee_id){
     query += "WHERE employee_id='"+employee_id+";";
 
 
-    q= new QSqlQuery(query, this->getDB());
+    q= new QSqlQuery(query, this->dbHandle());
     if (!q->isActive()){
         delete q;
         disConnect();
@@ -425,7 +425,7 @@ bool UsersModuleDB::setActiveFlag(const QString& employee_id,bool flag){
         return false;
     }
 
-    q = new QSqlQuery(query, this->getDB());
+    q = new QSqlQuery(query, this->dbHandle());
     error = q->lastError();
     if (error.type()!=QSqlError::NoError){
         switch (error.type()){

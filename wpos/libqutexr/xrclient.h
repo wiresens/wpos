@@ -50,7 +50,11 @@ public:
     static const int CONTENT_INDENTATION;
     static const size_t PLAINTEXT_MAX_SIZE;
 
-    explicit XRClient(const QUrl& server_url, QObject* parent = nullptr);
+    explicit XRClient(
+        const QUrl& server_url,
+        QObject* parent = nullptr,
+        const QString &client_name = QString{}
+    );
 
     ~XRClient();
     /**
@@ -109,13 +113,14 @@ private:
     bool isDeflated(const QNetworkReply& reply);
     //    QHttp _http_client; replaced by @networkManager
 
-private:
-    QNetworkAccessManager* network_mgr {nullptr};
-    QUrl m_server_url;
-    bool m_is_deflated{true};
-    bool m_accept_compressed{true};
+private:  
     QMap<QNetworkReply*, int> m_replies;
+    QUrl m_server_url;
+    QString m_client_name;
+    QNetworkAccessManager* network_mgr {nullptr};
     int m_curr_req{0};
+    bool m_is_deflated{true};
+    bool m_accept_compressed{true};    
 };
 
 #endif

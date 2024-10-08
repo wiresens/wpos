@@ -1178,10 +1178,10 @@ Lock</string>
         </size>
        </property>
        <property name="toolTip">
-        <string>ocultar teclado y salir guardando</string>
+        <string>Hide keypad and exit by saving</string>
        </property>
        <property name="whatsThis">
-        <string>ocultar teclado y salir</string>
+        <string>Hide keyboard and exit</string>
        </property>
        <property name="text">
         <string/>
@@ -1334,7 +1334,7 @@ Lock</string>
          <item>
           <spacer name="hspacer">
            <property name="orientation">
-            <enum>Qt::Horizontal</enum>
+            <enum>Qt::Orientation::Horizontal</enum>
            </property>
            <property name="sizeHint" stdset="0">
             <size>
@@ -1365,10 +1365,10 @@ Lock</string>
             </size>
            </property>
            <property name="frameShape">
-            <enum>QFrame::NoFrame</enum>
+            <enum>QFrame::Shape::NoFrame</enum>
            </property>
            <property name="frameShadow">
-            <enum>QFrame::Plain</enum>
+            <enum>QFrame::Shadow::Plain</enum>
            </property>
           </widget>
          </item>
@@ -1406,10 +1406,10 @@ Lock</string>
             </size>
            </property>
            <property name="toolTip">
-            <string>ocultar teclado y salir guardando</string>
+            <string>Hide keypad and exit by saving</string>
            </property>
            <property name="whatsThis">
-            <string>ocultar teclado y salir</string>
+            <string>Hide keypad and exit</string>
            </property>
            <property name="text">
             <string/>
@@ -1421,10 +1421,10 @@ Lock</string>
        <item>
         <widget class="Line" name="line2">
          <property name="frameShape">
-          <enum>QFrame::HLine</enum>
+          <enum>QFrame::Shape::HLine</enum>
          </property>
          <property name="frameShadow">
-          <enum>QFrame::Sunken</enum>
+          <enum>QFrame::Shadow::Sunken</enum>
          </property>
         </widget>
        </item>

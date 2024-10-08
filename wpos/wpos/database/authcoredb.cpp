@@ -51,7 +51,7 @@ UserData AuthCoreDB::userById(const QString& id) const{
         sql += "cellular, email, company_id, picture ";
         sql += "FROM staff ";
         sql += "WHERE employee_id='"+id+"' AND active='t';";
-        QSqlQuery query(sql, getDB());
+        QSqlQuery query(sql, dbHandle());
 
         //prepare the query execution
         if ( query.isActive() && query.size()){
@@ -83,7 +83,7 @@ UserData AuthCoreDB::userByName(const QString& name) const{
         sql += "FROM staff ";
         sql += "WHERE name='"+name+"' AND active='t';";
 
-        QSqlQuery query(sql, getDB());
+        QSqlQuery query(sql, dbHandle());
 
         //prepare the query execution
         if ( query.isActive() && query.size()){
@@ -113,7 +113,7 @@ UserData AuthCoreDB::userByLastName(const QString& lastName) const{
         sql += "cellular, email, company_id, picture ";
         sql += "FROM staff ";
         sql += "WHERE last_name='"+lastName+"' AND active='t';";
-        QSqlQuery query(sql, getDB());
+        QSqlQuery query(sql, dbHandle());
 
         //prepare the query execution
         if ( query.isActive() && query.size()){
@@ -143,7 +143,7 @@ bool AuthCoreDB::isRootUser(const QString& id) const{
     sql += "WHERE employee_id='"+id+"' ;";
 
     if(!isConnected())  return false;
-    QSqlQuery query (sql, getDB());
+    QSqlQuery query (sql, dbHandle());
     if (!query.isActive() || !query.size())  return false;
     while(query.next()){
         auto res = query.value(0).toString();
@@ -162,7 +162,7 @@ QVector<UserData> AuthCoreDB::userList() const{
     sql += "ORDER BY employee_id;";
 
     if( isConnected()){
-        QSqlQuery query (sql, getDB());
+        QSqlQuery query (sql, dbHandle());
         if ( query.isActive() && query.size())
         while( query.next() ){
             UserData user;

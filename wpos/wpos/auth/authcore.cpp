@@ -21,7 +21,7 @@
 
 AuthCore::AuthCore(QObject *parent, QString name):
     QObject(parent),
-    db{ new AuthCoreDB("AuthCoreConnection", Files::configFilePath("database"))}
+    db{ new AuthCoreDB("AuthCoreConnection", cfg::xmlFileByKey(cfg::XMLKey::Database))}
 {
     setObjectName(name);
     auto gsm = GenericSignalManager::instance();

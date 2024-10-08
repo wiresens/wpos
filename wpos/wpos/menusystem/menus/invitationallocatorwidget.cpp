@@ -78,7 +78,7 @@ void InvitationAllocatorWidget::parseXmlDescription(){
         pages.removeFirst();
     }
 
-    auto configFile = Files::configFilePath("invitations");
+    auto configFile = cfg::xmlFileByKey(cfg::XMLKey::Invitations);
     if ( !QFile::exists(configFile) ){
         cerr << "Can't find " << configFile.toStdString() << " file. [CRITICAL ERROR] Can't initialize order in proper way.";
         return;

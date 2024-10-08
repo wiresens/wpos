@@ -30,7 +30,7 @@ public:
 
 public slots:
     void returnToADMmenuSlot();
-    void shutdownSlot();
+    void shutdown();
 
     
 signals:
@@ -38,7 +38,7 @@ signals:
     void genericDataSignal(const QString& signal_name,XmlConfig *xml);
 
 protected:
-    void initDialog();
+    void initializeDialogBox();
 };
 
 #endif

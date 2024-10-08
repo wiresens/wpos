@@ -194,7 +194,7 @@ QPushButton* GenericButtonGroup::readProductConfig(
 {
     xml->pushDomain();
     auto aux = xml->readString("product_code");
-    auto product = new Product(aux, Files::configFilePath("bar"), parent);
+    auto product = new Product(aux, cfg::xmlFileByKey(cfg::XMLKey::Bar), parent);
     product->setDefaultFontSize(9);
     product->setTextInPixmap(true);
 
@@ -350,8 +350,8 @@ QPushButton* GenericButtonGroup::screensButton(XmlConfig *xml, QWidget *parent){
 
     xml->popDomain();
 
-    std::unique_ptr<XmlConfig> tmp_xml {new XmlConfig(Files::configFilePath("bar"))};
-    if (!QFile(Files::configFilePath("bar")).exists() || !tmp_xml->setDomain("screens"))
+    std::unique_ptr<XmlConfig> tmp_xml {new XmlConfig(cfg::xmlFileByKey(cfg::XMLKey::Bar))};
+    if (!QFile(cfg::xmlFileByKey(cfg::XMLKey::Bar)).exists() || !tmp_xml->setDomain("screens"))
         return qobject_cast<QPushButton*>( menu_button );
 
     GenericButton *generic_button {};
@@ -374,9 +374,9 @@ QPushButton* GenericButtonGroup::screensButton(XmlConfig *xml, QWidget *parent){
 
 QPushButton* GenericButtonGroup::defaultScreenButton(XmlConfig *xml, QWidget *parent){
     GenericButton *button {};
-    std::unique_ptr<XmlConfig> aux_xml  {new XmlConfig(Files::configFilePath("bar"))} ;
+    std::unique_ptr<XmlConfig> aux_xml  {new XmlConfig(cfg::xmlFileByKey(cfg::XMLKey::Bar))} ;
     xml->pushDomain();
-    if ( !QFile(Files::configFilePath("bar")).exists() || !aux_xml->setDomain("screens") )
+    if ( !QFile(cfg::xmlFileByKey(cfg::XMLKey::Bar)).exists() || !aux_xml->setDomain("screens") )
         return qobject_cast<QPushButton *>( button );
 
     auto aux = aux_xml->readString("defaultscreen");
@@ -404,7 +404,7 @@ QPushButton* GenericButtonGroup::defaultScreenButton(XmlConfig *xml, QWidget *pa
 }
 
 QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *parent){
-    AuxDB db("option_check", Files::configFilePath("database"));
+    AuxDB db("AuxDBConnection", cfg::xmlFileByKey(cfg::XMLKey::Database));
     db.connect();
     QMap<QString,ProductExtraInfo> extra = db.productExtra();
     db.disConnect();

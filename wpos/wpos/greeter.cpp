@@ -86,7 +86,7 @@ void Greeter::loadPicture(){
     //    QStyle *st {};
     QFont font;
     QString pixmap_file, company_name, app_style;
-    XmlConfig xml(Files::configFilePath("buttons")) ;
+    XmlConfig xml(cfg::xmlFileByKey(cfg::XMLKey::Buttons)) ;
 
     if ( xml.setDomain("initscreen") ){
         pixmap_file = xml.readString("pixmap");
@@ -170,7 +170,7 @@ void Greeter::createLoginButtons(){
 
     QVector<UserData> userList{} ;
     {
-        AuthCoreDB db {"GreeterConnection", Files::configFilePath("database")};
+        AuthCoreDB db {"GreeterConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
         if ( !db.connect() || ( userList = db.userList()).isEmpty()) return;
         db.disConnect();
     }

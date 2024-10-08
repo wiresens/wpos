@@ -26,28 +26,28 @@ using namespace std;
 // Presently we are not throwing but will add that when everything works
 //We will also find a way to factor out the constructors by using forwarding constructors.
 
-ProductScreenStack::ProductScreenStack(
-    const QString& xmlDescriptionFile,
-    QWidget *parent,
-    const QString& name):
-    ProductScreenStack(parent, name)
-{
-    if (!QFile::exists(xmlDescriptionFile))
-        cerr << " Missing file: " << xmlDescriptionFile.toStdString() << "cant be opened to read the screen definitions" << endl;
-    else{
-        XmlConfig xml{xmlDescriptionFile};
-        if (xml.wellFormed()) initScreenStack(&xml);
-    }
-}
+// ProductScreenStack::ProductScreenStack(
+//     const QString& xmlDescriptionFile,
+//     QWidget *parent,
+//     const QString& name):
+//     ProductScreenStack(parent, name)
+// {
+//     if (!QFile::exists(xmlDescriptionFile))
+//         cerr << " Missing file: " << xmlDescriptionFile.toStdString() << "cant be opened to read the screen definitions" << endl;
+//     else{
+//         XmlConfig xml{xmlDescriptionFile};
+//         if (xml.wellFormed()) initScreenStack(&xml);
+//     }
+// }
 
-ProductScreenStack::ProductScreenStack(
-    XmlConfig *xml,
-    QWidget *parent,
-    const QString& name):
-    ProductScreenStack(parent, name)
-{
-    if (xml->wellFormed()) initScreenStack(xml);
-}
+// ProductScreenStack::ProductScreenStack(
+//     XmlConfig *xml,
+//     QWidget *parent,
+//     const QString& name):
+//     ProductScreenStack(parent, name)
+// {
+//     if (xml->wellFormed()) initScreenStack(xml);
+// }
 
 ProductScreenStack::ProductScreenStack(
     QWidget *parent,
@@ -370,7 +370,7 @@ void ProductScreenStack::genericDataSignalSlot(const QString& signal_name, XmlCo
 
 void ProductScreenStack::genericSignalSlot(const QString& signal_name){
     if (signal_name == GSIGNAL::LOAD_PRODUCTS){
-        XmlConfig *aux_xml = new XmlConfig(Files::configFilePath("bar"));
+        XmlConfig *aux_xml = new XmlConfig(cfg::xmlFileByKey(cfg::XMLKey::Bar));
         reset();
         initScreenStack(aux_xml);
         delete aux_xml;

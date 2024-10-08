@@ -43,7 +43,7 @@ int TicketCoreDB::getNextVal(){
     if (!isConnected()) return ret;
 
     QString sql {"SELECT nextval('tickets_ticket_code_seq');"};
-    QSqlQuery query {QSqlQuery(sql, getDB())};
+    QSqlQuery query {QSqlQuery(sql, dbHandle())};
 
     QSqlError error{query.lastError()};
     if ( error.type()!= QSqlError::NoError){
@@ -63,7 +63,7 @@ bool TicketCoreDB::setVal(int val){
     if ( val < 1 || !isConnected() ) return false;
 
     QString sql {"SELECT setval('tickets_ticket_code_seq',"+QString::number(val)+",false);"};
-    QSqlQuery query  { QSqlQuery( sql, getDB()) };
+    QSqlQuery query  { QSqlQuery( sql, dbHandle()) };
 
     QSqlError error{query.lastError()};
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -79,7 +79,7 @@ int TicketCoreDB::getNextItemVal(){
     if ( !isConnected() ) return ret;
 
     QString sql {"SELECT nextval('ticket_items_item_code_seq');"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
 
     QSqlError error{query.lastError()};
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -96,7 +96,7 @@ bool TicketCoreDB::setNextItemVal(int val){
     if ( val < 1 || !isConnected() ) return false;
 
     QString sql {"SELECT setval('ticket_items_item_code_seq','"+QString::number(val)+"',false);"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
 
     QSqlError error{query.lastError()};
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -121,7 +121,7 @@ bool TicketCoreDB::insertTicket(TicketData* data){
     sql+= "'"+data->ticket_state+"'";
     sql+= ");";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -138,7 +138,7 @@ bool TicketCoreDB::insertLocation(TicketLocationData* data){
     QString sql  {"INSERT INTO ticket_table (ticket_code, lounge_code,table_code) "};
     sql+= "VALUES ("+QString::number(data->ticket_number)+",'"+data->lounge+"','"+data->table+"');";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -164,7 +164,7 @@ bool TicketCoreDB::insertTicketItem(TicketItemData* data){
     sql+= QString::number(data->tax_rate,'f',2);
     sql+= ");";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -184,7 +184,7 @@ bool TicketCoreDB::insertItemOption(TicketItemOptionData* data){
     sql+= "'"+data->option_type+"',";
     sql+= "'"+data->option+"');";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -204,7 +204,7 @@ bool TicketCoreDB::insertOffer(OfferData* data){
     sql+= "'"+data->offer_type+"',";
     sql+= "'"+data->offer_name+"');";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -227,7 +227,7 @@ bool TicketCoreDB::getXEmployeeData(XmlConfig* xml){
     }
 
     QString sql {"SELECT employee, employee_id, num_tickets, total_income FROM x_employee;"};
-    QSqlQuery query ( sql, getDB() );
+    QSqlQuery query ( sql, dbHandle() );
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size() ){
@@ -265,7 +265,7 @@ int TicketCoreDB::getEmployeeProductInvitations(const QString& employee_id, XmlC
     sql += "FROM x_employee_offers ";
     sql += "WHERE employee_id='"+employee_id+"' order by offer_type;";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size()){
@@ -297,7 +297,7 @@ int TicketCoreDB::getEmployeeProductOptions(const QString& employee_id, XmlConfi
     sql += "FROM x_employee_options ";
     sql += "WHERE employee_id='"+employee_id+"' order by option_type;";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size()){
@@ -329,7 +329,7 @@ int TicketCoreDB::getEmployeeEvent(const QString& employee_id, const QString& ev
     QString sql {"SELECT num_events FROM x_employee_events "};
     sql += "WHERE (employee_id='"+employee_id+"') AND (event_type='"+event_type+"');";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size()){
@@ -354,7 +354,7 @@ bool TicketCoreDB::getXMain(XmlConfig* xml){
     }
 
     QString sql  {"SELECT pay_type, num_tickets, total_income FROM x_pay_type;"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size() ){
@@ -396,7 +396,7 @@ bool TicketCoreDB::getXProducts(XmlConfig* xml, QStringList product_code_list){
         QString sql  {"SELECT product, num_products, total_income FROM x_products "};
         sql +="WHERE product_code='"+product_code+"';";
 
-        QSqlQuery query { QSqlQuery( sql, getDB()) };
+        QSqlQuery query { QSqlQuery( sql, dbHandle()) };
         if ( !query.isActive() ){
             xml->popDomain();
             return false;
@@ -431,7 +431,7 @@ bool TicketCoreDB::getXOfferSection(XmlConfig* xml){
     }
 
     QString sql  {"SELECT offer_type, prod_offer, num_products FROM x_offers order by offer_type; "};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if (!query.isActive() || error.type() != QSqlError::NoError ){
@@ -466,7 +466,7 @@ bool TicketCoreDB::getXOptionSection(XmlConfig* xml){
     xml->delDomain();
 
     QString sql {"SELECT option_type, prod_option, num_products, total FROM x_options order by option_type; "};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if (!query.isActive() || error.type() != QSqlError::NoError ){
@@ -502,7 +502,7 @@ bool TicketCoreDB::getXProductZeroPriced(XmlConfig* xml){
     xml->delDomain();
 
     QString sql {"SELECT product, num_products FROM x_product_invitations ;"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size() ){
@@ -532,7 +532,7 @@ int TicketCoreDB::getFirstTicketCode(){
     if (!isConnected()) return -1;
 
     QString sql {"SELECT DISTINCT MAX(ticket_code) FROM pers_tickets;"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError ){
@@ -553,7 +553,7 @@ QString TicketCoreDB::getFirstTicketDate(){
         return QString("");
 
     QString sql {"SELECT DISTINCT MIN(start_time) FROM tickets;"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size()){
@@ -572,7 +572,7 @@ int TicketCoreDB::getLastTicketCode(){
     if (!isConnected()) return -1;
 
     QString sql {"SELECT DISTINCT MAX(ticket_code) FROM tickets;"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError){
@@ -591,7 +591,7 @@ QString TicketCoreDB::getLastTicketDate(){
     if ( !isConnected() )  return QString();
 
     QString sql {"SELECT DISTINCT MAX(end_time) FROM tickets;"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size()){
@@ -608,7 +608,7 @@ QString TicketCoreDB::getLastZDate(){
 
     QString sql  {"SELECT time_stamp FROM pers_event_log WHERE event_code="};
     sql += "(SELECT MAX(event_code) FROM pers_event_log WHERE event_type='z') ;";
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size() ){
@@ -625,7 +625,7 @@ bool TicketCoreDB::ticketCodeExists(int ticket_code){
     if (!isConnected()) return false;
 
     QString sql {"SELECT count(ticket_code) FROM tickets where ticket_code="+QString::number(ticket_code)+";"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{query.lastError()};
 
     if ( !query.isActive() || error.type() != QSqlError::NoError){
@@ -644,7 +644,7 @@ QString TicketCoreDB::dateFromTicketCode(int ticket_code){
     if ( isConnected() ) return QString("");
 
     QString sql {"SELECT end_time FROM tickets where ticket_code="+QString::number(ticket_code)+";"};
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
 
     QSqlError error{ query.lastError() };
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size()){
@@ -666,7 +666,7 @@ bool TicketCoreDB::vaccum(){
     sql+= "FROM tickets t, pay_types p ";
     sql+= "WHERE t.pay_type = p.pay_type;";
 
-    QSqlQuery query { QSqlQuery( sql, getDB()) };
+    QSqlQuery query { QSqlQuery( sql, dbHandle()) };
     QSqlError error{ query.lastError() };
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -679,7 +679,7 @@ bool TicketCoreDB::vaccum(){
     sql+= "SELECT t.ticket_code, t.table_code, t.lounge_code ";
     sql+= "FROM ticket_table t;";
 
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -693,7 +693,7 @@ bool TicketCoreDB::vaccum(){
     sql+= "FROM ticket_items t, products p ";
     sql+= "WHERE t.product_code = p.product_code;";
 
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -706,7 +706,7 @@ bool TicketCoreDB::vaccum(){
     sql+= "SELECT t.item_code, t.offer_type, t.prod_offer ";
     sql+= "FROM ticket_item_offers t;";
 
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -719,7 +719,7 @@ bool TicketCoreDB::vaccum(){
     sql+= "SELECT t.item_code, t.option_type, t.prod_option ";
     sql+= "FROM ticket_item_opts t;";
 
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -732,7 +732,7 @@ bool TicketCoreDB::vaccum(){
     sql+= "SELECT e.event_code, e.employee_id, e.time_stamp, e.event_type ";
     sql+= "FROM event_log e;";
 
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -745,7 +745,7 @@ bool TicketCoreDB::vaccum(){
     sql+= "SELECT c.event_code, c.ticket_code, c.quantity ";
     sql+= "FROM cash_movements c;";
 
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -756,7 +756,7 @@ bool TicketCoreDB::vaccum(){
 
     sql =  "DELETE FROM ticket_item_opts;";
 
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -766,7 +766,7 @@ bool TicketCoreDB::vaccum(){
     }
 
     sql =  "DELETE FROM ticket_items;";
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -776,7 +776,7 @@ bool TicketCoreDB::vaccum(){
     }
 
     sql =  "DELETE FROM ticket_table;";
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -786,7 +786,7 @@ bool TicketCoreDB::vaccum(){
     }
 
     sql =  "DELETE FROM cash_movements;";
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -796,7 +796,7 @@ bool TicketCoreDB::vaccum(){
     }
 
     sql =  "DELETE FROM event_log;";
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -806,7 +806,7 @@ bool TicketCoreDB::vaccum(){
     }
 
     sql =  "DELETE FROM tickets;";
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){
@@ -818,7 +818,7 @@ bool TicketCoreDB::vaccum(){
     bool ret = commit();
 
     sql =  "VACUUM;";
-    query =  QSqlQuery( sql, getDB() );
+    query =  QSqlQuery( sql, dbHandle() );
     error = query.lastError();
 
     if (!query.isActive() || error.type() != QSqlError::NoError){

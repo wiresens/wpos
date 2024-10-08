@@ -119,7 +119,7 @@ private:
     void showHtml(const QString& html_str);
 
 private:
-    HistoricDB database{"getZConnection", Files::configFilePath("database")};
+    HistoricDB database{"GetZetaConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
     QWebEngineView *browser{};
     QTimer *timer{};
     QVBoxLayout *b_layout{};

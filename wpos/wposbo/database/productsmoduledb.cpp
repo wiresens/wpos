@@ -61,7 +61,7 @@ bool ProductsModuleDB::existProduct(const QString& product_code){
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->next()){
         delete query;
@@ -94,7 +94,7 @@ bool ProductsModuleDB::deleteProduct(const QString& product_code){
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
 
@@ -127,7 +127,7 @@ ProductData* ProductsModuleDB::getProduct(const QString& product_code){
         return product;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -171,7 +171,7 @@ QString ProductsModuleDB::getProductLike(const QString& product_name){
         return code;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -207,7 +207,7 @@ QStringList* ProductsModuleDB::getFamilies(){
         return families;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     families = new QStringList();
     if(!query->isActive()){
@@ -241,7 +241,7 @@ ProductData* ProductsModuleDB::getLogo(const QString& product_name){
         return product;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     product = new ProductData;
     if(!query->isActive()){
@@ -296,7 +296,7 @@ QStringList* ProductsModuleDB::getTaxes(){
         return taxes_list;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -331,7 +331,7 @@ QPtrList<ProductData>* ProductsModuleDB::getProductsExtend(){
         return products_list;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -376,7 +376,7 @@ QPtrList<ProductData>* ProductsModuleDB::getProducts(){
         return products_list;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -420,7 +420,7 @@ QPtrList<ProductData>* ProductsModuleDB::getUnitaryProducts(){
         return products_list;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if (!query->isActive()){
         delete query;
@@ -471,7 +471,7 @@ bool ProductsModuleDB::isUnitaryProduct(const QString& product_code){
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "Error en la sentencia sql " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -529,7 +529,7 @@ bool ProductsModuleDB::insertProduct(ProductData *product){
     }
 
     //     cout << sql.toStdString() << endl;
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     //     cout << "Error " << error.type() << endl;
@@ -583,7 +583,7 @@ bool ProductsModuleDB::updateProduct(ProductData *product){
     }
 
     //     cout << sql.toStdString() << endl;
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -621,7 +621,7 @@ QPtrList<ProductData>* ProductsModuleDB::getCompositions(){
         return products_list;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -685,7 +685,7 @@ bool ProductsModuleDB::insertProductComposition(const QString& composition_code,
     }
 
     //     cout << sql.toStdString() << endl;
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -744,7 +744,7 @@ bool ProductsModuleDB::updateProductComposition(const QString& composition_code,
     }
 
     cout << sql.toStdString() << endl;
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     delete query;
@@ -790,7 +790,7 @@ bool ProductsModuleDB::existProductComposition(const QString& composition_code,
         return false;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         delete query;
@@ -829,7 +829,7 @@ QPtrList<IngredientData>* ProductsModuleDB::getIngredients(const QString& produc
         return ingredients_list;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->isActive()){
         cerr << "No esta activa " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
@@ -883,7 +883,7 @@ QPtrList<ProductData>* ProductsModuleDB::getCompositionsWithIngredient(const QSt
         return product_list;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
     error = query->lastError();
     switch(error.type()){
     case QSqlError::NoError:
@@ -926,7 +926,7 @@ QString ProductsModuleDB::getProductCodeByProductName(const QString& product_nam
         return ret;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->size()){
         delete query;
@@ -955,7 +955,7 @@ int ProductsModuleDB::getNumberOfProducts(){
         return ret;
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(!query->size()){
         delete query;
@@ -995,7 +995,7 @@ void ProductsModuleDB::setProductAtPrinter(const QString& product_name,const QSt
         sql += "product_code='"+product_code+"' AND printer_type='"+printer+"' ;";
     }
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     error = query->lastError();
     switch(error.type()){
@@ -1031,7 +1031,7 @@ bool ProductsModuleDB::getProductAtPrinter(const QString& product_name,const QSt
     sql = "SELECT product_code FROM product_printer_types ";
     sql +="WHERE product_code='"+product_code+"' AND printer_type='"+printer+"';";
 
-    query = new QSqlQuery(sql, this->getDB());
+    query = new QSqlQuery(sql, this->dbHandle());
 
     if(query->size()){
         ret = true;

@@ -82,7 +82,7 @@ static const QString TAX_DEFAULT = "iva16";
 static const QString& DEFAULT_QUANTITY = "1";
 
 static const QString XML_PRODUCTS_PATH = "/etc/ntpv/bar.xml";
-static const QString ICON_PATH = Files::ProductsDir;
+static const QString ICON_PATH = cfg::PRODUCT_DIR;
 
 static const QString LOGO_BUTTON = "Logo";
 static const QString OPTION_BUTTON = "Option";
