@@ -33,7 +33,7 @@ class ProductModule :
 public:
     static const QString DBusObjectPath;
 
-    explicit ProductModule(QObject *parent= 0, const QString& name = QString());
+    explicit ProductModule(QObject *parent= 0, const QString& name = QString{});
     ~ProductModule() = default;
 
     bool isUnitaryProduct(QString product_code);

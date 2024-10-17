@@ -24,7 +24,7 @@ class OptionCreationWidget :  public OptionEditionWidget
 public:
     static const QString DBusObjectPath;
 
-    explicit OptionCreationWidget(QWidget *parent=0, const QString& name = QString());
+    explicit OptionCreationWidget(QWidget *parent=0, const QString& name = QString{});
     ~OptionCreationWidget() = default;
 
 signals:

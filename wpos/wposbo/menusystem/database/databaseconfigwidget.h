@@ -29,7 +29,7 @@ public:
 
     explicit DatabaseConfigWidget(
             DatabaseModule *dbmod,
-             QWidget *parent=0, const QString& name= QString());
+             QWidget *parent=0, const QString& name= QString{});
 
     ~DatabaseConfigWidget() = default;
 

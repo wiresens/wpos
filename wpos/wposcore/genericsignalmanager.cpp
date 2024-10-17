@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "genericsignalmanager.h"
-#include <xmlconfig.h>
+#include  <libbslxml/xmlconfig.h>
 
 #include <QString>
 #include <QStringList>
@@ -43,8 +43,7 @@ void GenericSignalManager::publishGenericSignal(
         if(debug) qDebug() << "Publication of SIGNAL  : ** " << signal << "** of " << publisher->objectName() << Qt::endl;
     }
     else{       //the signal is not yet registered by any object
-        publisher_hub = new ObjectHub;
-        publisher_hub->shared_signal = signal;
+        publisher_hub = new ObjectHub{signal};
         publisher_hub->objs.append(publisher, publisher->objectName());
         m_signal_publishers.append(publisher_hub, publisher_hub->shared_signal);
         if(debug) qDebug() << "New Publication of SIGNAL : ** " << signal << "** of " << publisher->objectName() << Qt::endl;
@@ -80,8 +79,7 @@ void GenericSignalManager::publishGenericDataSignal(
        if(debug) qDebug() << "Publication of DATA SIGNAL : ** " << signal << "** of " << publisher->objectName() << Qt::endl;
     }
     else{     //the signal does not exists
-        publisher_hub = new ObjectHub;
-        publisher_hub->shared_signal = signal;
+        publisher_hub = new ObjectHub{signal};
         publisher_hub->objs.append(publisher, publisher->objectName());
         m_data_signal_publishers.append(publisher_hub, publisher_hub->shared_signal);
         if(debug) qDebug() << "New Publication of DATA SIGNAL : ** " << signal << "** of " << publisher->objectName() << Qt::endl;
@@ -167,8 +165,7 @@ void GenericSignalManager::subscribeToGenericSignal(
 
     if (!subscriber_hub){
         //there was no attached node
-        subscriber_hub = new ObjectHub;
-        subscriber_hub->shared_signal = signal;
+        subscriber_hub = new ObjectHub{signal};
         subscriber_hub->objs.append(subscriber, subscriber->objectName());
         m_signal_subscribers.append(subscriber_hub, subscriber_hub->shared_signal);
 
@@ -204,8 +201,7 @@ void GenericSignalManager::subscribeToGenericDataSignal(
     ObjectHub *subscriber_hub = m_data_signal_subscribers.find(signal);
     if (!subscriber_hub){
         //there was no attached node
-        subscriber_hub = new ObjectHub;
-        subscriber_hub->shared_signal = signal;
+        subscriber_hub = new ObjectHub{signal};
         subscriber_hub->objs.append(subscriber, subscriber->objectName());
         m_data_signal_subscribers.append(subscriber_hub, subscriber_hub->shared_signal);
        if(debug) qDebug() << "New Subscrition to DATA SIGNAL : ** " << signal << "** by " << subscriber->objectName() << Qt::endl;

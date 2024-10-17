@@ -25,7 +25,7 @@ class SubMenuInfoFrame : public QFrame{
 public:
     explicit SubMenuInfoFrame(
         QWidget* parent=0,
-        const QString &name = QString()
+        const QString &name = QString{}
     );
 
     ~SubMenuInfoFrame() = default;

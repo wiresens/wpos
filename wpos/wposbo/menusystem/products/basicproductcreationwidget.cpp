@@ -155,7 +155,7 @@ BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_m
 
     connect(logo_view, &QListWidget::itemChanged, this, QOverload<QListWidgetItem*>::of(&BasicProductCreationWidget::getLogo));
     //@benes    pop_logo->insertItem(logo_view, 0);
-//@benes    pop_logo_menu->addAction(QString(), logo_view, logo_view->objectName());
+//@benes    pop_logo_menu->addAction(QString{}, logo_view, logo_view->objectName());
 
     //pop option
     pop_option_menu = new QMenu(this);
@@ -171,7 +171,7 @@ BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_m
 
     layout->addWidget(option_widget);
     //@benes    pop_option_menu->insertItem(option_widget);
-//@benes    pop_option_menu->addAction(QString(), option_widget, option_widget->objectName());
+//@benes    pop_option_menu->addAction(QString{}, option_widget, option_widget->objectName());
     //@benes    pop_option_menu->setLineWidth(0);
 
     //pop offer
@@ -188,7 +188,7 @@ BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_m
     }
     layout->addWidget(offer_widget);
     //@benes    pop_offer_menu->insertItem(offer_widget);
-    //@benes    pop_offer_menu->addAction(QString(), offer_widget, offer_widget->objectName());
+    //@benes    pop_offer_menu->addAction(QString{}, offer_widget, offer_widget->objectName());
     //offer_widget    pop_offer_menu->setLineWidth(0);
 
     //prepare the connections
@@ -469,7 +469,7 @@ bool BasicProductCreationWidget::insertNewProduct(){
 QString BasicProductCreationWidget::getTax(){
     for(const auto& button : button_list)
         if(! button->isDown()) return button->text();
-    return QString();
+    return QString{};
 }
 
 bool BasicProductCreationWidget::insertProductComposition(const QString& code){

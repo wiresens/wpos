@@ -45,7 +45,7 @@ GenericProduct::GenericProduct(const QString& product_name,
 
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::XCORE_SET_PRODUCT_PRICE, this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, this);
     gsm->publishGenericDataSignal(GDATASIGNAL::BARCORE_SEND_PRODUCT, this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED, this);
 
@@ -92,7 +92,7 @@ void GenericProduct::handleAccepted(){
     {
         XmlConfig xml ;
         xml.createElement("name", SalesScreen::PRODUCT_MENU);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
     }
 
     {
@@ -119,7 +119,7 @@ void GenericProduct::handleCancelled(){
     std::unique_ptr<XmlConfig> xml {new XmlConfig()};
     xml->delDomain();
     xml->createElement("name", SalesScreen::PRODUCT_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, xml.get());
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, xml.get());
 
     xml->deleteElement("name");
     xml->createElement("enabled","true");

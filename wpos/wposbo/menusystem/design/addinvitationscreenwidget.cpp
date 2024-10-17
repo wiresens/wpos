@@ -102,7 +102,7 @@ void AddInvitationScreenWidget::apply(){
 
 void AddInvitationScreenWidget::cancel(){
     clear();
-    if (updated_screen) emit screenUpdated(0, QString());
+    if (updated_screen) emit screenUpdated(0, QString{});
     else emit screenCreated(0);
 }
 

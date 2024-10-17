@@ -49,7 +49,7 @@ void RpcServerImp::serveNewConnection(){
 void RpcServerImp::readFromClient(){
     AbstractSocket* socket = qobject_cast<AbstractSocket*>( sender() );
     QMap<AbstractSocket*, QString> header_strings;
-    header_strings.insert(socket, QString()); //Insert empty header
+    header_strings.insert(socket, QString{}); //Insert empty header
 
     if(m_headers.contains(socket)){
         if( m_headers[socket]["Content-Length"].toLongLong() <= socket->bytesAvailable() )

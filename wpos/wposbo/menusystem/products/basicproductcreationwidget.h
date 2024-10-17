@@ -38,7 +38,7 @@ public:
     explicit BasicProductCreationWidget(ProductModule *_product_mod,
                                   int _mode_product = 0,
                                   QWidget *parent=0,
-                                  const QString& name= QString());
+                                  const QString& name= QString{});
 
     ~BasicProductCreationWidget() = default;
 

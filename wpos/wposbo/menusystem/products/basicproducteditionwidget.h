@@ -40,7 +40,7 @@ public:
     };
 
     BasicProductEditionWidget(ProductModule *_product_mod, int _action,
-                           QWidget *parent=0, const QString& name= QString());
+                           QWidget *parent=0, const QString& name= QString{});
 
     ~BasicProductEditionWidget() = default;
 

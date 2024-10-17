@@ -41,7 +41,7 @@ public:
     static const QString DTD_CFG_FILE;
     static const QString XML_CFG_FILE;
 
-    explicit DBusPrinter(QObject* parent=nullptr, const QString& name = QString());
+    explicit DBusPrinter(QObject* parent=nullptr, const QString& name = {});
     ~DBusPrinter();
 
     void readConfig(const QString& path);

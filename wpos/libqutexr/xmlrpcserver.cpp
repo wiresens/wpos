@@ -124,7 +124,7 @@ void XmlRpcServer::readFromClient(){
 
     QMap<QTcpSocket*, QString> header_strings;
     //Insert empty header
-    header_strings.insert(socket, QString());
+    header_strings.insert(socket, QString{});
 
     if(m_headers.contains(socket)){
         if( m_headers[socket]["Content-Length"].toLongLong() <= socket->bytesAvailable()){

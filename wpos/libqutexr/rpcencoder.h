@@ -11,8 +11,8 @@ class PayloadFormater
 public:
     virtual ~PayloadFormater() = default;
 
-    virtual QString responseString() const{ return QString(); }
-    virtual QString callString() const{ return QString(); }
+    virtual QString responseString() const{ return QString{}; }
+    virtual QString callString() const{ return QString{}; }
 
     virtual QString contentType() const = 0;
     virtual QString method() const = 0;

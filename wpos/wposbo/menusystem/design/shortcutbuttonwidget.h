@@ -61,7 +61,7 @@ public:
         PrintAtKitchen= 3
     };
 
-    explicit ShortcutButtonWidget(QWidget *parent = 0, const QString& name = QString());
+    explicit ShortcutButtonWidget(QWidget *parent = 0, const QString& name = QString{});
     ~ShortcutButtonWidget();
 
 public slots:

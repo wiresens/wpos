@@ -21,7 +21,7 @@
 #include "fileutils.h"
 
 //xml libs
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 extern "C"{
      #include <sys/types.h>

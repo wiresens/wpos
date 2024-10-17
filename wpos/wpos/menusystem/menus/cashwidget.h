@@ -31,7 +31,7 @@ public:
     CashWidget(
         BarCore *barCore,
         QWidget *parent,
-        const QString& name = QString()
+        const QString& name = QString{}
     );
 
     ~CashWidget();

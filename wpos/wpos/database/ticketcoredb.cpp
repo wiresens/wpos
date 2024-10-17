@@ -12,7 +12,7 @@
 
 #include "ticketcoredb.h"
 #include "barcoredb.h"
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <wposcore/utility.h>
 
@@ -588,7 +588,7 @@ int TicketCoreDB::getLastTicketCode(){
 
 QString TicketCoreDB::getLastTicketDate(){
 
-    if ( !isConnected() )  return QString();
+    if ( !isConnected() )  return QString{};
 
     QString sql {"SELECT DISTINCT MAX(end_time) FROM tickets;"};
     QSqlQuery query { QSqlQuery( sql, dbHandle()) };
@@ -596,7 +596,7 @@ QString TicketCoreDB::getLastTicketDate(){
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size()){
         qDebug() << error.nativeErrorCode()+" : "+ error.text();
-        return QString();
+        return QString{};
     }
 
     query.last();
@@ -604,7 +604,7 @@ QString TicketCoreDB::getLastTicketDate(){
 }
 
 QString TicketCoreDB::getLastZDate(){
-    if ( !isConnected() )  return QString();
+    if ( !isConnected() )  return QString{};
 
     QString sql  {"SELECT time_stamp FROM pers_event_log WHERE event_code="};
     sql += "(SELECT MAX(event_code) FROM pers_event_log WHERE event_type='z') ;";
@@ -613,7 +613,7 @@ QString TicketCoreDB::getLastZDate(){
 
     if ( !query.isActive() || error.type() != QSqlError::NoError || !query.size() ){
         qDebug() << error.nativeErrorCode()+" : "+ error.text();
-        return QString();
+        return QString{};
     }
 
     query.last();

@@ -11,7 +11,7 @@ class AdvancedProductDeletionWidget :
     Q_OBJECT
 
 public:
-    explicit AdvancedProductDeletionWidget(ProductModule *product_model, QWidget *parent=0, const QString& name= QString());
+    explicit AdvancedProductDeletionWidget(ProductModule *product_model, QWidget *parent=0, const QString& name= QString{});
     ~AdvancedProductDeletionWidget() = default;
 
 public slots:

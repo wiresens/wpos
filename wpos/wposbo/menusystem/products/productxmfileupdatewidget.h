@@ -25,7 +25,7 @@ class ProductXmFileUpdateWidget :
     Q_OBJECT
 
 public:
-    explicit ProductXmFileUpdateWidget(ProductModule *_product_mod, QWidget *parent=0, const QString &name=QString());
+    explicit ProductXmFileUpdateWidget(ProductModule *_product_mod, QWidget *parent=0, const QString &name=QString{});
     ~ProductXmFileUpdateWidget() = default;
 
 public slots:

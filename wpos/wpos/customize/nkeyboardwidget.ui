@@ -1330,7 +1330,7 @@ Lock</string>
         <number>0</number>
        </property>
        <item>
-        <layout class="QHBoxLayout" name="lounge_button_layout">
+        <layout class="QHBoxLayout" name="lounge_selector_layout">
          <item>
           <spacer name="hspacer">
            <property name="orientation">

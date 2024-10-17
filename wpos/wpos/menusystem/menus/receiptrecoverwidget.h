@@ -70,18 +70,18 @@ public slots:
     void kbExitClickedSlot();
     void kbTextChanged(const QString & text);
 
-    void genericDataSignalSlot(const QString& signal_name,XmlConfig *xml);
+    void genericDataSignalSlot(const QString& signal_name, XmlConfig *xml);
     void setSelectedSlot();
 
     void newOrderClickedSlot();
     void openOrderKbExitClickedSlot();
 
 signals:
-    void genericDataSignal(const QString& signal_name,XmlConfig *xml);
+    void genericDataSignal(const QString& signal_name, XmlConfig *xml);
     void genericSignal(const QString& signal_name);
 
 protected slots:
-    void loungeSlot(bool on);
+    void setUseLounge(bool enable);
 
 protected:
     void showEvent(QShowEvent *event) override;
@@ -91,22 +91,24 @@ protected:
     bool refreshAndShow();
     QStringList getUsedTableCodes();
 
-    virtual QList<TicketResumeData*>*
+    using TicketsResumes = QVector<TicketResumeData>;
+
+    virtual TicketsResumes
     employeeReceiptResume(const QString& employee_id);
 
-    virtual QList<TicketResumeData*>*
-    allEmployeeReceiptResume();
+    virtual TicketsResumes
+    employeeReceiptResume();
 
 private :
-    QList<TicketResumeData*>*
-    receiptResumeFromXml(XmlConfig* xml);
+    TicketsResumes
+    receiptResumeFromXml(XmlConfig xml);
     void showMenu();
 
 private:
     DBusReceiptQuerier  *m_receiptQuerier{};
-    NPopUpKeyboard      *m_keyboard{};
-    QAbstractButton     *m_lounge_button    {printer_or_lounges_button};
-    QAbstractButton     *m_pay_button       {trash_button};
+    NPopUpKeyboard      *m_npopup_keyboard{};
+    QAbstractButton     *m_lounge_button {printer_or_lounges_button};
+    QAbstractButton     *m_pay_button    {trash_button};
 
 //    QPixmap m_pay_pixmap {"controls:redo.png"};
     QPixmap             m_pay_pixmap        {"payments:mix_mobile_paymodes.png"};

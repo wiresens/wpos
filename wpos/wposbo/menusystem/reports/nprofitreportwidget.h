@@ -32,7 +32,7 @@ class NProfitReportWidget :
 
 public:
     const QString DBusObjectPath{"/wpos/wposbo/ProfitReport"};
-    explicit NProfitReportWidget(UserModule *user_module, QWidget *parent=0, const QString& name = QString());
+    explicit NProfitReportWidget(UserModule *user_module, QWidget *parent=0, const QString& name = QString{});
     ~NProfitReportWidget();
 
 signals:
@@ -63,7 +63,7 @@ protected:
     void showEvent(QShowEvent *e);
     void hideEvent(QHideEvent *e);
     virtual bool doIsClosing();
-    virtual void doSelectReport(QString& start_date, QString& end_date, const QString& informe = QString());
+    virtual void doSelectReport(QString& start_date, QString& end_date, const QString& informe = QString{});
     virtual void doSetOutputStream(QDataStream& out_stream, const QString& informe, const QString& start_date, const QString& end_date, const QString& employee_id);
     void getUsers();
     void startShowing();

@@ -23,7 +23,7 @@ class PrinterManager;
 class TicketCore : public QObject  {
     Q_OBJECT
 public:
-    explicit TicketCore(QObject *parent = nullptr,  const QString& name = QString());
+    explicit TicketCore(QObject *parent = nullptr,  const QString& name = QString{});
     ~TicketCore();
 
     bool getTogglePrinterState();

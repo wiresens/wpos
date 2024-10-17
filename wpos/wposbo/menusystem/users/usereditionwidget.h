@@ -22,7 +22,7 @@ public:
     static const unsigned int ENROLMENT_TIMEOUT;
     static const unsigned int FEEDBACK_TIMEOUT;
 
-    explicit UserEditionWidget( UserModule *_user_mod, QWidget *parent=0, const QString& name = QString());
+    explicit UserEditionWidget( UserModule *_user_mod, QWidget *parent=0, const QString& name = QString{});
 
     QString userId() const;
 
@@ -54,7 +54,7 @@ protected:
     bool isValidEmail() const;
     void retrieveUserInfo(XmlConfig &xml);
     void showUserInfo(XmlConfig &xml);
-    void showMessageBox(const QString& title, const QString& msg, const QString& feedBack = QString());
+    void showMessageBox(const QString& title, const QString& msg, const QString& feedBack = QString{});
     void showFeedBack(const QString& feedBack);
 
     void expectNext(){ employee_id->setFocus(); }

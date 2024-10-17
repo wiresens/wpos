@@ -44,7 +44,7 @@ public:
 
     explicit DBusReceiptPrimitive(
         QObject *parent=nullptr,
-        const QString& name = QString()
+        const QString& name = QString{}
     );
 
     ~DBusReceiptPrimitive();

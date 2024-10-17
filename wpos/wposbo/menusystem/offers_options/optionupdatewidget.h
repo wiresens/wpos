@@ -24,7 +24,7 @@ class OptionUpdateWidget : public OptionEditionWidget{
 public:
     static const QString DBusObjectPath;
 
-    explicit OptionUpdateWidget(QWidget *parent=0, const QString& name = QString());
+    explicit OptionUpdateWidget(QWidget *parent=0, const QString& name = QString{});
     ~OptionUpdateWidget() = default;
 
 signals:

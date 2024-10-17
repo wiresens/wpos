@@ -23,7 +23,7 @@ class NTicketDesignWidget :
 
     Q_OBJECT
 public:
-    explicit NTicketDesignWidget(QWidget *parent=0, const QString& name= QString());
+    explicit NTicketDesignWidget(QWidget *parent=0, const QString& name= QString{});
     ~NTicketDesignWidget() = default;
 
 public slots:

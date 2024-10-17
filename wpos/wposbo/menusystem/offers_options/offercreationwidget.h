@@ -7,7 +7,7 @@ class OfferCreationWidget : public OfferEditionWidget
 {
     Q_OBJECT
 public:
-    explicit OfferCreationWidget(QWidget *parent=0, const QString &name=QString());
+    explicit OfferCreationWidget(QWidget *parent=0, const QString &name=QString{});
 
 public slots:
     virtual void clear() override;

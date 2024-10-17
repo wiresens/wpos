@@ -12,13 +12,10 @@
 
 #include "relatedproductgroup.h"
 #include <QString>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
-#include <productextrainfo.h>
+#include <wposcore/productextrainfo.h>
 
-#include <iostream>
-namespace std{}
-using namespace std;
 
 const QString UNKNOWN {"STRANGER"};
 
@@ -66,8 +63,8 @@ bool RelatedProductGroup::initProduct(XmlConfig *xml){
             option = new ProductExtraInfo(aux);
             for(int j=0;j<xml->howManyTags("value");j++){
                 aux = xml->readString("value["+QString::number(j)+"]");
-                if (xml->readAttribute("value["+QString::number(j)+"]","type")=="default")
-                    option->addOption(aux,true);
+                if ( xml->readAttribute("value["+QString::number(j)+"]", "type") == "default" )
+                    option->addOption(aux, true);
                 else
                     option->addOption(aux);
 
@@ -83,11 +80,11 @@ bool RelatedProductGroup::initProduct(XmlConfig *xml){
     //save the domain.
 
     count = xml->howManyTags("product");
-    for (i=0; i< count; i++){
+    for (i=0; i < count; i++){
         xml->setDomain("product["+QString::number(i)+"]");
         prod = new RelatedProductGroup(xml);
         append(prod);
-        xml->releaseDomain("product",false);
+        xml->releaseDomain("product", false);
     }
     xml->popDomain();
     return true;

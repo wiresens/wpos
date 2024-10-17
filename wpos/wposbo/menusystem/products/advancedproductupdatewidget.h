@@ -24,7 +24,7 @@ class AdvancedProductUpdateWidget :
     Q_OBJECT
 
 public:
-    explicit AdvancedProductUpdateWidget(ProductModule *product_model, QWidget *parent=0, const QString& name= QString());
+    explicit AdvancedProductUpdateWidget(ProductModule *product_model, QWidget *parent=0, const QString& name= QString{});
     ~AdvancedProductUpdateWidget() = default;
 
 public slots:    

@@ -32,13 +32,13 @@ MenuPage::MenuPage(
 
 void MenuPage::setLayoutType(LayoutType type){
     switch(type){
-    case GRID:
+    case LayoutType::GRID:
         layGrid();
         break;
-    case VBOX:
+    case LayoutType::VBOX:
         layVertical();
         break;
-    case HBOX:
+    case LayoutType::HBOX:
         layHorizontal();
         break;
     }
@@ -55,36 +55,33 @@ void MenuPage::addWidget(
     int row,
     int col)
 {
-    widgetList.append(wdgt);
-    widgetDict.insert(name, wdgt);
-
     switch(layout_type){
-    case GRID:
+    case LayoutType::GRID:
         ((QGridLayout *)page_layout)->addWidget(wdgt, row, col);
         break;
-    case VBOX:
+    case LayoutType::VBOX:
         ((QBoxLayout *)page_layout)->addWidget(wdgt);
         break;
-    case HBOX:
+    case LayoutType::HBOX:
         ((QBoxLayout *)page_layout)->addWidget(wdgt);
         break;
     }
 }
 
 void MenuPage::layGrid(){
-    layout_type = GRID;
+    layout_type = LayoutType::GRID;
     delete page_layout;
     page_layout = new QGridLayout(this);
 }
 
 void MenuPage::layVertical(){
-    layout_type = VBOX;
+    layout_type = LayoutType::VBOX;
     delete page_layout;
     page_layout = new QVBoxLayout(this);
 }
 
 void MenuPage::layHorizontal(){
-    layout_type = HBOX;
+    layout_type = LayoutType::HBOX;
     delete page_layout;
     page_layout = new QHBoxLayout(this);
 }

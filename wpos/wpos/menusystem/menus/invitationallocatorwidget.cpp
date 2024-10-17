@@ -47,7 +47,7 @@ InvitationAllocatorWidget::InvitationAllocatorWidget(QWidget *parent, const QStr
     // Register generic signal
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::XCORE_SET_PRODUCT_OFFER,this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::PRODSELECT_COLOR_MODE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
     gsm->subscribeToGenericSignal(GSIGNAL::LOAD_OFFERS,this);
@@ -179,7 +179,7 @@ void InvitationAllocatorWidget::invitationSelected(const QModelIndex &index){
         // Then emmit the signal to back to main products stack
         XmlConfig xml ;
         xml.createElement("name", SalesScreen::PRODUCT_MENU);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
     }
 
 
@@ -199,7 +199,7 @@ void InvitationAllocatorWidget::cancelSlot(){
 
     XmlConfig xml;
     xml.createElement("name", SalesScreen::PRODUCT_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
     xml.deleteElement("name");
 
     xml.createElement("enabled","true");

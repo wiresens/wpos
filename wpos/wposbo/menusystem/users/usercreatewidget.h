@@ -28,7 +28,7 @@ public:
         AccesControl = 3
     };
 
-    explicit UserCreationWidget(UserModule *_user_mod, QWidget *parent=0, const QString& name=QString());
+    explicit UserCreationWidget(UserModule *_user_mod, QWidget *parent=0, const QString& name=QString{});
 
 protected slots:
     virtual void apply() override;

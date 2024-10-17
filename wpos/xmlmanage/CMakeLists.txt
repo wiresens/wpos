@@ -10,6 +10,12 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 qt_standard_project_setup()
 
+include_directories(
+    ../libbslxml
+    ..
+    .
+)
+
 set(HEADER_FILES
     comon.h
     fileutils.h

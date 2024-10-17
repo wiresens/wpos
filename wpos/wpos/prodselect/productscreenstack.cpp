@@ -11,7 +11,7 @@
  ***************************************************************************/
 
 #include "prodselect/productscreenstack.h"
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 
@@ -316,9 +316,11 @@ void ProductScreenStack::productDefinitionSlot(XmlConfig *xml){
     defaultValuesAll();
     selected_product = 0;
 
-    if ((defaultScreenName().isEmpty()) && (!last_screen_name.isEmpty())){
+    if ( defaultScreenName().isEmpty()  &&
+        !last_screen_name.isEmpty() )
+    {
         setScreen(last_screen_name);
-        last_screen_name = "";
+        last_screen_name.clear();
     }
 
 }

@@ -40,7 +40,7 @@ ChangeMoneyWidget::ChangeMoneyWidget(QWidget *parent, const QString& name) :
 
     // Register signal to close this panel, wich in fact means changing to ADM_MENU
     auto gsm = GenericSignalManager::instance();
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::EVENTLOG,this);
 
     QVBoxLayout *numpad_frame_layout = new QVBoxLayout(numpad_frame);
@@ -129,7 +129,7 @@ void ChangeMoneyWidget::acceptChangeSlot(){
     //   Prepare an xml to emit a signal that means change to ADM_MENU
     xml->delDomain();
     xml->createElement("name", SalesScreen::ADMIN_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,xml);
     delete xml;
     xml = 0;
 }
@@ -139,7 +139,7 @@ void ChangeMoneyWidget::rejectChangeSlot(){
     xml = new XmlConfig();
     // Prepare an xml to emit a signal that means change to ADM_MENU
     xml->createElement("name", SalesScreen::ADMIN_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,xml);
     delete xml;
 }
 

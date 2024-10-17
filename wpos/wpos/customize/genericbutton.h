@@ -31,10 +31,6 @@
 *    the generic signal manager
 */
 
-
-
-
-
 class QString;
 class EventAspect;
 class XmlPair;
@@ -58,7 +54,7 @@ public:
 
     GenericButton(const QString& text,
                   QWidget *parent,
-                  const QString& name = QString());
+                  const QString& name = QString{});
 
     ~GenericButton();
 

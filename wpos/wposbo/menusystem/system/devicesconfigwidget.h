@@ -56,7 +56,7 @@ public:
         USB3 = 9
     };
 
-    explicit DevicesConfig(QWidget *parent=0, const QString& name = QString());
+    explicit DevicesConfig(QWidget *parent=0, const QString& name = QString{});
     ~DevicesConfig() = default;
 
 public slots:

@@ -20,7 +20,7 @@
 #include "customize/genericbutton.h"
 
 #include <wposcore/genericsignalmanager.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QSignalMapper>
 #include <QLabel>
@@ -49,7 +49,7 @@ PayModes::PayModes(
     setObjectName(name);
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::BARCORE_PROCESS_CORE,this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
 
     cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
@@ -114,7 +114,7 @@ void PayModes::proceccionPay(){
 void PayModes::cashPay(){
     XmlConfig xml ;
     xml.createElement("name", SalesScreen::CASH_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }
 
 // void PayModes::cashPay(){
@@ -123,14 +123,14 @@ void PayModes::cashPay(){
 //         sendTicketSignal("metalico");
 //     else{
 //         xml.createElement("name", SalesScreen::CASH_MENU);
-//         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+//         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 //     }
 // }
 
 void PayModes::cancelPayment(){
     XmlConfig xml ;
     xml.createElement("name", SalesScreen::PRODUCT_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 
     xml.deleteElement("name");
     xml.createElement("enabled", "true");
@@ -145,7 +145,7 @@ void PayModes::sendTicketSignal(const QString& pay_mode){
 
     xml.deleteElement("pay_type");
     xml.createElement("name", SalesScreen::PRODUCT_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 
     xml.deleteElement("name");
     xml.createElement("enabled","true");
@@ -167,7 +167,7 @@ void PayModes::showEvent(QShowEvent *e){
     if (actual_price <= 0){
         sendTicketSignal("metalico");
         xml.createElement("name", SalesScreen::PRODUCT_MENU);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
     }
     else
         setNewPrice(actual_price);

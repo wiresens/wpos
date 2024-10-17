@@ -29,18 +29,22 @@ public:
     static const QString DBusService;
     static const QString LOGIN_SCREEN;
     static const QString SALES_SCREEN;
-    static const QString READ_CONFIG_SCREEN;
+    static const QString CONFIG_SCREEN;
 
-    explicit MainScreen(QSplashScreen &splash, const QString& name = QString());
+    explicit MainScreen(
+        QSplashScreen &splash,
+        const QString& name = QString{});
 
 public slots:
     void genericSignalSlot(const QString& signal);
-    void genericDataSignalSlot(const QString& signal, XmlConfig* xml);
+    void genericDataSignalSlot(
+        const QString& signal,
+        XmlConfig* xml);
     
 private:
-    Greeter* loginScreen;
-    SalesScreen* salesScreen;
-    ReadConfigScreen* configScreen;
+    Greeter          *m_login_screen{};
+    SalesScreen      *m_sales_screen{};
+    ReadConfigScreen *m_config_screen{};
 };
 
 #endif

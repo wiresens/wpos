@@ -27,7 +27,7 @@
 class AdvancedProductInsertionWidget : public ProductInsertionWidget  {
     Q_OBJECT
 public:
-    explicit AdvancedProductInsertionWidget(ProductModule *product_module , int mode=0, QWidget *parent=0, const QString& name = QString());
+    explicit AdvancedProductInsertionWidget(ProductModule *product_module , int mode=0, QWidget *parent=0, const QString& name = QString{});
     ~AdvancedProductInsertionWidget() = default;
 
 public slots:

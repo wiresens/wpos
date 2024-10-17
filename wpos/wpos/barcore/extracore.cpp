@@ -15,20 +15,17 @@
 #include <wposcore/genericsignalmanager.h>
 
 #include "wpos/database/barcoredb.h"
-#include <xmlconfig.h>
-#include <productextrainfo.h>
+#include <libbslxml/xmlconfig.h>
+#include <wposcore/productextrainfo.h>
 
 #include <QString>
 #include <QStringList>
 #include <QFile>
 
-
-#include <iostream>
-namespace std{}
-using namespace std;
-
-ExtraCore::ExtraCore(QObject *parent, const QString& name):
-    QObject(parent),
+ExtraCore::ExtraCore(
+    QObject *parent,
+    const QString& name)
+    :QObject(parent),
     price_state(true)
 {
     setObjectName(name);
@@ -62,7 +59,7 @@ QString ExtraCore::getOptionValue(const QString& option_name){
 
     if (node)
         return node->getDefaultOption();
-    return QString();
+    return QString{};
 }
 
 QStringList ExtraCore::getFixedOptionsNames(){
@@ -82,7 +79,7 @@ QString ExtraCore::getFixedOptionValue(const QString& option_name){
     ProductExtraInfo* node = fixed_options.find(option_name);
     if (node)
         return node->getDefaultOption();
-    return QString();
+    return QString{};
 
 }
 
@@ -126,6 +123,7 @@ bool ExtraCore::clearPrice(){
         xml.createElement("mode", "last");
         emit genericDataSignal(GDATASIGNAL::PRODSELECT_COLOR_MODE, &xml);
         delete custom_price;
+        custom_price = nullptr;
         return true;
     }
     return false;

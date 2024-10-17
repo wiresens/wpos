@@ -29,7 +29,7 @@ class PersTicketWidget :
         public QWidget , private Ui::PersTicketsWidgetBase {
     Q_OBJECT
 public:
-    explicit PersTicketWidget(QWidget *parent=0, const QString& name=QString());
+    explicit PersTicketWidget(QWidget *parent=0, const QString& name=QString{});
     ~PersTicketWidget();
 
 public slots:

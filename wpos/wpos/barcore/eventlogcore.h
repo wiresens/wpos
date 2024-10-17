@@ -23,7 +23,7 @@ class EventLogCoreDB;
 class EventLogCore : public QObject{
     Q_OBJECT
 public:
-    explicit EventLogCore(QObject *parent = 0, const QString& name = QString());
+    explicit EventLogCore(QObject *parent = 0, const QString& name = QString{});
     ~EventLogCore();
 
 public slots:

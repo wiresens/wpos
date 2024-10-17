@@ -27,7 +27,7 @@ class OfferEditionWidget :
     Q_OBJECT
 
 public:
-    explicit OfferEditionWidget(QWidget *parent=0, const QString &name=QString());
+    explicit OfferEditionWidget(QWidget *parent=0, const QString &name=QString{});
     ~OfferEditionWidget();
 
 public slots:

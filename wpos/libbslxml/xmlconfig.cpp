@@ -498,7 +498,7 @@ bool XmlConfig::doSetDomain(const QString& domain, bool overwrite_domain){
     bool result{ true};
 
     if (!setDomain(domain,overwrite_domain)){
-        createElement(domain, QString(), nullptr);
+        createElement(domain, QString{}, nullptr);
         if(!setDomain(domain, overwrite_domain))
             result = false;
     }
@@ -582,7 +582,7 @@ bool XmlConfig::delDomain (bool recursive){
     if ( !domain.isNull() ){
         if (recursive){
             domain = doc.documentElement();
-            string_domain = QString();
+            string_domain = QString{};
         }
         else
             if (domain != doc.documentElement())
@@ -981,7 +981,7 @@ bool XmlConfig::createElementRecursivePrivate(
         }
         if (how_many_nok!=0)
         {
-            if (this->createElementPrivate(temp,QString(),nullptr,false)==false) //the first times we just create the elements
+            if (this->createElementPrivate(temp,QString{},nullptr,false)==false) //the first times we just create the elements
                 return false;
         }
         else
@@ -1186,7 +1186,7 @@ bool XmlConfig::copyPrivate(
                         child = dst.right( dst.length() - father.length() -1 );
                     }
                     else{ //the tag is the what we look for and there's no domain
-                        father = QString();
+                        father = QString{};
                         child = dst;
                     }
                     parent_of_data = nodeFromTagPrivate( dst + "[" + QString::number(howManyTags(child,father) - 1) +"]"); // our father is the last node

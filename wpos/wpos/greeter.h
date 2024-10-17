@@ -34,19 +34,24 @@
 #ifndef LOGIN_SCREEN_H
 #define LOGIN_SCREEN_H
 
-#include "ui_loginwidget.h"
 #include "greeterinterface.h"
 #include <wposcore/hlist.h>
+
+#include <QtWidgets/QWidget>
 
 class AuthCoreDB;
 class QPushButton;
 class XmlConfig;
 class MenuPage;
+class QShowEvent;
+
+namespace Ui{
+class LoginWidget;
+}
 
 class Greeter :
     public QWidget,
-    public GreeterInterface,
-    private Ui::LoginWidget
+    public GreeterInterface
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wpos.Greeter")
@@ -56,6 +61,7 @@ public:
     static constexpr QSize LOGIN_BUTTON_SIZE = QSize{100,70};
 
     Greeter(MenuPage* parent, const QString& name);
+    ~Greeter(){ delete ui;}
 
 signals:
     void genericDataSignal(const QString& signal_name, XmlConfig *xml);
@@ -81,7 +87,8 @@ private:
 private:
     //if state is true, the auth will be used, if false
     //no auth will be done at all.
-    bool use_auth{false};
+    Ui::LoginWidget* ui;
+    bool m_use_auth{false};
 };
 
 #endif

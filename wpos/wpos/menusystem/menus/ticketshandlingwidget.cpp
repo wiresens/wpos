@@ -11,7 +11,7 @@ TicketsHandlingWidget::TicketsHandlingWidget(
         QWidget *parent, const QString& name):
 
     QFrame(parent),
-    ticket_db { new KillTicketsDB(name, cfg::xmlFileByKey(cfg::XMLKey::Database)) }
+    m_ticket_db { new KillTicketsDB(name, cfg::xmlFileByKey(cfg::XMLKey::Database)) }
 
 {
     setupUi(this);
@@ -30,7 +30,7 @@ TicketsHandlingWidget::TicketsHandlingWidget(
 //        generic_signal_manager->publishGenericDataSignal(GDATASIGNAL_BARCORE_CHANGE_XML, this);
 //    }
 
-    order = new OrderView(order_frame, "ORDER");
+    m_order_view = new OrderView(order_frame, "ORDER");
 
     allusers_button->hide();
     ticket_down_button->setAutoRepeat(true);
@@ -46,20 +46,20 @@ TicketsHandlingWidget::TicketsHandlingWidget(
 
 
     auto order_layout = new QVBoxLayout(order_frame);
-    order_layout->addWidget(order);
+    order_layout->addWidget(m_order_view);
     order_layout->setContentsMargins(0,0,0,0);
 
     connect(ticket_down_button, &QAbstractButton::clicked, this, &TicketsHandlingWidget::selectDown);
     connect(ticket_up_button, &QAbstractButton::clicked, this, &TicketsHandlingWidget::selectUp);
-    connect(order_down_button, &QAbstractButton::clicked, order->contentView(), &OrderContentView::selectDown);
-    connect(order_up_button, &QAbstractButton::clicked, order->contentView(), &OrderContentView::selectUp);
+    connect(order_down_button, &QAbstractButton::clicked, m_order_view->contentView(), &OrderContentView::selectDown);
+    connect(order_up_button, &QAbstractButton::clicked, m_order_view->contentView(), &OrderContentView::selectUp);
     connect(cancel_button, &QAbstractButton::clicked, this, &TicketsHandlingWidget::rejectChange);
     connect(ticketnum_treeview, &QTreeWidget::itemSelectionChanged, this, &TicketsHandlingWidget::handleTicketSelected);
 }
 
 TicketsHandlingWidget::~TicketsHandlingWidget(){
-    delete order;
-    delete ticket_db;
+    delete m_order_view;
+    delete m_ticket_db;
 }
 
 void TicketsHandlingWidget::selectDown(){

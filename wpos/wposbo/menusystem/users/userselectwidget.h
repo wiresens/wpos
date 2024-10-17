@@ -38,7 +38,7 @@ public:
     UserSelectWidget(
             DatabaseModule *_db_mod,
             UserModule *_user_mod, int state,
-            QWidget *parent=0, const QString& name= QString()
+            QWidget *parent=0, const QString& name= QString{}
     );
 
     ~UserSelectWidget() = default;

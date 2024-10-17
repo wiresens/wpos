@@ -19,8 +19,7 @@
   *@author BSTeam
   */
 
-class TicketResumeData{
-public:
+struct TicketResumeData{
     QString ticket_code;
     QString employee_id;
     QString employee_name;

@@ -26,7 +26,7 @@ class ProductModule;
 class Instantiator : public QObject{
     Q_OBJECT
 public:
-    explicit Instantiator(QWidget* parent=0, const QString & name= QString());
+    explicit Instantiator(QWidget* parent=0, const QString & name= QString{});
     ~Instantiator() = default;
 
     bool hasMenu(const QString& menuName);

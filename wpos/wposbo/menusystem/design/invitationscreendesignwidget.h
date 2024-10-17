@@ -58,7 +58,7 @@ class InvitationScreenDesignWidget :
         private Ui::ScreenInvitationsDesignInterface {
     Q_OBJECT
 public:
-    explicit InvitationScreenDesignWidget(QWidget *parent = 0, const QString& name = QString());
+    explicit InvitationScreenDesignWidget(QWidget *parent = 0, const QString& name = QString{});
     ~InvitationScreenDesignWidget() = default;
 
 public slots:

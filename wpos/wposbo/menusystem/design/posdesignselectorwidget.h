@@ -25,7 +25,7 @@ class POSDesignSelectorWidget :
     Q_OBJECT
 
 public:
-    explicit POSDesignSelectorWidget(QWidget *parent = 0, const QString& name = QString());
+    explicit POSDesignSelectorWidget(QWidget *parent = 0, const QString& name = QString{});
     ~POSDesignSelectorWidget() = default;
 
 private slots:

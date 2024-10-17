@@ -13,10 +13,6 @@
 #include "authcoredb.h"
 #include <QVariant>
 
-#include <iostream>
-namespace std{}
-using namespace std;
-
 AuthCoreDB::AuthCoreDB(
     const QString& connection,
     const QString& hostname,
@@ -106,7 +102,9 @@ UserData AuthCoreDB::userByName(const QString& name) const{
     return user;
 }
 
-UserData AuthCoreDB::userByLastName(const QString& lastName) const{
+UserData AuthCoreDB::userByLastName(
+    const QString& lastName) const
+{
     UserData user;
     if ( isConnected()){
         QString sql = "SELECT employee_id, name, last_name, address, nss, phone, ";
@@ -120,16 +118,16 @@ UserData AuthCoreDB::userByLastName(const QString& lastName) const{
             //only get the first record with this name
             query.first();
 
-            user.id = query.value(0).toString();
-            user.name = query.value(1).toString();
-            user.last_name = query.value(2).toString();
-            user.address = query.value(3).toString();
-            user.nss = query.value(4).toString();
-            user.phone = query.value(5).toString();
-            user.cellular = query.value(6).toString();
-            user.email = query.value(7).toString();
-            user.company_id = query.value(8).toString();
-            user.picture = query.value(9).toString();
+            user.id = query.value("employee_id").toString();
+            user.name = query.value("name").toString();
+            user.last_name = query.value("last_name").toString();
+            user.address = query.value("address").toString();
+            user.nss = query.value("nss").toString();
+            user.phone = query.value("phone").toString();
+            user.cellular = query.value("cellular").toString();
+            user.email = query.value("email").toString();
+            user.company_id = query.value("company_id").toString();
+            user.picture = query.value("picture").toString();
             user.isRootUser = isRootUser(user.id);
         }
     }
@@ -146,7 +144,7 @@ bool AuthCoreDB::isRootUser(const QString& id) const{
     QSqlQuery query (sql, dbHandle());
     if (!query.isActive() || !query.size())  return false;
     while(query.next()){
-        auto res = query.value(0).toString();
+        auto res = query.value("permission").toString();
         if (res == "administracion"){
             return true;
         }

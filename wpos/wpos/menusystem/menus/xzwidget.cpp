@@ -15,7 +15,7 @@
 
 #include "printer/printermanager.h"
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <wposcore/genericsignalmanager.h>
 
 #include <QtWebEngineWidgets/QWebEngineView>
@@ -56,7 +56,7 @@ XZWidget::XZWidget(QWidget *parent, const QString& name) :
     cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
     auto gsm = GenericSignalManager::instance();
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::Z, this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::X, this);
 
@@ -191,7 +191,7 @@ void XZWidget::printSlot(){
 void XZWidget::returnToADMmenuSlot(){
     XmlConfig xml;
     xml.createElement("name", SalesScreen::ADMIN_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }
 
 void XZWidget::genericDataSignalSlot(const QString& signal_name, XmlConfig *xml){
@@ -200,12 +200,12 @@ void XZWidget::genericDataSignalSlot(const QString& signal_name, XmlConfig *xml)
     if (signal_name == GDATASIGNAL::X){
         operation = XOperation;
         xSlot(xml);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &tmp_xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &tmp_xml);
     }
     else if (signal_name == GDATASIGNAL::Z){
         operation = ZOperation;
         zSlot(xml);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &tmp_xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &tmp_xml);
     }
 }
 

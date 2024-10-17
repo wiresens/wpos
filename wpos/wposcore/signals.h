@@ -109,7 +109,7 @@ changed to the new scheme...
      <name>name of the screen to be accessed</name>
 </AUTOMATICALLY_GENERATED_XML>
 */
-    static const QString MAINSTACK_SETPAGE;
+    static const QString MAINSTACK_SET_PAGE;
     static const QString PRODUCTS_SETPAGE;
 
 /**

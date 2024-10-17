@@ -51,15 +51,14 @@ struct AuthCoreDB :
         const QString& connection,
         const QString& configFile);
 
-//    UserData* userById(const QString& id)  const;
     UserData userById(const QString& id)  const;
 
     //Potential bug : Name and Last are not unique identifiers
     UserData userByName(const QString& name) const; // First record with  name
-    UserData userByLastName(const QString& lastName)  const; // First record with  lastName
+    UserData userByLastName(const QString& lastName) const; // First record with  lastName
 
-    bool isRootUser(const QString& id)  const;
-    QVector<UserData> userList()  const;
+    bool isRootUser(const QString& id) const;
+    QVector<UserData> userList() const;
 };
 
 #endif

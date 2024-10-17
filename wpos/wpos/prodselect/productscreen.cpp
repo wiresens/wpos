@@ -13,7 +13,7 @@
 #include "prodselect/productscreen.h"
 #include "prodselect/product.h"
 #include "prodselect/productscreenstack.h"
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <wposgui/common/global.h>
 
 #include <iostream>

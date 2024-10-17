@@ -12,7 +12,7 @@ class TechWidget :
 {
     Q_OBJECT
 public:
-    explicit TechWidget(QWidget *parent = 0, const QString& name = QString());
+    explicit TechWidget(QWidget *parent = 0, const QString& name = QString{});
 };
 
 #endif // TECHWIDGET_H

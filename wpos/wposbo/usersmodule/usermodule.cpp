@@ -143,7 +143,7 @@ QString UserModule::usersList(bool all){
     QVector<UserData> users{};
     UsersModuleDB database(DATABASE_CONNECTION_NAME, DATABASE_DEFINITION_FILE);
     users = database.getUserList(all);
-    if(users.isEmpty()) return QString();
+    if(users.isEmpty()) return QString{};
 
     XmlConfig xml;
     xml.delDomain();
@@ -165,7 +165,7 @@ QString UserModule::usersExtendedList(bool all){
 
     UsersModuleDB database (DATABASE_CONNECTION_NAME, DATABASE_DEFINITION_FILE);
     QVector<UserData> users = database.getUserList(all);
-    if(users.isEmpty()) return QString();
+    if(users.isEmpty()) return QString{};
 
     XmlConfig xml;
     xml.delDomain();
@@ -198,7 +198,7 @@ QString UserModule::getUserInfo(const QString& employee_id){
     UsersModuleDB database(DATABASE_CONNECTION_NAME,DATABASE_DEFINITION_FILE);
     UserData data{ database.getUserInfo(employee_id) };
 
-    if ( data.isEmpty()) return QString();
+    if ( data.isEmpty()) return QString{};
 
     XmlConfig xml;
     xml.delDomain();

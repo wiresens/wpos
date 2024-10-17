@@ -49,7 +49,7 @@ class XmlConfig;
 class GenericMenuButton : public QPushButton  {
     Q_OBJECT
 public:
-    explicit GenericMenuButton(const QString& text, QWidget *parent=0, const QString& name = QString());
+    explicit GenericMenuButton(const QString& text, QWidget *parent=0, const QString& name = QString{});
     ~GenericMenuButton(){ delete xml; }
 
     void createRelationship(const QString& signal_name, const QString& _data);

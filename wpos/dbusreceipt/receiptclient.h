@@ -40,7 +40,7 @@ public:
                   const QString& module_name,
                   uint port,
                   QObject *parent = nullptr,
-                  const QString& name = QString());
+                  const QString& name = QString{});
 
     ~ReceiptClient();
 

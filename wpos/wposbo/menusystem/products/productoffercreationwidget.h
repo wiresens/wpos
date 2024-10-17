@@ -29,7 +29,7 @@ class ProductOfferCreationWidget:
     Q_OBJECT
 
 public:
-    explicit ProductOfferCreationWidget(double _product_price, QWidget *parent=0, const QString& name = QString());
+    explicit ProductOfferCreationWidget(double _product_price, QWidget *parent=0, const QString& name = QString{});
     ~ProductOfferCreationWidget() = default;
 
     void setProductPrice(double _product_price);

@@ -30,15 +30,11 @@ class NPopUpKeyboard : public QMenu{
     Q_OBJECT
 
 public:
-    explicit NPopUpKeyboard(
-        QWidget *parent=0,
-        const QString& name = QString{}
-    );
+    explicit NPopUpKeyboard(QWidget *parent=0);
 
     explicit NPopUpKeyboard(
         const QString& text,
-        QWidget *parent=0,
-        const QString& name = QString{}
+        QWidget *parent=0
     );
 
     void showMenu(const QPoint& pos);
@@ -46,19 +42,20 @@ public:
     bool isAtTable();
     int getTable();
     QString getLounge();
+
     HList<ProductExtraInfo>*
     getOptionsFromLounge(const QString& lounge);
 
+signals:
+    void exitClicked();
+    void textChanged(const QString &);
+    void loungeRequested(bool on);
+
 public slots:
     void setText(const QString& text);
-    void loungeButtonClicked();
-    void kbButtonClicked();
-    void setUsedList(QStringList list);
-
-signals:
-    void textChanged(const QString &);
-    void exitClicked();
-    void loungeRequested(bool on);
+    void showLounge();
+    void showKeyBoard();
+    void setUsedTables(const QStringList &tbl_codes);
 
 protected slots:
     void enterPressedSlot(const QString &text);
@@ -69,7 +66,7 @@ protected:
 
 private:
     NKeyboard *m_nkeyboard{};
-    QAction* m_cmds;
+    QAction* m_action;
 };
 
 #endif

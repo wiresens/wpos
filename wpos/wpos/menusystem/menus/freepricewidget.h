@@ -23,7 +23,7 @@ class QString;
 class FreePriceWidget : public QWidget, private Ui::FreePriceWidget  {
     Q_OBJECT
 public:
-    explicit FreePriceWidget(QWidget *parent=0, const QString& name = QString());
+    explicit FreePriceWidget(QWidget *parent=0, const QString& name = QString{});
     ~FreePriceWidget();
 
 signals:

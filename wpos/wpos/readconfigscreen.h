@@ -13,25 +13,37 @@
 #ifndef READ_CONFIG_SCREEN_H
 #define READ_CONFIG_SCREEN_H
 
-#include <QWidget>
 #include "ui_readconfigwidget.h"
+#include <QtWidgets/QWidget>
 
 class XmlConfig;
 class MenuPage;
 
-class ReadConfigScreen : public QWidget, private Ui::ReadConfigWidget
+namespace Ui{
+class ReadConfigWidget;
+}
+class ReadConfigScreen :
+    public QWidget
 {
     Q_OBJECT
 
 public:
-    explicit ReadConfigScreen(MenuPage *parent, const QString& name = QString());
+    explicit ReadConfigScreen(
+        MenuPage *parent,
+        const QString& name = QString{});
+    ~ReadConfigScreen(){ delete ui;}
 
 public slots:
-    void genericDataSignalSlot(const QString& signal_name, XmlConfig* xml);
+    void genericDataSignalSlot(
+        const QString& signal_name,
+        XmlConfig* xml);
 
 protected:
     void showEvent(QShowEvent *e);
-    uint pos{0};
+
+private:
+    Ui::ReadConfigWidget *ui;
+    uint m_pos{0};
 };
 
 #endif

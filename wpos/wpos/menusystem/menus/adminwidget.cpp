@@ -33,7 +33,7 @@
 #include <QProcess>
 #include <QDebug>
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 extern AuthCore     *authCore;
 extern FileManager  *file_manager;
@@ -50,7 +50,7 @@ AdminWidget::AdminWidget(
     cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
     auto gsm = GenericSignalManager::instance();
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
     gsm->subscribeToGenericSignal(GDATASIGNAL::MAINWIDGET_SAVE_BUTTON_STATE,this);
     gsm->publishGenericSignal(GSIGNAL::LOAD_BUTTONS,this);
@@ -102,63 +102,63 @@ void AdminWidget::init(ProductScreenStack *stack){
 
     auto caption = tr("Button %1 Not Found");
     auto text = tr("Failed to load admin button configuration profile %1");
-    toggle_derrama = cancel_operations->find("toggle_derrama");
+    toggle_derrama = cancel_operations->buttonByName("toggle_derrama");
     if (!toggle_derrama){
         qDebug() << "wpos::error toggle_derrama" << Qt::endl;
         QMessageBox::warning(this, caption.arg("toggle_derrama"), text.arg("toggle_derrama"), QMessageBox::NoButton);
         exit(1);
     }
 
-    toggle_anulation = cancel_operations->find("toggle_anulation");
+    toggle_anulation = cancel_operations->buttonByName("toggle_anulation");
     if (!toggle_anulation){
         qDebug() << "wpos::error toggle_anulation" << Qt::endl;
         QMessageBox::warning(this, caption.arg("toggle_anulation"), text.arg("toggle_anulation"), QMessageBox::NoButton);
         exit(1);
     }
 
-    toggle_cash = controls->find("toggle_cash");
+    toggle_cash = controls->buttonByName("toggle_cash");
     if (!toggle_cash){
         qDebug() << "wpos::error toggle_cash" << Qt::endl;
         QMessageBox::warning(this, caption.arg("toggle_cash"), text.arg("toggle_cash"), QMessageBox::NoButton);
         exit(1);
     }
 
-    toggle_out_screen = controls->find("toggle_out_screen");
+    toggle_out_screen = controls->buttonByName("toggle_out_screen");
     if (!toggle_out_screen){
         qDebug() << "wpos::error toggle_out_screen" << Qt::endl;
         QMessageBox::warning(this, caption.arg("toggle_out_screen"), text.arg("toggle_out_screen"), QMessageBox::NoButton);
         exit(1);
     }
 
-    toggle_waiters = controls->find("toggle_waiters");
+    toggle_waiters = controls->buttonByName("toggle_waiters");
     if (!toggle_waiters){
         qDebug() << "wpos::error toggle_waiters" << Qt::endl;
         QMessageBox::warning(this, caption.arg("toggle_waiters"), text.arg("toggle_waiters"), QMessageBox::NoButton);
         exit(1);
     }
 
-    toggle_fx2000 = controls->find("toggle_fx2000");
+    toggle_fx2000 = controls->buttonByName("toggle_fx2000");
     if (!toggle_fx2000){
         qDebug() << "wpos::error toggle_fx2000\n";
         QMessageBox::warning(this, caption.arg("toggle_fx2000"), text.arg("toggle_fx2000"), QMessageBox::NoButton);
         exit(1);
     }
 
-    toggle_printing = printer_operations->find("toggle_printing");
+    toggle_printing = printer_operations->buttonByName("toggle_printing");
     if (! toggle_printing){
         qDebug() << "wpos::error toggle_printing\n";
         QMessageBox::warning(this, caption.arg("toggle_printing"), text.arg("toggle_printing"), QMessageBox::NoButton);
         exit(1);
     }
 
-    toggle_double_printing = printer_operations->find("toggle_double_printing");
+    toggle_double_printing = printer_operations->buttonByName("toggle_double_printing");
 
-    QPushButton *button  = admin_operations->find("ntpv_backoffice");
+    QPushButton *button  = admin_operations->buttonByName("ntpv_backoffice");
 
     if (button)
         connect(button, &QPushButton::clicked, this, &AdminWidget::launchBackOffice);
 
-    button = admin_operations->find("xterm");
+    button = admin_operations->buttonByName("xterm");
     if (button)
         connect(button, &QPushButton::clicked ,this, &AdminWidget::launchXterm);
 }
@@ -205,13 +205,13 @@ void AdminWidget::cancelSlot(){
     XmlConfig xml;
     if ( authCore && authCore->userId()  == "1" ){
         xml.createElement("name", MainScreen::LOGIN_SCREEN);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         return;
     }
 
     xml.deleteElement("name");
     xml.createElement("name", SalesScreen::PRODUCT_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 
     xml.deleteElement("name");
     xml.createElement("enabled", "true");
@@ -319,11 +319,11 @@ void AdminWidget::genericSignalSlot(const QString& signal){
 void AdminWidget::raiseMainWidget(){
     XmlConfig xml ;
     xml.createElement("name", MainScreen::SALES_SCREEN);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }
 
 void AdminWidget::raiseConfigWidget(){
     XmlConfig xml;
-    xml.createElement("name", MainScreen::READ_CONFIG_SCREEN);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    xml.createElement("name", MainScreen::CONFIG_SCREEN);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }

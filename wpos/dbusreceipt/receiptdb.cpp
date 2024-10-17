@@ -18,7 +18,7 @@
 
 #include "receiptdb.h"
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QtSql/QSql>
 #include <QtSql/QSqlError>
@@ -303,7 +303,7 @@ QString ReceiptDB::getReceiptByDate(QString employee_id, QString start_date){
 
     if (!connect()){
         qDebug() << "Database Connection Error in :" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ ;
-        return QString();
+        return QString{};
     }
 
     QString sql  =  "SELECT xml FROM orders ";
@@ -312,18 +312,18 @@ QString ReceiptDB::getReceiptByDate(QString employee_id, QString start_date){
     QSqlQuery query (sql, dbHandle());
     if (!query.isActive()){
         disConnect();
-        return QString();
+        return QString{};
     }
 
     if ( query.lastError().type() != QSqlError::NoError){
         qDebug() << query.lastError().databaseText();
         disConnect();
-        return QString();
+        return QString{};
     }
 
     if (!query.size()){
         disConnect();
-        return QString();
+        return QString{};
     }
 
     query.first();
@@ -336,7 +336,7 @@ QString ReceiptDB::getReceiptResume(){
 
     if (!connect()){
         qDebug() << "Database Connection Error in :" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ ;
-        return QString();
+        return QString{};
     }
 
     QString sql = "SELECT employee_id, start_time, blocked, blocker, name, description ";
@@ -345,17 +345,17 @@ QString ReceiptDB::getReceiptResume(){
     QSqlQuery query(sql , dbHandle());
     if (!query.isActive()){
         disConnect();
-        return QString();
+        return QString{};
     }
 
     if ( query.lastError().type() != QSqlError::NoError){
         qDebug() << query.lastError().databaseText();
-        return QString();
+        return QString{};
     }
 
     if (!query.size()){
         disConnect();
-        return QString();
+        return QString{};
     }
 
     XmlConfig xml;
@@ -387,7 +387,7 @@ QString ReceiptDB::getReceiptResume(QString employee_id){
 
     if (!connect()){
         qDebug() << "Database Connection Error in :" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ ;
-        return QString();
+        return QString{};
     }
 
     QString sql =  "SELECT employee_id, start_time, blocked, blocker, name, description ";
@@ -396,18 +396,18 @@ QString ReceiptDB::getReceiptResume(QString employee_id){
     QSqlQuery query( sql, dbHandle());
     if (!query.isActive()){
         disConnect();
-        return QString();
+        return QString{};
     }
 
     if ( query.lastError().type() != QSqlError::NoError){
         qDebug() << query.lastError().databaseText();
         disConnect();
-        return QString();
+        return QString{};
     }
 
     if (!query.size()){
         disConnect();
-        return QString();
+        return QString{};
     }
 
     XmlConfig xml;

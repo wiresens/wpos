@@ -26,7 +26,7 @@ class AddInvitationScreenWidget :
         private Ui::NewScreenInvitationsInterface{
     Q_OBJECT
 public:
-    explicit AddInvitationScreenWidget(QWidget *parent=0, const QString& name = QString());
+    explicit AddInvitationScreenWidget(QWidget *parent=0, const QString& name = QString{});
     ~AddInvitationScreenWidget() = default;
 
 public slots:

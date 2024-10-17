@@ -42,7 +42,7 @@ POSDesignSelectorWidget::POSDesignSelectorWidget(QWidget *parent, const QString&
     auto item = new QListWidgetItem(actions_iconview);
     item->setText(tr("Command Management"));
     item->setIcon(default_pixmap);
-    submenu_item_relantionships.insert(item, QString());
+    submenu_item_relantionships.insert(item, QString{});
     // Item that raise <Screen Products Designer> menu
     item = new QListWidgetItem(actions_iconview);
     item->setText(DESIGN_SCREEN);

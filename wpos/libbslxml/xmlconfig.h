@@ -86,7 +86,7 @@ public:
   */
     explicit XmlConfig(
         const QDomDocument &document,
-        const QString& _file = QString{},
+        const QString& _file = {},
         QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
     );
 
@@ -95,6 +95,9 @@ public:
         const QString& dtd_cfg_file,
         QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
     );
+
+    XmlConfig(const XmlConfig&) = delete;
+    XmlConfig& operator = (const XmlConfig&) = delete;
 
     XmlConfig& operator=(XmlConfig&&);
     XmlConfig(XmlConfig&&);
@@ -144,7 +147,7 @@ public:
   * @param domain : the domain we want to look for in . DO NOT set the domain
   * @return the list of the node names
   */
-    QStringList list( const QString& domain = QString{});
+    QStringList list( const QString& domain = {});
 
     /**
     * @param tag It's the tag we look for, we return the number of the tags with this name
@@ -157,7 +160,7 @@ public:
     * howManyTags("partition", "disk[1]") returns 1
     * @return  the number of tags with name tag  in the domain domain
     */
-    int howManyTags(const QString& tag, const QString& domain = QString{});
+    int howManyTags(const QString& tag, const QString& domain = {});
 
     /**
     * how many atributes has a tag, useful to navigate between the atributes
@@ -168,7 +171,7 @@ public:
     * @param tag in the form "x[n].y[m].z[p]"
     * @return the number of atributes of tag
     */
-    int howManyAttributes(const QString& tag = QString{});
+    int howManyAttributes(const QString& tag = {});
 
     /**
     * Saves the xml data in a file named file and flush it to disk.
@@ -178,7 +181,7 @@ public:
     * @param file the file we want to save the XML data in
     * @return true if success or false otherwise
     */
-    bool save(const QString& file = QString{});
+    bool save(const QString& file = {});
 
     /**
     * return the name of the file  we have taken the data from
@@ -196,7 +199,7 @@ public:
   * @param section the section to debug, to limit the output to a fragment of the XML file
   * @param ident how many identation is used to represent father/child
   */
-    void debug(const QString& section = QString(), int ident = 0);
+    void debug(const QString& section = {}, int ident = 0);
 
     /**
   * @return the mode we are opening the file
@@ -280,8 +283,8 @@ public:
     */
     bool createElement(
         const QString& node_name,
-        const QString& value = QString(),
-        const QString& comment = QString()
+        const QString& value = {},
+        const QString& comment = {}
     );
 
     /**
@@ -294,8 +297,8 @@ public:
   */
     bool createElementSetDomain(
         const QString& node_name,
-        const QString& value = QString(),
-        const QString& comment = QString()
+        const QString& value = {},
+        const QString& comment = {}
     );
 
     /**
@@ -324,7 +327,7 @@ public:
     /**
   * Will read the attribute of a tag
   * This method is also useful to check if a tag has an attribute
-  * if (c->readAttribute(tag,attr)==QString()) will check if the attribute exists
+  * if (c->readAttribute(tag,attr)=={}) will check if the attribute exists
   * @param tag the tag we want to read the attribute from
   * @param attr the name of the attribute we want to read the value
   * @return the value of the attribute or null if not found
@@ -367,7 +370,7 @@ public:
     bool createAttribute(
         const QString& tag,
         const QString& attr,
-        const QString& value = QString()
+        const QString& value = {}
     );
 
     /**
@@ -380,7 +383,7 @@ public:
   */
     bool createAttributeHere(
         const QString& attr,
-        const QString& value = QString()
+        const QString& value = {}
     );
 
     //*********************************
@@ -503,8 +506,8 @@ public:
 
     bool copy (
         XmlConfig *xml_src,
-        const QString& src = QString(),
-        const QString& dst = QString()
+        const QString& src = {},
+        const QString& dst = {}
     );
 
     /**
@@ -520,8 +523,8 @@ public:
   */
     bool merge (
         XmlConfig *xml_src,
-        const QString& src = QString(),
-        const QString& dst = QString()
+        const QString& src = {},
+        const QString& dst = {}
     );
 
     /**
@@ -536,8 +539,8 @@ public:
   */
     bool move (
         XmlConfig *xml_src,
-        const QString& src = QString(),
-        const QString& dst = QString()
+        const QString& src = {},
+        const QString& dst = {}
     );
 
     /**
@@ -559,7 +562,7 @@ public:
   */
     QStringList findNode(
         const QString& tag,
-        const QString& domain = QString(),
+        const QString& domain = {},
         bool recursive = true
     );
 
@@ -573,7 +576,7 @@ public:
   */
     QStringList findNode(
         const QRegExp& tag,
-        const QString& domain = QString(),
+        const QString& domain = {},
         bool recursive = true
     );
 
@@ -590,7 +593,7 @@ public:
   */
     QStringList findValue(
         const QString& value,
-        const QString& domain = QString()
+        const QString& domain = {}
     );
 
     /*
@@ -598,7 +601,7 @@ public:
   */
     QStringList findValue(
         const QRegExp& value,
-        const QString& domain = QString()
+        const QString& domain = {}
     );
 
     /*
@@ -689,8 +692,8 @@ private:
   */
     bool createElementRecursivePrivate(
         const QString& node_name,
-        const QString& value = QString(),
-        const QString& comment = QString(),
+        const QString& value = {},
+        const QString& comment = {},
         bool set_domain = false
     );
 
@@ -700,8 +703,8 @@ private:
   */
     bool createElementPrivate(
         const QString& node_name,
-        const QString& value = QString(),
-        const QString& comment = QString(),
+        const QString& value = {},
+        const QString& comment = {},
         bool set_domain = false
     );
 
@@ -711,8 +714,8 @@ private:
   */
     bool copyPrivate (
         XmlConfig *xml_src,
-        const QString& src = QString(),
-        const QString& dst = QString(),
+        const QString& src = {},
+        const QString& dst = {},
         bool merge = false
     );
 
@@ -732,13 +735,12 @@ private:
     QDomNode temporyDomainPrivate (const QString& domain );
 
 private:
-    XmlConfigPrivate* impl;
-    QDomDocument doc{};  //the document pointing to our data
+    XmlConfigPrivate* impl{};
+    QDomDocument doc;  //the document pointing to our data
     QDomNode currentNode; //the current node , why is it not a pointer?
     QDomNode domain;      //the current domain , why is it not a pointer?
     QString string_domain; //the domain in a string representation
     QStack<QString> stack_domain;
-
 };
 
 #endif

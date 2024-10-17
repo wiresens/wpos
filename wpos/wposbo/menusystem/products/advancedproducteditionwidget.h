@@ -31,7 +31,7 @@ public:
         Code = 2
     };
 
-    explicit AdvancedProductEditionWidget(ProductModule *product_model, QWidget *parent=0, const QString& name=QString());
+    explicit AdvancedProductEditionWidget(ProductModule *product_model, QWidget *parent=0, const QString& name=QString{});
     ~AdvancedProductEditionWidget() = default;
 
 public slots:

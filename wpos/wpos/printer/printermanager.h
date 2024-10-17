@@ -25,7 +25,7 @@ Q_OBJECT
 public:
     explicit PrinterManager(
         QObject *parent=nullptr,
-        const QString& name = QString());
+        const QString& name = QString{});
 
     bool printTicket(const XmlConfig& xml, int times=1 );
     bool printInvoice(const XmlConfig& xml, int times=2 );

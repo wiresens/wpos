@@ -9,6 +9,12 @@ find_package(Qt6 REQUIRED COMPONENTS
 
 find_package( LibXml2 REQUIRED)
 
+include_directories(
+    ../libbslxml
+    ..
+    .
+)
+
 if(MSVC)
     set(XML2_RELEASE_ROOT "C:/Users/user/Workspace/projets/libxml2/install/release")
     include_directories(
@@ -31,6 +37,7 @@ set(HEADER_FILES
     utility.h
     authentication/credential.h
     authentication/crypto_hasher.h
+    idle_filter.h
 )
 
 set(SOURCES_FILES
@@ -42,6 +49,7 @@ set(SOURCES_FILES
     utility.cpp
     authentication/credential.cpp
     authentication/crypto_hasher.cpp
+    idle_filter.cpp
 )
 
 # Make the project root directory the working directory when we run
@@ -51,7 +59,6 @@ add_library(
     ${MAIN_TARGET}
     ${HEADER_FILES}
     ${SOURCES_FILES}
-
 )
 target_link_libraries(${MAIN_TARGET} PRIVATE
     Qt::Sql

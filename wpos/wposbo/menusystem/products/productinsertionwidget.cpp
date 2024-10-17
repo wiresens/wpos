@@ -520,7 +520,7 @@ QString ProductInsertionWidget::getActualTax(){
 
     auto button = tax_button_group->checkedButton();
     if(button) return button->objectName();
-    return QString();
+    return QString{};
 }
 
 void ProductInsertionWidget::numkeyChangedSlot(double num){
@@ -1156,11 +1156,11 @@ QString ProductInsertionWidget::getCurrentCppOperator(){
 
     auto items = offer_type_listview->selectedItems();
     if ( items.isEmpty())
-        return QString();
+        return QString{};
     auto type_item = items.first();
 
     NOTypes *no_type = offers_list->find(type_item->text(0));
-    if (!no_type) return QString();
+    if (!no_type) return QString{};
 
     return ProductOfferModule().getCppOperator(no_type->type);
 }
@@ -1426,7 +1426,7 @@ QString ProductInsertionWidget::getCurrentProductCode(){
             product_name = table->item(i,0)->text();
             product_code = product_model->getProductCodeByProductName(product_name);
 
-            if ( product_code.isEmpty() ) return QString();
+            if ( product_code.isEmpty() ) return QString{};
             product_codes << product_code;
         }
 

@@ -27,7 +27,7 @@ class ProductOptionCreationWidget :
         private Ui::ProductOptionCreationWidgetBase {
     Q_OBJECT
 public:
-    explicit ProductOptionCreationWidget(double _product_price, QWidget *parent=0, const QString& name = QString());
+    explicit ProductOptionCreationWidget(double _product_price, QWidget *parent=0, const QString& name = QString{});
     ~ProductOptionCreationWidget() = default;
 
     void setProductPrice(double _product_price);

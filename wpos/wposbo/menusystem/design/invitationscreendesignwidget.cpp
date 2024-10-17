@@ -709,7 +709,7 @@ QString InvitationScreenDesignWidget::getMainWidgetName(){
     for(const auto * screen : screen_data_list){
         if (screen->is_default) return screen->text;
     }
-    return QString();
+    return QString{};
 }
 
 void InvitationScreenDesignWidget::showEvent(QShowEvent *e){

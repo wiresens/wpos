@@ -14,16 +14,14 @@
 #include "dbusreceiptmediator_interface.h"
 
 #include "buttonsetwidget.h"
-#include "menubutton.h"
 #include "genericbutton.h"
 #include "genericbuttongroup.h"
 
-#include "database/auxdb.h"
 #include "prodselect/productscreenstack.h"
 #include "prodselect/product.h"
 
-#include <xmlconfig.h>
-#include <productextrainfo.h>
+#include <libbslxml/xmlconfig.h>
+#include <wposcore/productextrainfo.h>
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 
@@ -37,48 +35,48 @@
 using namespace std;
 
 using IReceiptPrimitive = com::wiresens::wpos::dbusreceipt::DBusReceiptPrimitive;
-using IReceiptMediator = com::wiresens::wpos::dbusreceipt::DBusReceiptMediator;
+using IReceiptMediator  = com::wiresens::wpos::dbusreceipt::DBusReceiptMediator;
 static const QString dbus_service = "com.wiresens.wpos.dbusreceipt";
 static const QString dbus_object_remote = "/wpos/dbusreceipt/DBusReceiptPrimitive";
 static const QString dbus_object_local = "/wpos/dbusreceipt/DBusReceiptMediator";
 
 ButtonSetWidget::ButtonSetWidget(
-        ProductScreenStack *_stack,
+        ProductScreenStack *stack,
         QWidget* parent,
         const QString& name)
     :QWidget(parent),
-    stacked_product_screen {_stack}
+    m_product_screen_stack {stack}
 {
     setupUi(this);
     setObjectName(name);
     // Set each button group exclusive, I've not succeeded to do that yet
     //@benes    setExclusive(true);
     //@benes    setFrameStyle(QFrame::NoFrame | QFrame::Plain);
-    initButtons();
+    createButtons();
     GenericSignalManager::instance()->subscribeToGenericSignal(GSIGNAL::LOAD_BUTTONS, this);
 }
 
 ButtonSetWidget::~ButtonSetWidget(){}
 
-void ButtonSetWidget::initButtons(){
+void ButtonSetWidget::createButtons(){
     auto configFile = cfg::xmlFileByKey(cfg::XMLKey::Buttons);
-    if (!generic_button_group){
-        generic_button_group = new GenericButtonGroup(stacked_product_screen, this, "upper_layout");
-        generic_button_group->readConfigFrom("upper_buttons", configFile);
+    if (!m_generic_btn_grp){
+        m_generic_btn_grp = new GenericButtonGroup(m_product_screen_stack, this, "upper_layout");
+        m_generic_btn_grp->readConfigFrom("upper_buttons", configFile);
     }
     else{
-        generic_button_group->clear();
-        generic_button_group->readConfigFrom("upper_buttons", configFile);
+        m_generic_btn_grp->clear();
+        m_generic_btn_grp->readConfigFrom("upper_buttons", configFile);
     }
 }
 
-void ButtonSetWidget::showEvent(QShowEvent *e){
+void ButtonSetWidget::showEvent(QShowEvent *event){
 
-    auto commands_button = generic_button_group->findButton("dcopreceipt");
+    auto commands_button = m_generic_btn_grp->buttonByName("dbusreceipt");
     if (commands_button){
         auto bus = QDBusConnection::sessionBus();
         auto remote_iface = new IReceiptPrimitive(dbus_service, dbus_object_remote, bus, this);
-        auto local_iface = new IReceiptMediator(dbus_service, dbus_object_local, bus, this);
+        auto local_iface  = new IReceiptMediator(dbus_service, dbus_object_local, bus, this);
 
         if ( remote_iface->isValid() && local_iface->isValid())
             commands_button->show();
@@ -87,10 +85,10 @@ void ButtonSetWidget::showEvent(QShowEvent *e){
             commands_button->hide();
         }
     }
-    QWidget::showEvent(e);
+    QWidget::showEvent(event);
 }
 
 void ButtonSetWidget::genericSignalSlot(const QString& signal_name){
     if (signal_name == GSIGNAL::LOAD_BUTTONS)
-        initButtons();
+        createButtons();
 }

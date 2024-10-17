@@ -25,11 +25,11 @@ public:
     explicit DBusReceiptQuerier(QObject *parent=nullptr);
 
     //Using ReceiptPrimitivesInterface : ReadOnly Access
-    bool receiptExist(const QString &  employee_id, const QString & start_time);
+    bool receiptExist(const QString &employee_id, const QString & start_time);
     bool receiptState(const QString& employee_id, const QString& start_time);
-    XmlConfig* getReceipt(const QString& employee_id, const QString &start_time);
-    XmlConfig* getReceiptResume();
-    XmlConfig* getReceiptResume(QString employee_id);
+    XmlConfig getReceipt(const QString& employee_id, const QString &start_time);
+    XmlConfig getReceiptResume();
+    XmlConfig getReceiptResume(QString employee_id);
 
     //Using ReceiptMediatorInterface : ReadWrite Access
     bool createReceipt(XmlConfig *xml);
@@ -39,7 +39,7 @@ public:
     bool unlockRemoteReceipts(const QString &employee_id, const QString& start_time);
 
 private:
-    void log(const QString& svc, const QString& obj, const QString& method, const QString& msg = QString() );
+    void log(const QString& svc, const QString& obj, const QString& method, const QString& msg = QString{} );
 };
 
 #endif

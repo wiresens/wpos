@@ -25,20 +25,24 @@ class GenericButtonGroup;
 class ButtonSetWidget : public QWidget,  private Ui::ButtonSetWidget{
     Q_OBJECT
 public:
-    explicit ButtonSetWidget(ProductScreenStack* stack,
-                       QWidget* parent=nullptr,
-                       const QString& name = QString());
+    explicit ButtonSetWidget(
+        ProductScreenStack* stack,
+        QWidget* parent=nullptr,
+        const QString& name = QString{});
     ~ButtonSetWidget();
 
 public slots:
     void genericSignalSlot(const QString& signal_name);
-    void initButtons();
 
 protected:
-    void showEvent(QShowEvent *e);
-    
-    ProductScreenStack *stacked_product_screen{};
-    GenericButtonGroup *generic_button_group{};
+    void showEvent(QShowEvent *event) override;
+
+private:
+    void createButtons();
+
+private:
+    ProductScreenStack *m_product_screen_stack{};
+    GenericButtonGroup *m_generic_btn_grp{};
 };
 
 #endif

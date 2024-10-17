@@ -75,7 +75,7 @@ public:
 
     };
 
-    explicit ProductInsertionWidget(ProductModule *product_module ,int mode=0, QWidget *parent=0, const QString &name=QString());
+    explicit ProductInsertionWidget(ProductModule *product_module ,int mode=0, QWidget *parent=0, const QString &name=QString{});
     ~ProductInsertionWidget();
 
     virtual int getMode();

@@ -19,12 +19,8 @@
 #define MENUSTACK_H
 
 #include <QStackedWidget>
-#include <QWidget>
-#include <QList>
 #include <QMap>
 #include <QLayout>
-
-#include <wposcore/genericsignalmanager.h>
 
 class XmlConfig;
 class MenuPage;
@@ -32,24 +28,23 @@ class MenuPage;
 class MenuStack : public QStackedWidget  {
 	Q_OBJECT
 public:
-    explicit MenuStack(QWidget *parent=nullptr, const QString &name =QString());
-    ~MenuStack();
+    explicit MenuStack(
+        QWidget *parent=nullptr,
+        const QString &name =QString{});
 
-	virtual void addPage(QWidget *page, QString name);
-	virtual QWidget *currentPage();
-	virtual bool isMenuPage();
-	virtual bool isPage();
-	virtual int numPages();
+    void addPage(QWidget *page, const QString &name);
+    QWidget *currentPage();
+    int numPages();
 
 public slots:
-	virtual void setCurrentPage(QString name);
-	virtual void setCurrentPage(int pageIndex);
+    void setCurrentPage(const QString &name);
+    void setCurrentPage(int pageIndex);
 
-    virtual void genericDataSignalSlot(const QString& signal_name, XmlConfig *xml);
-	virtual void genericSignalSlot(const QString& signal_name);
+    void genericDataSignalSlot(const QString& signal_name, XmlConfig *xml);
+    void genericSignalSlot(const QString& signal_name);
 
-protected  :
-    HList<QWidget> pages;
+private :
+    QMap<QString, QWidget*> pages;
 };
 
 #endif

@@ -9,11 +9,12 @@
 
 %LICENCIA%
  ***************************************************************************/
+#include "ui_readconfigwidget.h"
 #include "readconfigscreen.h"
 
 #include <wposgui/windows/menupage.h>
 #include <wposcore/genericsignalmanager.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QApplication>
 
@@ -24,9 +25,10 @@
 ReadConfigScreen::ReadConfigScreen(
     MenuPage *parent,
     const QString& name ):
-    QWidget(parent)
+    QWidget(parent),
+    ui{ new Ui::ReadConfigWidget}
 {
-    setupUi(this);
+    ui->setupUi(this);
     setObjectName(name);
     parent->addWidget(this, objectName());
 
@@ -36,20 +38,20 @@ ReadConfigScreen::ReadConfigScreen(
 }
 
 void ReadConfigScreen::showEvent(QShowEvent *e){
-    progress->setValue(0);
-    pos = 0;
+    ui->progress->setValue(0);
+    m_pos = 0;
     QWidget::showEvent(e);
 }
 
 void ReadConfigScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *xml){
     if (signal_name == GDATASIGNAL::REREAD_CONFIG){
-        pos++;
+        m_pos++;
         if ( xml ){
-            type_label->setText(xml->readString("type"));
-            first_id_label->setText(xml->readString("first_id"));
-            last_id_label->setText(xml->readString("last_id"));
+            ui->type_label->setText(xml->readString("type"));
+            ui->first_id_label->setText(xml->readString("first_id"));
+            ui->last_id_label->setText(xml->readString("last_id"));
         }
-        progress->setValue(pos);
+        ui->progress->setValue(m_pos);
         qApp->processEvents(QEventLoop::AllEvents);
     }
 }

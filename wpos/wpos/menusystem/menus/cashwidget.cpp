@@ -61,7 +61,7 @@ CashWidget::CashWidget(BarCore *barCore,
     //generic signal connector
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::BARCORE_PROCESS_CORE,this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
     //        generic_signal_manager->publishGenericDataSignal(GDATASIGNAL::LATERALWIDGET_SET_VISIBLE, this);
     gsm->publishGenericSignal(GSIGNAL::OPEN_CASHBOX,this);
@@ -129,7 +129,7 @@ void CashWidget::cancelSlot(){
     XmlConfig xml;
     if (!cashing_completed){
         xml.createElement("name", SalesScreen::PRODUCT_MENU);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         xml.deleteElement("name");
         xml.createElement("enabled", "true");
         emit genericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED, &xml);
@@ -137,11 +137,11 @@ void CashWidget::cancelSlot(){
     else{
         if (!fast_cashing){
             xml.createElement("name", MainScreen::LOGIN_SCREEN);
-            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         }
         else{
             xml.createElement("name", SalesScreen::PRODUCT_MENU);
-            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 
             xml.deleteElement("name");
             xml.createElement("enabled", "true");
@@ -184,11 +184,11 @@ void CashWidget::showEvent(QShowEvent *event){
         xml.deleteElement("enabled");
         if (!fast_cashing){
             xml.createElement("name", MainScreen::LOGIN_SCREEN);
-            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         }
         else{
             xml.createElement("name", SalesScreen::PRODUCT_MENU);
-            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
             xml.deleteElement("name");
             xml.createElement("enabled", "true");
             emit genericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED, &xml);

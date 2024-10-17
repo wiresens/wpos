@@ -25,7 +25,7 @@ class XmlConfig;
 class ExitActionsWidget : public QWidget, private Ui::ExitActionsWidget  {
     Q_OBJECT
 public:
-    explicit ExitActionsWidget(QWidget *parent=0, const QString& name = QString());
+    explicit ExitActionsWidget(QWidget *parent=0, const QString& name = QString{});
     ~ExitActionsWidget();
 
 public slots:

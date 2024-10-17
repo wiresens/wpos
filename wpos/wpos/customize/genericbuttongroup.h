@@ -35,38 +35,36 @@ public:
     explicit GenericButtonGroup(
         ProductScreenStack *stack,
         QWidget *parent=0,
-        const QString& name = QString());
+        const QString& name = QString{});
 
-    QPushButton* findButton(const QString& name);
-    QPushButton* find(const QString& name);
+    QPushButton* buttonByName(const QString& name);
 
-public slots:
-    void clear();
     bool readConfigFrom(const QString& section, const QString& xmlFile);
-    bool readConfigFrom(const QString& section, XmlConfig *xml);
+    void clear();
 
 signals:
     void genericDataSignal(const QString& signal, XmlConfig *xml);
 
-protected:
-    QPushButton* readButtonConfig(XmlConfig *xml, QWidget *parent, bool append=true);
+private:
+    bool readConfigFrom(const QString& section, XmlConfig &xml);
+    QPushButton* createButton(XmlConfig &xml, QWidget *parent, bool append=true);
 
     //generic types
-    QPushButton* readProductConfig(XmlConfig *xml, QWidget *parent);
-    QPushButton* readGenericButton(XmlConfig *xml, QWidget *parent);
-    QPushButton* readMenuButton(XmlConfig *xml, QWidget *parent);
+    QPushButton* createProductButton(XmlConfig &xml, QWidget *parent);
+    QPushButton* createGenericButton(XmlConfig &xml, QWidget *parent);
+    QPushButton* createMenuButton(XmlConfig &xml, QWidget *parent);
 
     //special types (composed)
-    QPushButton* screensButton(XmlConfig *xml, QWidget *parent);
-    QPushButton* optionsButton(XmlConfig *xml, QWidget *parent);
-    QPushButton* defaultScreenButton(XmlConfig *xml, QWidget *parent);
+    QPushButton* createScreensButton(XmlConfig &xml, QWidget *parent);
+    QPushButton* createOptionsButton(XmlConfig &xml, QWidget *parent);
+    QPushButton* createDefaultScreenButton(XmlConfig &xml, QWidget *parent);
 
-    void setSizeAndColorPolicy(QPushButton *button, XmlConfig *xml);
+    void setSizeAndColorPolicy(QPushButton *button, XmlConfig &xml);
 
-    HList<QPushButton> buttons{};
-    ProductScreenStack *stack{};
-    QWidget *parent{};
-    QString sectionName;
+private:
+    HList<QPushButton> m_buttons{};
+    ProductScreenStack *m_product_screen_stack{};
+    QWidget *m_parent{};
 };
 
 #endif

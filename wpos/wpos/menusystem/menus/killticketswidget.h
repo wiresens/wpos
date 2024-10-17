@@ -38,7 +38,7 @@ public:
     };
 
     explicit KillTicketsWidget(QWidget *parent = nullptr,
-                         const QString& name = QString());
+                         const QString& name = QString{});
 
     ~KillTicketsWidget();
 

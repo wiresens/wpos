@@ -21,7 +21,7 @@
 #include "fileutils.h"
 
 //libbslnet library.
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QString>
 #include <QRegExp>

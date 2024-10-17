@@ -757,7 +757,7 @@ void ShortcutButtonWidget::writeConfig(){
                     xml->createElement("iconset",data->pixmap);
                 xml->createElementSetDomain("data_relationships");
                 xml->createElementSetDomain("relation");
-                xml->createElement("signal", GDATASIGNAL::MAINSTACK_SETPAGE);
+                xml->createElement("signal", GDATASIGNAL::MAINSTACK_SET_PAGE);
                 xml->createElement("event","1");
                 xml->createElement("content.domain","name");
                 xml->createElement("content.value","FREE_PRICE_MENU");
@@ -784,7 +784,7 @@ void ShortcutButtonWidget::writeConfig(){
                     xml->createElement("iconset",data->pixmap);
                 xml->createElementSetDomain("data_relationships");
                 xml->createElementSetDomain("relation");
-                xml->createElement("signal", GDATASIGNAL::MAINSTACK_SETPAGE);
+                xml->createElement("signal", GDATASIGNAL::MAINSTACK_SET_PAGE);
                 xml->createElement("event","1");
                 xml->createElement("content.domain","name");
                 xml->createElement("content.value","GENERIC_PRODUCT_MENU");

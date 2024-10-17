@@ -3,6 +3,7 @@
 // copyright :  Copyright (c) 2016-2024 WireSens Inc.
 // contact   :  contact@wiresens.com - +237 697 02 63 76
 
+#include "ui_saleswidget.h"
 #include "mainscreen.h"
 #include "salesscreen.h"
 
@@ -46,6 +47,7 @@
 #include <wposgui/visualproduct.h>
 
 #include <wposcore/genericsignalmanager.h>
+#include <wposcore/idle_filter.h>
 #include <wposcore/config.h>
 
 #include <libbslxml/xmlconfig.h>
@@ -71,31 +73,37 @@ const QString SalesScreen::ADMIN_MENU {"ADMIN_MENU"};
 const QString SalesScreen::GENERIC_PRODUCT_MENU {"GENERIC_PRODUCT_MENU"};
 const QString SalesScreen::PAY_MODE_MENU {"PAY_MODE_MENU"};
 
-SalesScreen::SalesScreen(MenuPage *parent,
-                         QSplashScreen& splashScreen,
-                         const QString& name ):
-    QWidget(parent)
+SalesScreen::SalesScreen(
+    MenuPage *parent,
+    QSplashScreen& splashScreen,
+    const QString& name ):
+    QWidget(parent),
+    ui{ new Ui::SalesWidget}
 {
-    setupUi(this);
+    ui->setupUi(this);
     setObjectName(name);
     parent->addWidget(this, objectName());
     setSizePolicy(parent->sizePolicy());
 
+    auto idle_filter = new IdleFilter(this, 10);
+    qApp->installEventFilter( idle_filter );
+    connect( idle_filter, &IdleFilter::appIdled,
+        this, &SalesScreen::showGreeter, Qt::QueuedConnection);
+
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::XCORE_SET_DEFAULT_PRODUCT_OFFER, this);
     gsm->publishGenericDataSignal(GDATASIGNAL::BARCORE_PROCESS_CORE, this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, this);
     gsm->publishGenericDataSignal(GDATASIGNAL::SETCORE_MODE, this);
+
     gsm->publishGenericSignal(GSIGNAL::AUTH_ENABLE_FINGERPRINT, this);
     gsm->publishGenericSignal(GSIGNAL::AUTH_DISABLE_FINGERPRINT, this);
+
     gsm->subscribeToGenericSignal(GSIGNAL::LOAD_BUTTONS, this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED, this);
 
     connect(this, &SalesScreen::splashRequested, &splashScreen, &QSplashScreen::showMessage);
     emit splashRequested(tr("Loading Modules ..."), Qt::AlignBottom | Qt::AlignRight , Qt::darkBlue);
-
-    timer = new QTimer(this);
-    connect( timer, &QTimer::timeout, this, &SalesScreen::checkSuspend);
 
     authCore = new  AuthCore(this, "AuthCore");
     authCore->loadUserById(ROOT_ID);
@@ -105,88 +113,88 @@ SalesScreen::SalesScreen(MenuPage *parent,
     auto alignment = Qt::AlignBottom | Qt::AlignRight;
 
     emit splashRequested( tr("Cash Device"), alignment , color);
-    new CashDevice(this, "cashDevice");
+    new CashDevice(this, "CashDevice");
 
     emit splashRequested( tr("EventLog Core"), alignment , color);
-    eventLogCore = new EventLogCore(this, "eventLogCore");
+    m_eventlog_core = new EventLogCore(this, "EventLogCore");
 
     emit splashRequested( tr("Bar Core"), alignment , color);
-    barCore = new BarCore(this, "barCore");
-    barCore->reInitialise();
+    m_bar_core = new BarCore(this, "BarCore");
+    m_bar_core->reInitialise();
 
     emit splashRequested( tr("Ticket Core"), alignment , color);
-    ticketCore = new TicketCore(this, "ticketCore");
+    m_ticket_core = new TicketCore(this, "TicketCore");
 
     //Creating Menus Screens(products, Admins, Cash Movement ...)
-    menuStack = new MenuStack(central_frame, "SALES_MENU_MANAGER");
-    qobject_cast<QVBoxLayout*>(central_frame->layout())->insertWidget(0, menuStack);
+    m_screens = new MenuStack(ui->central_frame, "SALES_MENU_MANAGER");
+    qobject_cast<QVBoxLayout*>(ui->central_frame->layout())->insertWidget(0, m_screens);
 
     //Filling the menu stack
     emit splashRequested(tr("Product Screens"), alignment , color);
-    createProductDialog();
+    m_product_screens = createProductDialog(m_screens);
 
     emit splashRequested(tr("Authentication"), alignment , color);
-    createAuthenticationDialog();
+    createAuthenticationDialog(m_screens);
 
     emit splashRequested(tr("Free Price"), alignment , color);
-    createFreepriceDialog();
-    createBalanceCollectionDialog();
-    createCashMovementDialog();
-    createExitActionDialog();
-    createReportDialog();
+    createFreepriceDialog(m_screens);
+    createBalanceCollectionDialog(m_screens);
+    createCashMovementDialog(m_screens);
+    createExitActionDialog(m_screens);
+    createReportDialog(m_screens);
 
     emit splashRequested(tr("Tickets Cancellation"), alignment , color);
-    createTicketCancellationDialog();
+    createTicketCancellationDialog(m_screens);
 
     emit splashRequested(tr("Orders Control"), alignment , color);
-    createReceiptRecoverDialog();
+    createReceiptRecoverDialog(m_screens);
 
     emit splashRequested(tr("Invitations and Offers"), alignment , color);
-    createInvitationDialog();
+    createInvitationDialog(m_screens);
     createPayByCashButton();
-    createGenericProductDialog();
+    createGenericProductDialog(m_screens);
 
     emit splashRequested(tr("System Setting"), alignment , color);
-    createAdminDialog();
+    createAdminDialog(m_screens);
 
     emit splashRequested(tr("Payment Modes"), alignment , color);
-    createPaySelectionDialog();
+    createPaySelectionDialog(m_screens);
 
-    menuStack->setCurrentPage(PRODUCT_MENU);
+    m_screens->setCurrentPage(PRODUCT_MENU);
 
     //Orders and Commands Widgets
-    orderPicker = new OrderPickerView(order_frame, "OrderPickerView");
-    auto orderPicker_layout = new QHBoxLayout(order_frame);
-    orderPicker_layout->addWidget(orderPicker);
+    m_order_picker_view = new OrderPickerView(ui->order_frame, "OrderPickerView");
+    auto orderPicker_layout = new QHBoxLayout(ui->order_frame);
+    orderPicker_layout->addWidget(m_order_picker_view);
     orderPicker_layout->setContentsMargins(0,0,0,0);
 
-    upperButtons = new ButtonSetWidget(productScreenStack, upper_buttons_frame, "Upper Buttons");
-    auto upper_buttons_frame_layout = new QVBoxLayout(upper_buttons_frame);
-    upper_buttons_frame_layout->addWidget(upperButtons);
+    m_upper_btns = new ButtonSetWidget(m_product_screens, ui->upper_buttons_frame, "Upper Buttons");
+    auto upper_buttons_frame_layout = new QVBoxLayout(ui->upper_buttons_frame);
+    upper_buttons_frame_layout->addWidget(m_upper_btns);
 
-    numkey = new NumKeyboard(numkey_frame);
-    auto numkey_layout = new QHBoxLayout(numkey_frame);
+    m_num_keyboard = new NumKeyboard(ui->numkey_frame);
+    auto numkey_layout = new QHBoxLayout(ui->numkey_frame);
     numkey_layout->setContentsMargins(2,2,2,2);
-    numkey_layout->addWidget(numkey);
+    numkey_layout->addWidget(m_num_keyboard);
 
-    shortcutLayout = new QHBoxLayout(shortcut_buttons_frame);
+    m_shortcut_layout = new QHBoxLayout(ui->shortcut_buttons_frame);
 
-    connect(orderPicker->order(), &OrderView::orderChanged, barCore, &BarCore::addProductDefaultOption);
-    connect(productScreenStack, &ProductScreenStack::productDefinition, this, &SalesScreen::receiveProduct);
-    connect(barCore, &BarCore::dataChanged, orderPicker->order(), &OrderView::updateOrder);
-    connect(barCore, &BarCore::ticket, ticketCore, &TicketCore::receiveCoreData);
+    connect(m_order_picker_view->order(), &OrderView::orderChanged, m_bar_core, &BarCore::addProductDefaultOption);
+    connect(m_product_screens, &ProductScreenStack::productDefinition, this, &SalesScreen::receiveProduct);
+    connect(m_bar_core, &BarCore::orderChanged, m_order_picker_view->order(), &OrderView::updateOrder);
+    connect(m_bar_core, &BarCore::ticket, m_ticket_core, &TicketCore::receiveCoreData);
 
-    connect(next_button, &QPushButton::pressed, productScreenStack, &ProductScreenStack::nextScreen);
-    connect(previous_button, &QPushButton::pressed, productScreenStack, &ProductScreenStack::prevScreen);
+    connect(ui->next_button, &QPushButton::pressed, m_product_screens, &ProductScreenStack::nextScreen);
+    connect(ui->previous_button, &QPushButton::pressed, m_product_screens, &ProductScreenStack::prevScreen);
 
-    next_button->setIcon(QPixmap("controls:next_48.png"));
-    previous_button->setIcon(QPixmap("controls:prev_48.png"));
+    ui->next_button->setIcon(QPixmap("controls:next_48.png"));
+    ui->previous_button->setIcon(QPixmap("controls:prev_48.png"));
 
-    gsm->subscribeToGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, menuStack);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, m_screens);
     emit splashRequested(tr("Keypads"),  Qt::AlignBottom | Qt::AlignRight , Qt::darkBlue);
     createShortcutButton();
     createOpenCashDeviceButton();
-    numkey->setFocus();
+    m_num_keyboard->setFocus();
 
     FileAlterationWatcher *watcher = new FileAlterationWatcher(this, "FileAlterationWatcher");
     watcher->startWatching();
@@ -196,35 +204,35 @@ void SalesScreen::receiveProduct(XmlConfig *xml){
 
     if (!xml) return;
 
-    int units = numkey->value();
-    numkey->clear();
+    int units = m_num_keyboard->value();
+    m_num_keyboard->clear();
 
     if (units > 1){
-        barCore->receiveProduct( xml, units);
-        productScreenStack->setDefaultScreen();
+        m_bar_core->receiveProduct( xml, units);
+        m_product_screens->setDefaultScreen();
     }
     else{
-        barCore->receiveProduct(xml);
-        productScreenStack->setDefaultScreen();
+        m_bar_core->receiveProduct(xml);
+        m_product_screens->setDefaultScreen();
     }
 }
 
 void SalesScreen::receiveCash(){
     XmlConfig xml;
 
-    if ( adminPanel->toggle_cash->isDown() ){
+    if ( m_admin_wgt->toggle_cash->isDown() ){
         xml.createElement("pay_type", "metalico");
         emit genericDataSignal(GDATASIGNAL::BARCORE_PROCESS_CORE, &xml);
 
-        if ( adminPanel->toggle_out_screen->isDown() ){
+        if ( m_admin_wgt->toggle_out_screen->isDown() ){
             XmlConfig xml;
             xml.createElement("name", MainScreen::LOGIN_SCREEN);
-            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+            emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         }
     }
     else{
         xml.createElement("name", CASH_MENU);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
     }
 }
 
@@ -245,17 +253,17 @@ void SalesScreen::receiveCash(){
 
 void SalesScreen::setDefaultState(){
 
-    if ( ! adminPanel->toggle_derrama->isDown() )
-        adminPanel->toggle_derrama->toggle();
+    if ( ! m_admin_wgt->toggle_derrama->isDown() )
+        m_admin_wgt->toggle_derrama->toggle();
 
-    if ( ! adminPanel->toggle_anulation->isDown() )
-        adminPanel->toggle_anulation->toggle();
+    if ( ! m_admin_wgt->toggle_anulation->isDown() )
+        m_admin_wgt->toggle_anulation->toggle();
 
-    barCore->reInitialise();
-    barCore->initExtras();
-    productScreenStack->productDefinitionSlot(0);
-    productScreenStack->setDefaultScreen();
-    numkey->clear();
+    m_bar_core->reInitialise();
+    m_bar_core->initExtras();
+    m_product_screens->productDefinitionSlot(0);
+    m_product_screens->setDefaultScreen();
+    m_num_keyboard->clear();
 
     XmlConfig xml;
     xml.createElement("mode","normal");
@@ -263,9 +271,9 @@ void SalesScreen::setDefaultState(){
 
     xml.deleteElement("mode");
     xml.createElement("name", PRODUCT_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 
-    setEnabledLateralWidgets(true);
+    enableLateralWidgets(true);
 }
 
 void SalesScreen::genericSignalSlot(const QString& signal_name){
@@ -279,210 +287,192 @@ void SalesScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *x
     if ( signal_name == GDATASIGNAL::MAINWIDGET_SETENABLED){
         xml->delDomain();
         auto enabled =  ( xml->readString("enabled") == "true");
-        setEnabledLateralWidgets(enabled);
-        // setVisibleLateralWidgets(enabled);
+        enableLateralWidgets(enabled);
+        showLateralWidgets(enabled);
     }
-    // else if ( signal_name == GDATASIGNAL::LATERALWIDGET_SET_VISIBLE){
-    //     xml->delDomain();
-    //     auto visible = ( xml->readString("visible") == "true" );
-    //     setVisibleLateralWidgets( visible);
-    // }
+    else if ( signal_name == GDATASIGNAL::LATERALWIDGET_SET_VISIBLE){
+        xml->delDomain();
+        auto visible = ( xml->readString("visible") == "true" );
+        showLateralWidgets( visible);
+    }
 }
 
-// void SalesScreen::checkPendingEvents(){
+void SalesScreen::showGreeter(){
 
-//     if ( qApp->hasPendingEvents() )
-//         counter = 0;
-//     else{
-//         counter++;
-//         if ( counter > TIMER_NO_EVENTS ){
-//             XmlConfig xml;
-//             xml.createElement("name", MainScreen::LOGIN_SCREEN);
-//             emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
-//             counter = 0;
-//         }
-//     }
-// }
+    XmlConfig xml;
+    xml.createElement("name", MainScreen::LOGIN_SCREEN);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 
-void SalesScreen::checkSuspend(){
-    // if(qApp->applicationState())
-    // if ( counter > TIMER_NO_EVENTS ){
-    //     XmlConfig xml;
-    //     xml.createElement("name", MainScreen::LOGIN_SCREEN);
-    //     emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
-    //     counter = 0;
-    // }
-    // else counter++;
 }
 
 void SalesScreen::showEvent(QShowEvent *event){
-    counter = 0;
-    timer->start(TIMER_RESOLUTION);
     setDefaultState();
     if (authCore->userId() == "1"){
         XmlConfig xml ;
         xml.createElement("name", AUTH_MENU);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
-        setEnabledLateralWidgets(false);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
+        enableLateralWidgets(false);
     }
     QWidget::showEvent(event);
 }
 
 void SalesScreen::hideEvent(QHideEvent *event){
-    timer->stop();
-    barCore->exitAndSaveReceipt();
+    m_bar_core->exitAndSaveReceipt();
     QWidget::hideEvent(event);
 }
 
-void SalesScreen::setEnabledLateralWidgets(bool enabled){
-    numkey_frame->setEnabled(enabled);
-    order_frame->setEnabled(enabled);
-    upper_buttons_frame->setEnabled(enabled);
-    shortcut_buttons_frame->setEnabled(enabled);
-    payment_frame->setEnabled(enabled);
-    movement_buttons_frame->setEnabled(enabled);
+void SalesScreen::enableLateralWidgets(bool enabled){
+    ui->numkey_frame->setEnabled(enabled);
+    ui->order_frame->setEnabled(enabled);
+    ui->upper_buttons_frame->setEnabled(enabled);
+    ui->shortcut_buttons_frame->setEnabled(enabled);
+    ui->payment_frame->setEnabled(enabled);
+    ui->movement_buttons_frame->setEnabled(enabled);
 }
 
-void SalesScreen::setVisibleLateralWidgets(bool visible){
-    command_frame->setVisible(visible);
-    //    order_frame->setVisible(visible);  //keep the order visible
-    shortcut_buttons_frame->setVisible(visible);
-    movement_buttons_frame->setVisible(visible);
+void SalesScreen::showLateralWidgets(bool visible){
+    ui->command_frame->setVisible(visible);
+    // ui->order_frame->setVisible(visible);  //keep the order visible
+    ui->shortcut_buttons_frame->setVisible(visible);
+    ui->movement_buttons_frame->setVisible(visible);
 }
 
-void SalesScreen::createProductDialog(){
-    auto page = new MenuPage(menuStack, PRODUCT_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+ProductScreenStack* SalesScreen::createProductDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, PRODUCT_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
     page->layout()->setContentsMargins(0,0,0,0);
-    productScreenStack = new ProductScreenStack(page, "ProductScreenStack");
+    auto product_screens = new ProductScreenStack(page, "ProductScreenStack");
 
-    connect(productScreenStack, &ProductScreenStack::splashRequested, this, &SalesScreen::splashRequested);
-    productScreenStack->initScreenStack(cfg::xmlFileByKey(cfg::XMLKey::Bar));
-    disconnect(productScreenStack, &ProductScreenStack::splashRequested, this, &SalesScreen::splashRequested);
+    connect(product_screens, &ProductScreenStack::splashRequested,
+        this, &SalesScreen::splashRequested);
+    product_screens->initScreenStack(cfg::xmlFileByKey(cfg::XMLKey::Bar));
+    disconnect(product_screens, &ProductScreenStack::splashRequested,
+        this, &SalesScreen::splashRequested);
 
-    page->addWidget(productScreenStack, "ProductScreenStack");
-    menuStack->addPage(page, PRODUCT_MENU);
+    page->addWidget(product_screens, product_screens->objectName());
+    screens->addPage(page, PRODUCT_MENU);
+    return product_screens;
 }
 
-void SalesScreen::createAuthenticationDialog(){
-    auto page = new MenuPage(menuStack, AUTH_MENU);
-    page->setLayoutType(MenuPage::VBOX);
-    PinCodeWidget *numCode = new PinCodeWidget(page, "NumCodeWidget");
-    page->addWidget(numCode, "NumCodeWidget");
-    menuStack->addPage(page, AUTH_MENU);
+void SalesScreen::createAuthenticationDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, AUTH_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
+    auto numCode = new PinCodeWidget(page, "PinCodeWidget");
+    page->addWidget(numCode, numCode->objectName());
+    screens->addPage(page, AUTH_MENU);
 }
 
-void SalesScreen::createFreepriceDialog(){
-    auto page = new MenuPage(menuStack, FREE_PRICE_MENU);
-    page->setLayoutType(MenuPage::VBOX);
-    FreePriceWidget *freePrice = new FreePriceWidget(page, "FreePriceWidget");
-    page->addWidget(freePrice, "FreePriceWidget");
-    menuStack->addPage(page, FREE_PRICE_MENU);
+void SalesScreen::createFreepriceDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, FREE_PRICE_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
+    auto freePrice = new FreePriceWidget(page, "FreePriceWidget");
+    page->addWidget(freePrice, freePrice->objectName());
+    screens->addPage(page, FREE_PRICE_MENU);
 }
 
-void SalesScreen::createBalanceCollectionDialog(){
-    auto page = new MenuPage(menuStack, CASH_MENU);
-    page->setLayoutType(MenuPage::VBOX);
-    CashWidget *cash_widget = new CashWidget(barCore, page, "CashWidget");
-    page->addWidget(cash_widget, "CashWidget");
-    menuStack->addPage(page, CASH_MENU);
+void SalesScreen::createBalanceCollectionDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, CASH_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
+    auto cash_widget = new CashWidget(m_bar_core, page, "CashWidget");
+    page->addWidget(cash_widget, cash_widget->objectName());
+    screens->addPage(page, CASH_MENU);
 }
 
-void SalesScreen::createCashMovementDialog(){
-    auto page = new MenuPage(menuStack, CHANGE_MONEY_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+void SalesScreen::createCashMovementDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, CHANGE_MONEY_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
     ChangeMoneyWidget *changeMoney = new ChangeMoneyWidget(page, "ChangeMoneyWidget");
     page->addWidget(changeMoney,"ChangeMoneyWidget");
-    menuStack->addPage(page, CHANGE_MONEY_MENU);
+    screens->addPage(page, CHANGE_MONEY_MENU);
 }
 
-void SalesScreen::createExitActionDialog(){
-    auto page = new MenuPage(menuStack, EXIT_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+void SalesScreen::createExitActionDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, EXIT_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
     ExitActionsWidget *exitActions = new ExitActionsWidget(page, "ExitActionsWidget");
     page->addWidget(exitActions,"ExitActionsWidget");
-    menuStack->addPage(page, EXIT_MENU);
+    screens->addPage(page, EXIT_MENU);
 }
 
-void SalesScreen::createReportDialog(){
-    MenuPage *page = new MenuPage(menuStack, XZ_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+void SalesScreen::createReportDialog(MenuStack* screens){
+    MenuPage *page = new MenuPage(screens, XZ_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
     XZWidget *xz = new XZWidget(page,"XZWidget");
     page->addWidget(xz, "XZWidget");
-    menuStack->addPage(page, XZ_MENU);
+    screens->addPage(page, XZ_MENU);
 }
 
-void SalesScreen::createTicketCancellationDialog(){
-    auto page = new MenuPage(menuStack, KILL_TICKETS_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+void SalesScreen::createTicketCancellationDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, KILL_TICKETS_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
     KillTicketsWidget *killTickets = new KillTicketsWidget(page, "KillTicketsWidget");
     page->addWidget(killTickets, "KillTicketsWidget");
-    menuStack->addPage(page, KILL_TICKETS_MENU);
+    screens->addPage(page, KILL_TICKETS_MENU);
 }
 
-void SalesScreen::createReceiptRecoverDialog(){
-    auto page = new MenuPage(menuStack, RECEIPT_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+void SalesScreen::createReceiptRecoverDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, RECEIPT_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
     ReceiptRecoverWidget *receipt = new ReceiptRecoverWidget(page, "ReceiptRecoverWidget");
     page->addWidget(receipt,"ReceiptRecoverWidget");
-    menuStack->addPage(page, RECEIPT_MENU);
+    screens->addPage(page, RECEIPT_MENU);
 }
 
-void SalesScreen::createInvitationDialog(){
-    auto page = new MenuPage(menuStack, INVITATION_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+void SalesScreen::createInvitationDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, INVITATION_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
     auto invitation = new InvitationAllocatorWidget(page, "InvitationAllocatorWidget");
     page->addWidget(invitation, invitation->objectName());
-    menuStack->addPage(page, INVITATION_MENU);
+    screens->addPage(page, INVITATION_MENU);
 }
 
 void SalesScreen::createPayByCashButton(){
     //    GenericButton *collect_cash_button =  new GenericButton("Collect Cash", payment_frame, "cobrar_metalico");
-    auto cash_collection_button =  new GenericButton("", payment_frame, "cobrar_metalico");
+    auto cash_collection_button =  new GenericButton("", ui->payment_frame, "cobrar_metalico");
     cash_collection_button->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     cash_collection_button->setFixedHeight(95);
     cash_collection_button->setIcon(QPixmap("payments:1000xaf.jpeg"));
     cash_collection_button->setIconSize(QSize(200,95));
-    cash_collection_layout->addWidget(cash_collection_button);
+    ui->cash_collection_layout->addWidget(cash_collection_button);
     connect(cash_collection_button, &GenericButton::clicked, this, &SalesScreen::receiveCash);
 }
 
-void SalesScreen::createGenericProductDialog(){
-    auto page = new MenuPage(menuStack, GENERIC_PRODUCT_MENU);
-    page->setLayoutType(MenuPage::VBOX);
+void SalesScreen::createGenericProductDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, GENERIC_PRODUCT_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
     GenericProduct *g_product = new GenericProduct("varios", page, "GenericProductWidget");
     page->addWidget(g_product,"GenericProductWidget");
-    menuStack->addPage(page, GENERIC_PRODUCT_MENU);
+    screens->addPage(page, GENERIC_PRODUCT_MENU);
 }
 
-void SalesScreen::createAdminDialog(){
-    auto page = new MenuPage(menuStack, ADMIN_MENU);
-    page->setLayoutType(MenuPage::VBOX);
-    adminPanel = new AdminWidget(productScreenStack, page, "AdminWidget");
-    page->addWidget(adminPanel, adminPanel->objectName());
-    menuStack->addPage(page, ADMIN_MENU);
+void SalesScreen::createAdminDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, ADMIN_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
+    m_admin_wgt = new AdminWidget(m_product_screens, page, "AdminWidget");
+    page->addWidget(m_admin_wgt, m_admin_wgt->objectName());
+    screens->addPage(page, ADMIN_MENU);
 }
 
-void SalesScreen::createPaySelectionDialog(){
-    auto page = new MenuPage(menuStack, PAY_MODE_MENU);
-    page->setLayoutType(MenuPage::VBOX);
-    PayModes *pay_mode = new PayModes( adminPanel->toggle_cash, barCore, page, "PayModeWidget");
+void SalesScreen::createPaySelectionDialog(MenuStack* screens){
+    auto page = new MenuPage(screens, PAY_MODE_MENU);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
+    PayModes *pay_mode = new PayModes( m_admin_wgt->toggle_cash, m_bar_core, page, "PayModeWidget");
     page->addWidget(pay_mode, pay_mode->objectName());
-    menuStack->addPage(page, PAY_MODE_MENU);
+    screens->addPage(page, PAY_MODE_MENU);
 }
 
 void SalesScreen::createShortcutButton(){
-    if (!shortcutGroup)
-        shortcutGroup = new GenericButtonGroup(productScreenStack, shortcut_buttons_frame, "buttongroup");
+    if (!m_shortcut_grp)
+        m_shortcut_grp = new GenericButtonGroup(m_product_screens, ui->shortcut_buttons_frame, "buttongroup");
     else
-        shortcutGroup->clear();
-    shortcutGroup->readConfigFrom("shortcut_buttons_frame", cfg::xmlFileByKey(cfg::XMLKey::Buttons));
+        m_shortcut_grp->clear();
+    m_shortcut_grp->readConfigFrom("shortcut_buttons_frame", cfg::xmlFileByKey(cfg::XMLKey::Buttons));
 }
 
 void SalesScreen::createOpenCashDeviceButton(){
-    if (!paymodeGroup)
-        paymodeGroup = new GenericButtonGroup(productScreenStack, openbox_and_payment_mode_buttons_frame,"buttongroup");
+    if (!m_paymode_grp)
+        m_paymode_grp = new GenericButtonGroup(m_product_screens, ui->openbox_and_payment_mode_buttons_frame,"buttongroup");
     else
-        paymodeGroup->clear();
-    paymodeGroup->readConfigFrom("openbox_and_payment_mode_buttons_frame", cfg::xmlFileByKey(cfg::XMLKey::Buttons));
+        m_paymode_grp->clear();
+    m_paymode_grp->readConfigFrom("openbox_and_payment_mode_buttons_frame", cfg::xmlFileByKey(cfg::XMLKey::Buttons));
 }

@@ -19,20 +19,17 @@
 #include <QLayout>
 #include <QString>
 #include "nkeyboard.h"
-#include <productextrainfo.h>
+#include <wposcore/productextrainfo.h>
 
 NPopUpKeyboard::NPopUpKeyboard(
-    QWidget *parent,
-    const QString& name) :
+    QWidget *parent) :
     QMenu(parent)
 {
-    setObjectName(name);
-    m_nkeyboard = new NKeyboard(this, "NKeyBoard");
-    m_cmds = addMenu(m_nkeyboard);
-    m_nkeyboard->setSendEvents(false);
+    m_nkeyboard = new NKeyboard(this);
+    m_action = addMenu(m_nkeyboard);
+    m_nkeyboard->setHasSendEvents(false);
     m_nkeyboard->setExitWithEnter(true);
 
-    // connect(this, &NPopUpKeyboard::loungeSignal, m_cmds, &QAction::setVisible);
     connect(m_nkeyboard, &NKeyboard::textChanged,  this, &NPopUpKeyboard::textChanged);
     connect(m_nkeyboard, &NKeyboard::enterPressed, this, &NPopUpKeyboard::enterPressedSlot);
     connect(m_nkeyboard, &NKeyboard::loungeRequested, this, &NPopUpKeyboard::loungeRequested);
@@ -41,9 +38,8 @@ NPopUpKeyboard::NPopUpKeyboard(
 
 NPopUpKeyboard::NPopUpKeyboard(
     const QString& text,
-    QWidget *parent,
-    const QString& name):
-    NPopUpKeyboard{parent, name}
+    QWidget *parent):
+    NPopUpKeyboard{parent}
 {
     m_nkeyboard->setText(text);
 }
@@ -54,7 +50,7 @@ void NPopUpKeyboard::enterPressedSlot(const QString &text){
 }
 
 void NPopUpKeyboard::showMenu(const QPoint& pos){
-    m_nkeyboard->popup( pos, m_cmds );
+    m_nkeyboard->popup( pos, m_action );
 }
 
 void NPopUpKeyboard::showEvent(QShowEvent *event){
@@ -71,16 +67,17 @@ void NPopUpKeyboard::setText(const QString& text){
     m_nkeyboard->setText(text);
 }
 
-void NPopUpKeyboard::loungeButtonClicked(){
+void NPopUpKeyboard::showLounge(){
     m_nkeyboard->showLounge();
 }
 
-void NPopUpKeyboard::kbButtonClicked(){
+void NPopUpKeyboard::showKeyBoard(){
     m_nkeyboard->showKeyBoard();
 }
 
-void NPopUpKeyboard::setUsedList(QStringList list){
-    m_nkeyboard->setUsedTables(list);
+void NPopUpKeyboard::setUsedTables(const QStringList& tbl_codes)
+{
+    m_nkeyboard->setUsedTables(tbl_codes);
 }
 
 bool NPopUpKeyboard::isAtTable(){

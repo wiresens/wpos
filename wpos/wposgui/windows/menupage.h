@@ -33,7 +33,7 @@ class MenuPage : public QFrame{
     Q_OBJECT
 
 public:
-    enum LayoutType
+    enum class LayoutType
     {
         GRID = 0,
         VBOX,
@@ -53,8 +53,6 @@ private:
     void layHorizontal();
 
     QLayout *page_layout{};
-    QList<QWidget*> widgetList;
-    QMap<QString, QWidget*> widgetDict;
     LayoutType layout_type;
 };
 

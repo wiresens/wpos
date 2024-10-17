@@ -34,32 +34,32 @@ public:
 
     ~MenuButton();
 
-    void setOrientation(Qt::Orientation orientation);
+    // void setOrientation(Qt::Orientation orientation);
     Qt::Orientation orientation();
 
     bool eventFilter(QObject *watched, QEvent *event) override;
 
-public slots:
-    void openPopUp();
-    void closePopUp();
-    void toggleMenuButtonColor(QAbstractButton* button);
-
 signals:
     void genericSignal(const QString& signal_name);
-    void closePopUpSignal();
+    void popupClosed();
+
+public slots:
+    void popUp();
+    void popDown();
+    void toggleMenuButtonColor(QAbstractButton* button);
 
 protected:
-    void alignInHGrid();
+    // void alignInHGrid();
     void addMenuButton(QAbstractButton* button, QGridLayout *layout );
     void childEvent(QChildEvent *event) override;
     void setEnabled(bool enabled);
 
-    QFrame *frame{};
-    QBoxLayout *frame_layout{};
-    QGridLayout *grid_layout{};
-    QButtonGroup *button_group{};
-    HList<QAbstractButton> buttons;
-    Qt::Orientation popup_orientation{};
+    QFrame                  *m_frame{};
+    QBoxLayout              *m_frame_layout{};
+    QGridLayout             *m_grid_layout{};
+    QButtonGroup            *m_button_group{};
+    HList<QAbstractButton>  m_buttons;
+    Qt::Orientation         m_popup_orientation{};
 };
 
 #endif

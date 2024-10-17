@@ -580,7 +580,7 @@ void ProductScreenDesignWidget::draggedText(
     product_node->row = row;
     screen_node->product_list.append(product_node,QString::number(row)+"-"+QString::number(col));
 
-    auto item = new QTableWidgetItem( QString(), 0);
+    auto item = new QTableWidgetItem( QString{}, 0);
     if((product->logo).isEmpty()){
         item->setText(product->name);
 //@benes        item->setWordWrap(true);
@@ -679,7 +679,7 @@ void ProductScreenDesignWidget::deleteSlot(){
 //@benes            screen->setIcon(screen->currentRow(),screen->currentColumn(), QPixmap());
             auto row = screen->currentRow();
             auto col = screen->currentColumn();
-            screen->model()->setData(screen->model()->index(row, col), QString());
+            screen->model()->setData(screen->model()->index(row, col), QString{});
             screen->model()->setData(screen->model()->index(row, col), QIcon(), Qt::DecorationRole);
             return;
         }
@@ -688,7 +688,7 @@ void ProductScreenDesignWidget::deleteSlot(){
 //@benes        screen->setPixmap(screen->currentRow(),screen->currentColumn(),QPixmap(""));
         auto row = screen->currentRow();
         auto col = screen->currentColumn();
-        screen->model()->setData(screen->model()->index(row, col), QString());
+        screen->model()->setData(screen->model()->index(row, col), QString{});
         screen->model()->setData(screen->model()->index(row, col), QIcon(), Qt::DecorationRole);
     }
 }

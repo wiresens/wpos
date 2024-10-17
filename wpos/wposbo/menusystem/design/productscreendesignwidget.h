@@ -29,7 +29,7 @@ class ProductScreenDesignWidget :
 
     Q_OBJECT
 public:
-    explicit ProductScreenDesignWidget(QWidget *parent = 0, const QString& name = QString());
+    explicit ProductScreenDesignWidget(QWidget *parent = 0, const QString& name = QString{});
     ~ProductScreenDesignWidget() = default;
 
 signals:

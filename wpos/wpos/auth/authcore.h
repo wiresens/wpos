@@ -15,7 +15,7 @@
 
 #include "database/authcoredb.h"
 #include <QObject>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 class QString;
 class AuthCoreDB;
@@ -28,7 +28,7 @@ class AuthCore: public QObject{
 public:
     explicit AuthCore(
         QObject *parent = nullptr,
-        QString name = QString()
+        QString name = QString{}
     );
 
     ~AuthCore();
@@ -39,11 +39,11 @@ public:
     QString userFullName() const;
     bool isRootUser() const;
 
-    bool loadUserById(QString id);
+    bool loadUserById(const QString& id);
 
     //Potential bug : Name and Last are not unique identifiers
-    bool loadUserByName(QString name);
-    bool loadUserByLastName(QString last_name);
+    bool loadUserByName(const QString& name);
+    bool loadUserByLastName(const QString& last_name);
 
 public slots:
     void genericDataSignalSlot(const QString& signal, XmlConfig *xml);

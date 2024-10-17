@@ -13,7 +13,7 @@
 #include "cashdevice.h"
 
 #include <wposcore/genericsignalmanager.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <QFile>
 #include <QString>
 

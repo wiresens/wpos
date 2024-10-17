@@ -20,7 +20,7 @@
 #include <QPushButton>
 
 class ProductExtraInfo;
-class LoungeData;
+class Lounge;
 class XmlConfig;
 
 class QSignalMapper;
@@ -37,40 +37,35 @@ class NKeyboard :
 
 public:
     explicit NKeyboard(
-        QWidget *parent=nullptr,
-        const QString& name = QString{}
+        QWidget *parent={}
     );
 
     ~NKeyboard();
 
     bool isAtTable();
-    QString getLounge();
     int getTable();
+    QString getLounge();
 
     HList<ProductExtraInfo>*
-    getOptionsFromLounge(const QString& lounge);
+    getOptionsFromLounge(const QString& lounge_name);
 
 signals:
     void exitClicked();
     void textChanged(const QString& text);
-    void enterPressed(const QString& text);
     void loungeRequested(bool on);
+    void enterPressed(const QString& text);
 
 public slots:
-    void setSendEvents(bool on);
-    void setExitWithEnter(bool on);
-    void clearSlot();
+    void setText(const QString& text);
     void showLounge();
     void showKeyBoard();
-    void setText(const QString& text);
+    void setUsedTables(const QStringList &tbl_codes);
 
+    void setHasSendEvents(bool on);
+    void setExitWithEnter(bool on);
+    void clearSlot();
     void clearAllStacks(bool clear_enabled = false);
-    void clearLoungeStack(
-        const QString &name,
-        bool clear_enabled=false
-    );
-
-    void setUsedTables(QStringList list);
+    void clearLoungeStack(const QString &lounge_name, bool clear_enabled=false);
     void setTableButtonUsed(const QString& name);
     void setTableButtonSelected(const QString& name);
 
@@ -80,21 +75,19 @@ protected slots:
 
     void loungeButtonClicked(bool checked);
     void tableButtonClicked(QAbstractButton* button);
-    void switchLounge(QAbstractButton* button);
-
-protected:
-    void loadLounges(XmlConfig& xml);
+    void showTables(QAbstractButton* button);
 
 private:
-    void build(QSignalMapper* sgmpr);
+    void buildLounges(XmlConfig& xml);
+    void buildKeyboard();
     void write(const QString& text);
     QString read() const;
 
 private:
-    Ui::NKeyboardWidget* ui;
+    Ui::NKeyboardWidget *ui;
     QObject             *m_obj_parent{};
-    HList<LoungeData>   m_lounges{};
-    QButtonGroup        *m_lounge_btn_group{};
+    QButtonGroup        *m_lounge_selector_btn_group{};
+    HList<Lounge>       m_lounges{};
 
     bool  m_caps_lock{false};
     bool  m_has_send_events{false};

@@ -14,7 +14,7 @@ modified by Carlos Manzanedo Rueda
 #include "printermanager.h"
 #include "dbusprinter_interface.h"
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <iostream>
 
 #include <QString>

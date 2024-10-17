@@ -234,7 +234,7 @@ QString ProductModule::getProduct(const QString& product_code){
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
-        return QString();
+        return QString{};
     }
 
     xml_string = xml->toString();
@@ -714,7 +714,7 @@ QString ProductModule::getCompositions(){
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
-        return QString();
+        return QString{};
     }
 
     xml_string = xml->toString();

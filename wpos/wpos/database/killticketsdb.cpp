@@ -20,7 +20,7 @@
 #include <QDateTime>
 #include <QDebug>
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <wposcore/utility.h>
 
 KillTicketsDB::KillTicketsDB(

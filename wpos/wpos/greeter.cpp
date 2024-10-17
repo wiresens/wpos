@@ -10,6 +10,7 @@
 %LICENCIA%
  ***************************************************************************/
 
+#include "ui_loginwidget.h"
 #include "greeter.h"
 #include "greeter_adaptor.h"
 
@@ -51,9 +52,10 @@ const QString Greeter::DBusObject{"/wpos/wpos/Greeter"};
 Greeter::Greeter(
     MenuPage* parent,
     const QString& name):
-    QWidget(parent)
+    QWidget(parent),
+    ui { new Ui::LoginWidget}
 {
-    setupUi(this);
+    ui->setupUi(this);
     setObjectName(name);
     parent->addWidget(this, objectName());
 
@@ -65,7 +67,7 @@ Greeter::Greeter(
 
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::CHANGE_USER, this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, this);
     gsm->subscribeToGenericSignal(GSIGNAL::AUTH_ENABLE_FINGERPRINT, this);
     gsm->subscribeToGenericSignal(GSIGNAL::AUTH_DISABLE_FINGERPRINT, this);
     gsm->subscribeToGenericSignal(GSIGNAL::LOAD_BUTTONS, this);
@@ -73,7 +75,6 @@ Greeter::Greeter(
     loadPicture();
     createLoginButtons();
 }
-
 
 void Greeter::loadPicture(){
 
@@ -144,19 +145,19 @@ void Greeter::loadPicture(){
     if (  !pixmap_file.isEmpty() && QFile(pixmap_file).exists() )
         tmp_pixmap_file = pixmap_file;
 
-    login_pixmap_label->setPixmap(QPixmap(tmp_pixmap_file));
+    ui->login_pixmap_label->setPixmap(QPixmap(tmp_pixmap_file));
 
     if (!company_name.isEmpty())
-        local_label->setText(company_name);
+        ui->local_label->setText(company_name);
     else
-        local_label->setText(DEFAULT_TEXT);
+        ui->local_label->setText(DEFAULT_TEXT);
 
-    fingerprint_label->setPixmap(QPixmap(BLACK_FINGERPRINT));
+    ui->fingerprint_label->setPixmap(QPixmap(BLACK_FINGERPRINT));
 
     //In the future we will dynamically hide or show the fingerprint
     //when this fonctionallity is available after checking availability of the device
     //Presently we just hide unconditionally
-    fingerprint_label->hide();
+    ui->fingerprint_label->hide();
 }
 
 void Greeter::showEvent(QShowEvent *e){
@@ -176,21 +177,21 @@ void Greeter::createLoginButtons(){
     }
 
     QGridLayout *layout{};
-    if ( (layout = qobject_cast<QGridLayout*>(userGroupBox->layout())) )
+    if ( (layout = qobject_cast<QGridLayout*>(ui->userGroupBox->layout())) )
         delete layout;
 
     int cols  {MAX_LAYOUT};
     if ( userList.count() < MAX_LAYOUT)
         cols = userList.count();
 
-    layout = new QGridLayout(userGroupBox);
+    layout = new QGridLayout(ui->userGroupBox);
     layout->setSpacing(10);
     layout->setContentsMargins(10,10,10,10);
 
     auto i = 0;
     for( UserData& user :  userList){
         auto userName = user.name.trimmed().replace(" ","\n");
-        auto button = new QPushButton( userName , userGroupBox);
+        auto button = new QPushButton( userName , ui->userGroupBox);
         button->setObjectName(user.id);
 
         if ( i==0 )  button->setIcon(QPixmap(LOGO_CORP));
@@ -207,10 +208,10 @@ void Greeter::createLoginButtons(){
 
 void Greeter::genericSignalSlot(const QString& signal_name){
     if (signal_name == GSIGNAL::AUTH_ENABLE_FINGERPRINT){
-        use_auth = false;
+        m_use_auth = false;
     }
     else if (signal_name == GSIGNAL::AUTH_DISABLE_FINGERPRINT){
-        use_auth = true;
+        m_use_auth = true;
     }
     else if (signal_name == GSIGNAL::LOAD_BUTTONS){
         loadPicture();
@@ -224,7 +225,7 @@ void Greeter::handleButtonPressed(){
 
     QString id = sender->objectName();
     //used to set if the fingerpring auth must be used or not
-    if ( !use_auth || id == "1" ){
+    if ( !m_use_auth || id == "1" ){
         registerUser(id);
         return;
     }
@@ -269,7 +270,7 @@ void Greeter::registerUser(const QString& user_id){
     xml.deleteElement("id");
 
     xml.createElement("name", MainScreen::SALES_SCREEN);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }
 
 void Greeter::getMatchResults(QString _xml_match_data){
@@ -284,16 +285,16 @@ void Greeter::getMatchResults(QString _xml_match_data){
         registerUser(identity);
     }
     else{
-        fingerprint_label->setPixmap(QPixmap(BAD_FINGERPRINT));
+        ui->fingerprint_label->setPixmap(QPixmap(BAD_FINGERPRINT));
         QTimer::singleShot(SLEEP_TIME, this, &Greeter::flushFingerprintPixmap);
     }
 }
 
 void Greeter::flushFingerprintPixmap(){
-    fingerprint_label->setPixmap(QPixmap(BLACK_FINGERPRINT));
-    fingerprint_label->show();
+    ui->fingerprint_label->setPixmap(QPixmap(BLACK_FINGERPRINT));
+    ui->fingerprint_label->show();
 }
 
-//void BslEnterTheMatrix::keyPressEvent(QKeyEvent *e){
+//void Greeter::keyPressEvent(QKeyEvent *e){
 //        cout << "TECLA ASCII [ " << e->ascii()<<"] numero ["<< e->key()<<"] "<< endl;
 //}

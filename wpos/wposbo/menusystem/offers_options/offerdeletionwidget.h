@@ -28,7 +28,7 @@ public:
         Name = 1
     };
 
-    explicit OfferDeletionWidget(QWidget *parent=0, const QString&name=QString());
+    explicit OfferDeletionWidget(QWidget *parent=0, const QString&name=QString{});
     ~OfferDeletionWidget() = default;
 
 public slots:

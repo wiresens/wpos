@@ -30,12 +30,12 @@ public slots:
 //    void genericDataSignal(const QString& signal, XmlConfig *xml);
 
 protected:
-    KillTicketsDB *ticket_db{};
-    OrderView *order{};
+    KillTicketsDB *m_ticket_db{};
+    OrderView     *m_order_view{};
 
-    QPixmap null_pixmap{"controls:view_text.png"};
-    QPixmap error_pixmap{"controls:stop.png"};
-    QPixmap anulation_pixmap{"controls:view_text_red.png"};
+    QPixmap m_null_pixmap     {"controls:view_text.png"};
+    QPixmap m_error_pixmap    {"controls:stop.png"};
+    QPixmap m_canceled_pixmap{"controls:view_text_red.png"};
 };
 
 #endif // TICKETSHANDLINGWIDGET_H

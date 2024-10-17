@@ -15,7 +15,7 @@
 #include <wposcore/genericsignalmanager.h>
 #include "salesscreen.h"
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include "barcore/filemanager.h"
 
@@ -34,7 +34,7 @@ ExitActionsWidget::ExitActionsWidget(QWidget *parent, const QString& name) :
     initializeDialogBox();
 
     auto gsm = GenericSignalManager::instance();
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE,this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::EVENTLOG,this);
     gsm->publishGenericSignal(GDATASIGNAL::MAINWIDGET_SAVE_BUTTON_STATE,this);
 
@@ -50,7 +50,7 @@ ExitActionsWidget::~ExitActionsWidget(){}
 void ExitActionsWidget::returnToADMmenuSlot(){
     XmlConfig xml ;
     xml.createElement("name", SalesScreen::ADMIN_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }
 
 void ExitActionsWidget::shutdown(){

@@ -28,7 +28,7 @@
 class ReceiptChangeNotifiyer : public QObject  {
     Q_OBJECT
 public:
-    explicit ReceiptChangeNotifiyer(QObject *parent = nullptr, const QString& name = QString());
+    explicit ReceiptChangeNotifiyer(QObject *parent = nullptr, const QString& name = QString{});
 
 public slots:
     void receiptChangedSlotByDate(const QString& employee_id, const QString& start_time);

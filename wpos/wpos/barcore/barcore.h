@@ -32,7 +32,9 @@ class XmlConfig;
 class BarCore : public QObject  {
     Q_OBJECT
 public:
-    explicit BarCore(QObject *parent=nullptr, const QString& name = QString());
+    explicit BarCore(
+        QObject *parent=nullptr,
+        const QString& name = {});
     ~BarCore();
     /**
      * prepare a new XML and set on it the timestamp, employee, and locationInfo
@@ -44,11 +46,11 @@ public:
     bool hasProducts(XmlConfig &xml) const;
 
     bool exitAndSaveReceipt();
-    void receiveProduct(XmlConfig *_xml);
-    void receiveProduct(XmlConfig *_xml, int number);
+    void receiveProduct(XmlConfig *xml);
+    void receiveProduct(XmlConfig *xml, int number);
 
 public slots:
-    void genericDataSignalSlot(const QString& signal, XmlConfig *_xml);
+    void genericDataSignalSlot(const QString& signal, XmlConfig *xml);
     void genericSignalSlot(const QString& signal);
 
     void initExtras();
@@ -59,15 +61,15 @@ public slots:
     void addProductDefaultOption(XmlConfig *_xml);
 
 signals:
-    void dataChanged(XmlConfig *xml);
+    void orderChanged(XmlConfig *xml);
     void ticket(XmlConfig *xml);
     void genericSignal(const QString& signal);
 
 protected:
     //module info reception
     void setProductPrinterSection(const QString& product_code);
-    void setEmployeeInfo();
-    void setLocationInfo();
+    void setEmployeeInfo(XmlConfig &xml);
+    void setLocationInfo(XmlConfig &xml);
     void setTimeStamp(const QString& name);
     bool setProduct(XmlConfig *product);
     QString getProductCode(XmlConfig *xml);
@@ -87,13 +89,13 @@ private:
     void processCore(const QString& pay_type);
 
 private:
-    XmlConfig *xml{};
-    ExtraCore *extraCore{};
-    DBusReceiptQuerier *receiptQuerier{};
+    XmlConfig *m_xml{};
+    ExtraCore *m_extra_core{};
+    DBusReceiptQuerier *m_receipt_querier{};
 
-    QString last_employee_id;
-    QString last_start_time;
-    BarCoreDB *db;
+    QString m_last_employee_id;
+    QString m_last_start_time;
+    BarCoreDB *m_db;
 };
 
 #endif

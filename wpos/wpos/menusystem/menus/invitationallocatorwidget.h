@@ -31,7 +31,7 @@ public:
 class InvitationAllocatorWidget : public QWidget, private Ui::InvitationAllocatorWidget {
     Q_OBJECT
 public:
-    explicit InvitationAllocatorWidget(QWidget *parent=0, const QString& name = QString());
+    explicit InvitationAllocatorWidget(QWidget *parent=0, const QString& name = QString{});
     ~InvitationAllocatorWidget();
 
 public slots:

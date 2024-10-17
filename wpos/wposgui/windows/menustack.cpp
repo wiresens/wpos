@@ -37,41 +37,34 @@ MenuStack::MenuStack(QWidget *parent, const QString& name) :
     gsm->subscribeToGenericSignal(GSIGNAL::DISABLE_MAINSTACK, this);
 }
 
-MenuStack::~MenuStack(){}
-
 int MenuStack::numPages(){
-    return pages.count();
-}
-
-bool MenuStack::isMenuPage(){
-    return currentPage()->objectName().contains("MenuStack");
-}
-
-bool MenuStack::isPage(){
-    return currentPage()->objectName().contains("MenuPage");
+    return count();
 }
 
 QWidget* MenuStack::currentPage(){
     return currentWidget();
 }
 
-void MenuStack::addPage(QWidget *page, QString name){
-    pages.append(page,name);
+void MenuStack::addPage(
+    QWidget *page,
+    const QString &name)
+{
+    pages[name] = page;
     addWidget(page);
     setCurrentWidget(page);
     setEnabled(true);
 }
 
-void MenuStack::setCurrentPage(QString name){
-    QWidget *w = pages.find(name);
-    if(w){
-        setCurrentWidget(w);
+void MenuStack::setCurrentPage(const QString &name){
+    auto* wgt = pages.value(name);
+    if(wgt){
+        setCurrentWidget(wgt);
         setEnabled(true);
     }
 }
 
 void MenuStack::setCurrentPage(int pageIndex){
-    if( pageIndex >= 0 && pageIndex <= pages.count() ){
+    if( pageIndex >= 0 && pageIndex < count() ){
         setCurrentIndex(pageIndex);
         setEnabled(true);
     }
@@ -88,7 +81,7 @@ void MenuStack::genericSignalSlot(const QString& signal_name){
 
 void MenuStack::genericDataSignalSlot(const QString& signal_name, XmlConfig *xml){
 
-    if (signal_name == GDATASIGNAL::MAINSTACK_SETPAGE){
+    if (signal_name == GDATASIGNAL::MAINSTACK_SET_PAGE){
         xml->pushDomain();
         xml->delDomain();
         setCurrentPage(xml->readString("name"));

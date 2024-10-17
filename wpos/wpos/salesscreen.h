@@ -6,7 +6,6 @@
 #ifndef SALES_SCREEN_H
 #define SALES_SCREEN_H
 
-#include "ui_saleswidget.h"
 #include <QtWidgets/QtWidgets>
 
 class XmlConfig;
@@ -24,9 +23,11 @@ class EventLogCore;
 class AdminWidget;
 class GenericButtonGroup;
 
-class SalesScreen :
-    public QWidget,
-    private Ui::SalesWidget
+namespace Ui{
+class SalesWidget;
+}
+
+class SalesScreen :  public QWidget
 {
  Q_OBJECT
 
@@ -48,8 +49,10 @@ public:
     SalesScreen(
         MenuPage *parent,
         QSplashScreen& splashScreen,
-        const QString& name = QString()
+        const QString& name = QString{}
     );
+
+    ~SalesScreen(){ delete ui;}
 
 public slots:
     void receiveProduct(XmlConfig *xml);
@@ -67,57 +70,55 @@ signals:
     void splashRequested(const QString &, int, const QColor &);
 
 protected slots:
-    void checkSuspend();
+    void showGreeter();
 
 protected:
     void showEvent(QShowEvent *event) override;
     void hideEvent(QHideEvent *event) override;
 
 private:
-    void setEnabledLateralWidgets(bool enabled);
-    void setVisibleLateralWidgets(bool visible);
+    void enableLateralWidgets(bool enabled);
+    void showLateralWidgets(bool visible);
 
-    void createProductDialog();
-    void createAuthenticationDialog();
+    ProductScreenStack *createProductDialog(MenuStack *screens);
+    void createAuthenticationDialog(MenuStack *screens);
 
-    void createFreepriceDialog();
-    void createBalanceCollectionDialog();
-    void createCashMovementDialog();
-    void createExitActionDialog();
-    void createReportDialog();
+    void createFreepriceDialog(MenuStack *screens);
+    void createBalanceCollectionDialog(MenuStack *screens);
+    void createCashMovementDialog(MenuStack *screens);
+    void createExitActionDialog(MenuStack *screens);
+    void createReportDialog(MenuStack *screens);
 
-    void createTicketCancellationDialog();
-    void createReceiptRecoverDialog();
+    void createTicketCancellationDialog(MenuStack *screens);
+    void createReceiptRecoverDialog(MenuStack *screens);
 
-    void createInvitationDialog();
+    void createInvitationDialog(MenuStack *screens);
     void createPayByCashButton();
-    void createGenericProductDialog();
+    void createGenericProductDialog(MenuStack *screens);
 
-    void createAdminDialog();
-    void createPaySelectionDialog();
+    void createAdminDialog(MenuStack *screens);
+    void createPaySelectionDialog(MenuStack *screens);
 
     void createShortcutButton();
     void createOpenCashDeviceButton();
 
 private:
-    MenuStack           *menuStack{};      // StackedWidget containing all screens
-    OrderPickerView     *orderPicker{};
-    ProductScreenStack  *productScreenStack{};
-    AdminWidget         *adminPanel{};
-    GenericButtonGroup  *shortcutGroup{};
-    GenericButtonGroup  *paymodeGroup{};
-    NumKeyboard         *numkey{};
-    ButtonSetWidget     *upperButtons{};
+    Ui::SalesWidget     *ui{};
+    MenuStack           *m_screens{};      // StackedWidget containing all screens
+    OrderPickerView     *m_order_picker_view{};
+    ProductScreenStack  *m_product_screens{};
+    AdminWidget         *m_admin_wgt{};
+    GenericButtonGroup  *m_shortcut_grp{};
+    GenericButtonGroup  *m_paymode_grp{};
+    NumKeyboard         *m_num_keyboard{};
+    ButtonSetWidget     *m_upper_btns{};
 
-    BarCore             *barCore{};
-    TicketCore          *ticketCore{};
-    EventLogCore        *eventLogCore;
+    BarCore             *m_bar_core{};
+    TicketCore          *m_ticket_core{};
+    EventLogCore        *m_eventlog_core;
 
-    QHBoxLayout         *shortcutLayout{};
-    QFrame              *specialButtonsFrame{};
+    QHBoxLayout         *m_shortcut_layout{};
 
-    QTimer              *timer{};
-    uint                counter{};
 };
 
 #endif

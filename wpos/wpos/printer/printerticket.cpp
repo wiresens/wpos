@@ -13,7 +13,7 @@ modified by Carlos Manzanedo Rueda
 
 #include "printerticket.h"
 #include "printersamsungsrp350.h"
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QStringList>
 #include <QRegExp>
@@ -62,7 +62,7 @@ void PrinterTicket::parse(XmlConfig* xml) {
 
     /* We are in section printerRepresentation */
     xml->setDomain("section["+QString::number(pos)+"]");
-    list = xml->findNode(QRegExp("*"), QString(), false);
+    list = xml->findNode(QRegExp("*"), QString{}, false);
 
 
     for (auto& node : list) {
@@ -176,7 +176,7 @@ QString PrinterTicket::getAttributeValue (QStringList attributes_names, QStringL
         if (attributes_names[i] == attr)
             return attributes_values[i];
     }
-    return QString();
+    return QString{};
 }
 
 void PrinterTicket::parseTagTR() {

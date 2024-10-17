@@ -32,7 +32,7 @@ public:
                   const QString& module_name,
                   int port = -1,
                   QObject *parent = nullptr,
-                  const QString& name = QString());
+                  const QString& name = QString{});
 
     virtual ~XmlRpcPrinter();
     virtual bool isRemote();

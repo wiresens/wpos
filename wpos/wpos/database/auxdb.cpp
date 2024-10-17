@@ -12,10 +12,10 @@
 
 #include "auxdb.h"
 #include <QVariant>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <QString>
 
-#include <productextrainfo.h>
+#include <wposcore/productextrainfo.h>
 
 AuxDB::AuxDB(const QString& connection,
              const QString& hostname,

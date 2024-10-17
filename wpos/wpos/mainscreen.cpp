@@ -11,10 +11,10 @@
  ***************************************************************************/
 #include "mainscreen.h"
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <wposcore/genericsignalmanager.h>
 #include <wposgui/windows/menupage.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include "greeter.h"
 #include "salesscreen.h"
@@ -26,7 +26,7 @@ const QString MainScreen::DBusService = QString{"com.wiresens.wpos.wpos"};
 
 const QString MainScreen::LOGIN_SCREEN{"LOGIN_SCREEN"};
 const QString MainScreen::SALES_SCREEN {"SALES_SCREEN"};
-const QString MainScreen::READ_CONFIG_SCREEN {"READ_CONFIG_SCREEN"};
+const QString MainScreen::CONFIG_SCREEN {"READ_CONFIG_SCREEN"};
 
 MainScreen::MainScreen(
     QSplashScreen& splash,
@@ -45,35 +45,38 @@ MainScreen::MainScreen(
     **/
 
     auto gsm = GenericSignalManager::instance();
-    gsm->subscribeToGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->subscribeToGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, this);
 
     // Create and add to the stack the Login Widget
     auto page = new MenuPage(this, LOGIN_SCREEN);
-    page->setLayoutType(MenuPage::VBOX);
-    loginScreen = new Greeter(page, LOGIN_SCREEN);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
+    m_login_screen = new Greeter(page, LOGIN_SCREEN);
     addPage(page, LOGIN_SCREEN);
 
     // Create and add to the stack the Sales Widget
     page = new MenuPage(this, SALES_SCREEN);
-    page->setLayoutType(MenuPage::VBOX);
-    salesScreen = new SalesScreen(page, splash, SALES_SCREEN);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
+    m_sales_screen = new SalesScreen(page, splash, SALES_SCREEN);
     addPage(page, SALES_SCREEN);
 
     // Create and add to the stack the ReadConfig Widget
-    page = new MenuPage(this, READ_CONFIG_SCREEN);
-    page->setLayoutType(MenuPage::VBOX);
-    configScreen = new ReadConfigScreen(page, READ_CONFIG_SCREEN);
-    addPage(page, READ_CONFIG_SCREEN);
+    page = new MenuPage(this, CONFIG_SCREEN);
+    page->setLayoutType(MenuPage::LayoutType::VBOX);
+    m_config_screen = new ReadConfigScreen(page, CONFIG_SCREEN);
+    addPage(page, CONFIG_SCREEN);
 
     setCurrentPage(LOGIN_SCREEN);
 }
 
-void MainScreen::genericDataSignalSlot(const QString& signal, XmlConfig *xml){
-    if (signal == GDATASIGNAL::MAINSTACK_SETPAGE){
+void MainScreen::genericDataSignalSlot(
+    const QString& signal,
+    XmlConfig *xml)
+{
+    if (signal == GDATASIGNAL::MAINSTACK_SET_PAGE){
         xml->pushDomain();
         xml->delDomain();
-        auto aux = xml->readString("name");
-        setCurrentPage(aux);
+        auto page_name = xml->readString("name");
+        setCurrentPage(page_name);
         xml->popDomain();
     }
 }

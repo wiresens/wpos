@@ -224,7 +224,7 @@ void NProfitReportWidget::toggleStates(QAbstractButton* button){
 QString NProfitReportWidget::getActualReport(){
     auto button  = button_group->checkedButton();
     if (button)  return button->objectName();
-    return QString();
+    return QString{};
 }
 
 bool NProfitReportWidget::doIsClosing(){

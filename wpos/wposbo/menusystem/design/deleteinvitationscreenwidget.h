@@ -24,7 +24,7 @@ class DeleteInvitationScreenWidget :
 {
     Q_OBJECT
 public:
-    explicit DeleteInvitationScreenWidget(QWidget *parent=0, const QString& name=QString());
+    explicit DeleteInvitationScreenWidget(QWidget *parent=0, const QString& name=QString{});
     ~DeleteInvitationScreenWidget() = default;
 
     void setScreen(const QString& screen);

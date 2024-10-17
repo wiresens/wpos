@@ -220,7 +220,7 @@ QString ProductOptionModule::getOption(const QString& xml_string){
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
-        return QString();
+        return QString{};
     }
 
     xml->delDomain();
@@ -274,7 +274,7 @@ QString ProductOptionModule::getOption(const QString& xml_string){
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
-        return QString();
+        return QString{};
     }
 
     xml_return = xml->toString();
@@ -747,7 +747,7 @@ QString ProductOptionModule::getProductOptions(const QString& product_code){
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
-        return QString();
+        return QString{};
     }
     xml_string = xml->toString();
     delete xml;

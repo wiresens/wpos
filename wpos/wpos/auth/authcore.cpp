@@ -14,7 +14,7 @@
 
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QFile>
 #include <QString>
@@ -31,7 +31,6 @@ AuthCore::AuthCore(QObject *parent, QString name):
 }
 
 AuthCore::~AuthCore(){
-    db->disConnect();
     delete db;
 }
 
@@ -55,7 +54,7 @@ bool AuthCore::isRootUser() const{
     return user.isRootUser;
 }
 
-bool AuthCore::loadUserById(QString id){
+bool AuthCore::loadUserById(const QString &id){
     bool loaded {false};
 
     if (db->isConnected()){
@@ -66,7 +65,9 @@ bool AuthCore::loadUserById(QString id){
     return loaded;
 }
 
-bool AuthCore::loadUserByName(QString name){
+bool AuthCore::loadUserByName(
+    const QString &name)
+{
     bool loaded {false};
     if (db->isConnected()){
         user = db->userByName(name);
@@ -76,7 +77,9 @@ bool AuthCore::loadUserByName(QString name){
     return loaded;
 }
 
-bool AuthCore::loadUserByLastName(QString last_name){
+bool AuthCore::loadUserByLastName(
+    const QString &last_name)
+{
     bool loaded{false};
     if (db->isConnected()){
         user = db->userByLastName(last_name);
@@ -86,7 +89,10 @@ bool AuthCore::loadUserByLastName(QString last_name){
     return loaded;
 }
 
-void AuthCore::genericDataSignalSlot(const QString& signal, XmlConfig *xml){
+void AuthCore::genericDataSignalSlot(
+    const QString& signal,
+    XmlConfig *xml)
+{
     if (signal == GDATASIGNAL::CHANGE_USER)
         processXml(*xml);
 

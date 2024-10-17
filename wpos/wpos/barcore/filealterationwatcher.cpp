@@ -18,7 +18,7 @@
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 #include "filemanager.h"
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QDataStream>
 #include <QTimer>
@@ -55,7 +55,7 @@ FileAlterationWatcher::FileAlterationWatcher(QObject *parent, const QString& nam
     gsm->publishGenericSignal(GSIGNAL::LOAD_PRODUCTS, this);
     gsm->publishGenericSignal(GSIGNAL::LOAD_BUTTONS, this);
     gsm->publishGenericSignal(GSIGNAL::LOAD_OFFERS, this);
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, this);
 
     watcher = new QFileSystemWatcher(this);
     watcher->addPath( cfg::xmlFileByKey(cfg::XMLKey::Buttons));
@@ -143,13 +143,13 @@ void FileAlterationWatcher::initDevicesSlot(){
 void FileAlterationWatcher::raiseMainWidget(){
     XmlConfig xml ;
     xml.createElement("name", MainScreen::LOGIN_SCREEN);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }
 
 void FileAlterationWatcher::raiseConfigWidget(){
     XmlConfig xml;
-    xml.createElement("name", MainScreen::READ_CONFIG_SCREEN);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    xml.createElement("name", MainScreen::CONFIG_SCREEN);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }
 
 void FileAlterationWatcher::realButton(){

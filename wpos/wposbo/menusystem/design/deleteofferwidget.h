@@ -25,7 +25,7 @@ class DeleteOfferWidget :
     Q_OBJECT
 
 public:
-    explicit DeleteOfferWidget(QWidget *parent=0, const QString& name = QString());
+    explicit DeleteOfferWidget(QWidget *parent=0, const QString& name = QString{});
     ~DeleteOfferWidget() = default;
 
     void setOffer(const QString& type, const QString& name);

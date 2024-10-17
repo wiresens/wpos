@@ -22,7 +22,7 @@
 #include <QList>
 #include <QMap>
 #include <QWidget>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <wposgui/common/global.h>
 
 /**

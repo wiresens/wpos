@@ -35,7 +35,7 @@ class PinCodeWidget :
 public: 
     static const QString DBusObject ;
 
-    explicit PinCodeWidget(QWidget* parent=nullptr, const QString& name = QString());
+    explicit PinCodeWidget(QWidget* parent=nullptr, const QString& name = QString{});
     ~PinCodeWidget();
 
 signals:

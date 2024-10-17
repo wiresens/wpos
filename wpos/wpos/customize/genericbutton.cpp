@@ -12,7 +12,7 @@
 #include "genericbutton.h"
 
 #include <wposcore/genericsignalmanager.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QString>
 
@@ -39,9 +39,10 @@ struct GenericButtonEvent{
     QString event_name;
 };
 
-GenericButton::GenericButton(const QString& text,
-                             QWidget *parent,
-                             const QString& name ):
+GenericButton::GenericButton(
+    const QString& text,
+    QWidget *parent,
+    const QString& name ):
     QPushButton(text, parent)
 {
     setObjectName(name);
@@ -116,8 +117,9 @@ GenericButtonEvent* GenericButton::getEvent(EventType event_type){
     return event;
 }
 
-bool GenericButton::createRelationship(const QString& signal_name,
-                                       EventType event_type)
+bool GenericButton::createRelationship(
+    const QString& signal_name,
+    EventType event_type)
 {
 
     GenericButtonEvent* event { getEvent(event_type) };
@@ -133,9 +135,12 @@ bool GenericButton::createRelationship(const QString& signal_name,
     return true;
 }
 
-bool GenericButton::createDataRelationship(const QString & signal_name, EventType type){
+bool GenericButton::createDataRelationship(
+    const QString & signal_name,
+    EventType type)
+{
 
-     GenericButtonEvent *event = getEvent(type);
+    GenericButtonEvent *event = getEvent(type);
     if (!event) return false;
 
     //register this button for that relationship
@@ -157,10 +162,11 @@ bool GenericButton::createDataRelationship(const QString & signal_name, EventTyp
     return true;
 }
 
-bool GenericButton::addContent(const QString& signal_name,
-                               const QString& domain,
-                               const QString& value,
-                               EventType type )
+bool GenericButton::addContent(
+    const QString& signal_name,
+    const QString& domain,
+    const QString& value,
+    EventType type )
 {
     GenericDataRelations *relation {};
     XmlPair *pair {};
@@ -192,9 +198,10 @@ bool GenericButton::addContent(const QString& signal_name,
     return true;
 }
 
-bool GenericButton::addContent(const QString& domain,
-                               const QString& value,
-                               EventType event)
+bool GenericButton::addContent(
+    const QString& domain,
+    const QString& value,
+    EventType event)
 {
     if (last_signal_name.isEmpty())
         return false;
@@ -202,13 +209,12 @@ bool GenericButton::addContent(const QString& domain,
     return addContent(last_signal_name, domain, value, event);
 }
 
-void GenericButton::changeAspect(EventType event_type,
-                                 const QString& text,
-                                 const QString& pixmap,
-                                 bool setIcon)
+void GenericButton::changeAspect(
+    EventType event_type,
+    const QString& text,
+    const QString& pixmap,
+    bool setIcon)
 {
-
-
     GenericButtonEvent *event = getEvent(event_type);
     if ( text.isEmpty() || pixmap.isEmpty() || !event ) return;
 
@@ -228,7 +234,9 @@ void GenericButton::clearAspect(EventType type){
     event->aspect = 0;
 }
 
-void GenericButton::clearRelationship(const QString& signal_name){
+void GenericButton::clearRelationship(
+    const QString& signal_name)
+{
     clearRelationship(Released, signal_name);
     clearRelationship(Clicked, signal_name);
     clearRelationship(Pressed, signal_name);
@@ -244,8 +252,10 @@ void GenericButton::clearDataRelationship(const QString & signal_name){
     clearDataRelationship(ToggleOff,signal_name);
 }
 
-void GenericButton::clearRelationship(EventType type, const QString& signal_name){
-
+void GenericButton::clearRelationship(
+    EventType type,
+    const QString& signal_name)
+{
     int count,i;
     QString aux;
     GenericButtonEvent *event = getEvent(type);
@@ -272,7 +282,10 @@ void GenericButton::clearRelationship(EventType type, const QString& signal_name
     }
 }
 
-void GenericButton::clearDataRelationship(EventType event, const QString& signal_name){
+void GenericButton::clearDataRelationship(
+    EventType event,
+    const QString& signal_name)
+{
     GenericButtonEvent *e{};
     GenericDataRelations *relation {};
     int i;
@@ -307,7 +320,7 @@ void GenericButton::clearDataRelationship(EventType event, const QString& signal
 void GenericButton::clearAllRelationships(){
     clearRelationship("");
     clearDataRelationship("");
-    last_signal_name = "";
+    last_signal_name.clear();
 }
 
 void GenericButton::releasedSlot(){
@@ -343,8 +356,7 @@ void GenericButton::execEvent(EventType event){
     XmlConfig *xml {};
 
     e = getEvent(event);
-    if (!e)
-        return;
+    if (!e) return;
 
     //change the aspect.
     if (e->aspect){

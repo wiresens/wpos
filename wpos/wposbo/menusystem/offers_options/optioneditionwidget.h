@@ -14,7 +14,7 @@ class OptionEditionWidget :
     Q_OBJECT
 
 public:
-    explicit OptionEditionWidget(QWidget *parent=0, const QString& name = QString());
+    explicit OptionEditionWidget(QWidget *parent=0, const QString& name = QString{});
     ~OptionEditionWidget();
 
 public slots:

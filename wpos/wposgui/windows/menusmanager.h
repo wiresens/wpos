@@ -25,7 +25,7 @@ class MenusManager;
 class MenusManager : public QWidget/* , private Ui::MenusManager*/ {
     Q_OBJECT
 public:
-    explicit  MenusManager(QWidget *parent=0, const QString& name = QString());
+    explicit  MenusManager(QWidget *parent=0, const QString& name = QString{});
     ~MenusManager();
     QWidget *getCurrentMenu();
     void addMenu(const QString &name, QWidget *w);

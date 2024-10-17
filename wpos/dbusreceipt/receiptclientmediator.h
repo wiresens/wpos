@@ -34,7 +34,7 @@ class ReceiptClientMediator : public QObject {
     Q_OBJECT
 
 public:
-    explicit ReceiptClientMediator(QObject *parent = nullptr, QString name = QString());
+    explicit ReceiptClientMediator(QObject *parent = nullptr, QString name = QString{});
     ~ReceiptClientMediator();
 
     /**

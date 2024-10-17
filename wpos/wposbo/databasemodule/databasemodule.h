@@ -30,7 +30,7 @@ class DatabaseModule :
 public:
     static const QString DBusObject;
 
-    explicit DatabaseModule(QObject *parent = 0, const QString& name = QString());
+    explicit DatabaseModule(QObject *parent = 0, const QString& name = QString{});
     ~DatabaseModule();
 
     //all this method are inherited from the DataBaseModuleInterface

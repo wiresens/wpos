@@ -26,7 +26,7 @@ class OfferData;
 class ExtraCore : public QObject  {
     Q_OBJECT
 public:
-    explicit ExtraCore(QObject *parent=nullptr, const QString& name = QString());
+    explicit ExtraCore(QObject *parent=nullptr, const QString& name = QString{});
 
     QStringList getOptionsNames();
     QString getOptionValue(const QString& option_name);
@@ -64,7 +64,7 @@ public slots:
 signals:
     void genericDataSignal(const QString& signal,XmlConfig *xml);
 
-protected:
+private:
     HList<ProductExtraInfo> options;
     HList<ProductExtraInfo> fixed_options;
     ProductPriceData *custom_price{};

@@ -16,7 +16,7 @@
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/utility.h>
 #include <wposcore/config.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include "../auth/authcore.h"
 
 

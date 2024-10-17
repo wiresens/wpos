@@ -87,7 +87,7 @@ QListWidget* MainScreenMenu::buildMenus(
 {
     auto menuPage = new MenuPage(menuStack, Menus::MAIN_MENU);
     menuPage->setSizePolicy(menuStack->sizePolicy());
-    menuPage->setLayoutType(MenuPage::VBOX);
+    menuPage->setLayoutType(MenuPage::LayoutType::VBOX);
     menuStack->addPage(menuPage, menuPage->objectName());
 
     auto menuItems = new QListWidget(menuPage);
@@ -113,7 +113,7 @@ QListWidget* MainScreenMenu::buildMenus(
 
         // Create a page menu and add the generic screen widget
         menuPage = new MenuPage(menuStack, menuName);
-        menuPage->setLayoutType(MenuPage::VBOX);
+        menuPage->setLayoutType(MenuPage::LayoutType::VBOX);
         auto screen = new GenericScreen(
             xml,
             "menus.menu["+QString::number(i)+"].submenu",

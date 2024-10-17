@@ -25,9 +25,8 @@
 
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
-
-#include <productextrainfo.h>
-#include <xmlconfig.h>
+#include <wposcore/productextrainfo.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QWidget>
 #include <QFrame>
@@ -43,8 +42,8 @@ GenericButtonGroup::GenericButtonGroup(
     QWidget *parent,
     const QString& name )
     :QObject(parent),
-    stack{stack},
-    parent{parent}
+    m_product_screen_stack{stack},
+    m_parent{parent}
 {
     setObjectName(name);
     auto gsm = GenericSignalManager::instance();
@@ -52,7 +51,7 @@ GenericButtonGroup::GenericButtonGroup(
 }
 
 void GenericButtonGroup::clear(){
-    buttons.clear();
+    m_buttons.clear();
 }
 
 bool GenericButtonGroup::readConfigFrom(
@@ -62,20 +61,19 @@ bool GenericButtonGroup::readConfigFrom(
     XmlConfig xml (xmlFile);
     if ( !QFile(xmlFile).exists() || !xml.wellFormed() )
         return false;
-    return readConfigFrom(section, &xml);
+    return readConfigFrom(section, xml);
 }
 
 bool GenericButtonGroup::readConfigFrom(
     const QString& section,
-    XmlConfig *xml)
+    XmlConfig &xml)
 {
-    sectionName = section;
-    xml->pushDomain();
+    xml.pushDomain();
     bool section_exist  {false};
 
     int i{0};
-    for ( i=0 ; i < xml->howManyTags("widget") ; i++){
-        auto cur_section = xml->readString("widget["+QString::number(i)+"].code");
+    for ( i=0 ; i < xml.howManyTags("widget") ; i++){
+        auto cur_section = xml.readString("widget["+QString::number(i)+"].code");
         if ( cur_section == section){
             section_exist = true;
             break;
@@ -83,22 +81,22 @@ bool GenericButtonGroup::readConfigFrom(
     }
 
     if ( ! section_exist ) {
-        xml->pushDomain();
+        xml.pushDomain();
         return false;
     }
 
-    xml->setDomain("widget["+QString::number(i)+"]");
-    auto color_str = xml->readString("background_color");
+    xml.setDomain("widget["+QString::number(i)+"]");
+    auto color_str = xml.readString("background_color");
     if (  !color_str.isEmpty() && QColor::isValidColor( color_str ) ){
-        parent->setBackgroundRole(QPalette::Window);
-        parent->setPalette(QPalette(QColor(color_str)));
+        m_parent->setBackgroundRole(QPalette::Window);
+        m_parent->setPalette(QPalette(QColor(color_str)));
     }
 
     QLayout *layout{};
-    if ( (layout = parent->layout()) ) delete layout;
+    if ( (layout = m_parent->layout()) ) delete layout;
 
-    xml->setDomain("layout");
-    auto layout_type = xml->readString("type");
+    xml.setDomain("layout");
+    auto layout_type = xml.readString("type");
     if (layout_type.isEmpty()) layout_type = "hbox";
 
     int row, col;
@@ -106,24 +104,24 @@ bool GenericButtonGroup::readConfigFrom(
     QHBoxLayout *hLayout{};
     QVBoxLayout *vLayout {};
     if (layout_type == "hbox"){
-        hLayout = new QHBoxLayout(parent);
+        hLayout = new QHBoxLayout(m_parent);
         layout = qobject_cast<QLayout *>( hLayout);
     }
     else if (layout_type == "vbox"){
-        vLayout = new QVBoxLayout(parent);
+        vLayout = new QVBoxLayout(m_parent);
         layout = qobject_cast<QLayout *>( vLayout );
     }
     else/* if (layout_type == "grid")*/{
-        row = xml->readInt("rows");
-        col = xml->readInt("cols");
-        gridLayout = new QGridLayout(parent);
+        row = xml.readInt("rows");
+        col = xml.readInt("cols");
+        gridLayout = new QGridLayout(m_parent);
         layout = qobject_cast<QLayout *>( gridLayout);
         uint strecth_factor = 0;
-        if ( xml->readString("stretch_rows") == "true"){
+        if ( xml.readString("stretch_rows") == "true"){
             for ( i=0; i < row; i++)
                 gridLayout->setRowStretch(i, strecth_factor);
         }
-        if (xml->readString("stretch_cols") == "true"){
+        if (xml.readString("stretch_cols") == "true"){
             for ( i=0; i < col; i++)
                 gridLayout->setColumnStretch(i, strecth_factor);
         }
@@ -131,36 +129,36 @@ bool GenericButtonGroup::readConfigFrom(
 
     auto spacing = 0;
     auto margin  = 0;
-    if ( xml->howManyTags("spacing") ) spacing = xml->readInt("spacing");
-    if ( xml->howManyTags("margin") )  margin = xml->readInt("margin");
+    if ( xml.howManyTags("spacing") ) spacing = xml.readInt("spacing");
+    if ( xml.howManyTags("margin") )  margin = xml.readInt("margin");
 
     layout->setSpacing(spacing);
     layout->setContentsMargins(margin,margin,margin,margin);
-    xml->releaseDomain("layout");
+    xml.releaseDomain("layout");
 
-    for ( i=0; i < xml->howManyTags("item"); i++){
-        xml->setDomain("item["+QString::number(i)+"]");
-        QPushButton* button = readButtonConfig(xml, parent);
+    for ( i=0; i < xml.howManyTags("item"); i++){
+        xml.setDomain("item["+QString::number(i)+"]");
+        QPushButton* button = createButton(xml, m_parent);
         if (layout_type == "hbox") hLayout->addWidget(button);
         else if (layout_type == "vbox") vLayout->addWidget(button);
         else if (layout_type == "grid"){
-            row = xml->readInt("row");
-            col = xml->readInt("col");
+            row = xml.readInt("row");
+            col = xml.readInt("col");
             gridLayout->addWidget( button, row, col);
         }
-        xml->releaseDomain("item");
+        xml.releaseDomain("item");
     }
 
-    xml->popDomain();
+    xml.popDomain();
     return true;
 }
 
-QPushButton* GenericButtonGroup::readButtonConfig(
-    XmlConfig *xml,
+QPushButton* GenericButtonGroup::createButton(
+    XmlConfig &xml,
     QWidget *parent,
     bool append)
 {
-    auto item_type = xml->readString("type");
+    auto item_type = xml.readString("type");
     XmlConfig tmp_xml;
     tmp_xml.createElement("type", "Botoneras");
     tmp_xml.createElement("first_id", item_type);
@@ -168,140 +166,139 @@ QPushButton* GenericButtonGroup::readButtonConfig(
 
     QPushButton* button{};
     if (item_type == "product")
-        button = readProductConfig(xml, parent);
+        button = createProductButton(xml, parent);
     else if (item_type == "button")
-        button = readGenericButton(xml, parent);
+        button = createGenericButton(xml, parent);
     else if (item_type == "menu")
-        button = readMenuButton(xml,parent);
+        button = createMenuButton(xml,parent);
     else if (item_type == "screens")
-        button = screensButton(xml,parent);
+        button = createScreensButton(xml,parent);
     else if (item_type == "options")
-        button = optionsButton(xml,parent);
+        button = createOptionsButton(xml,parent);
     else if (item_type == "defaultscreen")
-        button = defaultScreenButton(xml,parent);
+        button = createDefaultScreenButton(xml,parent);
 
     if (button){
-        if (append) buttons.append(button, button->objectName());
+        if (append) m_buttons.append(button, button->objectName());
         setSizeAndColorPolicy(button, xml);
         button->show();
     }
     return button;
 }
 
-QPushButton* GenericButtonGroup::readProductConfig(
-    XmlConfig *xml,
-    QWidget *parent)
+QPushButton*
+GenericButtonGroup::createProductButton(XmlConfig &xml,
+                                        QWidget *parent)
 {
-    xml->pushDomain();
-    auto aux = xml->readString("product_code");
-    auto product = new Product(aux, cfg::xmlFileByKey(cfg::XMLKey::Bar), parent);
+    xml.pushDomain();
+    auto product_code = xml.readString("product_code");
+    auto product = new Product(product_code, cfg::xmlFileByKey(cfg::XMLKey::Bar), parent);
     product->setDefaultFontSize(9);
     product->setTextInPixmap(true);
 
-    connect(product, &Product::productClicked, stack, &ProductScreenStack::productClickedSlot);
-    connect(stack, &ProductScreenStack::defaultValue, product, &Product::defaultValues);
-    xml->popDomain();
+    connect(product, &Product::productClicked, m_product_screen_stack, &ProductScreenStack::productClickedSlot);
+    connect(m_product_screen_stack, &ProductScreenStack::defaultValue, product, &Product::defaultValues);
+    xml.popDomain();
     return ((QPushButton *) product);
 }
 
-QPushButton* GenericButtonGroup::readGenericButton(XmlConfig *xml, QWidget *parent){
-    int r_count, j, r_content,k;
-    QString iconset, pixmap, toggle;
-    bool is_toggle{false};
-
-    xml->pushDomain();
-    auto text = xml->readString("text");
-    auto name_id = xml->readString("name");
+QPushButton*
+GenericButtonGroup::createGenericButton(XmlConfig &xml,
+                                        QWidget *parent)
+{
+    xml.pushDomain();
+    auto text = xml.readString("text");
+    auto name_id = xml.readString("name");
     if (name_id.isEmpty())
         name_id = text;
     text.replace(" ","\n");
     text.replace("_","\n");
 
-    GenericButton* gbutton {};
-    gbutton = new GenericButton(text, parent, name_id.toLatin1() );
+    GenericButton* button {};
+    button = new GenericButton(text, parent, name_id );
 
-    if ( xml->setDomain("relationships") ){
-        r_count = xml->howManyTags("relation");
-        for (j=0; j < r_count;j++){
+    bool is_toggle{false};
+    if ( xml.setDomain("relationships") ){
+        for (auto j=0; j < xml.howManyTags("relation"); j++){
             GenericButton::EventType event_type;
-            xml->setDomain("relation["+QString::number(j)+"]");
-            auto signal = xml->readString("signal");
-            event_type = ( GenericButton::EventType ) xml->readInt("event");
+            xml.setDomain("relation["+QString::number(j)+"]");
+            auto signal = xml.readString("signal");
+            event_type = ( GenericButton::EventType ) xml.readInt("event");
             if ( event_type == GenericButton::ToggleOn || event_type == GenericButton::ToggleOff)
                 is_toggle = true;
-            gbutton->createRelationship(signal, event_type);
-            xml->releaseDomain("relation", false);
+            button->createRelationship(signal, event_type);
+            xml.releaseDomain("relation", false);
         }
-        xml->releaseDomain("relationships");
+        xml.releaseDomain("relationships");
     }
 
-    if (xml->setDomain("data_relationships")){
-        r_count = xml->howManyTags("relation");
-        for (j=0;j<r_count;j++){
+    if (xml.setDomain("data_relationships")){
+        for (auto j=0; j < xml.howManyTags("relation"); j++){
             GenericButton::EventType num;
             QString signal,domain,value;
-            xml->setDomain("relation["+QString::number(j)+"]");
-            signal = xml->readString("signal");
-            num = (GenericButton::EventType) xml->readInt("event");
+            xml.setDomain("relation["+QString::number(j)+"]");
+            signal = xml.readString("signal");
+            num = (GenericButton::EventType) xml.readInt("event");
             if ( num == GenericButton::ToggleOn || num == GenericButton::ToggleOff)
                 is_toggle = true;
-            gbutton->createDataRelationship(signal, num);
-            r_content = xml->howManyTags("content");
-            for(k=0;k<r_content;k++){
-                xml->setDomain("content["+QString::number(k)+"]");
-                domain = xml->readString("domain");
-                value = xml->readString("value");
-                gbutton->addContent(domain, value, num);
-                xml->releaseDomain("content",false);
+            button->createDataRelationship(signal, num);
+
+            for(auto k=0; k < xml.howManyTags("content"); k++){
+                xml.setDomain("content["+QString::number(k)+"]");
+                domain = xml.readString("domain");
+                value = xml.readString("value");
+                button->addContent(domain, value, num);
+                xml.releaseDomain("content",false);
             }
-            xml->releaseDomain("relation",false);
+            xml.releaseDomain("relation",false);
         }
-        xml->releaseDomain("data_relationships");
+        xml.releaseDomain("data_relationships");
     }
 
-    if (xml->setDomain("look_feels")){
-        r_count = xml->howManyTags("look_feel");
-        for (j=0;j<r_count;j++){
+    if (xml.setDomain("look_feels")){
+        for (auto j=0; j < xml.howManyTags("look_feel"); j++){
             GenericButton::EventType event;
             QString text,pixmap, set_icon;
-            event = ( GenericButton::EventType ) xml->readInt("look_feel["+QString::number(j)+"].event");
+            event = ( GenericButton::EventType ) xml.readInt("look_feel["+QString::number(j)+"].event");
             if ( event == GenericButton::ToggleOn || event == GenericButton::ToggleOff )
                 is_toggle = true;
-            text = xml->readString("look_feel["+QString::number(j)+"].text");
-            pixmap = xml->readString("look_feel["+QString::number(j)+"].pixmap");
-            set_icon = xml->readString("look_feel["+QString::number(j)+"].iconset");
+            text = xml.readString("look_feel["+QString::number(j)+"].text");
+            pixmap = xml.readString("look_feel["+QString::number(j)+"].pixmap");
+            set_icon = xml.readString("look_feel["+QString::number(j)+"].iconset");
             if (set_icon == "true")
-                gbutton->changeAspect(event, text, pixmap, true);
+                button->changeAspect(event, text, pixmap, true);
             else
-                gbutton->changeAspect(event, text, pixmap, false);
+                button->changeAspect(event, text, pixmap, false);
         }
-        xml->releaseDomain("look_feels");
+        xml.releaseDomain("look_feels");
     }
 
-    iconset = xml->readString("iconset");
+    auto iconset = xml.readString("iconset");
     if (!iconset.isEmpty())
-        gbutton->setIcon(QPixmap(iconset));
+        button->setIcon(QPixmap(iconset));
 
-    pixmap = xml->readString("pixmap");
+    auto pixmap = xml.readString("pixmap");
     if (!pixmap.isEmpty())
-        gbutton->setIcon(QPixmap(pixmap));
+        button->setIcon(QPixmap(pixmap));
 
-    toggle = xml->readString("toggle");
+    auto toggle = xml.readString("toggle");
     if ( !toggle.isEmpty() && toggle == "true" )
-        gbutton->toggle();
+        button->toggle();
 
-    if (is_toggle)
-        gbutton->toggle();
+    if (is_toggle)  button->toggle();
 
-    xml->popDomain();
-    return ((QPushButton *)gbutton);
+    xml.popDomain();
+    return ((QPushButton *)button);
 }
 
-QPushButton* GenericButtonGroup::readMenuButton(XmlConfig *xml, QWidget *parent){
-    xml->pushDomain();
-    auto orientation = xml->readString("orientation");
-    auto text = xml->readString("text");
-    auto name_id = xml->readString("name");
+QPushButton*
+GenericButtonGroup::createMenuButton(XmlConfig &xml,
+                                     QWidget *parent)
+{
+    xml.pushDomain();
+    auto orientation = xml.readString("orientation");
+    auto text = xml.readString("text");
+    auto name_id = xml.readString("name");
     text.replace(" ","\n");
     text.replace("_","\n");
 
@@ -314,55 +311,58 @@ QPushButton* GenericButtonGroup::readMenuButton(XmlConfig *xml, QWidget *parent)
     else if (orientation == "vmenu")
         menu_button = new MenuButton(Qt::Vertical, parent, name_id);
 
-    for ( auto i = 0; i < xml->howManyTags("item"); i++ ){
-        xml->setDomain("item["+QString::number(i)+"]");
-        readButtonConfig(xml, menu_button, false);
-        xml->releaseDomain("item",false);
+    for ( auto i = 0; i < xml.howManyTags("item"); i++ ){
+        xml.setDomain("item["+QString::number(i)+"]");
+        createButton(xml, menu_button, false);
+        xml.releaseDomain("item",false);
     }
 
-    auto iconset = xml->readString("iconset");
+    auto iconset = xml.readString("iconset");
     if ( !iconset.isEmpty() )
         menu_button->setIcon(QPixmap(iconset));
 
-    auto pixmap = xml->readString("pixmap");
+    auto pixmap = xml.readString("pixmap");
     if ( !pixmap.isEmpty() )
         menu_button->setIcon(QPixmap(pixmap));
 
-    xml->popDomain();
+    xml.popDomain();
     return menu_button;
 }
 
-QPushButton* GenericButtonGroup::screensButton(XmlConfig *xml, QWidget *parent){
-    xml->pushDomain();
+QPushButton*
+GenericButtonGroup::createScreensButton(XmlConfig &xml,
+                                        QWidget *parent)
+{
+    xml.pushDomain();
 
-    auto tmp_str = xml->readString("orientation");
+    auto tmp_str = xml.readString("orientation");
     if ( tmp_str.isEmpty() ) tmp_str = "hmenu";
 
     MenuButton *menu_button {};
     if (tmp_str == "hmenu") menu_button = new MenuButton(Qt::Horizontal, parent, "Screens");
     else if (tmp_str == "vmenu") menu_button = new MenuButton(Qt::Vertical, parent, "Screens");
 
-    auto iconset = xml->readString("iconset");
+    auto iconset = xml.readString("iconset");
     if (!iconset.isEmpty()) menu_button->setIcon(QPixmap(iconset));
 
-    auto pixmap = xml->readString("pixmap");
+    auto pixmap = xml.readString("pixmap");
     if (!pixmap.isEmpty()) menu_button->setIcon(QPixmap(pixmap));
 
-    xml->popDomain();
+    xml.popDomain();
 
-    std::unique_ptr<XmlConfig> tmp_xml {new XmlConfig(cfg::xmlFileByKey(cfg::XMLKey::Bar))};
-    if (!QFile(cfg::xmlFileByKey(cfg::XMLKey::Bar)).exists() || !tmp_xml->setDomain("screens"))
+    XmlConfig tmp_xml(cfg::xmlFileByKey(cfg::XMLKey::Bar));
+    if (!QFile(cfg::xmlFileByKey(cfg::XMLKey::Bar)).exists() || !tmp_xml.setDomain("screens"))
         return qobject_cast<QPushButton*>( menu_button );
 
     GenericButton *generic_button {};
 
-    for( auto i=0; i < tmp_xml->howManyTags("screen"); i++){
-        tmp_str = tmp_xml->readString("screen["+QString::number(i)+"].name");
+    for( auto i=0; i < tmp_xml.howManyTags("screen"); i++){
+        tmp_str = tmp_xml.readString("screen["+QString::number(i)+"].name");
 
         generic_button =  new GenericButton(tmp_str, menu_button, tmp_str.toLatin1() );
         generic_button->setMinimumSize(80, 80);
 
-        generic_button->createDataRelationship( GDATASIGNAL::MAINSTACK_SETPAGE );
+        generic_button->createDataRelationship( GDATASIGNAL::MAINSTACK_SET_PAGE );
         generic_button->addContent("name", SalesScreen::PRODUCT_MENU);
 
         generic_button->createDataRelationship(GDATASIGNAL::PRODUCTS_SETPAGE);
@@ -372,38 +372,45 @@ QPushButton* GenericButtonGroup::screensButton(XmlConfig *xml, QWidget *parent){
     return qobject_cast<QPushButton*>( menu_button );
 }
 
-QPushButton* GenericButtonGroup::defaultScreenButton(XmlConfig *xml, QWidget *parent){
+QPushButton*
+GenericButtonGroup::createDefaultScreenButton(
+    XmlConfig &xml,
+    QWidget *parent)
+{
     GenericButton *button {};
-    std::unique_ptr<XmlConfig> aux_xml  {new XmlConfig(cfg::xmlFileByKey(cfg::XMLKey::Bar))} ;
-    xml->pushDomain();
-    if ( !QFile(cfg::xmlFileByKey(cfg::XMLKey::Bar)).exists() || !aux_xml->setDomain("screens") )
+    XmlConfig tmp_xml(cfg::xmlFileByKey(cfg::XMLKey::Bar)) ;
+    xml.pushDomain();
+    if ( !QFile(cfg::xmlFileByKey(cfg::XMLKey::Bar)).exists() || !tmp_xml.setDomain("screens") )
         return qobject_cast<QPushButton *>( button );
 
-    auto aux = aux_xml->readString("defaultscreen");
+    auto aux = tmp_xml.readString("defaultscreen");
     if ( !aux.isEmpty() )
         button =  new GenericButton("Principal", parent, "defaultscreen");
     else{
-        aux = aux_xml->readString("screen.name");
+        aux = tmp_xml.readString("screen.name");
         button =  new GenericButton(aux, parent, "defaultscreen");
     }
-    button->createDataRelationship(GDATASIGNAL::MAINSTACK_SETPAGE);
+    button->createDataRelationship(GDATASIGNAL::MAINSTACK_SET_PAGE);
     button->addContent("name", SalesScreen::PRODUCT_MENU);
     button->createDataRelationship(GDATASIGNAL::PRODUCTS_SETPAGE);
     button->addContent("name", aux);
 
-    auto iconset = xml->readString("iconset");
+    auto iconset = xml.readString("iconset");
     if (!iconset.isEmpty())
         button->setIcon(QPixmap(iconset));
 
-    auto pixmap = xml->readString("pixmap");
+    auto pixmap = xml.readString("pixmap");
     if (!pixmap.isEmpty())
         button->setIcon(QPixmap(pixmap));
 
-    xml->popDomain();
+    xml.popDomain();
     return qobject_cast<QPushButton *>( button );
 }
 
-QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *parent){
+QPushButton*
+GenericButtonGroup::createOptionsButton(XmlConfig &xml,
+                                        QWidget *parent)
+{
     AuxDB db("AuxDBConnection", cfg::xmlFileByKey(cfg::XMLKey::Database));
     db.connect();
     QMap<QString,ProductExtraInfo> extra = db.productExtra();
@@ -444,18 +451,18 @@ QPushButton* GenericButtonGroup::optionsButton(XmlConfig *xml, QWidget *parent){
             }
         }
     }
-    auto iconFile = xml->readString("iconset");
+    auto iconFile = xml.readString("iconset");
     if (!iconFile.isEmpty()) menu->setIcon(QPixmap(iconFile));
 
-    auto pixmapFile = xml->readString("pixmap");
+    auto pixmapFile = xml.readString("pixmap");
     if (!pixmapFile.isEmpty()) menu->setIcon(QPixmap(pixmapFile));
     return ((QPushButton *) menu);
 }
 
-void GenericButtonGroup::setSizeAndColorPolicy(QPushButton *button, XmlConfig *xml){
-    xml->pushDomain();
-    auto xpolicy = xml->readString("size_policy.x").toLower();
-    auto ypolicy = xml->readString("size_policy.y").toLower();
+void GenericButtonGroup::setSizeAndColorPolicy(QPushButton *button, XmlConfig &xml){
+    xml.pushDomain();
+    auto xpolicy = xml.readString("size_policy.x").toLower();
+    auto ypolicy = xml.readString("size_policy.y").toLower();
 
     QMap<QString, QSizePolicy::Policy> size_policy{
         {"fixed", QSizePolicy::Fixed},
@@ -470,7 +477,7 @@ void GenericButtonGroup::setSizeAndColorPolicy(QPushButton *button, XmlConfig *x
     if ( !xpolicy.isEmpty() && !ypolicy.isEmpty())
         button->setSizePolicy( QSizePolicy( size_policy[xpolicy], size_policy[ypolicy]));
 
-    auto bg_color = xml->readString("background_color");
+    auto bg_color = xml.readString("background_color");
     if ( !bg_color.isEmpty() && QColor::isValidColor(bg_color)){
         button->setPalette(QPalette(QColor(bg_color)));
         button->setBackgroundRole(QPalette::Button);
@@ -478,37 +485,34 @@ void GenericButtonGroup::setSizeAndColorPolicy(QPushButton *button, XmlConfig *x
 
     //    //These are commented out so that the shortcut_buttons are resizable
     //        int width, height;
-    //        if (xml->howManyTags("width")){
-    //            width = xml->readInt("width");
+    //        if (xml.howManyTags("width")){
+    //            width = xml.readInt("width");
     //            button->setMinimumWidth(width);
     //        }
-    //        if (xml->howManyTags("height")){
-    //            height = xml->readInt("height");
+    //        if (xml.howManyTags("height")){
+    //            height = xml.readInt("height");
     //            button->setMinimumHeight(height);
     //        }
-    //        if (xml->howManyTags("maxwidth")){
-    //            width = xml->readInt("width");
+    //        if (xml.howManyTags("maxwidth")){
+    //            width = xml.readInt("width");
     //            button->setMaximumWidth(width);
     //        }
-    //        if (xml->howManyTags("maxheight")){
-    //            height = xml->readInt("height");
+    //        if (xml.howManyTags("maxheight")){
+    //            height = xml.readInt("height");
     //            button->setMaximumHeight(height);
     //        }
-    //        if (xml->howManyTags("fixedwidth")){
-    //            width = xml->readInt("fixedwidth");
+    //        if (xml.howManyTags("fixedwidth")){
+    //            width = xml.readInt("fixedwidth");
     //            button->setFixedWidth(width);
     //        }
-    //        if (xml->howManyTags("fixedheight")){
-    //            height = xml->readInt("fixedheight");
+    //        if (xml.howManyTags("fixedheight")){
+    //            height = xml.readInt("fixedheight");
     //            button->setFixedHeight(height);
     //        }
-    xml->popDomain();
+    xml.popDomain();
 }
 
-QPushButton* GenericButtonGroup::findButton(const QString& name){
-    return find(name);
-}
-
-QPushButton* GenericButtonGroup::find(const QString& name){
-    return buttons.find(name);
+QPushButton*
+GenericButtonGroup::buttonByName(const QString& name){
+    return m_buttons.find(name);
 }

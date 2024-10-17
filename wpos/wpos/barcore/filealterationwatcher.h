@@ -31,7 +31,7 @@ class FileAlterationWatcher :
 
 public:
     explicit FileAlterationWatcher(QObject *parent = nullptr,
-                          const QString& name = QString());
+                          const QString& name = QString{});
 
     ~FileAlterationWatcher();
 

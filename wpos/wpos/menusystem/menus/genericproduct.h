@@ -25,7 +25,7 @@ public:
     explicit GenericProduct(
         const QString& product_name,
         QWidget *parent=0,
-        const QString& name = QString()
+        const QString& name = QString{}
      );
 
 signals:

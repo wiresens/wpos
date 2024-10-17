@@ -20,7 +20,7 @@ class XmlConfig;
 class CashDevice : public QObject  {
     Q_OBJECT
 public:
-    explicit CashDevice(QObject *parent, const QString& name = QString());
+    explicit CashDevice(QObject *parent, const QString& name = QString{});
     virtual ~CashDevice();
 
     virtual void initCashDevice();

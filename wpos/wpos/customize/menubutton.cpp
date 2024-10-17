@@ -23,22 +23,18 @@
 #include <QColor>
 
 #include <QMetaObject>
-#include <iostream>
 
-using namespace std;
-
-#define HEIGHT 80
-#define MAX_BUTTONS_ALIGNED 7
+static const int MAX_ALIGNED_BUTTONS {7};
 
 MenuButton::MenuButton(
     Qt::Orientation orientation,
     QWidget* parent,
     const QString& name):
     QPushButton(parent),
-    frame{ new QFrame() },
-    grid_layout  {new QGridLayout(frame)},
-    button_group { new QButtonGroup},
-    popup_orientation{orientation}
+    m_frame{ new QFrame() },
+    m_grid_layout  {new QGridLayout(m_frame)},
+    m_button_group { new QButtonGroup},
+    m_popup_orientation{orientation}
 {
     setObjectName(name);
     setText(name);
@@ -49,85 +45,93 @@ MenuButton::MenuButton(
     gsm->publishGenericSignal(GSIGNAL::DISABLE_MAINSTACK, this);
     gsm->publishGenericSignal(GSIGNAL::ENABLE_MAINSTACK, this);
 
-    frame->setWindowFlags(Qt::Popup);
-    frame->setBackgroundRole(QPalette::Window);
-    frame->setPalette(QPalette(QColor(Colors::SPECIAL_BUTTON_POPUP_BG_COLOR)));
+    m_frame->setWindowFlags(Qt::Popup);
+    m_frame->setBackgroundRole(QPalette::Window);
+    m_frame->setPalette(QPalette(QColor(Colors::SPECIAL_BUTTON_POPUP_BG_COLOR)));
 
-    if (popup_orientation == Qt::Horizontal)
-        frame_layout = new QHBoxLayout(frame);
-    else
-        frame_layout = new QVBoxLayout(frame);
+    // QLayout* mf_layout = m_frame->layout();
+    // if( mf_layout){
+    //     mf_layout->deleteLater();
+    //     qDebug() << "@benes Attempting to add QLayout to QFrame" ;
+    //     if (m_popup_orientation == Qt::Horizontal)
+    //         m_frame_layout = new QHBoxLayout(m_frame);
+    //     else
+    //         m_frame_layout = new QVBoxLayout(m_frame);
+    // }@benes
 
-    frame->installEventFilter(this);
+    m_frame->installEventFilter(this);
     installEventFilter(this);
 
-    connect(this, &MenuButton::clicked, this, &MenuButton::openPopUp);
-    connect(button_group, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonPressed), this, &MenuButton::toggleMenuButtonColor);
+    connect(this, &MenuButton::clicked, this, &MenuButton::popUp);
+    connect(m_button_group, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonPressed),
+        this, &MenuButton::toggleMenuButtonColor);
 }
 
 MenuButton::~MenuButton(){
-    delete frame;
-    delete button_group;
+    delete m_frame;
+    delete m_button_group;
 }
 
-void MenuButton::setOrientation(Qt::Orientation orientation)
-{
-    if (popup_orientation == orientation) return;
+// void MenuButton::setOrientation(Qt::Orientation orientation)
+// {
+//     if (m_popup_orientation == orientation) return;
 
-    popup_orientation = orientation;
-    delete frame_layout;
+//     m_popup_orientation = orientation;
 
-    if ( popup_orientation == Qt::Horizontal &&
-        buttons.count() > MAX_BUTTONS_ALIGNED )
-    {
-        alignInHGrid();
-        return;
-    }
+//     if ( m_popup_orientation == Qt::Horizontal &&
+//         m_buttons.count() > MAX_ALIGNED_BUTTONS )
+//     {
+//         alignInHGrid();
+//         return;
+//     }
 
-    if (popup_orientation == Qt::Horizontal)
-        frame_layout = new QHBoxLayout(frame);
-    else
-        frame_layout = new QVBoxLayout(frame);
+//     delete m_frame_layout;
+//     if (m_popup_orientation == Qt::Horizontal)
+//         m_frame_layout = new QHBoxLayout(m_frame);
+//     else
+//         m_frame_layout = new QVBoxLayout(m_frame);
 
-    frame_layout->setContentsMargins(2,2,2,2);
+//     m_frame_layout->setContentsMargins(2,2,2,2);
 
-    for (auto button : buttons){
-        frame_layout->addWidget(button);
-        button->show();
-    }
-}
+//     for (auto button : m_buttons){
+//         m_frame_layout->addWidget(button);
+//         button->show();
+//     }
+// }
 
-void MenuButton::alignInHGrid(){
+// void MenuButton::alignInHGrid(){
 
-    if (popup_orientation != Qt::Horizontal) return;
+//     if (m_popup_orientation != Qt::Horizontal) return;
 
-    delete frame_layout;
-    if(grid_layout){
-        delete grid_layout;
-        grid_layout = new QGridLayout(frame);
-    }
+//     delete m_frame_layout;
+//     if(m_grid_layout){
+//         delete m_grid_layout;
+//         m_grid_layout = new QGridLayout(m_frame);
+//     }
 
-    auto cols = MAX_BUTTONS_ALIGNED;
-    if ( buttons.count() < MAX_BUTTONS_ALIGNED)
-        cols = buttons.count();
+//     auto cols = MAX_ALIGNED_BUTTONS;
+//     if ( m_buttons.count() < MAX_ALIGNED_BUTTONS)
+//         cols = m_buttons.count();
 
-    auto i = 0;
-    for(auto button : buttons){
-        auto row = (int) (i / cols ) ;
-        auto col = i % cols;
-        grid_layout->addWidget(button, row, col);
-        button->show();
-        i++;
-    }
+//     auto i = 0;
+//     for(auto* button : m_buttons){
+//         auto row = i / cols ;
+//         auto col = i % cols;
+//         m_grid_layout->addWidget(button, row, col);
+//         button->show();
+//         i++;
+//     }
 
-}
+// }
 
 //void MenuButton::alignInHGrid(){
 //    auto total = grid_layout->count();
 //    grid_layout->addWidget(button, total / 2, total % 2);
 //}
 
-void MenuButton::addMenuButton(QAbstractButton* button, QGridLayout *layout )
+void MenuButton::addMenuButton(
+    QAbstractButton* button,
+    QGridLayout *layout )
 {
     //We assume a 4x2 GridLayout. We will change that in the future
     // to support dynamically sized layouts
@@ -135,35 +139,35 @@ void MenuButton::addMenuButton(QAbstractButton* button, QGridLayout *layout )
     button->setCheckable(true);
     layout->addWidget(button, n / 2, n % 2); // Add row by row
     //    layout->addWidget(button, n % 4, n / 4); //Add column by column
-    button_group->addButton(button);
+    m_button_group->addButton(button);
 }
 
 Qt::Orientation MenuButton::orientation(){
-    return popup_orientation;
+    return m_popup_orientation;
 }
 
-void MenuButton::openPopUp(){
+void MenuButton::popUp(){
     auto base = parentWidget()->parentWidget();
     auto dx = base->mapToGlobal(QPoint(0,0)).x();
     auto dy = base->mapToGlobal(QPoint(0,0)).y();
-    frame->setGeometry( dx, dy, base->width(), base->height());
-    frame->show();
+    m_frame->setGeometry( dx, dy, base->width(), base->height());
+    m_frame->show();
 }
 
-void MenuButton::closePopUp(){
+void MenuButton::popDown(){
     setDown(true);
-    for ( auto button : buttons ){
+    for ( auto button : m_buttons ){
         if ( button->isCheckable() && !button->isDown())
             button->toggle();
     }
-    frame->close();
-    emit closePopUpSignal();
+    m_frame->close();
+    emit popupClosed();
 }
 
 void MenuButton::toggleMenuButtonColor(QAbstractButton* button){
 
     button->setBackgroundRole(QPalette::Button);
-    for( auto others : button_group->buttons())
+    for( auto others : m_button_group->buttons())
         if(others != button) others->setPalette(button->palette());
     button->setPalette(QPalette(QColor(Colors::MONEY_BUTTON_DWN_COLOR)));
 }
@@ -178,7 +182,7 @@ void MenuButton::childEvent(QChildEvent *event){
     switch( event->type() ){
 
     case QChildEvent::ChildRemoved :
-        buttons.remove(QString::number((ulong)button));
+        m_buttons.remove(QString::number((ulong)button));
         break;
 
     default:
@@ -188,18 +192,18 @@ void MenuButton::childEvent(QChildEvent *event){
         //            connect( qobject_cast<MenuButton*>(button), &MenuButton::closePopUpSignal,
         //                     this, &MenuButton::closePopUp);
 
-        buttons.append( button, QString::number( (ulong)button) );
-        addMenuButton(button, grid_layout);
+        m_buttons.append( button, QString::number( (ulong)button) );
+        addMenuButton(button, m_grid_layout);
         break;
     }
     QPushButton::childEvent(event);
 }
 
-//used to monitor the events of the frame (only the show and hide or close event)
+//used to monitor the events of the m_frame (only the show and hide or close event)
 bool MenuButton::eventFilter(QObject *watched, QEvent *event){
 
     QObject *tmp_qobject { qobject_cast<QObject*>( parentWidget() ) };
-    if ( watched == frame ){
+    if ( watched == m_frame ){
         switch ( event->type() ) {
 
         case QEvent::Show:
@@ -212,7 +216,7 @@ bool MenuButton::eventFilter(QObject *watched, QEvent *event){
             if (tmp_qobject->inherits("ButtonSetWidget"))
                 emit genericSignal(GSIGNAL::ENABLE_MAINSTACK);
             setDown(true);
-            frame->hide();
+            m_frame->hide();
             break;
 
         case QEvent::Hide:
@@ -232,7 +236,7 @@ bool MenuButton::eventFilter(QObject *watched, QEvent *event){
 }
 
 void MenuButton::setEnabled(bool enabled){
-    for (auto button : buttons)
+    for (auto button : m_buttons)
         button->setEnabled(enabled);
     QWidget::setEnabled(enabled);
 }

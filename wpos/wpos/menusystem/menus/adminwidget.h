@@ -27,7 +27,7 @@ public:
     explicit AdminWidget(
         ProductScreenStack *stack,
         QWidget* parent=nullptr,
-        const QString& name = QString());
+        const QString& name = QString{});
 signals:
     void genericSignal(const QString& signal);
     void genericDataSignal(const QString& signal ,XmlConfig *xml);

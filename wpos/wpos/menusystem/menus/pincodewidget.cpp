@@ -17,7 +17,7 @@
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 #include <wposcore/authentication/crypto_hasher.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 extern AuthCore *authCore;
 
@@ -40,7 +40,7 @@ PinCodeWidget::PinCodeWidget(
     setObjectName(name);
 
     auto gsm = GenericSignalManager::instance();
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED, this);
     gsm->publishGenericDataSignal(GDATASIGNAL::EVENTLOG, this);
 
@@ -186,13 +186,13 @@ void PinCodeWidget::cancel(){
     XmlConfig xml ;
     if ( authCore  && authCore->userId() == ROOT_ID ){   // go to loginscreen if root user
         xml.createElement("name", MainScreen::LOGIN_SCREEN);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         return;
     }
 
     // Not root user, return to salesscreen
     xml.createElement("name", SalesScreen::PRODUCT_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
     xml.deleteElement("name");
 
     xml.createElement("enabled", "true");
@@ -208,7 +208,7 @@ void PinCodeWidget::setGranted(bool granted){
     if (granted){
         xml.delDomain();
         xml.createElement("name", SalesScreen::ADMIN_MENU);
-        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+        emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         xml.deleteElement("name");
         xml.createElement("event_type", "admin_widget");
         emit genericDataSignal(GDATASIGNAL::EVENTLOG, &xml);
@@ -245,5 +245,5 @@ void PinCodeWidget::showEvent(QShowEvent *event){
 void PinCodeWidget::shutdown(){
     XmlConfig xml ;
     xml.createElement("name", SalesScreen::EXIT_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }

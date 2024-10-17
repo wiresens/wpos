@@ -24,7 +24,7 @@ class OptionDeletionWidget : public OptionEditionWidget{
 public:
     static const QString DBusObjectPath;
 
-    explicit OptionDeletionWidget(QWidget *parent=0, const QString& name = QString());
+    explicit OptionDeletionWidget(QWidget *parent=0, const QString& name = QString{});
     ~OptionDeletionWidget() = default;
 
 signals:

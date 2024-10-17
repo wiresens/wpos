@@ -30,7 +30,7 @@ class UserModule :
 public:
     static const QString DBusObjectPath;
 
-    explicit UserModule(QObject *parent=0, const QString& name = QString());
+    explicit UserModule(QObject *parent=0, const QString& name = QString{});
     ~UserModule() = default;
 
     QString getInterfaceName();

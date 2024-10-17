@@ -31,7 +31,7 @@ class MemStickWidget :
 public:
     static const QString DBusObject;
 
-    explicit MemStickWidget(QWidget *parent=0, const QString& name=QString());
+    explicit MemStickWidget(QWidget *parent=0, const QString& name=QString{});
     ~MemStickWidget();
 
 public slots:

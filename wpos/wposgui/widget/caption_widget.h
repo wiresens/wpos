@@ -20,7 +20,7 @@ class CaptionWidget : public QFrame
 public:
     explicit CaptionWidget(
         QWidget *parent = nullptr,
-        const QString& caption = QString());
+        const QString& caption = QString{});
 
     ~CaptionWidget();
 

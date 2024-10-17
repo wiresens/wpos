@@ -115,52 +115,69 @@ struct Key
 };
 }
 
-struct LoungeData {
-    LoungeData() = default;
-    ~LoungeData();
+struct Lounge {
+    struct InvalidLounge : std::exception{};
 
-    HList<QPushButton>      table_buttons;
-    HList<ProductExtraInfo> *option_nodes{};
-    QButtonGroup            *button_group{};
-    QPushButton             *button{};
+    Lounge(const QString &name, uint nb_table);
+    Lounge(const Lounge&) = default;
 
-    QRegExp     regex;
-    QString     name;
-    uint        stack_index{};
-    uint        tables{};
+    QString caption() const;
+
+    ~Lounge();
+
+    HList<QPushButton>      m_tbl_btns;
+    HList<ProductExtraInfo> *m_opt_nodes{};
+    QButtonGroup            *m_btn_gp{};
+    QPushButton             *m_btn{};
+
+    QRegExp                 m_regex;
+    const QString           m_lounge_name;
+    uint                    m_lounge_id{};
+    const uint              m_table_count;
 };
 
-LoungeData::~LoungeData(){
-
-    if (option_nodes){
-        option_nodes->clear();
-        delete option_nodes;
-    }
-
-    delete button;
-    button_group = 0;
+Lounge::Lounge(
+    const QString &name,
+    uint nb_table)
+    :m_lounge_name{name.trimmed()},
+    m_table_count{nb_table}
+{
+    if(m_lounge_name.isEmpty() ||
+        m_table_count < 0)
+        throw  InvalidLounge{};
 }
 
-NKeyboard::NKeyboard(
-    QWidget* parent,
-    const QString& name
-)
+Lounge::~Lounge(){
+
+    if (m_opt_nodes){
+        m_opt_nodes->clear();
+        delete m_opt_nodes;
+    }
+
+    delete m_btn;
+    m_btn_gp = 0;
+}
+
+QString Lounge::caption() const{
+    return QString(m_lounge_name).replace(' ', "\n");
+}
+
+NKeyboard::NKeyboard(QWidget* parent)
     :QMenu(parent),
     ui{ new Ui::NKeyboardWidget},
     m_obj_parent{ parent }
 {
     ui->setupUi(this);
-    QSignalMapper *sgmpr = new QSignalMapper(this);
-    setObjectName(name);
+
     setFocusPolicy(Qt::NoFocus);   
-    build(sgmpr);
+    buildKeyboard();
 }
 
 NKeyboard::~NKeyboard(){
     delete ui;
 }
 
-void NKeyboard::build(QSignalMapper* sgmpr)
+void NKeyboard::buildKeyboard()
 {
     QVector<KeyBoard::Key> key_map{
         {ui->esc,       ESC},
@@ -256,29 +273,32 @@ void NKeyboard::build(QSignalMapper* sgmpr)
     ui->tables_exit_button->setIcon(ui->exit_button->icon());//lg
 
     ui->output_line->setFocus();
+    auto sgmpr = new QSignalMapper(this);
     connect(sgmpr, &QSignalMapper::mappedInt, this, &NKeyboard::keyClicked); //kb
-    for( auto rec : key_map){
-        // keys.append(rec.key, QString::number(rec.val));
+    for( auto& rec : key_map){
         sgmpr->setMapping(rec.key, rec.val);
         rec.key->setFocusProxy(this);
         rec.key->setFocusPolicy(Qt::NoFocus);
-        connect(rec.key, &QPushButton::released, sgmpr, QOverload<>::of(&QSignalMapper::map));
+        connect(rec.key, &QPushButton::released,
+            sgmpr, QOverload<>::of(&QSignalMapper::map));
     }
-    disconnect(ui->esc, &QPushButton::released, sgmpr, QOverload<>::of(&QSignalMapper::map));
+    disconnect(ui->esc, &QPushButton::released,
+        sgmpr, QOverload<>::of(&QSignalMapper::map));
 
     connect(ui->tables_exit_button,  &QPushButton::released, this, &NKeyboard::exitSlot);//lg
-    connect(ui->exit_button,  &QPushButton::released, this, &NKeyboard::exitClicked);//kb
     connect(ui->exit_button, &QPushButton::released, this, &NKeyboard::exitSlot);//kb
+    connect(ui->exit_button,  &QPushButton::released, this, &NKeyboard::exitClicked);//kb
     connect(ui->clear_button, &QPushButton::released, this, &NKeyboard::clearSlot);//kb
     connect(ui->output_line,  &QLineEdit::textChanged, this, &NKeyboard::textChanged);//kb
 
     connect(ui->lounge_button, &QPushButton::clicked, this, &NKeyboard::loungeButtonClicked); //kb
     connect(ui->kb_button, &QPushButton::clicked, this, &NKeyboard::showKeyBoard);//kb
 
-    m_lounge_btn_group = new QButtonGroup(ui->lounge_page); //lg
-    m_lounge_btn_group->setExclusive(true);
-    connect(m_lounge_btn_group, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
-            this , &NKeyboard::switchLounge);
+    m_lounge_selector_btn_group = new QButtonGroup(ui->lounge_page); //lg
+    m_lounge_selector_btn_group->setExclusive(true);
+    connect(m_lounge_selector_btn_group,
+            QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
+            this , &NKeyboard::showTables);
 
     ui->main_stack->setCurrentWidget(ui->keyboard_page);
 
@@ -287,7 +307,7 @@ void NKeyboard::build(QSignalMapper* sgmpr)
         ui->lounge_button->hide();
     else{
         XmlConfig xml (lounge_xml_file.fileName());
-        if ( xml.wellFormed() ) loadLounges(xml);
+        if ( xml.wellFormed() ) buildLounges(xml);
     }
 }
 
@@ -311,13 +331,15 @@ void NKeyboard::exitSlot(){
         emit exitClicked();
 }
 
-void NKeyboard::switchLounge(QAbstractButton* button){
-    ui->lounge_stack->setCurrentIndex(m_lounge_btn_group->buttons().indexOf(button));
-    button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
+void NKeyboard::showTables(QAbstractButton* button){
+    ui->lounge_stack->setCurrentIndex(
+        m_lounge_selector_btn_group->buttons().indexOf(button));
+    button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_ON_COLOR));
 
-    for( auto other_button : m_lounge_btn_group->buttons()){
+    for( auto other_button : m_lounge_selector_btn_group->buttons()){
         if( ! other_button->isDown())
-            other_button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_OFF_COLOR));
+            other_button->setPalette(
+                QPalette(Colors::LOUNGE_TABLE_BUTTON_OFF_COLOR));
         button->setBackgroundRole(QPalette::Button);
     }
 }
@@ -332,114 +354,117 @@ void NKeyboard::showKeyBoard(){
     emit loungeRequested(false);
 }
 
-void NKeyboard::loadLounges(XmlConfig &xml){
-    int lounge_count;
-    int tables_count;
-    QPushButton *lounge_buttongroup_button = 0;
-    QGridLayout *glayout = 0;
-    QButtonGroup *lounge_stack_buttongroup = 0;
+void NKeyboard::buildLounges(XmlConfig &xml){
 
     while(ui->lounge_stack->currentWidget())
         ui->lounge_stack->removeWidget(ui->lounge_stack->currentWidget());
 
-    lounge_count = xml.howManyTags("lounge");
-    if ( lounge_count )  ui->main_stack->setCurrentWidget(ui->lounge_page);
+    auto nb_lounge = xml.howManyTags("lounge");
+    if ( nb_lounge )  ui->main_stack->setCurrentWidget(ui->lounge_page);
 
-    for (auto i = 0; i < lounge_count; i++){
+    for (auto i = 0; i < nb_lounge; i++){
         xml.setDomain("lounge["+QString::number(i)+"]");
         auto lounge_name = xml.readString("name");
-        tables_count = xml.readInt("tables");
+        auto table_count = xml.readInt("tables");
 
-        if ( lounge_name.isEmpty() || tables_count == 0) continue;
+        if ( lounge_name.isEmpty() || table_count == 0) continue;
 
-        lounge_buttongroup_button = new QPushButton(ui->lounge_page);
-        lounge_buttongroup_button->setCheckable(true);
-        lounge_buttongroup_button->setVisible(true);
+        auto lounge_selector_btn = new QPushButton(ui->lounge_page);
+        lounge_selector_btn->setCheckable(true);
+        lounge_selector_btn->setVisible(true);
 
-        m_lounge_btn_group->addButton(lounge_buttongroup_button);
-        ui->lounge_button_layout->insertWidget(i, lounge_buttongroup_button);
+        m_lounge_selector_btn_group->addButton(lounge_selector_btn);
+        ui->lounge_selector_layout->insertWidget(i, lounge_selector_btn);
 
-        auto lounge = new LoungeData();
-        lounge->name = lounge_name;
-        lounge->tables = tables_count;
+        auto lounge = new Lounge(lounge_name, table_count );
 
-        lounge_buttongroup_button->setObjectName(lounge->name);
-        lounge_buttongroup_button->setText(lounge->name.replace(' ', "\n"));
-        lounge->button = lounge_buttongroup_button;
-        lounge->regex = QRegExp("^" + lounge->name + "[0-9]{1,2}");
+
+        lounge_selector_btn->setObjectName(lounge->m_lounge_name);
+        lounge_selector_btn->setText(lounge->caption());
+        lounge->m_btn = lounge_selector_btn;
+        lounge->m_regex = QRegExp("^" + lounge->m_lounge_name + "[0-9]{1,2}");
 
         auto iconset = xml.readString("iconset");
         auto pixmap = xml.readString("pixmap");
         auto tables_iconset = xml.readString("tablesiconset");
 
         if (!iconset.isEmpty())
-            lounge_buttongroup_button->setIcon(QIcon(iconset));
+            lounge_selector_btn->setIcon(QIcon(iconset));
 
         if (!pixmap.isEmpty())
-            lounge_buttongroup_button->setIcon(QPixmap(pixmap));
+            lounge_selector_btn->setIcon(QPixmap(pixmap));
 
         if (xml.setDomain("options")){
             for( auto j = 0 ; j < xml.howManyTags("option"); j++){
-                if ( j == 0 )  lounge->option_nodes = new HList<ProductExtraInfo>;
-                auto option_type = xml.readString("option["+QString::number(j)+"].type");
+                if ( j == 0 )  lounge->m_opt_nodes = new HList<ProductExtraInfo>;
+
+                auto option_type  = xml.readString("option["+QString::number(j)+"].type");
                 auto option_value = xml.readString("option["+QString::number(j)+"].value");
-                if ((option_type.isEmpty()) || (option_value.isEmpty()))  continue;
-                auto option = lounge->option_nodes->find(option_value);
+
+                if ( (option_type.isEmpty()) || (option_value.isEmpty()))  continue;
+
+                auto option = lounge->m_opt_nodes->find(option_value);
                 if ( !option ){
                     option = new ProductExtraInfo(option_type);
-                    lounge->option_nodes->append(option, option_type);
+                    lounge->m_opt_nodes->append(option, option_type);
                 }
                 option->addOption(option_value, true);
             }
             xml.releaseDomain("options");
         }
 
-        auto lounge_stack_page = new QFrame(ui->lounge_stack);
-        lounge_stack_page->setFrameShape(QFrame::NoFrame);
-        lounge_stack_buttongroup = new QButtonGroup(lounge_stack_page);
-        lounge_stack_buttongroup->setExclusive(true);
-        lounge_stack_buttongroup->setObjectName(lounge->name);
+        auto lounge_page = new QFrame(ui->lounge_stack);
+        lounge_page->setFrameShape(QFrame::NoFrame);
+        auto lounge_tbl_btn_grp = new QButtonGroup(lounge_page);
+        lounge_tbl_btn_grp->setExclusive(true);
+        lounge_tbl_btn_grp->setObjectName(lounge->m_lounge_name);
 
-        QSizePolicy sizePolicy(QSizePolicy::MinimumExpanding, QSizePolicy::Preferred);
+        QSizePolicy sizePolicy(
+            QSizePolicy::MinimumExpanding,
+            QSizePolicy::Preferred);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
-        sizePolicy.setHeightForWidth(ui->lounge_stack->sizePolicy().hasHeightForWidth());
-        lounge_stack_page->setSizePolicy(sizePolicy);
+        sizePolicy.setHeightForWidth(
+            ui->lounge_stack->sizePolicy().hasHeightForWidth());
 
-        glayout = new QGridLayout(lounge_stack_page);
-        lounge->button_group = lounge_stack_buttongroup;
+        lounge_page->setSizePolicy(sizePolicy);
 
-        connect(lounge_stack_buttongroup, QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
-                this, QOverload<QAbstractButton*>::of(&NKeyboard::tableButtonClicked));
+        auto glayout = new QGridLayout(lounge_page);
+        lounge->m_btn_gp = lounge_tbl_btn_grp;
 
-        lounge->stack_index = ui->lounge_stack->addWidget(lounge_stack_page);
+        connect(lounge_tbl_btn_grp,
+            QOverload<QAbstractButton*>::of(&QButtonGroup::buttonClicked),
+            this,
+            QOverload<QAbstractButton*>::of(&NKeyboard::tableButtonClicked));
 
-        for ( auto j = 0; j < tables_count; j++){
-            auto lounge_table_button = new QPushButton(lounge_stack_page);
-            lounge_table_button->setCheckable(true);
-            lounge_table_button->setObjectName(QString::number(j+1));
-            lounge_table_button->setText(lounge_table_button->objectName());
-            lounge_table_button->setFixedSize(BTN_SIZE);
+        lounge->m_lounge_id = ui->lounge_stack->addWidget(lounge_page);
+
+        for ( auto j = 0; j < table_count; j++){
+            auto lounge_table_btn = new QPushButton(lounge_page);
+            lounge_table_btn->setCheckable(true);
+            lounge_table_btn->setObjectName(QString::number(j+1));
+            lounge_table_btn->setText(lounge_table_btn->objectName());
+            lounge_table_btn->setFixedSize(BTN_SIZE);
 
             if (!tables_iconset.isEmpty())
-                lounge_table_button->setIcon(QIcon(tables_iconset));
+                lounge_table_btn->setIcon(QIcon(tables_iconset));
 
-            auto row = (int) (j / GRID_COL ) ;
-            auto col = j % GRID_COL;
+            auto row = j / GRID_COL ;
+            auto col = j % GRID_COL ;
 
-            glayout->addWidget(lounge_table_button, row, col);
-            lounge_stack_buttongroup->addButton(lounge_table_button);
-            lounge->table_buttons.append(lounge_table_button, lounge_table_button->objectName());
+            glayout->addWidget(lounge_table_btn, row, col);
+            lounge_tbl_btn_grp->addButton(lounge_table_btn);
+            lounge->m_tbl_btns.append(lounge_table_btn, lounge_table_btn->objectName());
         }
-        m_lounges.append(lounge, lounge->name);
+        m_lounges.append(lounge, lounge->m_lounge_name);
         xml.releaseDomain("lounge");
     }
 
-    if (lounge_count){
-        m_lounges.at(0)->button->setChecked(true);
-        m_lounges.at(0)->button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
-        m_lounges.at(0)->button->setBackgroundRole(QPalette::Button);
-        ui->lounge_stack->setCurrentIndex(m_lounges.at(0)->stack_index);
+    if (nb_lounge){
+        m_lounges.at(0)->m_btn->setChecked(true);
+        m_lounges.at(0)->m_btn->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_ON_COLOR));
+        m_lounges.at(0)->m_btn->setBackgroundRole(QPalette::Button);
+        ui->lounge_stack->setCurrentIndex(m_lounges.at(0)->m_lounge_id);
     }
 
 }
@@ -447,19 +472,19 @@ void NKeyboard::loadLounges(XmlConfig &xml){
 void NKeyboard::loungeButtonClicked(bool checked){
 
     (void) checked;
-    LoungeData *lounge{};
+    Lounge *lounge{};
     QPushButton* button{};
-    for( auto child : m_lounge_btn_group->children() ){
+    for( auto child : m_lounge_selector_btn_group->children() ){
         button = qobject_cast<QPushButton*>(child);
         if( !button ) continue;
         if (button->isDown()){
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
+            button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_ON_COLOR));
             button->setBackgroundRole(QPalette::Button);
             lounge = m_lounges.find(button->objectName());
-            ui->lounge_stack->setCurrentIndex(lounge->stack_index);
+            ui->lounge_stack->setCurrentIndex(lounge->m_lounge_id);
         }
         else{
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_OFF_COLOR));
+            button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_OFF_COLOR));
             button->setBackgroundRole(QPalette::Button);
         }
     }
@@ -467,38 +492,38 @@ void NKeyboard::loungeButtonClicked(bool checked){
 
 void NKeyboard::tableButtonClicked(QAbstractButton* button){
 
-    button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
+    button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_ON_COLOR));
     auto lounge_stack_buttongroup = qobject_cast<QButtonGroup*>(sender());
 
     for( auto lounge : m_lounges){
-        if( lounge->button_group != lounge_stack_buttongroup)
-            clearLoungeStack(lounge->name);
-        else write( lounge->name + " " + button->objectName() );
+        if( lounge->m_btn_gp != lounge_stack_buttongroup)
+            clearLoungeStack(lounge->m_lounge_name);
+        else write( lounge->m_lounge_name + " " + button->objectName() );
     }
 
     for( auto other_button : lounge_stack_buttongroup->buttons() ){
         if (! other_button->isDown())
-            other_button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_OFF_COLOR));
+            other_button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_OFF_COLOR));
         other_button->setBackgroundRole(QPalette::Window);
     }
 }
 
-void NKeyboard::clearLoungeStack(const QString &name, bool clear_enabled){
-    LoungeData *lounge{};
-    lounge = m_lounges.find(name);
+void NKeyboard::clearLoungeStack(const QString &lounge_name, bool clear_enabled){
+    Lounge *lounge{};
+    lounge = m_lounges.find(lounge_name);
     if (!lounge) return;
 
-    for(auto * button : lounge->table_buttons){
+    for(auto * button : lounge->m_tbl_btns){
         if (clear_enabled){
             button->setEnabled(true);
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_OFF_COLOR));
+            button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_OFF_COLOR));
             button->setBackgroundRole(QPalette::Window);
             button->setChecked(false);
         }
         else{
             if (button->isEnabled()){
                 button->setDown(false);
-                button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_OFF_COLOR));
+                button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_OFF_COLOR));
                 button->setBackgroundRole(QPalette::Window);
             }
         }
@@ -507,12 +532,12 @@ void NKeyboard::clearLoungeStack(const QString &name, bool clear_enabled){
 
 void NKeyboard::clearAllStacks(bool clear_enabled){
     int i,count;
-    LoungeData *lounge{};
+    Lounge *lounge{};
 
     count = m_lounges.count();
     for(i=0;i<count;i++){
         lounge = m_lounges.at(i);
-        clearLoungeStack(lounge->name, clear_enabled);
+        clearLoungeStack(lounge->m_lounge_name, clear_enabled);
     }
 }
 
@@ -533,22 +558,22 @@ void NKeyboard::setTableButtonSelected(const QString& name){
 
     count = m_lounges.count();
     for (auto lounge : m_lounges){
-        QPushButton *button = lounge->button;
-        button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_OFF_COLOR));
+        QPushButton *button = lounge->m_btn;
+        button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_OFF_COLOR));
         button->setBackgroundRole(QPalette::Window);
         button->setDown(false);
-        if (lounge->name.contains(aux_name)){
-            button = lounge->button;
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
+        if (lounge->m_lounge_name.contains(aux_name)){
+            button = lounge->m_btn;
+            button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_ON_COLOR));
             button->setBackgroundRole(QPalette::Window);
             button->setDown(true);
-            ui->lounge_stack->setCurrentIndex(lounge->stack_index);
-            if ( real_int - 1  > lounge->tables )
+            ui->lounge_stack->setCurrentIndex(lounge->m_lounge_id);
+            if ( real_int - 1  > lounge->m_table_count )
                 return;
-            button = lounge->table_buttons.at(real_int - 1 );
+            button = lounge->m_tbl_btns.at(real_int - 1 );
             button->setEnabled(true);
             button->setDown(true);
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_ON_COLOR));
+            button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_ON_COLOR));
             button->setBackgroundRole(QPalette::Window);
         }
     }
@@ -557,7 +582,7 @@ void NKeyboard::setTableButtonSelected(const QString& name){
 void NKeyboard::setTableButtonUsed(const QString& name){
     int pos,real_int;
     bool ok;
-    LoungeData *lounge{};
+    Lounge *lounge{};
     QPushButton *button = 0;
     QString aux_name;
     QString aux_int;
@@ -570,25 +595,25 @@ void NKeyboard::setTableButtonUsed(const QString& name){
     if ( !ok && real_int >= 0 ) return;
 
     for ( auto* lounge : m_lounges){
-        if ( lounge->name.contains(aux_name) ){
-            if ( real_int - 1  > lounge->tables ) return;
+        if ( lounge->m_lounge_name.contains(aux_name) ){
+            if ( real_int - 1  > lounge->m_table_count ) return;
 
-            button = lounge->table_buttons.at(real_int - 1 );
+            button = lounge->m_tbl_btns.at(real_int - 1 );
             button->setEnabled(false);
             button->setDown(false);
-            button->setPalette(QPalette(Colors::NUM_KEYBOARD_BUTTON_SELECTED_COLOR));
+            button->setPalette(QPalette(Colors::LOUNGE_TABLE_BUTTON_LOCKED_COLOR));
             button->setBackgroundRole(QPalette::Window);
         }
     }
 }
 
-void NKeyboard::setUsedTables(QStringList table_codes){
+void NKeyboard::setUsedTables(const QStringList& tbl_codes){
 
     auto selected_tbl = read();
     clearAllStacks(true);
 
-    for (auto& used_table : table_codes)
-        setTableButtonUsed(used_table);
+    for (auto& tbl_code : tbl_codes)
+        setTableButtonUsed(tbl_code);
     setTableButtonSelected(selected_tbl);
 }
 
@@ -601,8 +626,8 @@ bool NKeyboard::isAtTable(){
 QString NKeyboard::getLounge(){
     auto lounge_name = read();
     for( const auto& lounge : m_lounges ){
-        if (lounge->regex.exactMatch(lounge_name)){
-            lounge_name =  lounge->name;
+        if (lounge->m_regex.exactMatch(lounge_name)){
+            lounge_name =  lounge->m_lounge_name;
             break;
         }
     }
@@ -615,12 +640,12 @@ int NKeyboard::getTable(){
     bool ok=false;
     QString aux="";
     QString aux_int;
-    LoungeData *lounge{} ;
+    Lounge *lounge{} ;
     aux = read();
     count = m_lounges.count();
     for(i=0;i<count;i++){
         lounge = m_lounges.at(i);
-        if (lounge->regex.exactMatch(aux)){
+        if (lounge->m_regex.exactMatch(aux)){
             pos = aux.indexOf(' ');
             aux_int = aux.mid(pos+1,aux.length()-(pos+1));
             real_int = aux_int.toInt(&ok);
@@ -633,12 +658,12 @@ int NKeyboard::getTable(){
 
 HList<ProductExtraInfo>*
 NKeyboard::getOptionsFromLounge(
-    const QString& lounge)
+    const QString& lounge_name)
 {
-    LoungeData *lounge_data{} ;
-    lounge_data  = m_lounges.find(lounge);
+    Lounge *lounge_data{} ;
+    lounge_data  = m_lounges.find(lounge_name);
     if (lounge_data)
-        return lounge_data->option_nodes;
+        return lounge_data->m_opt_nodes;
 
     return {};
 }
@@ -652,7 +677,7 @@ void NKeyboard::clearSlot(){
     ui->output_line->clear();
 }
 
-void NKeyboard::setSendEvents(bool on){
+void NKeyboard::setHasSendEvents(bool on){
     m_has_send_events = on;
 }
 

@@ -18,7 +18,7 @@
 
 #include "dbusreceiptmediator.h"
 #include "dbusreceiptmediator_adaptor.h"
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QString>
 
@@ -100,7 +100,7 @@ QString DBusReceiptMediator::getReceiptByStartDate(QString employee_id, QString 
     if ( employee_id.isEmpty() ||
          start_time.isEmpty() ||
          m_receipt_primitive->getReceiptStateByStartDate(employee_id, start_time))
-        return QString();
+        return QString{};
 
     return m_receipt_primitive->getReceiptByStartDate(employee_id, start_time);
 }

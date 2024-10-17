@@ -34,7 +34,7 @@ public:
         ZOperation = 1
     };
 
-    explicit XZWidget(QWidget *parent, const QString& name = QString());
+    explicit XZWidget(QWidget *parent, const QString& name = QString{});
 
 public slots:
     void xSlot(XmlConfig *xml);

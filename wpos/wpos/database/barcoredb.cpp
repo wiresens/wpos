@@ -38,7 +38,7 @@ BarCoreDB::BarCoreDB(const QString& connection,
 {}
 
 QString BarCoreDB::getName(const QString& product_code){
-    if (!isConnected()) return QString();
+    if (!isConnected()) return QString{};
 
     QString sql {"SELECT product FROM products WHERE product_code='"+product_code+"';"};
     QSqlQuery query(sql, dbHandle());
@@ -46,7 +46,7 @@ QString BarCoreDB::getName(const QString& product_code){
     //prepare the query execution
     if (!query.isActive() || !query.size()){
         qDebug() << "Fault due to inactive query " << product_code.toLatin1() ;
-        return QString();
+        return QString{};
     }
 
     query.first();
@@ -91,14 +91,14 @@ QString BarCoreDB::getTax(const QString& product_code){
 }
 
 QString  BarCoreDB::getTaxName(const QString& product_code){    
-    if (!isConnected())  return QString();
+    if (!isConnected())  return QString{};
 
     QString sql = "SELECT tax FROM products WHERE product_code='"+product_code+"';";
     QSqlQuery query(sql, dbHandle());
 
     //prepare the query execution
     if (!query.isActive() || !query.size())
-        return QString();
+        return QString{};
 
     query.first();
     return query.value(0).toString();

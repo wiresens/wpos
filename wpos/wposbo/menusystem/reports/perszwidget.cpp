@@ -351,7 +351,7 @@ void PersZWidget::getCurrentZ(XmlConfig& xml){
 }
 
 QString PersZWidget::xmlToHtml(XmlConfig *xml){
-    if (!xml) QString();
+    if (!xml) QString{};
 
     xml->pushDomain();
     xml->delDomain();

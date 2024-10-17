@@ -41,13 +41,13 @@ public:
         const QString& screenName,
         XmlConfig *xmlDescription,
         QWidget *parent,
-        const QString& name = QString());
+        const QString& name = QString{});
 
     ProductScreen(
         const QString& screenName,
         const QString& xmlDescriptionFile,
         QWidget *parent,
-        const QString& name = QString());
+        const QString& name = QString{});
 
     ~ProductScreen();
 

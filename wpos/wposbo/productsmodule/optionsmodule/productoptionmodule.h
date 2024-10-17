@@ -35,7 +35,7 @@ class ProductOptionModule :
 public:
     static const QString DBusObjectPath;
 
-    explicit ProductOptionModule(QObject *parent= 0, const QString& name = QString());
+    explicit ProductOptionModule(QObject *parent= 0, const QString& name = QString{});
     ~ProductOptionModule() = default;
 
 public slots:

@@ -38,7 +38,7 @@ public:
 
     explicit DBusReceiptManager(
         QObject *parent = nullptr,
-        const QString& name = QString()
+        const QString& name = QString{}
     );
 
 private:

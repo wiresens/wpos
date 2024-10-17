@@ -14,7 +14,7 @@
 #include "dbusreceiptprimitive_interface.h"
 #include "dbusreceiptmediator_interface.h"
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <QDataStream>
 
 using namespace std;
@@ -68,7 +68,7 @@ bool DBusReceiptQuerier::receiptState(
     return reply.value();
 }
 
-XmlConfig* DBusReceiptQuerier::getReceipt(
+XmlConfig DBusReceiptQuerier::getReceipt(
     const QString& employee_id,
     const QString &start_time)
 {
@@ -77,59 +77,59 @@ XmlConfig* DBusReceiptQuerier::getReceipt(
     auto method = "DBusReceiptQuerier::getReceipt(" + employee_id + "," + start_time + ")";
     if (!iface->isValid()){
         log(dbusService, dbusPrimitiveObject, method);
-        return nullptr;
+        return XmlConfig{};
     }
     auto reply =  iface->getReceiptByStartDate(employee_id, start_time);
     if( reply.isError()){
         log(dbusService, dbusPrimitiveObject, method, reply.error().message() );
-        return nullptr;
+        return XmlConfig{};
     }
 
-    auto result = new XmlConfig();
-    result->readXmlFromString(reply.value());
-    return result;
+    XmlConfig xml;
+    xml.readXmlFromString(reply.value());
+    return xml;
 }
 
-XmlConfig* DBusReceiptQuerier::getReceiptResume(){
+XmlConfig DBusReceiptQuerier::getReceiptResume(){
 
     auto bus = QDBusConnection::sessionBus();
     auto iface = new IReceiptPrimitive(dbusService, dbusPrimitiveObject, bus, this);
     auto method = "DBusReceiptQuerier::getReceiptResume()";
     if (!iface->isValid()){
         log(dbusService, dbusPrimitiveObject, method);
-        return nullptr;
+        return XmlConfig{};
     }
 
     auto reply =  iface->getReceiptResume();
     if( reply.isError() ) {
         log(dbusService, dbusPrimitiveObject, method, reply.error().message() );
-        return nullptr;
+        return  XmlConfig{};
     }
 
-    auto result = new XmlConfig();
-    result->readXmlFromString(reply.value());
-    return result;
+    XmlConfig xml;
+    xml.readXmlFromString(reply.value());
+    return xml;
 }
 
-XmlConfig* DBusReceiptQuerier::getReceiptResume(QString employee_id){
+XmlConfig DBusReceiptQuerier::getReceiptResume(QString employee_id){
 
     auto bus = QDBusConnection::sessionBus();
     auto iface = new IReceiptPrimitive(dbusService, dbusPrimitiveObject, bus, this);
     auto method = "DBusReceiptQuerier::getReceiptResume()";
     if ( !iface->isValid() ){
         log(dbusService, dbusPrimitiveObject, method);
-        return nullptr;
+        return XmlConfig{};
     }
 
     auto reply =  iface->getReceiptResume(employee_id);
     if( reply.isError() ) {
         log(dbusService, dbusPrimitiveObject, method, reply.error().message() );
-        return nullptr;
+        return XmlConfig{};
     }
 
-    auto result = new XmlConfig();
-    result->readXmlFromString(reply.value());
-    return result;
+    XmlConfig xml;
+    xml.readXmlFromString(reply.value());
+    return xml;
 }
 
 //Using IReceiptMediator : ReadWrite Access

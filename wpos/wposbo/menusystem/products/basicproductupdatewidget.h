@@ -23,7 +23,7 @@ class BasicProductUpdateWidget  : public BasicProductCreationWidget{
     Q_OBJECT
 
 public: 
-    explicit BasicProductUpdateWidget(ProductModule* _product_mod, QWidget *parent={}, const QString& name=QString());
+    explicit BasicProductUpdateWidget(ProductModule* _product_mod, QWidget *parent={}, const QString& name=QString{});
     ~BasicProductUpdateWidget() = default;
 
     bool updateProduct();

@@ -19,7 +19,7 @@ class OfferUpdateWidget : public OfferEditionWidget
 {
     Q_OBJECT
 public:
-    explicit OfferUpdateWidget(QWidget *parent=0, const QString &name=QString());
+    explicit OfferUpdateWidget(QWidget *parent=0, const QString &name=QString{});
 
 public slots:
     virtual void clear() override;

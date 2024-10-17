@@ -23,7 +23,7 @@ class XmlConfig;
 class ChangeMoneyWidget : public QWidget, private Ui::ChangeMoneyWidget  {
 Q_OBJECT
   public:
-    explicit ChangeMoneyWidget(QWidget *parent=0, const QString& name = QString());
+    explicit ChangeMoneyWidget(QWidget *parent=0, const QString& name = QString{});
     void showEvent(QShowEvent *event);
 
   signals:

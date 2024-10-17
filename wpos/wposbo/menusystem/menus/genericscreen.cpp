@@ -90,7 +90,7 @@ void GenericScreen::parseXmlDescription(
 
     // Add a info menu page
     auto menuPage = new MenuPage(menuStack, menuName);
-    menuPage->setLayoutType(MenuPage::VBOX);
+    menuPage->setLayoutType(MenuPage::LayoutType::VBOX);
     auto menu = menuInstantiator->getMenu(menuPage, menuName);
     if( !menu ){
         menuPage->deleteLater();
@@ -119,7 +119,7 @@ void GenericScreen::parseXmlDescription(
         item->setIcon(Icon, QPixmap(menuPixmap));
         if( !menuName.contains("BACK")){
             menuPage = new MenuPage(menuStack, menuName);
-            menuPage->setLayoutType(MenuPage::VBOX);
+            menuPage->setLayoutType(MenuPage::LayoutType::VBOX);
             menuPage->setBackgroundRole(QPalette::Window);
             menuPage->setPalette(QPalette(QColor(255,221,118)));
             menu = menuInstantiator->getMenu(menuPage, menuName);

@@ -37,7 +37,7 @@ public:
     static const uint DEFAULT_WIDTH;
     static const uint DEFAULT_HEIGHT;
 
-    explicit PersZWidget(QWidget *parent=0, const QString& name=QString());
+    explicit PersZWidget(QWidget *parent=0, const QString& name=QString{});
     ~PersZWidget() = default;
 
 public slots:

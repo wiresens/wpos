@@ -13,7 +13,7 @@
 #include "killticketswidget.h"
 
 #include <wposcore/genericsignalmanager.h>
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <wposgui/order/orderview.h>
 #include <wposgui/order/ordercontentview.h>
 
@@ -48,7 +48,7 @@ KillTicketsWidget::KillTicketsWidget(
 {
 
     auto gsm = GenericSignalManager::instance();
-    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, this);
+    gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, this);
     gsm->publishGenericDataSignal(GDATASIGNAL::BARCORE_CHANGE_XML, this);
     gsm->publishGenericDataSignal(GDATASIGNAL::BARCORE_PROCESS_CORE, this);
 
@@ -96,7 +96,7 @@ KillTicketsWidget::KillTicketsWidget(
     connect(invoice_button, &QAbstractButton::released, this, &KillTicketsWidget::printInvoice);
     connect(trash_button, &QAbstractButton::clicked, this, &KillTicketsWidget::deleteTicket);
     connect(printer_button, &QAbstractButton::released, this, &KillTicketsWidget::printTicket);
-    connect(this, &KillTicketsWidget::genericDataSignal, order->contentView(), &OrderContentView::genericDataSignalSlot);
+    connect(this, &KillTicketsWidget::genericDataSignal, m_order_view->contentView(), &OrderContentView::genericDataSignalSlot);
 }
 
 KillTicketsWidget::~KillTicketsWidget(){
@@ -106,18 +106,18 @@ KillTicketsWidget::~KillTicketsWidget(){
 void KillTicketsWidget::refreshList(){
 
     ticketnum_treeview->clear();
-    ticket_db->connect();
-    QList<TicketResumeData> tickets { ticket_db->getTicketResume() };
-    ticket_db->disConnect();
+    m_ticket_db->connect();
+    QList<TicketResumeData> tickets { m_ticket_db->getTicketResume() };
+    m_ticket_db->disConnect();
 
     if ( tickets.isEmpty() )  return;
 
     for ( TicketResumeData& ticket : tickets){
         auto item = new QTreeWidgetItem(ticketnum_treeview);
         if (ticket.ticket_state == "cancelado")
-            item->setIcon(ResumeSection::Icon, anulation_pixmap);
+            item->setIcon(ResumeSection::Icon, m_canceled_pixmap);
         else if ( ticket.ticket_state == "cobrado" )
-            item->setIcon(ResumeSection::Icon,  null_pixmap);
+            item->setIcon(ResumeSection::Icon,  m_null_pixmap);
         else if ( ticket.ticket_state == "facturado" )
             item->setIcon(ResumeSection::Icon, invoice_pixmap);
 
@@ -146,7 +146,7 @@ void KillTicketsWidget::showEvent(QShowEvent *event){
         ticketnum_treeview->topLevelItem(0)->setHidden(false);
 
     XmlConfig xml;
-    if (event)  order->updateOrder(&xml);
+    if (event)  m_order_view->updateOrder(&xml);
     QFrame::showEvent(event);
 }
 
@@ -167,9 +167,9 @@ void KillTicketsWidget::handleTicketSelected() {
     auto ticket_id = selected_item->text(1).toInt();
 
     /* Check if the ticket has negative item */
-    ticket_db->connect();
+    m_ticket_db->connect();
 
-    bool ticket_is_cancelled = ticket_db->ticketHasNegative(QString::number(ticket_id));
+    bool ticket_is_cancelled = m_ticket_db->ticketHasNegative(QString::number(ticket_id));
     trash_button->setEnabled (!ticket_is_cancelled);
 
     auto  state = selected_item->text(5);
@@ -193,10 +193,10 @@ void KillTicketsWidget::handleTicketSelected() {
     emit genericDataSignal (GDATASIGNAL::SETCORE_MODE, &xml);
 
     /* Get the ticket and Update the command */
-    XmlConfig xml2  = ticket_db->getTicketFromDatabase(ticket_id);
-    order->updateOrder(&xml2);
-    order->contentView()->selectFirst();
-    ticket_db->disConnect();
+    XmlConfig xml2  = m_ticket_db->getTicketFromDatabase(ticket_id);
+    m_order_view->updateOrder(&xml2);
+    m_order_view->contentView()->selectFirst();
+    m_ticket_db->disConnect();
 }
 
 void KillTicketsWidget::deleteTicket(){
@@ -206,9 +206,9 @@ void KillTicketsWidget::deleteTicket(){
 
     tid = item->text(1).toInt ();
 
-    ticket_db->connect();
-    XmlConfig xml = ticket_db->getTicketFromDatabase (tid);
-    ticket_db->disConnect();
+    m_ticket_db->connect();
+    XmlConfig xml = m_ticket_db->getTicketFromDatabase (tid);
+    m_ticket_db->disConnect();
 
     xml.doWrite("employee.dni", authCore->userId());
     xml.doWrite("employee.name", authCore->userName());
@@ -225,7 +225,7 @@ void KillTicketsWidget::deleteTicket(){
 void KillTicketsWidget::rejectChange(){
     XmlConfig xml;
     xml.createElement("name", SalesScreen::ADMIN_MENU);
-    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SETPAGE, &xml);
+    emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 }
 
 void KillTicketsWidget::setTicketNegative (XmlConfig *xml) {
@@ -251,9 +251,9 @@ void KillTicketsWidget::printTicket(){
     auto tickect_id = item->text(1).toInt();
 
     /* Get the ticket */
-    ticket_db->connect();
-    XmlConfig xml = ticket_db->getTicketFromDatabase(tickect_id);
-    ticket_db->disConnect();
+    m_ticket_db->connect();
+    XmlConfig xml = m_ticket_db->getTicketFromDatabase(tickect_id);
+    m_ticket_db->disConnect();
 
     /* Update the command */
     if (xml.wellFormed()){
@@ -286,35 +286,35 @@ void KillTicketsWidget::printInvoice(){
     if ( ticket_state == "cancelado" ) return;
 
     if (ticket_state == "cobrado"){ // charged
-        ticket_db->connect();
-        invoice_id = ticket_db->getNextInvoiceVal();
-        ticket_db->disConnect();
+        m_ticket_db->connect();
+        invoice_id = m_ticket_db->getNextInvoiceVal();
+        m_ticket_db->disConnect();
 
         if (invoice_id < 0) return;
 
-        ticket_db->connect();
-        bool is_ticket_invoiced = ticket_db->groupInvoiceWithTicket(tickect_id, invoice_id);
-        ticket_db->disConnect();
+        m_ticket_db->connect();
+        bool is_ticket_invoiced = m_ticket_db->groupInvoiceWithTicket(tickect_id, invoice_id);
+        m_ticket_db->disConnect();
 
         if (!is_ticket_invoiced){
-            ticket_db->connect();
-            ticket_db->setNextInvoiceVal(invoice_id);
-            ticket_db->disConnect();
+            m_ticket_db->connect();
+            m_ticket_db->setNextInvoiceVal(invoice_id);
+            m_ticket_db->disConnect();
             return;
         }
     }
     else if ( ticket_state == "facturado" ){ //invoiced
-        ticket_db->connect();
-        invoice_id = ticket_db->getInvoiceFromTicket(tickect_id);
-        ticket_db->disConnect();
+        m_ticket_db->connect();
+        invoice_id = m_ticket_db->getInvoiceFromTicket(tickect_id);
+        m_ticket_db->disConnect();
 
         if (invoice_id < 0) return;
     }
 
     if ( tickect_id >= 0 && invoice_id >=0 ){
-        ticket_db->connect();
-        XmlConfig xml = ticket_db->getTicketFromDatabase(tickect_id);
-        ticket_db->disConnect();
+        m_ticket_db->connect();
+        XmlConfig xml = m_ticket_db->getTicketFromDatabase(tickect_id);
+        m_ticket_db->disConnect();
 
         xml.delDomain();
         xml.createElement("invoicenumber", QString::number(invoice_id));

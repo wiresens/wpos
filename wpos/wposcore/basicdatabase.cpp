@@ -16,7 +16,7 @@
  ***************************************************************************/
 
 #include "basicdatabase.h"
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 #include <QSqlError>
 #include <QFile>
 

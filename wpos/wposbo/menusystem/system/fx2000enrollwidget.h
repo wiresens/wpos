@@ -25,7 +25,7 @@ class FX2000EnrollWidget :
     Q_OBJECT
 
 public:
-    explicit FX2000EnrollWidget(QWidget *parent=0, const QString& name = QString());
+    explicit FX2000EnrollWidget(QWidget *parent=0, const QString& name = QString{});
     ~FX2000EnrollWidget();
 
     QString getId();

@@ -20,7 +20,7 @@
 #include <wposcore/genericsignalmanager.h>
 #include <wposcore/config.h>
 
-#include <xmlconfig.h>
+#include <libbslxml/xmlconfig.h>
 
 #include <QDateTime>
 #include <QString>
