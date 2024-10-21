@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>AuthenticatorDialog</class>
+ <widget class="QWidget" name="AuthenticatorDialog">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>550</width>
+    <height>220</height>
+   </rect>
+  </property>
+  <property name="sizePolicy">
+   <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+    <horstretch>0</horstretch>
+    <verstretch>0</verstretch>
+   </sizepolicy>
+  </property>
+  <property name="minimumSize">
+   <size>
+    <width>550</width>
+    <height>220</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>550</width>
+    <height>220</height>
+   </size>
+  </property>
+  <property name="windowTitle">
+   <string>Login</string>
+  </property>
+  <widget class="QWidget" name="layoutWidget">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>60</y>
+     <width>391</width>
+     <height>71</height>
+    </rect>
+   </property>
+   <layout class="QFormLayout" name="greeterLayout">
+    <property name="formAlignment">
+     <set>Qt::AlignCenter</set>
+    </property>
+    <item row="0" column="0">
+     <widget class="QLabel" name="login_label">
+      <property name="text">
+       <string>Login  :</string>
+      </property>
+     </widget>
+    </item>
+    <item row="0" column="1">
+     <widget class="QLineEdit" name="login">
+      <property name="maxLength">
+       <number>64</number>
+      </property>
+      <property name="placeholderText">
+       <string>Login</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="0">
+     <widget class="QLabel" name="password_label">
+      <property name="text">
+       <string>Password</string>
+      </property>
+     </widget>
+    </item>
+    <item row="1" column="1">
+     <widget class="QLineEdit" name="password">
+      <property name="maxLength">
+       <number>64</number>
+      </property>
+      <property name="echoMode">
+       <enum>QLineEdit::Password</enum>
+      </property>
+      <property name="placeholderText">
+       <string>Password</string>
+      </property>
+     </widget>
+    </item>
+   </layout>
+  </widget>
+  <widget class="CaptionWidget" name="infoFrame">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>140</y>
+     <width>391</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="CaptionWidget" name="caption">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>20</y>
+     <width>391</width>
+     <height>31</height>
+    </rect>
+   </property>
+  </widget>
+  <widget class="CommandWidget" name="cmd">
+   <property name="geometry">
+    <rect>
+     <x>80</x>
+     <y>180</y>
+     <width>391</width>
+     <height>31</height>
+    </rect>
+   </property>
+   <property name="frameShape">
+    <enum>QFrame::StyledPanel</enum>
+   </property>
+   <property name="frameShadow">
+    <enum>QFrame::Raised</enum>
+   </property>
+  </widget>
+ </widget>
+ <customwidgets>
+  <customwidget>
+   <class>CaptionWidget</class>
+   <extends>QFrame</extends>
+   <header location="global">widget/caption_widget.h</header>
+   <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>CommandWidget</class>
+   <extends>QFrame</extends>
+   <header>windows/command_widget.h</header>
+   <container>1</container>
+  </customwidget>
+ </customwidgets>
+ <resources/>
+ <connections/>
+ <slots>
+  <slot>accept()</slot>
+  <slot>reject()</slot>
+ </slots>
+</ui>
