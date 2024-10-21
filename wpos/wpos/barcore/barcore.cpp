@@ -209,7 +209,8 @@ bool BarCore::setProduct(XmlConfig *product){
     m_xml->pushDomain();
     product->delDomain();
     //if the xml have no product or no product.articles delete the xml and return.
-    if ((!product->setDomain("product"))||(!product->howManyTags("articles"))){
+    if ( !product->setDomain("product") ||
+        !product->howManyTags("articles")){
         return false;
     }
 
@@ -220,7 +221,6 @@ bool BarCore::setProduct(XmlConfig *product){
     if (!m_xml->setDomain("products")){
         m_xml->createElementSetDomain("products");
     }
-
 
     m_xml->createElementSetDomain("product");
     setTimeStamp("ordertime");
