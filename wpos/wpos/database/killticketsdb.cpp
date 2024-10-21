@@ -83,8 +83,8 @@ bool KillTicketsDB::setNextInvoiceVal(int val){
     return true;
 }
 
-QList<TicketResumeData> KillTicketsDB::getTicketResume(){
-    QList<TicketResumeData> ticketResumes;
+TicketResumes KillTicketsDB::getTicketResume(){
+    TicketResumes ticketResumes;
     if (isConnected())  connect();
 
     QString sql  {"SELECT ticket_code, employee_name, employee_id, end_time, total, ticket_state "};
@@ -110,9 +110,9 @@ QList<TicketResumeData> KillTicketsDB::getTicketResume(){
     return ticketResumes;
 }
 
-QList<TicketResumeData> KillTicketsDB::getReceiptResume(QString employee_id){
+TicketResumes KillTicketsDB::getReceiptResume(QString employee_id){
 
-    QList<TicketResumeData> ticketResume;
+    TicketResumes ticketResume;
 
     if ( isConnected()){
         QString sql {"SELECT employee_id, start_time, blocked, name, description "};
@@ -141,9 +141,9 @@ QList<TicketResumeData> KillTicketsDB::getReceiptResume(QString employee_id){
     return ticketResume;
 }
 
-QList<TicketResumeData> KillTicketsDB::getReceiptResume(){
+TicketResumes KillTicketsDB::getReceiptResume(){
 
-    QList<TicketResumeData> ticketResume;
+    TicketResumes ticketResume;
 
     if (isConnected()){
         QString sql  {"SELECT employee_id, start_time, blocked, name, description "};

@@ -91,16 +91,16 @@ protected:
     bool refreshAndShow();
     QStringList getUsedTableCodes();
 
-    using TicketsResumes = QVector<TicketResumeData>;
+    using TicketResumes = QVector<TicketResumeData>;
 
-    virtual TicketsResumes
+    virtual TicketResumes
     employeeReceiptResume(const QString& employee_id);
 
-    virtual TicketsResumes
+    virtual TicketResumes
     employeeReceiptResume();
 
 private :
-    TicketsResumes
+    TicketResumes
     receiptResumeFromXml(XmlConfig xml);
     void showMenu();
 

@@ -200,7 +200,7 @@ void ReceiptRecoverWidget::refreshList(){
 
     //Here we talk to D-Bus to retrive the receipt resume
     ticketnum_treeview->clear();
-    TicketsResumes tickets;
+    TicketResumes tickets;
 
     if ( ! allusers_button->isDown() )
         tickets =  employeeReceiptResume();
@@ -440,8 +440,9 @@ void ReceiptRecoverWidget::setUseLounge(bool enable){
 
 QStringList ReceiptRecoverWidget::getUsedTableCodes(){
 
+    TicketResumes tickets;
     m_ticket_db->connect();
-        QList<TicketResumeData> tickets  {m_ticket_db->getReceiptResume()};
+    // tickets = m_ticket_db->getReceiptResume();
     m_ticket_db->disConnect();
 
     QStringList table_codes;
@@ -568,19 +569,19 @@ bool ReceiptRecoverWidget::eventFilter(
     return filtered;
 }
 
-ReceiptRecoverWidget::TicketsResumes
+ReceiptRecoverWidget::TicketResumes
 ReceiptRecoverWidget::employeeReceiptResume(
     const QString& employee_id)
 {
     return receiptResumeFromXml( m_receiptQuerier->getReceiptResume(employee_id) );
 }
 
-ReceiptRecoverWidget::TicketsResumes
+ReceiptRecoverWidget::TicketResumes
 ReceiptRecoverWidget::employeeReceiptResume(){
     return receiptResumeFromXml(m_receiptQuerier->getReceiptResume());
 }
 
-ReceiptRecoverWidget::TicketsResumes
+ReceiptRecoverWidget::TicketResumes
 ReceiptRecoverWidget::receiptResumeFromXml(XmlConfig xml)
 {
     QVector<TicketResumeData> ticket_resumes;

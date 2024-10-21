@@ -30,8 +30,10 @@ struct TicketResumeData{
     bool receipt_state;
 };
 
+using TicketResumes = QVector<TicketResumeData>;
+
 class KillTicketsDB : public BasicDatabase {
-public:
+public:  
     KillTicketsDB(
         const QString& connection,
         const QString& hostname,
@@ -52,9 +54,9 @@ public:
     /**
     *       get a list with a resume of all tickets
     */
-    QList<TicketResumeData> getTicketResume();
-    QList<TicketResumeData> getReceiptResume(QString employee_id);
-    QList<TicketResumeData> getReceiptResume();
+    TicketResumes getTicketResume();
+    TicketResumes getReceiptResume(QString employee_id);
+    TicketResumes getReceiptResume();
 
     /**
     *       @param a qstring with the ticket_code in a QString or a int with the ticket
