@@ -18,15 +18,6 @@
 #include <QString>
 #include <QList>
 
-template<typename T> class QList;
-template<typename Key, typename Value> class QMap;
-
-template <typename Value>
-using QPtrMap = QMap<QString, Value*>;
-
-template <typename Value>
-using QPtrList = QList<Value*>;
-
 struct ProductOptionData{
     QString option_type;
     QString description_type;
@@ -64,7 +55,7 @@ public:
 
     ProductOptionData* getOptionType(const QString& option_type);
 
-    QPtrList<ProductOptionData>* getAllOptions();
+    QList<ProductOptionData*>* getAllOptions();
 
     QStringList* getOptionTypes();
 

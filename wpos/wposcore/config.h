@@ -76,7 +76,7 @@ struct cfg{
     static const QString CFG_XML_DIR;
     static const QString CFG_DTD_DIR;
     static const QString RESOURCE_DIR;
-    static const QString PICTURE_DIR;
+    static const QString AVATAR_DIR;
     static const QString PRODUCT_DIR;
     static const QString CONTROLS_DIR;
     static const QString CONTROLS_32_DIR;

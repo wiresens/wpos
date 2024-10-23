@@ -52,20 +52,19 @@ QMap<cfg::XMLKey, QString>   cfg::m_xml_key_map{
     {XMLKey::PrinterTotal,   cfg::PRINTER_TOTAL_XML}
 };
 
-const QString cfg::CFG_XML_DIR   {"xmldocs:/etc/wpos/wpos/"};
-const QString cfg::CFG_DTD_DIR   {"dtddocs:/etc/wpos/wpos/dtds/"};
+const QString cfg::CFG_XML_DIR    {"xmldocs:/etc/wpos/wpos/"};
+const QString cfg::CFG_DTD_DIR    {"dtddocs:/etc/wpos/wpos/dtds/"};
 
 const QString cfg::PRODUCT_DIR    {"share/wpos/wpos/products/"};
 const QString cfg::CONTROLS_DIR   {"share/wpos/wpos/controls/"};
 const QString cfg::PAYMENT_DIR    {"share/wpos/wpos/payments/"};
+const QString cfg::AVATAR_DIR     {"share/wpos/wpos/avatars/"};
 
-const QString cfg::RESOURCE_DIR   {"/usr/share/wpos/"};
-const QString cfg::PICTURE_DIR    {"/usr/share/wpos/wpos/pictures/"};
-const QString cfg::CONTROLS_32_DIR{"/usr/share/wpos/wposbo/32x32/"};
-const QString cfg::CONTROLS_48_DIR{"/usr/share/wpos/wposbo/48x48/"};
-const QString cfg::CONTROLS_64_DIR{"/usr/share/wpos/wposbo/64x64/"};
-const QString cfg::HANDS_DIR      {"/usr/share/wpos/wposbo/hands/"};
-
+const QString cfg::RESOURCE_DIR   {"share/wpos/"};
+const QString cfg::CONTROLS_32_DIR{"share/wpos/wposbo/32x32/"};
+const QString cfg::CONTROLS_48_DIR{"share/wpos/wposbo/48x48/"};
+const QString cfg::CONTROLS_64_DIR{"share/wpos/wposbo/64x64/"};
+const QString cfg::HANDS_DIR      {"share/wpos/wposbo/hands/"};
 
 QString cfg::xmlFileByName(const QString& file){
     return QString(CFG_XML_DIR).append(file);

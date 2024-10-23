@@ -45,7 +45,7 @@ public:
 
     ~ProductScreenStack();
 
-    virtual bool initScreenStack(XmlConfig *xml);
+    virtual bool initScreenStack(XmlConfig &xml);
     virtual bool initScreenStack(const QString& xmlDescriptionFile);
     QString visibleScreenName();
 
@@ -66,7 +66,7 @@ signals:
 public slots:
     bool reset();
     bool remove(const QString& screen_name);
-    void addScreen(const QString& screen_name, XmlConfig *xml);
+    void addScreen(const QString& screen_name, XmlConfig &xml);
     bool setScreen(const QString& screen_name);
     bool setDefaultScreen();
 

@@ -28,8 +28,6 @@
 #include <QStyleOptionButton>
 #include <QtGlobal>
 
-#include <iostream>
-
 const QString& END_METAPRODUCT = "solo";
 const QString UNKNOWN {"STRANGER"};
 
@@ -65,27 +63,25 @@ Product::Product(
 
 Product::Product(
     const QString& name,
-    XmlConfig *xmlDescription,
-    QWidget *parent):
-
-    Product(name, parent)
+    XmlConfig &xml,
+    QWidget *parent)
+    :Product(name, parent)
 {
-    initProduct(name , xmlDescription);
+    initProduct(name , xml);
 }
 
 Product::Product(
     const QString& name,
-    const QString& xmlDescriptionFile,
-    QWidget *parent):
-
-    Product(name, parent)
+    const QString& xmlfile,
+    QWidget *parent)
+    :Product(name, parent)
 {
     //check if the file exists
-    XmlConfig xml (xmlDescriptionFile);
-    if ( !QFile::exists(xmlDescriptionFile) || !xml.wellFormed() )
+    XmlConfig xml (xmlfile);
+    if ( !QFile::exists(xmlfile) || !xml.wellFormed() )
         setProductName(UNKNOWN);  // And throw
     else
-        initProduct(base_product_name, &xml);
+        initProduct(base_product_name, xml);
 }
 
 Product::~Product(){
@@ -107,7 +103,7 @@ Product::~Product(){
 
 bool  Product::initProduct(
     const QString& name,
-    XmlConfig *xml)
+    XmlConfig &xml)
 {
     QString aux;
     int count, i;
@@ -115,101 +111,100 @@ bool  Product::initProduct(
     RelatedProductGroup *product_data=0;
     ProductExtraInfo *option=0;
 
-    xml->pushDomain();
-    xml->delDomain();
+    xml.pushDomain();
+    xml.delDomain();
 
     if (name.isEmpty()){
-        xml->popDomain();
+        xml.popDomain();
         return false;
     }
 
     setProductName(name);
 
-    if (!xml->setDomain("products")){
-        xml->popDomain();
+    if (!xml.setDomain("products")){
+        xml.popDomain();
         return false;
     }
 
     found = false;
     //foreach product check if it's name is the productName
-    count = xml->howManyTags("product");
+    count = xml.howManyTags("product");
     for(i=0; i < count; i++){
-        aux = xml->readString("product["+ QString::number(i)+"].name");
+        aux = xml.readString("product["+ QString::number(i)+"].name");
         if (aux.isEmpty()) continue;
 
         if (aux == baseName()){
             found = true;
-            xml->setDomain("product["+QString::number(i)+"]");
+            xml.setDomain("product["+QString::number(i)+"]");
             break;
         }
     }
 
-    XmlConfig *aux_xml = new XmlConfig(); //use stack allocated
-    aux_xml->createElement("type", "Productos");
-    aux_xml->createElement("first_id", name);
-    emit genericDataSignal(GDATASIGNAL::REREAD_CONFIG, aux_xml);
-    delete aux_xml;
+    XmlConfig tmp_xml; //use stack allocated
+    tmp_xml.createElement("type", "product");
+    tmp_xml.createElement("first_id", name);
+    emit genericDataSignal(GDATASIGNAL::REREAD_CONFIG, &tmp_xml);
 
     if (!found){
-        xml->popDomain();
+        xml.popDomain();
         return false;
     }
 
     //check if there is a pixmap tag
-    if ( xml->howManyTags("icon") ){
-        aux = xml->readString("icon");
+    if ( xml.howManyTags("icon") ){
+        aux = xml.readString("icon");
         if (!aux.isEmpty()){
             setProductPixmap(aux);
         }
     }
 
-    if ( xml->howManyTags("showtext")){
-        aux = xml->readString("showtext");
+    if ( xml.howManyTags("showtext")){
+        aux = xml.readString("showtext");
         aux = aux.toLower();
         setTextInPixmap( aux == "true");
     }
-    if (xml->howManyTags("fontsize")){
+    if (xml.howManyTags("fontsize")){
         int font_size = 0;
         bool ok = false;
         QString f_size;
 
-        f_size = xml->readString("fontsize");
+        f_size = xml.readString("fontsize");
         font_size = f_size.toInt(&ok);
         if (ok) setDefaultFontSize(font_size);
     }
 
-    if (xml->setDomain("options")){
-        count = xml->howManyTags("option");
+    if (xml.setDomain("options")){
+        count = xml.howManyTags("option");
 
         for(i=0; i< count; i++){
-            xml->setDomain("option["+QString::number(i)+"]");
-            auto optionType = xml->readString("type");
+            xml.setDomain("option["+QString::number(i)+"]");
+            auto optionType = xml.readString("type");
             option = new ProductExtraInfo(optionType);
 
-            for(int j=0; j < xml->howManyTags("value"); j++){
-                optionType = xml->readString("value["+QString::number(j)+"]");
-                if (xml->readAttribute("value["+QString::number(j)+"]","type") == "default")
+            for(int j=0; j < xml.howManyTags("value"); j++){
+                optionType = xml.readString("value["+QString::number(j)+"]");
+                if (xml.readAttribute("value["+QString::number(j)+"]","type") == "default")
                     option->addOption(optionType, true);
                 else
                     option->addOption(optionType);
 
             }
-            xml->releaseDomain("option");
+            xml.releaseDomain("option");
             extraInfos.append( option, option->getOptionType() );
         }
-        xml->releaseDomain("options");
+        xml.releaseDomain("options");
     }
-    count = xml->howManyTags("product");
+    count = xml.howManyTags("product");
     for ( i = 0; i < count; i++){
-        xml->setDomain("product["+QString::number(i)+"]");
+        xml.setDomain("product["+QString::number(i)+"]");
         product_data = new RelatedProductGroup(xml);
 
         //add the product to the list and qdict
         append(product_data);
-        xml->releaseDomain("product",false);
+        xml.releaseDomain("product",false);
     }
-    xml->delDomain();
-    xml->popDomain();
+    xml.delDomain();
+    xml.popDomain();
     return true;
 }
 
@@ -266,7 +261,7 @@ void Product::resizeEvent(QResizeEvent* event){
 bool Product::setProductPixmap(
     const QString& file_name)
 {
-    return setProductPixmap( QPixmap(file_name) ) ;
+    return setProductPixmap( QPixmap("products:" + file_name) ) ;
 }
 
 bool Product::setProductPixmap(

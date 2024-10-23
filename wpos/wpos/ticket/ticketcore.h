@@ -47,7 +47,7 @@ protected:
     QString getProductCode(XmlConfig *xml);
     void fillTicketGaps();
 
-    TicketCoreDB *db{};
+    TicketCoreDB *m_ticket_core_db{};
     PrinterManager *printer{};
     int num_copy{1};
     bool printer_state{false};

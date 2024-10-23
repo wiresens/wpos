@@ -13,11 +13,8 @@
 #ifndef KILLTICKETSDB_H
 #define KILLTICKETSDB_H
 
-#include <basicdatabase.h>
+#include <wposcore/basicdatabase.h>
 #include <QtCore/QList>
-/**
-  *@author BSTeam
-  */
 
 struct TicketResumeData{
     QString ticket_code;
@@ -56,7 +53,7 @@ public:
     */
     TicketResumes getTicketResume();
     TicketResumes getReceiptResume(QString employee_id);
-    TicketResumes getReceiptResume();
+    TicketResumes allReceiptResume();
 
     /**
     *       @param a qstring with the ticket_code in a QString or a int with the ticket

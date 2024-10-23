@@ -187,8 +187,9 @@ QPushButton* GenericButtonGroup::createButton(
 }
 
 QPushButton*
-GenericButtonGroup::createProductButton(XmlConfig &xml,
-                                        QWidget *parent)
+GenericButtonGroup::createProductButton(
+    XmlConfig &xml,
+    QWidget *parent)
 {
     xml.pushDomain();
     auto product_code = xml.readString("product_code");
@@ -203,8 +204,9 @@ GenericButtonGroup::createProductButton(XmlConfig &xml,
 }
 
 QPushButton*
-GenericButtonGroup::createGenericButton(XmlConfig &xml,
-                                        QWidget *parent)
+GenericButtonGroup::createGenericButton(
+    XmlConfig &xml,
+    QWidget *parent)
 {
     xml.pushDomain();
     auto text = xml.readString("text");
@@ -288,12 +290,13 @@ GenericButtonGroup::createGenericButton(XmlConfig &xml,
     if (is_toggle)  button->toggle();
 
     xml.popDomain();
-    return ((QPushButton *)button);
+    return button;
 }
 
 QPushButton*
-GenericButtonGroup::createMenuButton(XmlConfig &xml,
-                                     QWidget *parent)
+GenericButtonGroup::createMenuButton(
+    XmlConfig &xml,
+     QWidget *parent)
 {
     xml.pushDomain();
     auto orientation = xml.readString("orientation");
@@ -308,7 +311,7 @@ GenericButtonGroup::createMenuButton(XmlConfig &xml,
     MenuButton *menu_button {};
     if (orientation == "hmenu")
         menu_button = new MenuButton(Qt::Horizontal, parent, name_id);
-    else if (orientation == "vmenu")
+    else/* if (orientation == "vmenu")*/
         menu_button = new MenuButton(Qt::Vertical, parent, name_id);
 
     for ( auto i = 0; i < xml.howManyTags("item"); i++ ){
@@ -330,8 +333,9 @@ GenericButtonGroup::createMenuButton(XmlConfig &xml,
 }
 
 QPushButton*
-GenericButtonGroup::createScreensButton(XmlConfig &xml,
-                                        QWidget *parent)
+GenericButtonGroup::createScreensButton(
+    XmlConfig &xml,
+    QWidget *parent)
 {
     xml.pushDomain();
 
@@ -339,8 +343,10 @@ GenericButtonGroup::createScreensButton(XmlConfig &xml,
     if ( tmp_str.isEmpty() ) tmp_str = "hmenu";
 
     MenuButton *menu_button {};
-    if (tmp_str == "hmenu") menu_button = new MenuButton(Qt::Horizontal, parent, "Screens");
-    else if (tmp_str == "vmenu") menu_button = new MenuButton(Qt::Vertical, parent, "Screens");
+    if (tmp_str == "hmenu")
+        menu_button = new MenuButton(Qt::Horizontal, parent, "Screens");
+    else /*if (tmp_str == "vmenu")*/
+        menu_button = new MenuButton(Qt::Vertical, parent, "Screens");
 
     auto iconset = xml.readString("iconset");
     if (!iconset.isEmpty()) menu_button->setIcon(QPixmap(iconset));
@@ -408,8 +414,9 @@ GenericButtonGroup::createDefaultScreenButton(
 }
 
 QPushButton*
-GenericButtonGroup::createOptionsButton(XmlConfig &xml,
-                                        QWidget *parent)
+GenericButtonGroup::createOptionsButton(
+    XmlConfig &xml,
+    QWidget *parent)
 {
     AuxDB db("AuxDBConnection", cfg::xmlFileByKey(cfg::XMLKey::Database));
     db.connect();
@@ -452,10 +459,13 @@ GenericButtonGroup::createOptionsButton(XmlConfig &xml,
         }
     }
     auto iconFile = xml.readString("iconset");
-    if (!iconFile.isEmpty()) menu->setIcon(QPixmap(iconFile));
+    if (!iconFile.isEmpty())
+        menu->setIcon(QPixmap(iconFile));
 
     auto pixmapFile = xml.readString("pixmap");
-    if (!pixmapFile.isEmpty()) menu->setIcon(QPixmap(pixmapFile));
+    if (!pixmapFile.isEmpty())
+        menu->setIcon(QPixmap(pixmapFile));
+
     return ((QPushButton *) menu);
 }
 

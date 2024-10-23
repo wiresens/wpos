@@ -24,7 +24,7 @@ class QString;
 class RelatedProductGroup {
 
 protected:
-    explicit RelatedProductGroup(XmlConfig *xml);
+    explicit RelatedProductGroup(XmlConfig &xml);
     RelatedProductGroup();
 
 public: 
@@ -32,7 +32,7 @@ public:
 
     virtual void setProductName(const QString& _name);
 
-    bool initProduct(XmlConfig *xml);
+    bool initProduct(XmlConfig &xml);
     void reset();
 
     void append(RelatedProductGroup *relative);

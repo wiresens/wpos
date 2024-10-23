@@ -14,7 +14,6 @@
 #include "productmodule_adaptor.h"
 
 #include "database/productsmoduledb.h"
-#include "database/productoptionsmoduledb.h"
 
 #include <wposcore/config.h>
 

@@ -85,7 +85,7 @@ bool KillTicketsDB::setNextInvoiceVal(int val){
 
 TicketResumes KillTicketsDB::getTicketResume(){
     TicketResumes ticketResumes;
-    if (isConnected())  connect();
+    if (!isConnected())  connect();
 
     QString sql  {"SELECT ticket_code, employee_name, employee_id, end_time, total, ticket_state "};
     sql += "FROM get_tickets();";
@@ -113,59 +113,54 @@ TicketResumes KillTicketsDB::getTicketResume(){
 TicketResumes KillTicketsDB::getReceiptResume(QString employee_id){
 
     TicketResumes ticketResume;
+    if (!isConnected())  connect();
+    QString sql {"SELECT employee_id, start_time, blocked, name, description "};
+    sql += "FROM orders JOIN staff USING (employee_id) WHERE employee_id = '"+employee_id+"';";
 
-    if ( isConnected()){
-        QString sql {"SELECT employee_id, start_time, blocked, name, description "};
-        sql += "FROM orders JOIN staff USING (employee_id) WHERE employee_id = '"+employee_id+"';";
+    QSqlQuery query =  QSqlQuery(sql, dbHandle());
+    if ( query.isActive()){
+        QSqlError error{query.lastError()};
+        if ( error.type()!= QSqlError::NoError)
+            qDebug() << error.nativeErrorCode()+": "+ error.text();
 
-        QSqlQuery query =  QSqlQuery(sql, dbHandle());
-
-        if ( query.isActive()){
-
-            QSqlError error{query.lastError()};
-            if ( error.type()!= QSqlError::NoError)
-                qDebug() << error.nativeErrorCode()+": "+ error.text();
-
-            while(query.next()){
-                TicketResumeData ticket;
-                ticket.employee_id = query.value(0).toString();
-                ticket.timestamp = query.value(1).toString();
-                ticket.timestamp.replace("T"," ");
-                ticket.receipt_state = query.value(2).toBool();
-                ticket.employee_name = query.value(3).toString();
-                ticket.table_code = query.value(4).toString();
-                ticketResume.append(ticket);
-            }
+        while(query.next()){
+            TicketResumeData ticket;
+            ticket.employee_id = query.value(0).toString();
+            ticket.timestamp = query.value(1).toString();
+            ticket.timestamp.replace("T"," ");
+            ticket.receipt_state = query.value(2).toBool();
+            ticket.employee_name = query.value(3).toString();
+            ticket.table_code = query.value(4).toString();
+            ticketResume.append(ticket);
         }
     }
     return ticketResume;
 }
 
-TicketResumes KillTicketsDB::getReceiptResume(){
+TicketResumes KillTicketsDB::allReceiptResume(){
 
     TicketResumes ticketResume;
+    if (!isConnected())  connect();
 
-    if (isConnected()){
-        QString sql  {"SELECT employee_id, start_time, blocked, name, description "};
-        sql += "FROM orders JOIN staff USING (employee_id);";
-        //       query += "FROM orders GROUP BY employee_id ORDER BY employee_id,start_time ;";
+    QString sql  {"SELECT employee_id, start_time, blocked, name, description "};
+    sql += "FROM orders JOIN staff USING (employee_id);";
+    //       query += "FROM orders GROUP BY employee_id ORDER BY employee_id,start_time ;";
 
-        QSqlQuery query =  QSqlQuery(sql, dbHandle());
-        if ( query.isActive()){
-            QSqlError error{query.lastError()};
-            if ( error.type()!= QSqlError::NoError)
-                qDebug() << error.nativeErrorCode()+": "+ error.text();
+    QSqlQuery query =  QSqlQuery(sql, dbHandle());
+    if ( query.isActive()){
+        QSqlError error{query.lastError()};
+        if ( error.type()!= QSqlError::NoError)
+            qDebug() << error.nativeErrorCode()+": "+ error.text();
 
-            while(query.next()){
-                TicketResumeData ticket;
-                ticket.employee_id = query.value(0).toString();
-                ticket.timestamp = query.value(1).toString();
-                ticket.timestamp.replace("T"," ");
-                ticket.receipt_state = query.value(2).toBool();
-                ticket.employee_name = query.value(3).toString();
-                ticket.table_code = query.value(4).toString();
-                ticketResume.append(ticket);
-            }
+        while(query.next()){
+            TicketResumeData ticket;
+            ticket.employee_id = query.value(0).toString();
+            ticket.timestamp = query.value(1).toString();
+            ticket.timestamp.replace("T"," ");
+            ticket.receipt_state = query.value(2).toBool();
+            ticket.employee_name = query.value(3).toString();
+            ticket.table_code = query.value(4).toString();
+            ticketResume.append(ticket);
         }
     }
     return ticketResume;
@@ -173,8 +168,7 @@ TicketResumes KillTicketsDB::getReceiptResume(){
 
 bool KillTicketsDB::ticketHasNegative (int ticket){
 
-    if (!this->isConnected ())
-        return true;
+    if (!isConnected ()) return true;
 
     QString query{ "SELECT price FROM ticket_items WHERE ticket_code = "+ QString::number(ticket)+";"};
     QSqlQuery query_obj =  QSqlQuery (query, this->dbHandle());

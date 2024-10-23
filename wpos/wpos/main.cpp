@@ -50,21 +50,24 @@ void save_reportman_cfg(
     const QString& host,
     const QString& db_name,
     const QString& user,
-    const QString& passwd);
+    const QString& passwd,
+    const QString& port);
 
 static const QString APP_VERSION    {"2.0-rc1"};
 static const QString WINDOW_TITLE   {"wPOS"};
-static const QString CFG_XML_DIR    {"etc/wpos/wpos/"};
-static const QString CFG_DTD_DIR    {"etc/wpos/wpos/dtds/"};
-static const QString PIXMAP_DIR     {"share/wpos/"};
+// static const QString CFG_XML_DIR    {"etc/wpos/wpos/"};
+// static const QString CFG_DTD_DIR    {"etc/wpos/wpos/dtds/"};
+// static const QString PIXMAP_DIR     {"share/wpos/"};
 
 int main(int argc, char *argv[]){
 
     QApplication app(argc, argv);
     auto appPath = app.applicationDirPath();
     QDir::setSearchPaths( "controls", QStringList( appPath + "/" + cfg::CONTROLS_DIR ) );
+    QDir::setSearchPaths( "controls_32", QStringList( appPath + "/" + cfg::CONTROLS_32_DIR ) );
     QDir::setSearchPaths( "products", QStringList( appPath + "/" + cfg::PRODUCT_DIR ) );
     QDir::setSearchPaths( "payments", QStringList( appPath + "/" + cfg::PAYMENT_DIR) );
+    QDir::setSearchPaths( "avatars",  QStringList( appPath + "/" + cfg::AVATAR_DIR) );
 
     QDir::setSearchPaths( "xmldocs",  QStringList( appPath ) );
     QDir::setSearchPaths( "dtddocs",  QStringList( appPath ) );
@@ -82,12 +85,19 @@ int main(int argc, char *argv[]){
     QCommandLineOption databaseOp({ {"d","database"}, app.tr("Database name."),"<database>"});
     QCommandLineOption userOp({ {"u","user"}, app.tr("Database User."),"<user>"});
     QCommandLineOption passwdOp({ {"p","passwd"}, app.tr("User password."),"<password>"});
+    QCommandLineOption portOp({ {"P","port"}, app.tr("Database port."),"<port>"});
     QCommandLineOption cashboxOp({ {"c","cashbox"}, app.tr("Device to which the drawer is connected."),"<device>"});
     QCommandLineOption cashtypeOp({ {"t","cashtype"}, app.tr("Drawer type <serial,cash_drawer,p_samsung_350>:Cash drawer is the drawer\n\that is connected to a printer port or similar, the serial type are \n\the drawers that are connected to serial ports. By default the type is serial."),"<type>","serial"});
 
     parser.addOptions(
-        {hostOp, databaseOp, userOp,
-         passwdOp, cashboxOp, cashtypeOp
+        {
+            hostOp,
+            databaseOp,
+            userOp,
+            passwdOp,
+            portOp,
+            cashboxOp,
+            cashtypeOp
         }
     );
 
@@ -114,7 +124,7 @@ int main(int argc, char *argv[]){
         cashtype = CASHBOX_TYPE;
     }
 
-    QString database, host, user, passwd;
+    QString database, host, user, passwd, port;
     if (parser.isSet(hostOp))
         host = parser.value(hostOp);
 
@@ -126,6 +136,9 @@ int main(int argc, char *argv[]){
 
     if (parser.isSet(passwdOp))
         passwd = parser.value(passwdOp);
+
+    if (parser.isSet(portOp))
+        port = parser.value(portOp);
 
     {
         // File containing db connection string.
@@ -142,11 +155,13 @@ int main(int argc, char *argv[]){
         if ( !database.isEmpty() )  xml.doWrite("dbname",database);
         if ( !user.isEmpty() )      xml.doWrite("user",user);
         if ( !passwd.isEmpty() )    xml.doWrite("passwd",passwd);
+        if ( !port.isEmpty() )      xml.doWrite("port", port);
 
         host     =  xml.readString("hostname");
         database =  xml.readString("dbname");
         user     =  xml.readString("user");
         passwd   =  xml.readString("passwd");
+        port     =  xml.readString("port");
         xml.save();
     }
 
@@ -198,9 +213,9 @@ int main(int argc, char *argv[]){
         }
     }
 
-    save_reportman_cfg(host, database, user, passwd);
+    save_reportman_cfg(host, database, user, passwd, port);
 
-    file_manager = new FileManager(nullptr, "file_manager");
+    file_manager = new FileManager(nullptr, "FileManager");
     QStringList cfg_files{
         "advanced_order_description.xml",
         "order_description.xml",
@@ -273,12 +288,13 @@ save_reportman_cfg(
     const QString& host,
     const QString& db_name,
     const QString& user,
-    const QString& passwd)
+    const QString& passwd,
+    const QString& port)
 {
     QDir dir = QDir::current();
-    if (!dir.cd(".borland") && !dir.mkdir(".borland") ){
+    if ( !dir.mkdir(".borland") && !dir.cd(".borland") ){
         qDebug() << "Warning : There is no borland directory in "
-                 << dir.path().toStdString()
+                 << dir.path()
                  << " and could not be created";
         return;
     }
@@ -298,11 +314,11 @@ save_reportman_cfg(
     stream << "[caja]\n";
     stream << "DriverName=ZeosLib\n";
     stream << "Database Protocol=postgresql\n";
-    stream << "HostName="<< host.toLatin1() <<"\n";
-    stream << "Database="<< db_name.toLatin1() <<"\n";
-    stream << "User_Name="<< user.toLatin1() <<"\n";
-    stream << "Password="<< passwd.toLatin1() <<"\n";
-    stream << "Port=5432\n";
+    stream << "HostName="<< host <<"\n";
+    stream << "Database="<< db_name <<"\n";
+    stream << "User_Name="<< user <<"\n";
+    stream << "Password="<< passwd <<"\n";
+    stream << "Port="<< port <<"\n";
     stream << "Zeos Translsolation=None\n";
     stream << "Property1=\n";
     stream << "Property2=\n";

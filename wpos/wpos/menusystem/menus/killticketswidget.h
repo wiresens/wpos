@@ -22,7 +22,7 @@ class XmlConfig;
 class QAbstractButton;
 
 class KillTicketsWidget :
-        public TicketsHandlingWidget
+    public TicketsHandlingWidget
 {
     Q_OBJECT
 

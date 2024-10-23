@@ -39,19 +39,19 @@ public:
 
     ProductScreen(
         const QString& screenName,
-        XmlConfig *xmlDescription,
+        XmlConfig &xml,
         QWidget *parent,
         const QString& name = QString{});
 
     ProductScreen(
         const QString& screenName,
-        const QString& xmlDescriptionFile,
+        const QString& xmlfile,
         QWidget *parent,
         const QString& name = QString{});
 
     ~ProductScreen();
 
-    bool initScreen(const QString& screen_name, XmlConfig *xml);
+    bool initScreen(const QString& screen_name, XmlConfig &xml);
     bool resetScreen();
 
     QString screenName();

@@ -12,18 +12,14 @@
 
 #ifndef PRODUCTOPTIONMODULE_H
 #define PRODUCTOPTIONMODULE_H
-
-#include "productoptionmoduleinterface.h"
-
 #include "database/productoptionsmoduledb.h"
+#include "productoptionmoduleinterface.h"
 
 #include <wposcore/basicdatabase.h>
 #include <libbslxml/xmlconfig.h>
 
 #include <QtCore/QObject>
 #include <QString>
-
-class ProductOptionsModuleDB;
 
 class ProductOptionModule :
         public QObject,
