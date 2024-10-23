@@ -35,8 +35,8 @@
 
 #include <libbslxml/xmlconfig.h>
 
-extern AuthCore     *authCore;
-extern FileManager  *file_manager;
+extern AuthCore     *global_auth_core;
+extern FileManager  *global_file_manager;
 
 AdminWidget::AdminWidget(
     ProductScreenStack *stack,
@@ -203,7 +203,7 @@ void AdminWidget::loadToggleButtonStatus(){
 void AdminWidget::cancelSlot(){
 
     XmlConfig xml;
-    if ( authCore && authCore->userId()  == "1" ){
+    if ( global_auth_core && global_auth_core->userId()  == "1" ){
         xml.createElement("name", MainScreen::LOGIN_SCREEN);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         return;
@@ -241,7 +241,7 @@ void AdminWidget::restoreState( ){
     emit genericSignal(GSIGNAL::LOAD_PRODUCTS);
     emit genericSignal(GSIGNAL::LOAD_OFFERS);
     emit genericSignal(GSIGNAL::LOAD_DEVICES);
-    file_manager->saveFiles();
+    global_file_manager->saveFiles();
     raiseMainWidget();
 }
 

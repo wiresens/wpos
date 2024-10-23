@@ -27,8 +27,8 @@ extern "C"{
 namespace std{}
 using namespace std;
 
-extern QString CASHBOX_DEVICE;
-extern QString CASHBOX_TYPE;
+extern QString global_cashbox_device;
+extern QString global_cashbox_type;
 
 CashDevice::CashDevice(QObject *parent, const QString& name ):
     QObject(parent)
@@ -46,7 +46,7 @@ void CashDevice::initCashDevice(){}
 void CashDevice::genericSignalSlot(const QString& signal_name){
 
     if (signal_name == GSIGNAL::OPEN_CASHBOX){
-        open(CASHBOX_DEVICE, CASHBOX_TYPE);
+        open(global_cashbox_device, global_cashbox_type);
         XmlConfig xml;
         xml.createElement("event_type", "open_cashbox");
         emit genericDataSignal(GDATASIGNAL::EVENTLOG, &xml);

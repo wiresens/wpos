@@ -19,7 +19,7 @@
 #include <wposcore/authentication/crypto_hasher.h>
 #include <libbslxml/xmlconfig.h>
 
-extern AuthCore *authCore;
+extern AuthCore *global_auth_core;
 
 static const uint PIN_CODE_LENGTH {4};
 static const uint AUTH_TIME_SLEEP {750};
@@ -130,13 +130,13 @@ void PinCodeWidget::aquire(){
 void PinCodeWidget::getMatchResults(QString _xml_match_data){
 
     XmlConfig xml;
-    if ( !authCore || !xml.readXmlFromString(_xml_match_data) )  return;
+    if ( !global_auth_core || !xml.readXmlFromString(_xml_match_data) )  return;
 
     auto identity = xml.readString("identity");
     auto similarity = xml.readString("similarity");
     auto fingerprint_path = xml.readString("fingerprint_path");
 
-    if ( identity == authCore->userId() ){
+    if ( identity == global_auth_core->userId() ){
         QTimer::singleShot(AUTH_TIME_SLEEP, this,  &PinCodeWidget::succeeded);
         ui->similarity_progressbar->setValue( (int) ( similarity.toFloat()*100) );
         ui->fingerprint_label->setPixmap(QPixmap(fingerprint_path));
@@ -184,7 +184,7 @@ void PinCodeWidget::cancel(){
     clear();
 
     XmlConfig xml ;
-    if ( authCore  && authCore->userId() == ROOT_ID ){   // go to loginscreen if root user
+    if ( global_auth_core  && global_auth_core->userId() == ROOT_ID ){   // go to loginscreen if root user
         xml.createElement("name", MainScreen::LOGIN_SCREEN);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         return;
@@ -203,10 +203,10 @@ void  PinCodeWidget::succeeded(){
     setGranted(true);
 }
 
-void PinCodeWidget::setGranted(bool granted){
-    XmlConfig xml;
+void PinCodeWidget::setGranted(bool granted){    
     if (granted){
-        xml.delDomain();
+        XmlConfig xml;
+
         xml.createElement("name", SalesScreen::ADMIN_MENU);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
         xml.deleteElement("name");
@@ -222,7 +222,7 @@ void PinCodeWidget::showEvent(QShowEvent *event){
 //    DCOPClient *client= 0;
 //    //check if the user has administration privileges
 
-    if (!authCore) return;
+    if (!global_auth_core) return;
 //    client = kapp->dcopClient();
 //    if (!client->isAttached())
 //        client->attach();

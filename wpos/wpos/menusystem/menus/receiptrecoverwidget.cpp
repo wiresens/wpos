@@ -42,7 +42,7 @@
 #include <QTimer>
 #include <QList>
 
-extern AuthCore *authCore;
+extern AuthCore *global_auth_core;
 
 static const uint ITEMS_PER_PAGE {8};
 static const uint TIME_OUT       {25};
@@ -202,7 +202,7 @@ void ReceiptRecoverWidget::refreshList(){
     if ( ! allusers_button->isDown() )
         tickets =  employeeReceiptResume();
     else
-        tickets = employeeReceiptResume( authCore->userId() );
+        tickets = employeeReceiptResume( global_auth_core->userId() );
 
     if ( tickets.isEmpty() ) return;
 
@@ -476,10 +476,10 @@ void ReceiptRecoverWidget::openOrderKbExitClickedSlot(){
         XmlConfig xml;
         xml.delDomain();
         xml.doWrite("description", m_input_text);
-        auto name = authCore->userName()+" "+authCore->userLastName();
+        auto name = global_auth_core->userName()+" "+global_auth_core->userLastName();
         xml.createElementSetDomain("employee");
         xml.createElement("name",name);
-        xml.createElement("dni", authCore->userId());
+        xml.createElement("dni", global_auth_core->userId());
         xml.delDomain();
 
         auto start_date = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);

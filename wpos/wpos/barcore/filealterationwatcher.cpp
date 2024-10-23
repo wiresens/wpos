@@ -31,10 +31,10 @@
 
 using namespace std;
 
-extern QString CASHBOX_DEVICE;
-extern QString CASHBOX_TYPE;
+extern QString global_cashbox_device;
+extern QString global_cashbox_type;
 
-extern FileManager *file_manager;
+extern FileManager *global_file_manager;
 
 #define INTERFACE_NAME "ReadConfigInterface"
 #define DELAY 1000
@@ -97,7 +97,7 @@ void FileAlterationWatcher::fileDirtySlot(const QString& file_name){
     else if (file_name == cfg::xmlFileByKey(cfg::XMLKey::Devices))
         QTimer::singleShot(DELAY, this, &FileAlterationWatcher::devicesSlot);
 
-    if (file_manager)  file_manager->saveFiles();
+    if (global_file_manager)  global_file_manager->saveFiles();
 }
 
 void FileAlterationWatcher::productFileSlot(){
@@ -200,8 +200,8 @@ void FileAlterationWatcher::realDevices(){
 
         if ( cashbox_type.isEmpty() || cashbox_device.isEmpty()) return;
 
-        CASHBOX_TYPE = cashbox_type;
-        CASHBOX_DEVICE = cashbox_device;
+        global_cashbox_type = cashbox_type;
+        global_cashbox_device = cashbox_device;
     }
     else
         cout << " Problems with the xml" << endl;

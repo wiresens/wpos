@@ -35,9 +35,9 @@
 #include <iostream>
 using namespace std;
 
-extern AuthCore *authCore;
-extern QString CASHBOX_DEVICE;
-extern QString CASHBOX_TYPE;
+extern AuthCore *global_auth_core;
+extern QString global_cashbox_device;
+extern QString global_cashbox_type;
 
 // BarCoreDB BarCore::m_db{"BarCoreConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
 
@@ -121,11 +121,11 @@ void BarCore::setEmployeeInfo(XmlConfig &xml){
     while (xml.howManyTags("employee") != 0)
         xml.deleteElement("employee");
 
-    QString name = authCore->userName()+" "+authCore->userLastName();
+    QString name = global_auth_core->userName()+" "+global_auth_core->userLastName();
 
     xml.createElementSetDomain("employee");
     xml.createElement("name", name);
-    xml.createElement("dni", authCore->userId());
+    xml.createElement("dni", global_auth_core->userId());
 
     xml.delDomain();
     xml.popDomain();
@@ -578,13 +578,13 @@ void BarCore::processCore(const QString& pay_type){
     emit ticket(m_xml);
     reInitialise();
 
-    const char* device_node = CASHBOX_DEVICE.toStdString().c_str();
+    const char* device_node = global_cashbox_device.toStdString().c_str();
     FILE *device = fopen(device_node, "w");
     auto error_msg = "BarCore::processCore(" + pay_type.toStdString() + ")\n";
     error_msg += std::string("Problem while opening the Cash Box device at node " + std::string(device_node));
     if (!device) std::perror(error_msg.c_str());
     else{
-        if ( CASHBOX_TYPE == "cash_drawer"  || CASHBOX_TYPE == "p_samsung_350" ){
+        if ( global_cashbox_type == "cash_drawer"  || global_cashbox_type == "p_samsung_350" ){
             char c[] = { 0x1b, 0x70, 0x00, 0x30, 0x30 };
             fwrite( c, sizeof(char), 5 , device );
         }

@@ -29,7 +29,7 @@
 
 using namespace std;
 
-extern AuthCore *authCore;
+extern AuthCore *global_auth_core;
 
 
 EventLogCore::EventLogCore(QObject *parent,  const QString& name ):
@@ -70,8 +70,8 @@ void EventLogCore::processEventLog(XmlConfig *xml){
         return;
     }
 
-    if (authCore)
-        data.employee_id = authCore->userId();
+    if (global_auth_core)
+        data.employee_id = global_auth_core->userId();
 
     data.event_code = QString::number(db->getNextItemVal());
     data.timestamp = currentDateTimeString();

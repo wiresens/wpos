@@ -52,7 +52,7 @@
 
 #include <libbslxml/xmlconfig.h>
 
-extern AuthCore *authCore;
+extern AuthCore *global_auth_core;
 
 constexpr int SECONDS_STOP {180};
 constexpr int TIMER_RESOLUTION {100};
@@ -85,7 +85,7 @@ SalesScreen::SalesScreen(
     parent->addWidget(this, objectName());
     setSizePolicy(parent->sizePolicy());
 
-    auto idle_filter = new IdleFilter(this, 10);
+    auto idle_filter = new IdleFilter(this, 5);
     qApp->installEventFilter( idle_filter );
     connect( idle_filter, &IdleFilter::appIdled,
         this, &SalesScreen::showGreeter, Qt::QueuedConnection);
@@ -105,8 +105,8 @@ SalesScreen::SalesScreen(
     connect(this, &SalesScreen::splashRequested, &splashScreen, &QSplashScreen::showMessage);
     emit splashRequested(tr("Loading Modules ..."), Qt::AlignBottom | Qt::AlignRight , Qt::darkBlue);
 
-    authCore = new  AuthCore(this, "AuthCore");
-    authCore->loadUserById(ROOT_ID);
+    global_auth_core = new  AuthCore(this, "AuthCore");
+    global_auth_core->loadUserById(ROOT_ID);
 
     //Initialising wPOS core modules
     auto color = Qt::darkBlue;
@@ -274,6 +274,7 @@ void SalesScreen::setDefaultState(){
     emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
 
     enableLateralWidgets(true);
+    showLateralWidgets( true);
 }
 
 void SalesScreen::genericSignalSlot(const QString& signal_name){
@@ -290,11 +291,11 @@ void SalesScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *x
         enableLateralWidgets(enabled);
         showLateralWidgets(enabled);
     }
-    else if ( signal_name == GDATASIGNAL::LATERALWIDGET_SET_VISIBLE){
-        xml->delDomain();
-        auto visible = ( xml->readString("visible") == "true" );
-        showLateralWidgets( visible);
-    }
+    // else if ( signal_name == GDATASIGNAL::LATERALWIDGET_SET_VISIBLE){
+    //     xml->delDomain();
+    //     auto visible = ( xml->readString("visible") == "true" );
+    //     showLateralWidgets( visible);
+    // }
 }
 
 void SalesScreen::showGreeter(){
@@ -305,7 +306,7 @@ void SalesScreen::showGreeter(){
 
 void SalesScreen::showEvent(QShowEvent *event){
     setDefaultState();
-    if (authCore->userId() == "1"){
+    if (global_auth_core->userId() == "1"){
         XmlConfig xml ;
         xml.createElement("name", AUTH_MENU);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);

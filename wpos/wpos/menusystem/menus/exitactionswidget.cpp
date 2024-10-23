@@ -24,7 +24,7 @@
 #include <QDateTime>
 #include <QApplication>
 
-extern FileManager *file_manager;
+extern FileManager *global_file_manager;
 
 ExitActionsWidget::ExitActionsWidget(QWidget *parent, const QString& name) :
     QWidget(parent)
@@ -60,7 +60,7 @@ void ExitActionsWidget::shutdown(){
     emit genericDataSignal(GDATASIGNAL::EVENTLOG, &xml);
 
     emit genericSignal(GDATASIGNAL::MAINWIDGET_SAVE_BUTTON_STATE);
-    file_manager->saveFiles();
+    global_file_manager->saveFiles();
     system("sudo /sbin/sync &");
     system("sudo /sbin/shutdown -h now &");
     exit (0);

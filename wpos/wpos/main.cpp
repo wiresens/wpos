@@ -41,10 +41,10 @@
 #include <QDebug>
 
 // Global variables( extern in used in other .cpp files ()
-AuthCore    *authCore;
-FileManager *file_manager;
-QString     CASHBOX_DEVICE;
-QString     CASHBOX_TYPE;
+AuthCore    *global_auth_core;
+FileManager *global_file_manager;
+QString     global_cashbox_device;
+QString     global_cashbox_type;
 
 void save_reportman_cfg(
     const QString& host,
@@ -107,7 +107,7 @@ int main(int argc, char *argv[]){
     if ( parser.isSet(cashboxOp) ){
         cashbox = parser.value(cashboxOp);
         if (!cashbox.isEmpty() && QFile::exists(cashbox) )
-            CASHBOX_DEVICE = cashbox;
+            global_cashbox_device = cashbox;
     }
 
     QString cashtype;
@@ -115,13 +115,13 @@ int main(int argc, char *argv[]){
         QString aux;
         aux = parser.value(cashtypeOp);
         if (aux == "cash_drawer")
-            CASHBOX_TYPE = aux;
+            global_cashbox_type = aux;
         else if (aux == "p_samsung_350")
-            CASHBOX_TYPE = aux;
+            global_cashbox_type = aux;
         else if (aux == "serial")
-            CASHBOX_TYPE = aux;
+            global_cashbox_type = aux;
 
-        cashtype = CASHBOX_TYPE;
+        cashtype = global_cashbox_type;
     }
 
     QString database, host, user, passwd, port;
@@ -181,11 +181,11 @@ int main(int argc, char *argv[]){
             cashtype = xml.readString("cashbox.type");
             if (cashtype.isEmpty()){
                 xml.doWrite("cashbox.type","cash_drawer");
-                CASHBOX_TYPE = "cash_drawer";
+                global_cashbox_type = "cash_drawer";
                 write_devices = true;
             }
             else
-                CASHBOX_TYPE = cashtype;
+                global_cashbox_type = cashtype;
         }
         else{
             xml.doWrite("cashbox.type", cashtype);
@@ -196,11 +196,11 @@ int main(int argc, char *argv[]){
             cashbox = xml.readString("cashbox.dev");
             if (cashbox.isEmpty()){
                 xml.doWrite("cashbox.dev","/dev/lp0");
-                CASHBOX_DEVICE = "/dev/lp0";
+                global_cashbox_device = "/dev/lp0";
                 write_devices = true;
             }
             else
-                CASHBOX_DEVICE = cashbox;
+                global_cashbox_device = cashbox;
         }
         else{
             xml.doWrite("cashbox.dev",cashbox);
@@ -215,7 +215,7 @@ int main(int argc, char *argv[]){
 
     save_reportman_cfg(host, database, user, passwd, port);
 
-    file_manager = new FileManager(nullptr, "FileManager");
+    global_file_manager = new FileManager(nullptr, "FileManager");
     QStringList cfg_files{
         "advanced_order_description.xml",
         "order_description.xml",
@@ -235,8 +235,8 @@ int main(int argc, char *argv[]){
         "kitchen_printerhtml.xml"
     };
 
-    file_manager->registerFiles(cfg_files);
-    file_manager->fetchConfigFiles(cfg_files);
+    global_file_manager->registerFiles(cfg_files);
+    global_file_manager->fetchConfigFiles(cfg_files);
 
     // Check if the file to be show at splash screen exists
     // If true create a splash screen

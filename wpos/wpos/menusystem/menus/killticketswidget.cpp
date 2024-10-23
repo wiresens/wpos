@@ -37,7 +37,7 @@
 using namespace std;
 
 #define ITEMS_PER_PAGE 10
-extern AuthCore *authCore;
+extern AuthCore *global_auth_core;
 
 
 KillTicketsWidget::KillTicketsWidget(
@@ -208,8 +208,8 @@ void KillTicketsWidget::deleteTicket(){
     XmlConfig xml = m_kill_tickets_db->getTicketFromDatabase (tid);
     m_kill_tickets_db->disConnect();
 
-    xml.doWrite("employee.dni", authCore->userId());
-    xml.doWrite("employee.name", authCore->userName());
+    xml.doWrite("employee.dni", global_auth_core->userId());
+    xml.doWrite("employee.name", global_auth_core->userName());
     setTicketNegative(&xml);
     emit genericDataSignal (GDATASIGNAL::BARCORE_CHANGE_XML, &xml);
 
