@@ -298,11 +298,9 @@ void SalesScreen::genericDataSignalSlot(const QString& signal_name, XmlConfig *x
 }
 
 void SalesScreen::showGreeter(){
-
     XmlConfig xml;
     xml.createElement("name", MainScreen::LOGIN_SCREEN);
     emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
-
 }
 
 void SalesScreen::showEvent(QShowEvent *event){

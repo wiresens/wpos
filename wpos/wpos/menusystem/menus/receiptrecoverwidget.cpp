@@ -439,11 +439,7 @@ void ReceiptRecoverWidget::setUseLounge(bool enable){
 }
 
 QStringList ReceiptRecoverWidget::getUsedTableCodes(){
-
-    TicketResumes tickets;
-    m_ticket_db->connect();
-    // tickets = m_ticket_db->getReceiptResume();
-    m_ticket_db->disConnect();
+    auto tickets = allReceiptResume();
 
     QStringList table_codes;
     for ( TicketResumeData& ticket : tickets)

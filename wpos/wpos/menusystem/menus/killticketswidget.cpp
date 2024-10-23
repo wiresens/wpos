@@ -106,9 +106,7 @@ KillTicketsWidget::~KillTicketsWidget(){
 void KillTicketsWidget::refreshList(){
 
     ticketnum_treeview->clear();
-    m_ticket_db->connect();
-    QList<TicketResumeData> tickets { m_ticket_db->getTicketResume() };
-    m_ticket_db->disConnect();
+    auto tickets =  getTicketResume();
 
     if ( tickets.isEmpty() )  return;
 
@@ -167,9 +165,9 @@ void KillTicketsWidget::handleTicketSelected() {
     auto ticket_id = selected_item->text(1).toInt();
 
     /* Check if the ticket has negative item */
-    m_ticket_db->connect();
+    m_kill_tickets_db->connect();
 
-    bool ticket_is_cancelled = m_ticket_db->ticketHasNegative(QString::number(ticket_id));
+    bool ticket_is_cancelled = m_kill_tickets_db->ticketHasNegative(QString::number(ticket_id));
     trash_button->setEnabled (!ticket_is_cancelled);
 
     auto  state = selected_item->text(5);
@@ -193,10 +191,10 @@ void KillTicketsWidget::handleTicketSelected() {
     emit genericDataSignal (GDATASIGNAL::SETCORE_MODE, &xml);
 
     /* Get the ticket and Update the command */
-    XmlConfig xml2  = m_ticket_db->getTicketFromDatabase(ticket_id);
+    XmlConfig xml2  = m_kill_tickets_db->getTicketFromDatabase(ticket_id);
     m_order_view->updateOrder(&xml2);
     m_order_view->contentView()->selectFirst();
-    m_ticket_db->disConnect();
+    m_kill_tickets_db->disConnect();
 }
 
 void KillTicketsWidget::deleteTicket(){
@@ -206,9 +204,9 @@ void KillTicketsWidget::deleteTicket(){
 
     tid = item->text(1).toInt ();
 
-    m_ticket_db->connect();
-    XmlConfig xml = m_ticket_db->getTicketFromDatabase (tid);
-    m_ticket_db->disConnect();
+    m_kill_tickets_db->connect();
+    XmlConfig xml = m_kill_tickets_db->getTicketFromDatabase (tid);
+    m_kill_tickets_db->disConnect();
 
     xml.doWrite("employee.dni", authCore->userId());
     xml.doWrite("employee.name", authCore->userName());
@@ -251,9 +249,9 @@ void KillTicketsWidget::printTicket(){
     auto tickect_id = item->text(1).toInt();
 
     /* Get the ticket */
-    m_ticket_db->connect();
-    XmlConfig xml = m_ticket_db->getTicketFromDatabase(tickect_id);
-    m_ticket_db->disConnect();
+    m_kill_tickets_db->connect();
+    XmlConfig xml = m_kill_tickets_db->getTicketFromDatabase(tickect_id);
+    m_kill_tickets_db->disConnect();
 
     /* Update the command */
     if (xml.wellFormed()){
@@ -286,35 +284,35 @@ void KillTicketsWidget::printInvoice(){
     if ( ticket_state == "cancelado" ) return;
 
     if (ticket_state == "cobrado"){ // charged
-        m_ticket_db->connect();
-        invoice_id = m_ticket_db->getNextInvoiceVal();
-        m_ticket_db->disConnect();
+        m_kill_tickets_db->connect();
+        invoice_id = m_kill_tickets_db->getNextInvoiceVal();
+        m_kill_tickets_db->disConnect();
 
         if (invoice_id < 0) return;
 
-        m_ticket_db->connect();
-        bool is_ticket_invoiced = m_ticket_db->groupInvoiceWithTicket(tickect_id, invoice_id);
-        m_ticket_db->disConnect();
+        m_kill_tickets_db->connect();
+        bool is_ticket_invoiced = m_kill_tickets_db->groupInvoiceWithTicket(tickect_id, invoice_id);
+        m_kill_tickets_db->disConnect();
 
         if (!is_ticket_invoiced){
-            m_ticket_db->connect();
-            m_ticket_db->setNextInvoiceVal(invoice_id);
-            m_ticket_db->disConnect();
+            m_kill_tickets_db->connect();
+            m_kill_tickets_db->setNextInvoiceVal(invoice_id);
+            m_kill_tickets_db->disConnect();
             return;
         }
     }
     else if ( ticket_state == "facturado" ){ //invoiced
-        m_ticket_db->connect();
-        invoice_id = m_ticket_db->getInvoiceFromTicket(tickect_id);
-        m_ticket_db->disConnect();
+        m_kill_tickets_db->connect();
+        invoice_id = m_kill_tickets_db->getInvoiceFromTicket(tickect_id);
+        m_kill_tickets_db->disConnect();
 
         if (invoice_id < 0) return;
     }
 
     if ( tickect_id >= 0 && invoice_id >=0 ){
-        m_ticket_db->connect();
-        XmlConfig xml = m_ticket_db->getTicketFromDatabase(tickect_id);
-        m_ticket_db->disConnect();
+        m_kill_tickets_db->connect();
+        XmlConfig xml = m_kill_tickets_db->getTicketFromDatabase(tickect_id);
+        m_kill_tickets_db->disConnect();
 
         xml.delDomain();
         xml.createElement("invoicenumber", QString::number(invoice_id));

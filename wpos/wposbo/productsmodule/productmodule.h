@@ -14,6 +14,7 @@
 #define PRODUCTMODULE_H
 
 #include "productmoduleinterface.h"
+#include "database/productoptionsmoduledb.h"
 
 #include <libbslxml/xmlconfig.h>
 
@@ -21,11 +22,9 @@
 #include <QString>
 #include <QList>
 
-class ProductOptionData;
-
 class ProductModule :
-        public QObject,
-        public ProductModuleInterface {
+    public QObject,
+    public ProductModuleInterface {
 
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wposbo.DBusBOProduct")

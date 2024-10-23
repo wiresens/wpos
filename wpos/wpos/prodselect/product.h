@@ -49,11 +49,11 @@ public:
         QWidget *parent=0);
 
     Product(const QString& name,
-        XmlConfig *xmlDescription,
+        XmlConfig &xml,
         QWidget *parent=0);
 
     Product(const QString& name,
-        const QString& xmlDescriptionFile,
+        const QString& xmlfile,
         QWidget *parent=0);
 
     ~Product();
@@ -129,7 +129,7 @@ private:
 * @param QString with the name that identifies this product.
 * @param XmlConfig wich has all the configuration of the products
 */
-    bool initProduct(const QString& name, XmlConfig *xml);
+    bool initProduct(const QString& name, XmlConfig &xml);
 
 private:
     //product selection

@@ -2,14 +2,13 @@
 #define TICKETSHANDLINGWIDGET_H
 
 #include "ui_killticketswidget.h"
+#include "database/killticketsdb.h"
 
-class KillTicketsDB;
 class OrderView;
-class XmlConfig;
 
 class TicketsHandlingWidget :
-        public QFrame,
-        protected Ui::KillTicketsWidget
+    public QFrame,
+    protected Ui::KillTicketsWidget
 {
 public:
     explicit TicketsHandlingWidget(
@@ -28,14 +27,19 @@ public slots:
 
 //signals:
 //    void genericDataSignal(const QString& signal, XmlConfig *xml);
+protected:
+    TicketResumes getTicketResume();
+    TicketResumes getReceiptResume(QString employee_id);
+    TicketResumes allReceiptResume();
 
 protected:
-    KillTicketsDB *m_ticket_db{};
+    KillTicketsDB *m_kill_tickets_db{};
     OrderView     *m_order_view{};
 
     QPixmap m_null_pixmap     {"controls:view_text.png"};
     QPixmap m_error_pixmap    {"controls:stop.png"};
-    QPixmap m_canceled_pixmap{"controls:view_text_red.png"};
+    QPixmap m_canceled_pixmap {"controls:view_text_red.png"};
+
 };
 
 #endif // TICKETSHANDLINGWIDGET_H

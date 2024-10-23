@@ -63,7 +63,7 @@ CashWidget::CashWidget(BarCore *barCore,
     gsm->publishGenericDataSignal(GDATASIGNAL::BARCORE_PROCESS_CORE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE,this);
     gsm->publishGenericDataSignal(GDATASIGNAL::MAINWIDGET_SETENABLED,this);
-    //        generic_signal_manager->publishGenericDataSignal(GDATASIGNAL::LATERALWIDGET_SET_VISIBLE, this);
+    // gsm->publishGenericDataSignal(GDATASIGNAL::LATERALWIDGET_SET_VISIBLE, this);
     gsm->publishGenericSignal(GSIGNAL::OPEN_CASHBOX,this);
     gsm->subscribeToGenericDataSignal(GDATASIGNAL::CASH_MENU_SPEED,this);
 

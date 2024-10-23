@@ -35,33 +35,33 @@ int ProductScreen::SCREEN_PRODUCT_SPACING{0};
 //the layout should be defined in the init method
 ProductScreen::ProductScreen(
     const QString& screenName,
-    XmlConfig *xmlDescription,
+    XmlConfig &xml,
     QWidget *parent,
     const QString& name):
     QWidget(parent)
 {
     setObjectName(name);
     layout = new QGridLayout(this);
-    initScreen(screenName, xmlDescription);
+    initScreen(screenName, xml);
 }
 
 ProductScreen::ProductScreen(
     const QString& screenName,
-    const QString& xmlDescriptionFile,
+    const QString& xmlfile,
     QWidget *parent,
-    const QString& name):
-    QWidget(parent)
+    const QString& name)
+    :QWidget(parent)
 {
     setObjectName(name);
     layout = new QGridLayout(this); //the layout will be defined in the initScreen method
 
-    XmlConfig xml(xmlDescriptionFile);
-    if ( !QFile::exists(xmlDescriptionFile) || !xml.wellFormed() ){
+    XmlConfig xml(xmlfile);
+    if ( !QFile::exists(xmlfile) || !xml.wellFormed() ){
         screenName_ = SCREEN_DEFAULT_NAME;
         return;
     }
 
-    initScreen(screenName, &xml);
+    initScreen(screenName, xml);
 }
 
 ProductScreen::~ProductScreen(){
@@ -73,31 +73,31 @@ ProductScreen::~ProductScreen(){
 
 bool ProductScreen::initScreen(
     const QString& screen_name,
-    XmlConfig *xml)
+    XmlConfig &xml)
 {
     setSpecialModeColor(ProductScreen::Normal);
     screenName_ = screen_name;
 
-    xml->pushDomain();
-    xml->delDomain();
-    if (!xml->setDomain("screens")){
-        xml->popDomain();
+    xml.pushDomain();
+    xml.delDomain();
+    if (!xml.setDomain("screens")){
+        xml.popDomain();
         return false;
     }
 
     QString aux_string;
     bool tag_found {false};
-    for ( auto i = 0; i <  xml->howManyTags("screen") ; i++){
-        aux_string = xml->readString("screen["+QString::number(i)+"].name");
+    for ( auto i = 0; i <  xml.howManyTags("screen") ; i++){
+        aux_string = xml.readString("screen["+QString::number(i)+"].name");
         if ( aux_string == screenName_ ){
-            xml->setDomain("screen["+QString::number(i)+"]");
+            xml.setDomain("screen["+QString::number(i)+"]");
             tag_found = true;
             break;
         }
     }
 
     if ( !tag_found ){
-        xml->popDomain();
+        xml.popDomain();
         return false;
     }
 
@@ -106,17 +106,17 @@ bool ProductScreen::initScreen(
     resetScreen();
 
     next_preferred_screen = screenName_;
-    if ( xml->howManyTags("nextscreen") ){
-        aux_string = xml->readString("nextscreen");
+    if ( xml.howManyTags("nextscreen") ){
+        aux_string = xml.readString("nextscreen");
         if ( !aux_string.isEmpty() )
             next_preferred_screen = aux_string;
     }
 
-    if ( xml->howManyTags("cols") ) cols = xml->readInt("cols");
+    if ( xml.howManyTags("cols") ) cols = xml.readInt("cols");
     
-    if ( xml->howManyTags("rows") ) rows= xml->readInt("rows");
+    if ( xml.howManyTags("rows") ) rows= xml.readInt("rows");
 
-    aux_string = xml->readString("showtext");
+    aux_string = xml.readString("showtext");
 
     bool show_text {false};
     if ( aux_string.toLower() == "true" )  show_text = true;
@@ -125,26 +125,26 @@ bool ProductScreen::initScreen(
     //of ProdcutScreen will always be a ScreenStack. We need to update that in the design diagram.
     auto productScreenStack = qobject_cast<ProductScreenStack *>( parent() );
 
-    auto font_family = xml->readString("fontfamily");
+    auto font_family = xml.readString("fontfamily");
     if ( font_family.isEmpty() )
         font_family = productScreenStack->getDefaultFamily();
 
-    auto text_font_family = xml->readString("textfontfamily");
+    auto text_font_family = xml.readString("textfontfamily");
     if (text_font_family.isEmpty())
         text_font_family = productScreenStack->getDefaultTextFamily();
 
-    auto text_background_color = xml->readString("textbackgroundcolor");
+    auto text_background_color = xml.readString("textbackgroundcolor");
     if (text_background_color.isEmpty())
         text_background_color = productScreenStack->getTextBackgroundColor();
 
     bool converted {false};
-    aux_string = xml->readString("fontsize");
+    aux_string = xml.readString("fontsize");
     auto font_size = aux_string.toInt(&converted);
 
     if ( !converted ) font_size = -1;
     if (font_size ==-1 ) font_size = productScreenStack->getDefaultSize();
 
-    aux_string = xml->readString("textfontsize");
+    aux_string = xml.readString("textfontsize");
     auto text_font_size = aux_string.toInt(&converted);
 
     if ( !converted ) text_font_size = -1;
@@ -162,14 +162,14 @@ bool ProductScreen::initScreen(
     //to fit the entire screen as it's size changes. This implies also that the product image size should
     //be able to resize automatically. Maybe we should override the resizeEvent and see how to do that.
 
-    for( auto i=0;  i < xml->howManyTags("product"); i++){
+    for( auto i=0;  i < xml.howManyTags("product"); i++){
 
         //get the col and row where the product should be.
-        aux_string = xml->readAttribute("product["+QString::number(i)+"]","col");
+        aux_string = xml.readAttribute("product["+QString::number(i)+"]","col");
         auto col = aux_string.toInt(&tag_found);
         if (!tag_found) continue;  // N.a.N.
 
-        aux_string = xml->readAttribute("product["+QString::number(i)+"]","row");
+        aux_string = xml.readAttribute("product["+QString::number(i)+"]","row");
         auto row = aux_string.toInt(&tag_found);
         if (!tag_found) continue;  // N.a.N.
 
@@ -181,12 +181,12 @@ bool ProductScreen::initScreen(
         }
 
         //prepare the construction of the product.
-        auto productName = xml->readString("product["+QString::number(i)+"].name");
+        auto productName = xml.readString("product["+QString::number(i)+"].name");
 
         //do not accept empty named products.
         if (productName.isEmpty()) continue; //prepare the reread of the product
 
-        xml->pushDomain();
+        xml.pushDomain();
         Product *product = new Product(productName, xml, this);
         if ( !font_family.isEmpty() )
             product->setDefaultFontFamily(font_family);
@@ -209,7 +209,7 @@ bool ProductScreen::initScreen(
 
         if (show_text)  product->setTextInPixmap(true);
 
-        xml->popDomain();
+        xml.popDomain();
 
         //connect of all signals
         prepareConnects(product);
@@ -218,8 +218,8 @@ bool ProductScreen::initScreen(
         productList->append(product);
         productMap->insert(product->baseName(), product);
     }
-    xml->delDomain();
-    xml->popDomain();
+    xml.delDomain();
+    xml.popDomain();
     return true;
 }
 

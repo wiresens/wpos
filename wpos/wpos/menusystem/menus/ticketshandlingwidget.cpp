@@ -1,7 +1,5 @@
 #include "ticketshandlingwidget.h"
 
-#include "database/killticketsdb.h"
-
 #include <wposgui/order/orderview.h>
 #include <wposgui/order/ordercontentview.h>
 #include <wposgui/common/toolkit.h>
@@ -11,7 +9,7 @@ TicketsHandlingWidget::TicketsHandlingWidget(
         QWidget *parent, const QString& name):
 
     QFrame(parent),
-    m_ticket_db { new KillTicketsDB(name, cfg::xmlFileByKey(cfg::XMLKey::Database)) }
+    m_kill_tickets_db { new KillTicketsDB(name, cfg::xmlFileByKey(cfg::XMLKey::Database)) }
 
 {
     setupUi(this);
@@ -44,7 +42,6 @@ TicketsHandlingWidget::TicketsHandlingWidget(
     order_up_button->setIcon(QPixmap("controls:up_48.png"));
     cancel_button->setIcon(QPixmap("controls:button_cancel.png"));
 
-
     auto order_layout = new QVBoxLayout(order_frame);
     order_layout->addWidget(m_order_view);
     order_layout->setContentsMargins(0,0,0,0);
@@ -59,7 +56,29 @@ TicketsHandlingWidget::TicketsHandlingWidget(
 
 TicketsHandlingWidget::~TicketsHandlingWidget(){
     delete m_order_view;
-    delete m_ticket_db;
+    delete m_kill_tickets_db;
+}
+
+TicketResumes
+TicketsHandlingWidget::getTicketResume(){
+    m_kill_tickets_db->connect();
+    auto tickets = m_kill_tickets_db->getTicketResume();
+    m_kill_tickets_db->disConnect();
+    return tickets;
+}
+
+TicketResumes TicketsHandlingWidget::getReceiptResume(QString employee_id){
+    m_kill_tickets_db->connect();
+    auto receipts = m_kill_tickets_db->getReceiptResume(employee_id);
+    m_kill_tickets_db->disConnect();
+    return receipts;
+}
+
+TicketResumes TicketsHandlingWidget::allReceiptResume(){
+    m_kill_tickets_db->connect();
+    auto receipts = m_kill_tickets_db->allReceiptResume();
+    m_kill_tickets_db->disConnect();
+    return receipts;
 }
 
 void TicketsHandlingWidget::selectDown(){

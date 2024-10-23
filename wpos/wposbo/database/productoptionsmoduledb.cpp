@@ -318,10 +318,10 @@ QStringList* ProductOptionsModuleDB::getOptions(const QString& option_type){
     return options;
 }
 
-QPtrList<ProductOptionData>* ProductOptionsModuleDB::getAllOptions(){
+QList<ProductOptionData *> *ProductOptionsModuleDB::getAllOptions(){
     QSqlQuery *query = 0;
     QString sql;
-    QPtrList<ProductOptionData> *ret = 0;
+    QList<ProductOptionData*> *ret = 0;
     ProductOptionData *option = 0;
 
     sql  = "SELECT option_type,prod_option, logo, description ";
@@ -345,7 +345,7 @@ QPtrList<ProductOptionData>* ProductOptionsModuleDB::getAllOptions(){
         return ret;
     }
 
-    ret = new QPtrList<ProductOptionData>;
+    ret = new QList<ProductOptionData*>;
     while(query->next()){
         option = new ProductOptionData;
         option->option_type = (query->value(0).toString());
@@ -701,7 +701,7 @@ QList<ProductOptionData *> *ProductOptionsModuleDB::getProductOptions(const QStr
         return options;
     }
 
-    options = new QPtrList<ProductOptionData>;
+    options = new QList<ProductOptionData*>;
     while(query->next()){
         option = new ProductOptionData;
         option->option_type = query->value(0).toString();

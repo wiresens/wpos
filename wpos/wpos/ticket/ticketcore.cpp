@@ -33,11 +33,11 @@ using namespace std;
 #define TICKET_TMP "/tmp/ticketcore_tmp.xml"
 
 TicketCore::TicketCore(QObject *parent, const QString& name):
-    QObject(parent)
+    QObject(parent),
+    m_ticket_core_db{ new TicketCoreDB("TicketCoreConnection", cfg::xmlFileByKey(cfg::XMLKey::Database))}
 {
     setObjectName(name);
-    db = new TicketCoreDB("TicketCoreConnection", cfg::xmlFileByKey(cfg::XMLKey::Database));
-    db->connect();
+    m_ticket_core_db->connect();
     printer = new PrinterManager(this, "ticketPrinter");
 
     auto gsm = GenericSignalManager::instance();
@@ -53,7 +53,8 @@ TicketCore::TicketCore(QObject *parent, const QString& name):
 }
 
 TicketCore::~TicketCore(){
-    db->disConnect();
+    m_ticket_core_db->disConnect();
+    delete m_ticket_core_db;
     delete printer;
 }
 
@@ -79,7 +80,7 @@ void TicketCore::receiveCoreData(XmlConfig *_xml){
     XmlConfig xml;
     xml.readXmlFromString (_xml->toString() );
 
-    auto ticket_number = db->getNextVal();
+    auto ticket_number = m_ticket_core_db->getNextVal();
     if (ticket_number == -1)  return;
     xml.doWrite("ticketnumber", QString::number(ticket_number));
 
@@ -128,19 +129,19 @@ bool TicketCore::stampTicket(XmlConfig *xml){
     location.ticket_number = ticket_number;
 
     //start the transaction trying with queries over the ticket_table and location_table
-    db->startTransaction();
-    if (!db->insertTicket(&data)){
+    m_ticket_core_db->startTransaction();
+    if (!m_ticket_core_db->insertTicket(&data)){
         printf ("INSERT TICKET FAILED\n");
-        db->rollback();
-        db->setVal(ticket_number);
+        m_ticket_core_db->rollback();
+        m_ticket_core_db->setVal(ticket_number);
         xml->popDomain();
         return false;
     }
 
     //     if (!location.lounge.isEmpty()){
-    if ( !db->insertLocation(&location) ){
-        db->rollback();
-        db->setVal(ticket_number);
+    if ( !m_ticket_core_db->insertLocation(&location) ){
+        m_ticket_core_db->rollback();
+        m_ticket_core_db->setVal(ticket_number);
         xml->popDomain();
         return false;
     }
@@ -148,7 +149,7 @@ bool TicketCore::stampTicket(XmlConfig *xml){
 
     xml->setDomain("products");
     for( auto i=0; i < xml->howManyTags("product"); ++i){
-        if ( (item_code = db->getNextItemVal()) == -1 ) continue;
+        if ( (item_code = m_ticket_core_db->getNextItemVal()) == -1 ) continue;
         xml->setDomain("product["+QString::number(i)+"]");
         TicketItemData itemData;
         itemData.item_code = item_code;
@@ -164,9 +165,9 @@ bool TicketCore::stampTicket(XmlConfig *xml){
         itemData.tax = xml->readAttribute("billing.tax","type");
         itemData.tax_rate = xml->readString("billing.tax").toDouble();
 
-        if (!db->insertTicketItem(&itemData)){
-            db->rollback();
-            db->setVal(ticket_number);
+        if (!m_ticket_core_db->insertTicketItem(&itemData)){
+            m_ticket_core_db->rollback();
+            m_ticket_core_db->setVal(ticket_number);
             xml->popDomain();
             return false;
         }
@@ -176,9 +177,9 @@ bool TicketCore::stampTicket(XmlConfig *xml){
             offer.offer_type = xml->readString("type");
             offer.offer_name = xml->readString("name");
             offer.item_code = item_code;
-            if (!db->insertOffer(&offer)){
-                db->rollback();
-                db->setVal(ticket_number);
+            if (!m_ticket_core_db->insertOffer(&offer)){
+                m_ticket_core_db->rollback();
+                m_ticket_core_db->setVal(ticket_number);
                 xml->popDomain();
                 return false;
             }
@@ -190,9 +191,9 @@ bool TicketCore::stampTicket(XmlConfig *xml){
             option.item_code = item_code;
             option.option_type = xml->readString("options.option["+QString::number(j)+"].type");
             option.option = xml->readString("options.option["+QString::number(j)+"].value");
-            if (!db->insertItemOption(&option)){
-                db->rollback();
-                db->setVal(ticket_number);
+            if (!m_ticket_core_db->insertItemOption(&option)){
+                m_ticket_core_db->rollback();
+                m_ticket_core_db->setVal(ticket_number);
                 xml->popDomain();
                 return false;
             }
@@ -200,7 +201,7 @@ bool TicketCore::stampTicket(XmlConfig *xml){
         xml->releaseDomain("product");
     }
 
-    ret = db->commit();
+    ret = m_ticket_core_db->commit();
 
     QString ticket_log;
     if ( total > 0 ) ticket_log = "ticket_add";
@@ -241,28 +242,28 @@ bool TicketCore::dailyCashOperations(bool partial){
     tmp_xml.createElement("timestamp", last_timestamp);
 
     //timestamps of the first and last tickets at the database(at TICKETS table).
-    QString first_timestamp = db->getLastZDate();
+    QString first_timestamp = m_ticket_core_db->getLastZDate();
     if ( first_timestamp.isEmpty() ) first_timestamp = currentDateTimeString();;
 
     tmp_xml.createElement("timestamps.first", first_timestamp);
     tmp_xml.createElement("timestamps.last", last_timestamp);
 
 
-    if ( !db->getXEmployeeData(&tmp_xml) ){
+    if ( !m_ticket_core_db->getXEmployeeData(&tmp_xml) ){
         cout << __FILE__ << endl;
         cout << __PRETTY_FUNCTION__ << " : " << __LINE__ - 2 << endl;
         cout << "Problems Obtaining  staff data" << endl;
         return false;
     }
-    if ( !db->getXMain(&tmp_xml) ){
+    if ( !m_ticket_core_db->getXMain(&tmp_xml) ){
         cout << "Problems obtaining main data" << endl;
         return false;
     }
-    if(!db->getXOfferSection(&tmp_xml)){
+    if(!m_ticket_core_db->getXOfferSection(&tmp_xml)){
         cout << "Problems obtaining offer data " << endl;
         return false;
     }
-    if(!db->getXOptionSection(&tmp_xml)){
+    if(!m_ticket_core_db->getXOptionSection(&tmp_xml)){
         cout << "Problems obtaining options data " << endl;
         return false;
     }
@@ -315,7 +316,7 @@ to this new section.
         xml_event.createElement("event_type", "z");
         emit genericDataSignal(GDATASIGNAL::EVENTLOG, &xml_event);
         fillTicketGaps();
-        if ( !db->vaccum() ){
+        if ( !m_ticket_core_db->vaccum() ){
             cout << "ZETA error"<< endl;
             return false;
         }
@@ -363,15 +364,15 @@ void TicketCore::genericDataSignalSlot(
 void TicketCore::fillTicketGaps(){
     QString date;
 
-    int first = db->getFirstTicketCode();
-    int last = db->getLastTicketCode();
+    int first = m_ticket_core_db->getFirstTicketCode();
+    int last = m_ticket_core_db->getLastTicketCode();
     if (last <= first)  return;
 
     for(auto i = first; i < last; i++){
         //check ticketcode gaps
-        if (!db->ticketCodeExists(i)){
+        if (!m_ticket_core_db->ticketCodeExists(i)){
             if (date.isEmpty()){
-                date = db->dateFromTicketCode(i+1);
+                date = m_ticket_core_db->dateFromTicketCode(i+1);
                 if (date.isEmpty())
                     date = QDateTime::currentDateTime().toString(Qt::ISODateWithMs);               
             }
@@ -383,14 +384,14 @@ void TicketCore::fillTicketGaps(){
             data.pay_type = "metalico";  //pay_type always at the database :?
             data.ticket_state = "cobrado";
 
-            if (!db->insertTicket(&data)){
-                db->rollback();
+            if (!m_ticket_core_db->insertTicket(&data)){
+                m_ticket_core_db->rollback();
                 continue;
             }
         }
-        else  date = db->dateFromTicketCode(i);
+        else  date = m_ticket_core_db->dateFromTicketCode(i);
     }
-    db->setVal(last);
+    m_ticket_core_db->setVal(last);
 }
 
 void TicketCore::setTicketCopies(uint copies){

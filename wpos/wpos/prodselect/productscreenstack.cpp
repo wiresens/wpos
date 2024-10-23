@@ -92,54 +92,53 @@ bool ProductScreenStack::initScreenStack(const QString& xmlDescriptionFile){
         return false;
     }
 
-    return  initScreenStack(&xml);
+    return  initScreenStack(xml);
 }
 
-bool ProductScreenStack::initScreenStack(XmlConfig *xml){
+bool ProductScreenStack::initScreenStack(XmlConfig &xml){
 
-    if( !xml) return false;
     screen_dict = new QMap<QString, ProductScreen*>;
     screen_list = new QList<ProductScreen*>;
 
-    xml->popDomain();
-    xml->delDomain();
+    xml.popDomain();
+    xml.delDomain();
 
-    if (!xml->setDomain("screens")){
-        xml->popDomain();
+    if (!xml.setDomain("screens")){
+        xml.popDomain();
         return false;
     }
 
-    auto tmp = xml->readString("fontfamily");
+    auto tmp = xml.readString("fontfamily");
     if( !tmp.isEmpty() ) fontfamily = tmp;
 
-    tmp = xml->readString("textfontfamily");
+    tmp = xml.readString("textfontfamily");
     if( !tmp.isEmpty() ) text_fontfamily = tmp;
 
-    tmp = xml->readString("fontsize");
+    tmp = xml.readString("fontsize");
 
     bool ok {false};
     tmp.toInt(&ok);
     if (ok) fontsize = tmp.toInt(&ok);
 
-    tmp = xml->readString("textfontsize");
+    tmp = xml.readString("textfontsize");
     tmp.toInt(&ok);
     if (ok) text_fontsize = tmp.toInt(&ok);
 
-    tmp = xml->readString("textbackgroundcolor");
+    tmp = xml.readString("textbackgroundcolor");
     if( !tmp.isEmpty() ) text_background_color = tmp;
 
-    for(auto i=0; i < xml->howManyTags("screen"); i++){
-        tmp = xml->readString("screen["+QString::number(i)+"].name");
+    for(auto i=0; i < xml.howManyTags("screen"); i++){
+        tmp = xml.readString("screen["+QString::number(i)+"].name");
         emit splashRequested(tr("Product Screen : ")+tmp, Qt::AlignBottom | Qt::AlignRight , Qt::darkBlue);
-        xml->pushDomain();
+        xml.pushDomain();
         addScreen(tmp, xml);
-        xml->popDomain();
+        xml.popDomain();
     }
 
-    tmp = xml->readString("defaultscreen");
+    tmp = xml.readString("defaultscreen");
     if( !tmp.isEmpty()  ) default_screen = tmp;
 
-    xml->popDomain();
+    xml.popDomain();
     return true;
 }
 
@@ -189,8 +188,8 @@ bool ProductScreenStack::remove(const QString& screen_name){
     return true;
 }
 
-void ProductScreenStack::addScreen(const QString& screen_name, XmlConfig* xml){
-    ProductScreen *screen = new ProductScreen(screen_name, xml, this);
+void ProductScreenStack::addScreen(const QString& screen_name, XmlConfig &xml){
+    auto screen = new ProductScreen(screen_name, xml, this);
     addWidget(screen);
     screen_dict->insert(screen->screenName(), screen);
     screen_list->append(screen);
@@ -372,9 +371,8 @@ void ProductScreenStack::genericDataSignalSlot(const QString& signal_name, XmlCo
 
 void ProductScreenStack::genericSignalSlot(const QString& signal_name){
     if (signal_name == GSIGNAL::LOAD_PRODUCTS){
-        XmlConfig *aux_xml = new XmlConfig(cfg::xmlFileByKey(cfg::XMLKey::Bar));
+        XmlConfig xml(cfg::xmlFileByKey(cfg::XMLKey::Bar));
         reset();
-        initScreenStack(aux_xml);
-        delete aux_xml;
+        initScreenStack(xml);
     }
 }

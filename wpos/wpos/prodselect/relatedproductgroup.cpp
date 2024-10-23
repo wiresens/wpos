@@ -19,8 +19,7 @@
 
 const QString UNKNOWN {"STRANGER"};
 
-RelatedProductGroup::RelatedProductGroup(
-    XmlConfig *xml)
+RelatedProductGroup::RelatedProductGroup(XmlConfig &xml)
 {
     initProduct(xml);
 }
@@ -34,59 +33,59 @@ RelatedProductGroup::~RelatedProductGroup(){
     reset();
 }
 
-bool RelatedProductGroup::initProduct(XmlConfig *xml){
+bool RelatedProductGroup::initProduct(XmlConfig &xml){
     QString aux;
     int i, count;
     RelatedProductGroup *prod=0;
     ProductExtraInfo *option=0;
 
-    xml->pushDomain();
+    xml.pushDomain();
 
     relatedGroup.clear();
     extraInfos.clear();
 
-    aux = xml->readString("name");
+    aux = xml.readString("name");
     if (aux.isEmpty()){
         setProductName(UNKNOWN);
-        xml->popDomain();
+        xml.popDomain();
         return false;
     }
 
     setProductName(aux);
 
     //check the options...
-    if (xml->setDomain("options")){
-        count = xml->howManyTags("option");
+    if (xml.setDomain("options")){
+        count = xml.howManyTags("option");
         for(i=0;i<count;i++){
-            xml->setDomain("option["+QString::number(i)+"]");
-            aux = xml->readString("type");
+            xml.setDomain("option["+QString::number(i)+"]");
+            aux = xml.readString("type");
             option = new ProductExtraInfo(aux);
-            for(int j=0;j<xml->howManyTags("value");j++){
-                aux = xml->readString("value["+QString::number(j)+"]");
-                if ( xml->readAttribute("value["+QString::number(j)+"]", "type") == "default" )
+            for(int j=0;j<xml.howManyTags("value");j++){
+                aux = xml.readString("value["+QString::number(j)+"]");
+                if ( xml.readAttribute("value["+QString::number(j)+"]", "type") == "default" )
                     option->addOption(aux, true);
                 else
                     option->addOption(aux);
 
             }
-            xml->releaseDomain("option");
+            xml.releaseDomain("option");
             extraInfos.append(option, option->getOptionType());
         }
-        xml->releaseDomain("options");
+        xml.releaseDomain("options");
     }
     //the elements should be deleted only at the list
     //but should be removed from both.
 
     //save the domain.
 
-    count = xml->howManyTags("product");
+    count = xml.howManyTags("product");
     for (i=0; i < count; i++){
-        xml->setDomain("product["+QString::number(i)+"]");
+        xml.setDomain("product["+QString::number(i)+"]");
         prod = new RelatedProductGroup(xml);
         append(prod);
-        xml->releaseDomain("product", false);
+        xml.releaseDomain("product", false);
     }
-    xml->popDomain();
+    xml.popDomain();
     return true;
 }
 

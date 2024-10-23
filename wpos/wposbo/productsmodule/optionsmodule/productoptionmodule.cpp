@@ -347,7 +347,7 @@ QString ProductOptionModule::getAllOptions(){
     int i,count;
     QString xml_string;
     XmlConfig *xml = 0;
-    QPtrList<ProductOptionData> *options = 0;
+    QList<ProductOptionData*> *options = 0;
     ProductOptionData *option = 0;
     ProductOptionsModuleDB *db = 0;
 
@@ -695,7 +695,7 @@ bool ProductOptionModule::existProductAndOption(const QString& xml_string){
 QString ProductOptionModule::getProductOptions(const QString& product_code){
     QString xml_string;
     XmlConfig *xml = 0;
-    QPtrList<ProductOptionData> *options = 0;
+    QList<ProductOptionData*> *options = 0;
     ProductOptionData *option = 0;
     ProductOptionsModuleDB *db = 0;
     int index, count;

@@ -28,9 +28,6 @@
 #include <QString>
 #include <QTimer>
 
-#include <iostream>
-using namespace std;
-
 struct PayRecord{
     QPushButton* btn;
     const QString icon;
