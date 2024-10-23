@@ -547,7 +547,7 @@ XmlConfig* Product::createProductDefinition()
     names.sort();
 
     //now write the XML
-    xml = new XmlConfig("/tmp/producto_temporal.xml");
+    xml = new XmlConfig("producto_temporal.xml");
     xml->delDomain();
 
     //delete all products

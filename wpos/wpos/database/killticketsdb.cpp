@@ -77,7 +77,7 @@ bool KillTicketsDB::setNextInvoiceVal(int val){
     QString query {"SELECT setval('invoices_invoice_code_seq','"+QString::number(val)+"',false);"};
     QSqlQuery query_obj =  QSqlQuery(query,this->dbHandle());
     if (!query_obj.isActive()){
-        qDebug() << "BslKillTicketsDB::setNextInvoiceVal() problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ ;
+        qDebug() << "KillTicketsDB::setNextInvoiceVal() problems at" << __PRETTY_FUNCTION__ <<":"<< __LINE__ ;
         return ret;
     }
     return true;

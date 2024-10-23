@@ -42,9 +42,6 @@
 #include <QTimer>
 #include <QList>
 
-#include <iostream>
-using namespace std;
-
 extern AuthCore *authCore;
 
 static const uint ITEMS_PER_PAGE {8};
@@ -439,10 +436,8 @@ void ReceiptRecoverWidget::setUseLounge(bool enable){
 }
 
 QStringList ReceiptRecoverWidget::getUsedTableCodes(){
-
-    TicketResumes tickets;
     m_ticket_db->connect();
-    // tickets = m_ticket_db->getReceiptResume();
+        TicketResumes tickets = m_ticket_db->getReceiptResume();
     m_ticket_db->disConnect();
 
     QStringList table_codes;
