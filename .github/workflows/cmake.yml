@@ -1,0 +1,59 @@
+name: cmake
+
+on:
+  push:
+  pull_request:
+  schedule:
+    - cron: '0 1 * * SUN'
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - CC: gcc-12
+            CXX: g++-12
+            PackageDeps: g++-12
+            os: ubuntu-24.04
+          - CC: clang-18
+            CXX: clang++-18
+            PackageDeps: clang-18
+            Repo: llvm-toolchain-$(lsb_release -cs)-18
+            os: ubuntu-24.04
+          - CC: vs2019
+            CXX: vs2019
+            os: windows-2019
+    runs-on: ${{ matrix.os }}
+    name: ${{ matrix.os }} ${{ matrix.CXX }}
+    env:
+      WPOS_SRC: ${{ github.workspace }}/wpos
+      CC: ${{ matrix.CC }}
+      CXX: ${{ matrix.CXX }}
+    steps:
+    - name: checkout wpos
+      uses: actions/checkout@v4
+    - name: Add Repo
+      run: |
+        wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
+        sudo apt-add-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ ${{ matrix.Repo }} main"
+      if: matrix.Repo != ''
+    - name: Install Packages Dependencies
+      run: |
+        sudo apt --yes update
+        sudo apt --yes install libqt6webenginewidgets6-dev qt6-5compat-dev qt6-base-dev qt6-base-dev-tools ninja-build cmake libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libodb-sqlite-dev libodb-boost-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev ${{ matrix.PackageDeps }}
+      if: matrix.PackageDeps != ''
+    - name: Build wpos project
+      run: |
+        cd ${env:WPOS_SRC}
+        cmake -S . -B build -G Ninja
+        cmake --build build -j6
+      shell: pwsh
