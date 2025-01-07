@@ -31,14 +31,13 @@ SOFTWARE.
 
 
 #include "monetary.h"
-#include "monetary-odb.hxx"
 
 namespace wpos {
 
 const Currency& Currency::USD = Currency("USD", '$', 2);
-const Currency& Currency::EURO = Currency("EURO", '€', 2);
-const Currency& Currency::NAIRA = Currency("NAIRA", '₦', 2);
-const Currency& Currency::POUND = Currency("POUND", '£', 2);
+const Currency& Currency::EURO = Currency("EURO", L'€', 2);
+const Currency& Currency::NAIRA = Currency("NAIRA", L'₦', 2);
+const Currency& Currency::POUND = Currency("POUND", L'£', 2);
 const Currency& Currency::XAF = Currency("XAF", 'F', 2);
 const Currency& Currency::XOF = Currency("XOF", 'F', 2);
 

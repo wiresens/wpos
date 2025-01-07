@@ -27,7 +27,7 @@
 #include <iostream>
 using namespace std;
 
-static const QString& PRODUCTS_DTD {"/etc/ntpv_backoffice/dtds/products_productslist.dtd"};
+static const QString& PRODUCTS_DTD {"dtddocs:products_productslist.dtd"};
 static const int SCROLL_LENGTH {150};
 static const double ICON_SIZE = 40.0;
 static const uint TIME_OUT {10};

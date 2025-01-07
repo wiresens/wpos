@@ -86,7 +86,7 @@ public slots:
     virtual void setToggleFilter(const bool& filter);
     virtual bool getToggleFilter() const;
 
-    virtual XmlConfig* createProductDefinition();
+    virtual XmlConfig *createProductDefinition();
 
     //received when it has been selected to be the leader.
     //return true if also it's the last product selected.
@@ -133,18 +133,18 @@ private:
 
 private:
     //product selection
-    QList<Product*> productVariants;
-    HList<ProductExtraInfo> productExtraInfos;
+    QList<Product*>         m_prod_variants;
+    HList<ProductExtraInfo> m_prod_extra_infos;
 
     //the node will point to the current level of the tree to continue
-    RelatedProductGroup *productData{};
+    RelatedProductGroup     *m_prod_data{};
 
-    QString prod_name;
-    QString family;
-    int default_font_size { Sizes::FONT_SIZE_8};
-    bool toggle_filter{false};
+    QString                 m_prod_name;
+    QString                 m_prod_family;
+    int                     m_font_size { Sizes::FONT_SIZE_8};
+    bool                    m_toggle_filter{false};
 
-    static BarCoreDB db;
+    static BarCoreDB        m_bar_core_db;
 };
 
 #endif

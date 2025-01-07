@@ -33,17 +33,15 @@ static const QString XML_KITCHEN_HTML_PATH      { cfg::xmlFileByKey(cfg::XMLKey:
 static const QString XML_Z_HTML_PATH            { cfg::xmlFileByKey(cfg::XMLKey::PrinterZeta) };
 static const QString XML_TICKET_TOTAL_HTML_PATH { cfg::xmlFileByKey(cfg::XMLKey::PrinterTotal) };
 
-static const QString TMP_PRINTER                 {"/tmp/printermanager_products.xml"};
-static const QString TMP_PRINTER_PAYTYPES        {"/tmp/printermanager_paytypes.xml"};
-static const QString TMP_PRINTER_CAMAREROS       {"/tmp/printermanager_camareros.xml"};
-static const QString TMP_PRINTER_OFFERS          {"/tmp/printermanager_offers.xml"};
-static const QString TMP_PRINTER_TOTAL_OFFERS    {"/tmp/printermanager_total_offers.xml"};
-static const QString TMP_PRINTER_PROD            {"/tmp/print.xml"};
-static const QString TMP_PRINTER_DATA            {"/tmp/printertmpvalue.xml"};
-static const QString TMP_PRINTER_TEMPLATE        {"/tmp/printertmptemplate.xml"};
-static const QString TMP_PRINTER_TMPFILE         {"/tmp/printertmp.xml"};
-
-static const QString PL_SHIT                     {"/usr/share/dcopprinter/replace.pl"};
+static const QString TMP_PRINTER                 {"tmps:printermanager_products.xml"};
+static const QString TMP_PRINTER_PAYTYPES        {"tmps:printermanager_paytypes.xml"};
+static const QString TMP_PRINTER_CAMAREROS       {"tmps:printermanager_camareros.xml"};
+static const QString TMP_PRINTER_OFFERS          {"tmps:printermanager_offers.xml"};
+static const QString TMP_PRINTER_TOTAL_OFFERS    {"tmps:printermanager_total_offers.xml"};
+static const QString TMP_PRINTER_PROD            {"tmps:print.xml"};
+static const QString TMP_PRINTER_DATA            {"tmps:printertmpvalue.xml"};
+static const QString TMP_PRINTER_TEMPLATE        {"tmps:printertmptemplate.xml"};
+static const QString TMP_PRINTER_TMPFILE         {"tmps:printertmp.xml"};
 
 static const QString DEFAULT_TYPE                {"direct"};
 static const QString DEFAULT_DEVICE              {"/dev/lp0"};

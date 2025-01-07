@@ -16,7 +16,6 @@
  ***************************************************************************/
 
 #include "databaseconfigwidget.h"
-
 #include "databasemodule/databasemodule.h"
 
 #include <libbslxml/xmlconfig.h>
@@ -50,15 +49,17 @@ static const int TIME_INTERVAL = 10;
 static const int WINDOW_HEIGHT = 680;
 static const int FIELD = 0;
 
-const QString& DDBB_CONFIGURATION_FILE              = "/etc/ntpv/bar_database.xml";
-const QString& DDBB_CONFIGURATION_DTD               = "/etc/ntpv_backoffice/dtds/dbmodule_config.dtd";
-static const QString& DDBB_CONFIGURATION_DTD_NMAP   = "/etc/ntpv_backoffice/dtds/dbmodule_config_nmap.dtd";
-const QString& DDBB_FIND_SERVERS_PATH               = "/etc/ntpv_backoffice/find_servers";
-const QString& DDBB_FIND_DATABASES_PATH             = "/etc/ntpv_backoffice/find_databases";
-//const QString& DDBB_SERVERS_PATH  = "/etc/ntpv_backoffice/database_server.xml";
-const QString& NMAP_RESULT_XML                      = "/tmp/database_server.xml"; //put the result of nmap here
+static const QString DDBB_CONFIGURATION_FILE     {"xmldocs:bar_database.xml"};
+static const QString DDBB_CONFIGURATION_DTD      {"dtddocs:dbmodule_config.dtd"};
+static const QString DDBB_CONFIGURATION_DTD_NMAP {"dtddocs:dbmodule_config_nmap.dtd"};
+static const QString DDBB_FIND_SERVERS_PATH      {"xmldocs:find_servers"};
+static const QString DDBB_FIND_DATABASES_PATH    {"xmldocs:find_databases"};
+static const QString NMAP_RESULT_XML             {"tmps:database_server.xml"}; //put the result of nmap here
 
-DatabaseConfigWidget::DatabaseConfigWidget(DatabaseModule *dbmod,  QWidget *parent, const QString& name) :
+DatabaseConfigWidget::DatabaseConfigWidget(
+    DatabaseModule *dbmod,
+    QWidget *parent,
+    const QString& name) :
     QWidget(parent), db_mod(dbmod)
 {
     setupUi(this);

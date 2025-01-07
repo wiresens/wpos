@@ -761,7 +761,7 @@ bool PersZWidget::createMainGraph(XmlConfig *xml,int width, int height){
         f->remove();
     delete f;
 
-    main_graph = "/tmp/ntpv_x_main_graph"+QString::number(rand()%65536)+".png";
+    main_graph = "tmps:ntpv_x_main_graph"+QString::number(rand()%65536)+".png";
 
     fp = fopen( main_graph.toLatin1() , "wb" );
     if (!fp)
@@ -832,7 +832,7 @@ bool PersZWidget::createWaitersGraph(XmlConfig *xml,int width, int height){
         f->remove();
     delete f;
 
-    waiters_graph = "/tmp/ntpv_x_waiters_graph"+QString::number(rand()%65536)+".png";
+    waiters_graph = "tmps:ntpv_x_waiters_graph"+QString::number(rand()%65536)+".png";
 
 
     fp = fopen( waiters_graph.toLatin1() , "wb" );
@@ -918,7 +918,7 @@ bool PersZWidget::createOffersGraph(XmlConfig *xml,int width, int height){
         f->remove();
     delete f;
 
-    offers_graph = "/tmp/ntpv_x_offers_graph"+QString::number(rand()%65536)+".png";
+    offers_graph = "tmps:ntpv_x_offers_graph"+QString::number(rand()%65536)+".png";
 
     fp = fopen( offers_graph.toLatin1() , "wb" );
     if (!fp)
@@ -999,7 +999,7 @@ bool PersZWidget::createOptionsGraph(XmlConfig *xml,int width, int height){
     if (f->exists()) f->remove();
     delete f;
 
-    options_graph = "/tmp/ntpv_x_options_graph"+QString::number(rand()%65536)+".png";
+    options_graph = "tmps:ntpv_x_options_graph"+QString::number(rand()%65536)+".png";
 
     fp = fopen( options_graph.toLatin1() , "wb" );
     if (!fp) return false;

@@ -25,13 +25,13 @@ using namespace std;
 
 static const QString& DCOP_OBJECT_INTERFACE_NAME = "ProductsModule";
 
-const QString& XML_BAR_PATH = "/etc/ntpv/bar.xml";
-const QString& PRODUCT_PATH_FILE = "/etc/ntpv/bar_database.xml";
+const QString& XML_BAR_PATH = "xmldocs:bar.xml";
+const QString& PRODUCT_PATH_FILE = "xmldocs:bar_database.xml";
 const QString& PRODUCT_CONNECTION_NAME = "ProductModule";
-static const QString& PRODUCTS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
-static const QString& FAMILIES_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_familieslist.dtd";
-static const QString& TAXES_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_taxeslist.dtd";
-static const QString& COMPOSITION_DTD = "/etc/ntpv_backoffice/dtds/products_composition.dtd";
+static const QString& PRODUCTS_LIST_DTD = "dtddocs:products_productslist.dtd";
+static const QString& FAMILIES_LIST_DTD = "dtddocs:products_familieslist.dtd";
+static const QString& TAXES_LIST_DTD = "dtddocs:products_taxeslist.dtd";
+static const QString& COMPOSITION_DTD = "dtddocs:products_composition.dtd";
 
 const QString ProductModule::DBusObjectPath  = QString{"/wpos/wposbo/DBusBOProduct"};
 
@@ -68,7 +68,7 @@ bool ProductModule::deleteProduct(const QString& product_code){
         return false;
     }
 
-    db = new ProductsModuleDB("ProductModule", "/etc/ntpv/bar_database.xml");
+    db = new ProductsModuleDB("ProductModule", "xmldocs:bar_database.xml");
     deleted = db->deleteProduct(product_code);
     delete db;
 

@@ -37,11 +37,11 @@ extern "C"{
 #include <math.h>
 }
 
-static const QString& PRODUCTS_LIST_DTD {"/etc/ntpv_backoffice/dtds/products_productslist.dtd"};
-static const QString& PRODUCT_COMPOSITION_DTD {"/etc/ntpv_backoffice/dtds/products_composition.dtd"};
-static const QString& TAXES_DTD {"/etc/ntpv_backoffice/dtds/products_taxeslist.dtd"};
-static const QString& OPTIONS_LIST_DTD {"/etc/ntpv_backoffice/dtds/products_optionslist.dtd"};
-static const QString& OFFERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
+static const QString& PRODUCTS_LIST_DTD {"dtddocs:products_productslist.dtd"};
+static const QString& PRODUCT_COMPOSITION_DTD {"dtddocs:products_composition.dtd"};
+static const QString& TAXES_DTD {"dtddocs:products_taxeslist.dtd"};
+static const QString& OPTIONS_LIST_DTD {"dtddocs:products_optionslist.dtd"};
+static const QString& OFFERS_LIST_DTD  {"dtddocs:products_offerslist.dtd"};
 
 //static const QPixmap NULL_LOGO_PIXMAP = QPixmap();
 static const QString& WITHOUT_LOGO {"WITHOUT LOGO"};

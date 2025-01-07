@@ -10,7 +10,7 @@
 using std::cerr;
 using std::endl;
 
-#define OPTIONS_LIST_DTD "/etc/ntpv_backoffice/dtds/products_optionslist.dtd"
+#define OPTIONS_LIST_DTD "dtddocs:products_optionslist.dtd"
 #define INTERFACE_NAME "addOptionInterface"
 
 OptionEditionWidget::OptionEditionWidget(QWidget *parent, const QString& name ):

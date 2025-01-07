@@ -19,12 +19,12 @@ class DataBaseModuleInterface{
 
     /**
         *       this method should be used to change the configuration of the database at this machine.
-        *       The database configuration is readed from the file at /etc/ntpv/bar_database.xml.
+        *       The database configuration is readed from the file at xmldocs:bar_database.xml.
         *       All the database objects at both programs (ntpv and ntpvbackoffice) are designed
         *       to read this file and connect with this databse, so all the actions of this module will be
         *       performed to the database at the config.
         *
-        *       the /etc/ntpv/bar_database.xml must have the following scheme:
+        *       the xmldocs:bar_database.xml must have the following scheme:
         *<?xml version = '1.0' encoding = 'UTF-8'?>
         *<AUTOMATICALLY_GENERATED_XML>
         *             <database>
@@ -36,7 +36,7 @@ class DataBaseModuleInterface{
         *</AUTOMATICALLY_GENERATED_XML>
         *
         *       wich means that it could be validated with a DTD. The DTD of this scheme should be at
-        *       /etc/ntpvbackoffice/dtds/dbmodule_config.dtd.
+        *       dtddocs:dbmodule_config.dtd.
         *<!ELEMENT AUTOMATICALLY_GENERATED_XML (database)>
         *<!ELEMENT database (hostname,dbname,user,passwd)>
         *<!ELEMENT hostname (#PCDATA)>
@@ -48,17 +48,17 @@ class DataBaseModuleInterface{
         *       construct a valid XML and will try to set the config of each program to that database.
         *
         *       @return bool with false, if the database can't be written because of a dtd validation failure, or the dtd is missing, or
-        *       the program can't write at the /etc/ntpv/bar_xml. TRUE if the configuration have been done without problems
+        *       the program can't write at the xmldocs:bar_xml. TRUE if the configuration have been done without problems
         */
     virtual bool setConfig(QString) = 0;
 
     /**
-        *       this method will return the configuration of this POS. The configuration is at the file "/etc/ntpv/bar_database.xml".
+        *       this method will return the configuration of this POS. The configuration is at the file "xmldocs:bar_database.xml".
         *       it will be readed from that file and returned with this method.
         *
         *       @return QString containing an XML with the configuration of the database connection at this ntpv and ntpvbarconfig
         *       program. If there are problems while trying to obtain the database configuration it will return an empty QString.
-        *       QString can construct a XmlConfig object wich should validate against " /etc/ntpvbackoffice/dtds/dbmodule_config.dtd"
+        *       QString can construct a XmlConfig object wich should validate against " dtddocs:dbmodule_config.dtd"
         *       of to a dtd like at the setConfig method. It could be validated as follows:
         *
         *       QString aux;    //with aux containing the xml config.
@@ -83,7 +83,7 @@ class DataBaseModuleInterface{
 
     /**
         *       state of the current database at this POS.
-        *       @return this method will return true if the database and the database service contained at the /etc/ntpv/bar_database.xml
+        *       @return this method will return true if the database and the database service contained at the xmldocs:bar_database.xml
         *       of this POS is accesible for the user at the same config file. it will return false otherwise.
         */
     virtual bool databaseState() = 0;

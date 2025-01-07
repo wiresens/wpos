@@ -27,8 +27,9 @@
 #include <QStylePainter>
 #include <QStyleOptionButton>
 #include <QtGlobal>
+#include <QDir>
 
-const QString& END_METAPRODUCT = "solo";
+const QString& END_META_PRODUCT = "solo";
 const QString UNKNOWN {"STRANGER"};
 
 using namespace std;
@@ -37,7 +38,7 @@ using namespace std;
 *    this constructor create a list with id, and empty lists.
 */
 
-BarCoreDB Product::db{"ProductConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
+BarCoreDB Product::m_bar_core_db{"ProductConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
 
 Product::Product(
     const QString& name,
@@ -50,7 +51,7 @@ Product::Product(
     auto gsm = GenericSignalManager::instance();
     gsm->publishGenericDataSignal(GDATASIGNAL::REREAD_CONFIG, this);
 
-    toggle_filter = true;
+    m_toggle_filter = true;
 
     resize(MAX_SIZE);
     setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
@@ -216,27 +217,27 @@ void Product::setProductName(const QString& _name){
 void Product::setTextAtButton(){
     QString text;
 
-    if (!db.isConnected()){
+    if (!m_bar_core_db.isConnected()){
         text = baseName();
         text.replace('_',"\n");
-        prod_name = text.toUpper();
-        setText(prod_name);
+        m_prod_name = text.toUpper();
+        setText(m_prod_name);
         return;
     }
 
-    prod_name = db.getName(baseName());
+    m_prod_name = m_bar_core_db.getName(baseName());
 
-    if (prod_name.isEmpty()){
+    if (m_prod_name.isEmpty()){
         text = baseName();
         text.replace('_',"\n");
-        prod_name = text.toUpper();
-        setText(prod_name);
+        m_prod_name = text.toUpper();
+        setText(m_prod_name);
         return;
     }
 
-    prod_name.replace(' ',"\n");
-    prod_name = prod_name.toUpper();
-    setText(prod_name);
+    m_prod_name.replace(' ',"\n");
+    m_prod_name = m_prod_name.toUpper();
+    setText(m_prod_name);
 }
 
 void Product::paintEvent(QPaintEvent* event){
@@ -277,27 +278,27 @@ void Product::setTextInPixmap(bool on){
 
     if ( !pixmap.isNull() && on){
         QFont qfont = QApplication::font();
-        if (!family.isEmpty()) qfont.setFamily(family);
-        qfont.setPointSize(default_font_size);
+        if (!m_prod_family.isEmpty()) qfont.setFamily(m_prod_family);
+        qfont.setPointSize(m_font_size);
         qfont.setBold(true);
-        Effects::drawTextInPixmap(prod_name, &pixmap, qfont);
+        Effects::drawTextInPixmap(m_prod_name, &pixmap, qfont);
         setIcon(pixmap);
     }
 }
 
 void Product::setDefaultFontFamily(const QString& _family){
     if (!_family.isEmpty())
-        family = _family;
+        m_prod_family = _family;
 }
 
 void Product::setDefaultFontSize(int num){
     if ((num>0) && (num<20))
-        default_font_size = num;
+        m_font_size = num;
 }
 
 void Product::setDefaultTextFontFamily(const QString& _family){
     QFont font;
-    if (family.isEmpty())
+    if (m_prod_family.isEmpty())
         return;
     font = this->font();
     font.setFamily(_family);
@@ -333,22 +334,22 @@ void Product::prepareSignals(){
 }
 
 void Product::setToggleFilter(const bool& filter){
-    toggle_filter = filter;
+    m_toggle_filter = filter;
 }
 
 bool Product::getToggleFilter() const{
-    return toggle_filter;
+    return m_toggle_filter;
 }
 
 void Product::toggleChanged(bool pressed){
-    if (toggle_filter) return;
+    if (m_toggle_filter) return;
 
     if (pressed){
         qApp->processEvents();
         emit productClicked(this);
     }
     else{
-        if (productData){
+        if (m_prod_data){
             emit productDefinition(nullptr);
             //disconnecting the signals that create the product.
             disconnect(this, &Product::combineWith, nullptr, nullptr);
@@ -363,16 +364,16 @@ void Product::toggleChanged(bool pressed){
 bool Product::lead(){
     XmlConfig *xml = 0;
     QStringList list;
-    if (productData)
+    if (m_prod_data)
         return false;
     //     cout << "Producto " << getProductName().toLatin1() << " seleccionado para LIDERAR" << endl;
 
-    productData = this;
+    m_prod_data = this;
 
     //prepare the option section. (append the node-sections)
-    productExtraInfos.clear();
-    for (int i=0;i<(int)productData->extraInfos.count();i++){
-        productExtraInfos.append(productData->extraInfos.at(i),(productData->extraInfos.at(i))->getOptionType());
+    m_prod_extra_infos.clear();
+    for (int i=0;i<(int)m_prod_data->extraInfos.count();i++){
+        m_prod_extra_infos.append(m_prod_data->extraInfos.at(i),(m_prod_data->extraInfos.at(i))->getOptionType());
     }
 
     list = this->getCombinations();
@@ -400,21 +401,21 @@ void Product::combinationClicked(Product *product){
     XmlConfig *xml = 0;
     //OptionNode *on=0;
 
-    if (!productData) return;
+    if (!m_prod_data) return;
 
-    data =  productData->getProduct(product->baseName());
+    data =  m_prod_data->getProduct(product->baseName());
     if (!data) return;
 
-    productData = data;
-    productVariants.append(product);
+    m_prod_data = data;
+    m_prod_variants.append(product);
 
-    for (int i=0;i<(int)productData->extraInfos.count();i++){
+    for (int i=0;i<(int)m_prod_data->extraInfos.count();i++){
         //check if the option is at the list
-        if (!productExtraInfos.find((productData->extraInfos.at(i))->getOptionType()))
-            productExtraInfos.append(productData->extraInfos.at(i),(productData->extraInfos.at(i))->getOptionType());
+        if (!m_prod_extra_infos.find((m_prod_data->extraInfos.at(i))->getOptionType()))
+            m_prod_extra_infos.append(m_prod_data->extraInfos.at(i),(m_prod_data->extraInfos.at(i))->getOptionType());
     }
 
-    list = productData->getCombinations();
+    list = m_prod_data->getCombinations();
     if (!list.isEmpty()){
         //if it's not the last element of the list
         emit combineWith(list);
@@ -439,9 +440,9 @@ void Product::combinationDeleted(Product *product){
     QStringList  list;
     Product *prod = 0;
     founded = false;
-    count = productVariants.count();
+    count = m_prod_variants.count();
     for(i=0;i<count;i++){
-        if (product==productVariants.at(i)){
+        if (product==m_prod_variants.at(i)){
             founded = true;
             break;
         }
@@ -450,7 +451,7 @@ void Product::combinationDeleted(Product *product){
         return;
 
     //all the buttons after the i product and also the i product should be detoggled
-    while ((prod = productVariants.at(i))){
+    while ((prod = m_prod_variants.at(i))){
         //may be we will have some problems with these.
         prod->setToggleFilter(true);  //needed to deactivate the emision of the productDeleted Signal
 
@@ -458,25 +459,25 @@ void Product::combinationDeleted(Product *product){
 
         prod->setToggleFilter(false);
         //        product_list->remove(product_list->at(i));
-        productVariants.removeAt(i);
+        m_prod_variants.removeAt(i);
     }
 
     //now we should put the node(ProductData) to the last ProductData of the product_list.
-    productData = this;
-    productExtraInfos.clear();
-    for (int i=0;i<(int)productData->extraInfos.count();i++){
-        productExtraInfos.append(productData->extraInfos.at(i),(productData->extraInfos.at(i))->getOptionType());
+    m_prod_data = this;
+    m_prod_extra_infos.clear();
+    for (int i=0;i<(int)m_prod_data->extraInfos.count();i++){
+        m_prod_extra_infos.append(m_prod_data->extraInfos.at(i),(m_prod_data->extraInfos.at(i))->getOptionType());
     }
-    count = productVariants.count();
+    count = m_prod_variants.count();
     for(i=0;i<count;i++){
-        prod = productVariants.at(i);
-        productData = productData->getProduct(prod->baseName());
-        for (int i=0;i<(int)productData->extraInfos.count();i++){
-            productExtraInfos.append(productData->extraInfos.at(i),(productData->extraInfos.at(i))->getOptionType());
+        prod = m_prod_variants.at(i);
+        m_prod_data = m_prod_data->getProduct(prod->baseName());
+        for (int i=0;i<(int)m_prod_data->extraInfos.count();i++){
+            m_prod_extra_infos.append(m_prod_data->extraInfos.at(i),(m_prod_data->extraInfos.at(i))->getOptionType());
         }
     }
 
-    list = productData->getCombinations();
+    list = m_prod_data->getCombinations();
     if (list.isEmpty()){
         // ??????????????????????????????
         // this should never happen
@@ -498,8 +499,8 @@ void Product::enableProduct(){
 }
 
 void Product::defaultValues(){
-    productData = nullptr;
-    productVariants.clear();
+    m_prod_data = nullptr;
+    m_prod_variants.clear();
     setToggleFilter(true);
     setEnabled(true);
     //@BENE    this->setOn(false);
@@ -507,73 +508,51 @@ void Product::defaultValues(){
 }
 
 /*************************************************************************************************************
-* all the method that access the productData nodes should also check the options for all the data...
+* all the method that access the m_prod_data nodes should also check the options for all the data...
 **************************************************************************************************************/
 XmlConfig* Product::createProductDefinition()
 {
-    int i,count;
-    XmlConfig *xml = 0;
-    Product *prod = 0;
-    QStringList names;
-    QString aux;
+    if (!m_prod_data) return nullptr;
 
-    if (!productData) return nullptr;
-
-    //write all products in the xml
-    //first get the list.
-    if ( baseName() == END_METAPRODUCT){
-        productExtraInfos.clear();
+    //write all products in the xml, first get the list.
+    if ( baseName() == END_META_PRODUCT){
+        m_prod_extra_infos.clear();
         return nullptr;
     }
 
+    QStringList names;
     names.append(baseName());
-    count = productVariants.count();
-    for(i=0; i < count; i++){
-        prod = productVariants.at(i);
-        aux = prod->baseName();
-        if (aux == END_METAPRODUCT) break;
+    for(auto* prod : m_prod_variants ){
+        QString tmp = prod->baseName();
+        if (tmp == END_META_PRODUCT) break;
         names.append(prod->baseName());
     }
 
     //this only happens when the only product was the END_METAPRODUCT
-    if (names.isEmpty()) return xml;
-
-
+    if (names.isEmpty()) return nullptr;
     names.sort();
 
     //now write the XML
-    xml = new XmlConfig("producto_temporal.xml");
-    xml->delDomain();
-
-    //delete all products
+    auto xml = new XmlConfig("tmps:ordered_product.xml");
     while (xml->howManyTags("product"))
         xml->deleteElement("product");
 
     xml->createElementSetDomain("product");
-    //prepare the option section
-    //testing purpose
-    for (i=0; i<(int)productExtraInfos.count();i++){
-        ProductExtraInfo *node = 0;
-        QString option_value;
-        QString option;
-        node = productExtraInfos.at(i);
-        option = node->getOptionType();
-        option_value = node->getDefaultOption();
+    for ( auto i=0; i < m_prod_extra_infos.count(); i++){
+        ProductExtraInfo *node = m_prod_extra_infos.at(i);
+        auto option = node->getOptionType();
+        auto option_value = node->getDefaultOption();
+        if ( option.isEmpty() || option_value.isEmpty() ) continue;
 
-        if ((option.isEmpty())||(option_value.isEmpty())) continue;
         xml->createElement("options.option["+QString::number(i)+"].type",option);
         xml->createElement("options.option["+QString::number(i)+"].value",option_value);
     }
 
     xml->createElementSetDomain("articles");
-    count = names.count();
-
-    for (i=0;i<count;i++)
-        xml->createElement("article["+QString::number(i)+"].name",names[i]);
+    for (auto i=0; i < names.count(); i++)
+        xml->createElement( "article["+QString::number(i)+"].name", names[i] );
 
     xml->save();
-    xml->delDomain();
-
     defaultValues();
     return xml;
 }

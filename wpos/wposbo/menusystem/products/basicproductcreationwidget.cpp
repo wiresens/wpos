@@ -72,16 +72,16 @@ static const QColor COLOR_POP_DOWN = QColor(238, 238, 230);
 static const QColor BUTTON_OFF = QColor(238, 238, 230);
 static const QColor BUTTON_ON = QColor(107, 181, 251);
 
-static const QString& TAXES_DTD = "/etc/ntpv_backoffice/dtds/products_taxeslist.dtd";
-static const QString& FAMILIES_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_familieslist.dtd";
-static const QString& PRODUCTS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
-static const QString& PRODUCT_COMPOSITION_DTD = "/etc/ntpv_backoffice/dtds/products_composition.dtd";
+static const QString& TAXES_DTD = "dtddocs:products_taxeslist.dtd";
+static const QString& FAMILIES_LIST_DTD = "dtddocs:products_familieslist.dtd";
+static const QString& PRODUCTS_LIST_DTD = "dtddocs:products_productslist.dtd";
+static const QString& PRODUCT_COMPOSITION_DTD = "dtddocs:products_composition.dtd";
 
 
 static const QString TAX_DEFAULT = "iva16";
 static const QString& DEFAULT_QUANTITY = "1";
 
-static const QString XML_PRODUCTS_PATH = "/etc/ntpv/bar.xml";
+static const QString XML_PRODUCTS_PATH = "xmldocs:bar.xml";
 static const QString ICON_PATH = cfg::PRODUCT_DIR;
 
 static const QString LOGO_BUTTON = "Logo";

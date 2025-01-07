@@ -66,7 +66,7 @@ public:
     * save the changes in the same file, so it's safe always to read from a XML without breaking it
     */
     explicit XmlConfig(
-        const QString& _file = QString{},
+        const QString& file_name = QString{},
         QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
     );
 
@@ -81,12 +81,12 @@ public:
   * Example  XmlConfig(conf->domDocument(),conf->fileName(),conf->openMode());
   * will indeed do a copy of the object and data, note that the domain is not set.
   * @param document : the document, taken from other xml calling xml->domDocument()
-  * @param _file: the file we will write the document to
+  * @param file_name: the file we will write the document to
   * @param mode: the mode we'll open the file
   */
     explicit XmlConfig(
         const QDomDocument &document,
-        const QString& _file = {},
+        const QString& file_name = {},
         QIODevice::OpenMode mode = QIODevice::ReadWrite | QIODevice::Text
     );
 
@@ -735,12 +735,12 @@ private:
     QDomNode temporyDomainPrivate (const QString& domain );
 
 private:
-    XmlConfigPrivate* impl{};
-    QDomDocument doc;  //the document pointing to our data
-    QDomNode currentNode; //the current node , why is it not a pointer?
-    QDomNode domain;      //the current domain , why is it not a pointer?
-    QString string_domain; //the domain in a string representation
-    QStack<QString> stack_domain;
+    XmlConfigPrivate   *m_impl{};
+    QDomDocument        m_dom;  //the document pointing to our data
+    QDomNode            m_node; //the current node , why is it not a pointer?
+    QDomNode            m_domain;      //the current domain , why is it not a pointer?
+    QString             m_str_domain; //the domain in a string representation
+    QStack<QString>     m_stacked_str_domain;
 };
 
 #endif

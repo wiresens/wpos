@@ -29,11 +29,11 @@ using namespace std;
 const QString& DCOP_OBJECT_INTERFACE_NAME = "UserModelInterface";
 
 const QString& DCOPFX2000_FINGERPRINT_DIR="/etc/fx2000fingerprint/";
-const QString& USER_DTD = "/etc/ntpv_backoffice/dtds/users_user.dtd";
-const QString& USER_LIST_DTD = "/etc/ntpv_backoffice/dtds/users_userslist.dtd";
-const QString& DCOPFX2000_ENROLL_DTD = "/etc/ntpv_backoffice/dtds/dcopfx2000_enroll.dtd";
+const QString& USER_DTD = "dtddocs:users_user.dtd";
+const QString& USER_LIST_DTD = "dtddocs:users_userslist.dtd";
+const QString& DCOPFX2000_ENROLL_DTD = "dtddocs:dcopfx2000_enroll.dtd";
 const QString& DATABASE_CONNECTION_NAME = "UserModuleConnection";
-const QString& DATABASE_DEFINITION_FILE = "/etc/ntpv/bar_database.xml";
+const QString& DATABASE_DEFINITION_FILE = "xmldocs:bar_database.xml";
 
 const QString UserModule::DBusObjectPath  = QString{"/wpos/wposbo/DBusBOUser"};
 UserModule::UserModule(QObject *parent, const QString& name):

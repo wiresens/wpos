@@ -30,7 +30,7 @@
 using std::cerr;
 using std::endl;
 
-static const QString& OFFERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
+static const QString& OFFERS_LIST_DTD  {"dtddocs:products_offerslist.dtd"};
 
 
 OfferUpdateWidget::OfferUpdateWidget(QWidget *parent, const QString& name ) :

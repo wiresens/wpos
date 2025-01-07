@@ -31,14 +31,14 @@ class UserModuleInterface{
         *               <cellular>656566566</cellular>
         *               <email>carlos@bluesock.net</email>
         *               <company_id>BlueSock S.L.</company_id>
-        *               <picture>/etc/ntpv/pictures/carlos.jpg</picture>
+        *               <picture>carlos.jpg</picture>
         *               <gerente>true</gerente>
         *       </user>
         *</AUTOMATICALLY_GENERATED_XML>
         *
         *       this XML should make a correct validation against the following DTD,
         *       all the calls to the create element will try to validate
-        *       the QString with a DTD as the following saved at /etc/ntpvbackoffice/dtds/users_user.dtd
+        *       the QString with a DTD as the following saved at dtddocs:users_user.dtd
         *
         *  <!ELEMENT AUTOMATICALLY_GENERATED_XML (user)>
         *  <!ELEMENT user (employee_id,name,last_name,address,nss,phone,cellular,email,company_id,picture,gerente)>
@@ -54,7 +54,7 @@ class UserModuleInterface{
         *  <!ELEMENT picture (#PCDATA)>
         *  <!ELEMENT gerente (#PCDATA)>
         *
-        *       @param  QString with an XML which validate against /etc/ntpvbackoffice/dtds/users_user.dtd that
+        *       @param  QString with an XML which validate against dtddocs:users_user.dtd that
         *       contains all the information to add at the database.
         *       @return true if the user has been created at the database or false otherwise
         */
@@ -62,7 +62,7 @@ class UserModuleInterface{
 
     /**
         *       method to change the data of a user with an existing "employee_id". The data will be passed as a QString containign
-        *       an Xml that validate against the DTD at /etc/ntpvbackoffice/dtds/users_user.dtd (the one at createUser)
+        *       an Xml that validate against the DTD at dtddocs:users_user.dtd (the one at createUser)
         *       the user that is going to be changed is selected from the 'user.employee_id' tag. The user employee_id should exists in order
         *       to change the data of that user.
         *
@@ -119,9 +119,9 @@ class UserModuleInterface{
         *       </users>
         *</AUTOMATICALLY_GENERATED_XML>
         *
-        *       that schema should validate against the /etc/ntpvbackoffice/dtds/users_userslist.dtd
+        *       that schema should validate against the dtddocs:users_userslist.dtd
         *       @return QString that contains an XML with all the data of the users (short format) contained at the database
-        *       you could validate the XML against /etc/ntpvbackoffice/dtds/users_userslist.dtd.
+        *       you could validate the XML against dtddocs:users_userslist.dtd.
         *       if somethings goes wrong it will return an empty string.
         */
     virtual QString usersList(bool all) = 0;
@@ -142,7 +142,7 @@ class UserModuleInterface{
         *                       <cellular>656566566</cellular>
         *                       <email>carlos@bluesock.net</email>
         *                       <company_id>BlueSock S.L.</company_id>
-        *                       <picture>/etc/ntpv/pictures/carlos.jpg</picture>
+        *                       <picture>carlos.jpg</picture>
         *                       <gerente>true</gerente>
         *               </user>
         *               ...
@@ -166,9 +166,9 @@ class UserModuleInterface{
         *       <!ELEMENT picture (#PCDATA)>
         *       <!ELEMENT gerente (#PCDATA)>
         *
-        *       that schema should validate against the /etc/ntpvbackoffice/dtds/users_userslist.dtd
+        *       that schema should validate against the dtddocs:users_userslist.dtd
         *       @return QString that contains an XML with all the data of the users (long format) contained at the database
-        *       you could validate the XML against /etc/ntpvbackoffice/dtds/users_userslist.dtd.
+        *       you could validate the XML against dtddocs:users_userslist.dtd.
         *       if somethings goes wrong it will return an empty string.
         */
     virtual QString usersExtendedList(bool all) = 0;
@@ -177,7 +177,7 @@ class UserModuleInterface{
         *       method to obtain all the info of the user passed at employee_id
         *       @param QString with the employee_id of the user.
         *       @return QString with the information of that user... it is passed as XML and can be validated against
-        *       "/etc/ntpvbackoffice/dtds/users_user.dtd" (check createUser to get an scheme of the xml).
+        *       "dtddocs:users_user.dtd" (check createUser to get an scheme of the xml).
         */
     virtual QString getUserInfo(const QString&)=0;
 
@@ -211,7 +211,7 @@ class UserModuleInterface{
         *        <model_path>path to the model data</model_path>
         *</AUTOMATICALLY_GENERATED_XML>
         *
-        *       there should be a dtd with this sintax at /etc/ntpvbackoffice/dtds/dcopfx2000_enroll.dtd
+        *       there should be a dtd with this sintax at dtddocs:dcopfx2000_enroll.dtd
         *
         *       @param the QString with the xml containig all the enrollment result
         */

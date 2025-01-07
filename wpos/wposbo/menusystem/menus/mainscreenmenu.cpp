@@ -26,8 +26,9 @@ using std::cerr;
 //@benes extern GenericSignalManager *gsignal_manager; it does not use, we need to fugure why
 Instantiator *menuInstantiator;
 
-MainScreenMenu::MainScreenMenu(MenuPage *parent,
-    const QString& name) :
+MainScreenMenu::MainScreenMenu(
+    MenuPage *parent,
+    const QString& name):
     QWidget(parent)
 {
     XmlConfig xml;
@@ -58,12 +59,12 @@ MainScreenMenu::MainScreenMenu(MenuPage *parent,
 
     menuItems = buildMenus(menuStack, xml);
     connect(menuItems, &QListWidget::itemClicked,
-    this, QOverload<QListWidgetItem*>::of(&MainScreenMenu::setCurrentMenu));
+        this, QOverload<QListWidgetItem*>::of(&MainScreenMenu::setCurrentMenu));
 }
 
 bool MainScreenMenu::loadConfig(XmlConfig& xml) const{
     // Default profile for order is obtained from the description XML
-    const QString& fileName {"/etc/ntpv_backoffice/mainscreen_description.xml"};
+    const QString& fileName {"xmldocs:mainscreen_description.xml"};
 
     if ( !QFile::exists(fileName) ){
         cerr << "Confing file not found  : " << fileName.toStdString() <<'\n';
@@ -122,9 +123,9 @@ QListWidget* MainScreenMenu::buildMenus(
         );
 
         connect(screen, &GenericScreen::footerRequested,
-                this, &MainScreenMenu::setFooterVisible);
+            this, &MainScreenMenu::setFooterVisible);
         connect(screen, &GenericScreen::menuRequested,
-                this, QOverload<const QString&>::of(&MainScreenMenu::setCurrentMenu));
+            this, QOverload<const QString&>::of(&MainScreenMenu::setCurrentMenu));
 
         menuPage->addWidget(screen, "SCREEN_"+QString::number(i));
         menuStack->addPage(menuPage, menuName);
@@ -134,7 +135,6 @@ QListWidget* MainScreenMenu::buildMenus(
         item->setIcon(QPixmap(menuPixmap));
         itemRelantions.insert(item, menuName);  // Save menuName to show on item click
     }
-
     menuStack->setCurrentPage(Menus::MAIN_MENU);
     return menuItems;
 }
@@ -144,7 +144,8 @@ void MainScreenMenu::setStyles(QListView& listView, XmlConfig& xml){
     auto tmpStr = xml.readString("backgroundcolor");
 
     auto m_palette = palette();
-    if (!tmpStr.isEmpty()) m_palette.setColor(backgroundRole(), QColor(tmpStr));
+    if (!tmpStr.isEmpty())
+        m_palette.setColor(backgroundRole(), QColor(tmpStr));
     setPalette(m_palette);
 
     // Sets background pixmap if there is one

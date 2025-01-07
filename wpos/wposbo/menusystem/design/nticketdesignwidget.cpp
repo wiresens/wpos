@@ -26,12 +26,12 @@
 #include <QFile>
 #include <QMessageBox>
 
-static const QString& SAVED_CONFIG{ "/etc/ntpv/company_ticket_data.xml"};
-static const QString& DTD {"/etc/ntpv_backoffice/dtds/company_ticket.dtd"};
-static const QString& TEMPLATES_LOCATION {"/etc/ntpv/templates/"};
-static const QString& MAIN_TICKET_FILE {"/etc/ntpv/printerhtml.xml"};
-static const QString& MAIN_INVOICE_FILE {"/etc/ntpv/invoice.xml"};
-static const QString& DCOPPRINTER_FILE {"/etc/ntpv/dcopprinter_config.xml"};
+static const QString& SAVED_CONFIG{ "xmldocs:company_ticket_data.xml"};
+static const QString& DTD {"dtddocs:company_ticket.dtd"};
+static const QString& TEMPLATES_LOCATION {"xmldocs:templates/"};
+static const QString& MAIN_TICKET_FILE {"xmldocs:printerhtml.xml"};
+static const QString& MAIN_INVOICE_FILE {"xmldocs:invoice.xml"};
+static const QString& DCOPPRINTER_FILE {"xmldocs:dcopprinter_config.xml"};
 
 NTicketDesignWidget::NTicketDesignWidget(QWidget *parent, const QString& name ):
     QWidget(parent)

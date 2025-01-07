@@ -23,15 +23,15 @@
 #include <iostream>
 using namespace std;
 
-static const QString& DATABASE_CONFIG_DTD = "/etc/ntpv_backoffice/dtds/dbmodule_config.dtd";
-static const QString& DDBB_CONFIGURATION_DTD_NMAP = "/etc/ntpv_backoffice/dtds/dbmodule_config_nmap.dtd";
-static const QString& TMP_DATABASE_FILE_XML = "/tmp/linuxbar_users_module_tmp.xml";
-static const QString& _DATABASE_OPERATIONS_CONNECTION_NAME = "DBusBOConnection";
-static const QString& DATABASE_DEFINITION_FILE = "/etc/ntpv/bar_database.xml";
+static const QString DATABASE_CONFIG_DTD         {"dtddocs:dbmodule_config.dtd"};
+static const QString DDBB_CONFIGURATION_DTD_NMAP {"dtddocs:dbmodule_config_nmap.dtd"};
+static const QString DATABASE_DEFINITION_FILE    {"xmldocs:bar_database.xml"};
 
-const QString DatabaseModule::DBusObject  = QString{"/wpos/wposbo/DBusBOModel"};
+const QString DatabaseModule::DBusObject {"/wpos/wposbo/DBusBOModel"};
 
-DatabaseModule::DatabaseModule(QObject *parent, const QString& name):
+DatabaseModule::DatabaseModule(
+    QObject *parent,
+    const QString& name):
     QObject(parent)
 {
     setObjectName(name);
@@ -44,7 +44,7 @@ DatabaseModule::DatabaseModule(QObject *parent, const QString& name):
     file_watcher = new QFileSystemWatcher(this);
     file_watcher->addPath(DATABASE_DEFINITION_FILE);
     connect(file_watcher, &QFileSystemWatcher::fileChanged,
-            this, &DatabaseModule::handleFileChanged);
+        this, &DatabaseModule::handleFileChanged);
 }
 
 DatabaseModule::~DatabaseModule(){}
@@ -101,7 +101,7 @@ void DatabaseModule::stopDatabase(){
     host = xml->readString("database.hostname");
     delete xml;
 
-    command += "ssh " + host +" /etc/init.d/postgress stop";
+    command += "ssh " + host +" /etc/init.d/postgres stop";
     process.setArguments( QStringList() << command);
     process.start();
 }
@@ -119,7 +119,7 @@ void DatabaseModule::startDatabase(){
     host = xml->readString("database.hostname");
     delete xml;
 
-    command += "ssh " + host +" /etc/init.d/postgress start";
+    command += "ssh " + host +" /etc/init.d/postgres start";
     process.setArguments( QStringList() << command);
     process.start();
 }

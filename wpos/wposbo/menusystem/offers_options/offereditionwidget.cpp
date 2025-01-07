@@ -25,7 +25,7 @@ using std::cerr;
 using std::endl;
 
 static const int  ICON_SIZE = 32;
-static const QString& OFFERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
+static const QString& OFFERS_LIST_DTD  {"dtddocs:products_offerslist.dtd"};
 
 static const QString& ICON_PATH = "controls:offers/";
 static const QString& ADVERTISE_FIXED = QObject::tr("Enter the fixed price of this offer");

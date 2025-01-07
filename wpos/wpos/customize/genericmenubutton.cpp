@@ -22,12 +22,11 @@
 #include <QString>
 #include <QFile>
 
-#define GENERIC_BUTTON "/tmp/generic_menu_button.xml"
+const QString GENERIC_BUTTON {"tmps:generic_menu_button.xml"};
 
 GenericMenuButton::GenericMenuButton(const QString& text, QWidget *parent, const QString& name ) :
     QPushButton(text, parent),
-    r_list{new QList<RMenuButtonData*>},
-    xml(0)
+    r_list{new QList<RMenuButtonData*>}
 {
     setObjectName(name);
 

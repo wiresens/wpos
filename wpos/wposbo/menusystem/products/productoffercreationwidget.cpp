@@ -40,13 +40,13 @@ using namespace std;
 
 const QString& SELECT_OFFER_TYPE = QObject::tr("Select a type of offer");
 const QString& SELECT_OFFER = QObject::tr("Select an offer");
-const QString& OFFERS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_offerslist.dtd";
+const QString& OFFERS_LIST_DTD = "dtddocs:products_offerslist.dtd";
 
 const QString& OFFER_ICON_PATH = "controls32:";
 const double ICON_SIZE = 30.00;
 const int MAX_OFFER_TYPES = 10;
 
-static const QString& XML_DESCRIPTION {"/etc/ntp_backoffice/mainscreen_description.xml"};
+static const QString& XML_DESCRIPTION {"xmldocs:mainscreen_description.xml"};
 
 ProductOfferCreationWidget::ProductOfferCreationWidget(
         double _product_price,

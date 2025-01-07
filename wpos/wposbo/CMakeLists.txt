@@ -281,7 +281,7 @@ else()
         libgdc.a
         libgd.a
         libz.a
-        libm.a
+        # libm.a commented out because, does'nt compile with clang, but with gcc
     )
 endif()
 

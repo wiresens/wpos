@@ -53,10 +53,10 @@
 #include <stdio.h>
 using namespace std;
 
-static const QString& PRODUCTS_DTD {"/etc/ntpv_backoffice/dtds/products_productslist.dtd"};
-static const QString& OFFERS_DTD {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
-static const QString& OPTIONS_DTD {"/etc/ntpv_backoffice/dtds/products_optionslist.dtd"};
-static const QString& SHORTCUT_XML {"/etc/ntpv/ntpv_buttons.xml"};
+static const QString& PRODUCTS_DTD {"dtddocs:products_productslist.dtd"};
+static const QString& OFFERS_DTD {"dtddocs:products_offerslist.dtd"};
+static const QString& OPTIONS_DTD {"dtddocs:products_optionslist.dtd"};
+static const QString& SHORTCUT_XML {"xmldocs:ntpv_buttons.xml"};
 static const QString& ICON_PATH {cfg::PRODUCT_DIR};
 static const QString& OFFERS_ICON_PATH {"controls:offers/"};
 

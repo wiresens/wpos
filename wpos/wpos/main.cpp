@@ -64,7 +64,7 @@ int main(int argc, char *argv[]){
     QApplication app(argc, argv);
     auto appPath = app.applicationDirPath();
     QDir::setSearchPaths( "controls", QStringList( appPath + "/" + cfg::CONTROLS_DIR ) );
-    QDir::setSearchPaths( "controls_32", QStringList( appPath + "/" + cfg::CONTROLS_32_DIR ) );
+    QDir::setSearchPaths( "controls32", QStringList( appPath + "/" + cfg::CONTROLS_32_DIR ) );
     QDir::setSearchPaths( "products", QStringList( appPath + "/" + cfg::PRODUCT_DIR ) );
     QDir::setSearchPaths( "payments", QStringList( appPath + "/" + cfg::PAYMENT_DIR) );
     QDir::setSearchPaths( "avatars",  QStringList( appPath + "/" + cfg::AVATAR_DIR) );
@@ -73,9 +73,14 @@ int main(int argc, char *argv[]){
     QDir::setSearchPaths( "dtddocs",  QStringList( appPath ) );
     QDir::setSearchPaths( "pixmaps",  QStringList( appPath ) );
 
+    QDir tmp_dir;
+    auto path = QDir::tempPath() + "/wpos/";
+    tmp_dir.mkpath(path);
+    QDir::setSearchPaths( "tmps",  QStringList( path ) );
+
     app.setApplicationName(QFileInfo(QFile(argv[0]).fileName()).baseName());
     app.setApplicationVersion(APP_VERSION);
-    app.setWindowIcon(QIcon("pixmaps:wpos.png"));
+    app.setWindowIcon(QIcon("avatars:wpos.png"));
 
     QCommandLineParser parser;
     parser.addVersionOption();
@@ -214,6 +219,7 @@ int main(int argc, char *argv[]){
     }
 
     save_reportman_cfg(host, database, user, passwd, port);
+    QDir::setCurrent(path);
 
     global_file_manager = new FileManager(nullptr, "FileManager");
     QStringList cfg_files{
@@ -311,7 +317,7 @@ save_reportman_cfg(
     }
 
     QTextStream stream(&file);
-    stream << "[caja]\n";
+    stream << "[database]\n";
     stream << "DriverName=ZeosLib\n";
     stream << "Database Protocol=postgresql\n";
     stream << "HostName="<< host <<"\n";

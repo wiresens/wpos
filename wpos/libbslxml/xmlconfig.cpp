@@ -65,27 +65,25 @@ will go out of the fragment again. So it result a semitransparent method
 */
 
 XmlConfig::XmlConfig(
-    const QString& _file,
+    const QString& file_name,
     QIODevice::OpenMode mode):
-    impl { new XmlConfigPrivate(_file, mode)}
+    m_impl { new XmlConfigPrivate(file_name, mode)}
 {
-    if (impl->ok()){
-        doc = impl->domDocument();
-        currentNode = doc.documentElement().firstChild();
+    if (m_impl->ok()){
+        m_dom = m_impl->domDocument();
+        m_node = m_dom.documentElement().firstChild();
     }
-
 }
 
 XmlConfig::XmlConfig(
     const QDomDocument &document,
-    const QString& _file,
+    const QString& file_name,
     QIODevice::OpenMode mode):
-    impl {new XmlConfigPrivate(document, _file, mode)}
+    m_impl {new XmlConfigPrivate(document, file_name, mode)}
 {
-
-    if (impl->ok()){
-        doc = impl->domDocument();
-        currentNode = doc.documentElement().firstChild();
+    if (m_impl->ok()){
+        m_dom = m_impl->domDocument();
+        m_node = m_dom.documentElement().firstChild();
     }
 }
 
@@ -93,41 +91,41 @@ XmlConfig::XmlConfig(
     const QString& xml_cfg_file,
     const QString& dtd_cfg_file,
     QIODevice::OpenMode mode):
-    XmlConfig(xml_cfg_file)
+    XmlConfig(xml_cfg_file, mode)
 {
     if ( !wellFormed() ||
-        !validateXmlWithDTD(dtd_cfg_file, true)
-    )
+        !validateXmlWithDTD( dtd_cfg_file, true) )
         throw XmlDtdValidationException{};
 }
 
 XmlConfig& XmlConfig::operator=(XmlConfig&& xml){
-    if(impl != xml.impl) delete impl;
+    if(m_impl != xml.m_impl) delete m_impl;
 
-    impl            = xml.impl;
-    doc             = xml.doc;
-    currentNode     = xml.currentNode;
-    domain          = xml.domain;
-    string_domain   = xml.string_domain;
-    stack_domain    = xml.stack_domain;
+    m_impl                  = xml.m_impl;
+    m_dom                   = xml.m_dom;
+    m_node                  = xml.m_node;
+    m_domain                = xml.m_domain;
+    m_str_domain            = xml.m_str_domain;
+    m_stacked_str_domain    = xml.m_stacked_str_domain;
 
-    xml.impl = nullptr;
+    xml.m_impl = nullptr;
     return *this;
 }
 
 XmlConfig::XmlConfig(XmlConfig&& xml)
-    :impl{xml.impl}, doc{xml.doc},
-    currentNode{xml.currentNode},
-    domain{xml.domain},
-    string_domain{xml.string_domain},
-    stack_domain{xml.stack_domain}
+    :m_impl{xml.m_impl},
+    m_dom{xml.m_dom},
+    m_node{xml.m_node},
+    m_domain{xml.m_domain},
+    m_str_domain{xml.m_str_domain},
+    m_stacked_str_domain{xml.m_stacked_str_domain}
 
 {
-    xml.impl = nullptr;
+    xml.m_impl = nullptr;
 }
 
 XmlConfig::~XmlConfig(){
-    delete impl;
+    delete m_impl;
 }
 
 void XmlConfig::clear(){
@@ -144,20 +142,20 @@ bool XmlConfig::readXmlFromString(const QString& xml_str)
     QDomDocument tmpDoc;
 
     if (!tmpDoc.setContent(xml_str)) return false;
-    QString fileName = impl->fileName();
-    delete impl;
-    impl = new XmlConfigPrivate{tmpDoc, fileName, QIODevice::ReadWrite};
-    if (impl->ok()){
-        doc = impl->domDocument();
-        currentNode = doc.documentElement().firstChild();
+    QString fileName = m_impl->fileName();
+    delete m_impl;
+    m_impl = new XmlConfigPrivate{tmpDoc, fileName, QIODevice::ReadWrite};
+    if (m_impl->ok()){
+        m_dom = m_impl->domDocument();
+        m_node = m_dom.documentElement().firstChild();
     }
 
-    string_domain.clear();
+    m_str_domain.clear();
     return true;
 }
 
 QString XmlConfig::toString() const{
-    return impl->toString();
+    return m_impl->toString();
 }
 
 #ifdef _HAS_VALIDATE_METHOD_
@@ -265,7 +263,7 @@ bool XmlConfig::validateXmlWithInternalDTD(bool verbose){
 #endif
 
 bool XmlConfig::wellFormed(){
-    return ( impl->ok());
+    return ( m_impl->ok());
 }
 
 QStringList XmlConfig::list( const QString& domain){
@@ -323,23 +321,23 @@ int XmlConfig::howManyAttributes(const QString& tag){
 }
 
 bool XmlConfig::save(const QString& file){
-    return impl->save(file);
+    return m_impl->save(file);
 }
 
 QString XmlConfig::fileName(){
-    return impl->fileName();
+    return m_impl->fileName();
 }
 
 void XmlConfig::debug(const QString& section, int ident){
 
     if (section.isNull() || section.isEmpty())
-        impl->debug(doc, ident);
+        m_impl->debug(m_dom, ident);
     else
-        impl->debug(temporyDomainPrivate(section), ident);
+        m_impl->debug(temporyDomainPrivate(section), ident);
 }
 
 QIODevice::OpenMode XmlConfig::openMode(){
-    return impl->openedMode();
+    return m_impl->openedMode();
 }
 
 
@@ -479,7 +477,7 @@ bool XmlConfig::createAttribute(const QString& tag,const QString& attr, const QS
 bool XmlConfig::createAttributeHere(const QString& attr, const QString& value){
 
     bool result {false};
-    QDomElement e = domain.toElement();
+    QDomElement e = m_domain.toElement();
 
     if (!e.isNull()){
         e.setAttribute(attr,value);
@@ -513,22 +511,22 @@ bool XmlConfig::setDomain(const QString& domain, bool overwrite_domain){
     QDomNode temp;
 
     if (overwrite_domain){  //just delete the current domain and make a new one
-        this->domain = temp;
-        this->domain = nodeFromTagPrivate(domain);
-        if (!this->domain.isNull())
-            string_domain = domain;
+        this->m_domain = temp;
+        this->m_domain = nodeFromTagPrivate(domain);
+        if (!this->m_domain.isNull())
+            m_str_domain = domain;
         else
             result=false;
     }
     else{
         QDomNode temp = this->nodeFromTagPrivate(domain); //as we are in a jail we have a path relative to the domain
         if (!temp.isNull()){
-            this->domain = temp;
-            if ( !string_domain.isEmpty() )  //if already we have a string domain we put the . after what we
-                string_domain += "."; //have already
-            string_domain += domain;
-            if (string_domain.at(0) == '.')
-                string_domain = string_domain.right(string_domain.length()-1);
+            this->m_domain = temp;
+            if ( !m_str_domain.isEmpty() )  //if already we have a string domain we put the . after what we
+                m_str_domain += "."; //have already
+            m_str_domain += domain;
+            if (m_str_domain.at(0) == '.')
+                m_str_domain = m_str_domain.right(m_str_domain.length()-1);
         }
         else
             result = false;
@@ -538,26 +536,26 @@ bool XmlConfig::setDomain(const QString& domain, bool overwrite_domain){
 }
 
 bool XmlConfig::releaseDomain(const QString& domain, bool recursive){
-    QDomNode temp = this->domain;
+    QDomNode temp = this->m_domain;
 
     if (!temp.isNull()){
         if (!recursive){ //not recursive, once it mach we return
             while (!String::compare(temp.nodeName(), domain)){
-                if ( temp == doc.documentElement() )
+                if ( temp == m_dom.documentElement() )
                     return false;
 
                 temp = temp.parentNode();
-                string_domain = String::stringOff(string_domain);
+                m_str_domain = String::stringOff(m_str_domain);
             }
 
-            this->domain = temp.parentNode(); //I hope this will work. and won't change the dom tree
-            string_domain = String::stringOff(string_domain);
+            this->m_domain = temp.parentNode(); //I hope this will work. and won't change the dom tree
+            m_str_domain = String::stringOff(m_str_domain);
             return true;
         }
 
         if (recursive){ //we want to free has much as possible, we look till the end where match further
             int times = 0, i = 1;
-            while( temp!=doc.documentElement()){
+            while( temp!=m_dom.documentElement()){
                 if (String::compare(temp.nodeName(), domain))
                     times = i;
                 temp = temp.parentNode();
@@ -567,8 +565,8 @@ bool XmlConfig::releaseDomain(const QString& domain, bool recursive){
             if (!times) //we are not in that domain
                 return false;
             while ( times >=1 ){
-                this->domain = this->domain.parentNode();
-                string_domain=String::stringOff(string_domain);
+                this->m_domain = this->m_domain.parentNode();
+                m_str_domain=String::stringOff(m_str_domain);
                 times--;
             }
             return true;
@@ -579,16 +577,16 @@ bool XmlConfig::releaseDomain(const QString& domain, bool recursive){
 
 bool XmlConfig::delDomain (bool recursive){
     bool result = false;
-    if ( !domain.isNull() ){
+    if ( !m_domain.isNull() ){
         if (recursive){
-            domain = doc.documentElement();
-            string_domain = QString{};
+            m_domain = m_dom.documentElement();
+            m_str_domain = QString{};
         }
         else
-            if (domain != doc.documentElement())
+            if (m_domain != m_dom.documentElement())
             {
-                domain = domain.parentNode();
-                string_domain = String::stringOff(string_domain);
+                m_domain = m_domain.parentNode();
+                m_str_domain = String::stringOff(m_str_domain);
             }
         result = true;
     }
@@ -597,18 +595,18 @@ bool XmlConfig::delDomain (bool recursive){
 }
 
 QString XmlConfig::getDomain(){
-    return string_domain ;
+    return m_str_domain ;
 }
 
 void XmlConfig::pushDomain(){
-    stack_domain.push(string_domain);
+    m_stacked_str_domain.push(m_str_domain);
 }
 
 void XmlConfig::popDomain(){
-    if( stack_domain.isEmpty() ) return;
-    string_domain = stack_domain.pop();
-    domain = doc.documentElement();
-    domain = nodeFromTagPrivate(string_domain);
+    if( m_stacked_str_domain.isEmpty() ) return;
+    m_str_domain = m_stacked_str_domain.pop();
+    m_domain = m_dom.documentElement();
+    m_domain = nodeFromTagPrivate(m_str_domain);
 }
 
 //*********************************
@@ -773,7 +771,7 @@ QStringList XmlConfig::findNodeValue(
 
 const QDomDocument& XmlConfig::getDocument() const
 {
-    return doc ;
+    return m_dom ;
 }
 
 bool XmlConfig::createComment(
@@ -889,14 +887,14 @@ QDomNode XmlConfig::findPrivate(
 
     if (from.isNull()) //null just means we search in the entire doc
     {
-        if (!this->domain.isNull()) //the jail, if there's a jail we are under it
+        if (!this->m_domain.isNull()) //the jail, if there's a jail we are under it
             //	if (!domain.firstChild().isNull())
-            wall=domain.firstChild();
+            wall=m_domain.firstChild();
         //			else
         //				wall=domain;
         else                              //null just means we search in the entire doc
             if (anidate)
-                wall = doc.documentElement().firstChild();
+                wall = m_dom.documentElement().firstChild();
     }
     else
         if (anidate)
@@ -1033,14 +1031,14 @@ bool XmlConfig::createElementPrivate(
 
     QDomNode parent=this->nodeFromTagPrivate(parent_name); //the parent that will have the new element
     if (parent.isNull()){
-        if (!this->domain.isNull())
-            parent=this->domain;
+        if (!this->m_domain.isNull())
+            parent=this->m_domain;
         else
-            parent=doc.documentElement();
+            parent=m_dom.documentElement();
     }
 
     tag_name=this->discardBracketPrivate(tag_name,nullptr); //the node with the name we want to write in the XML
-    QDomElement tag_node=doc.createElement(tag_name);
+    QDomElement tag_node=m_dom.createElement(tag_name);
 
     //the faster way to do it, if we have been requested a [n] (a specific number) we find his
     //sibling and just add it as a younger brother. If we have been requested to insert the first
@@ -1088,7 +1086,7 @@ bool XmlConfig::createElementPrivate(
 
     if(set_domain){
         if (tag_node.isNull())
-            domain = tag_node;
+            m_domain = tag_node;
         else
             //we set the domain to this node, this is necesary to
             //set everything correctly, it can be optimized
@@ -1096,12 +1094,12 @@ bool XmlConfig::createElementPrivate(
     }
 
     if (comment!=nullptr){
-        QDomComment c=doc.createComment(comment);
+        QDomComment c=m_dom.createComment(comment);
         tag_node.parentNode().insertBefore(tag_node,c);
     }
 
     if(!value.isNull()){
-        QDomText text_node= doc.createTextNode(value);
+        QDomText text_node= m_dom.createTextNode(value);
         text_node.setNodeValue(value);
         tag_node.appendChild(text_node);
     }
@@ -1143,10 +1141,10 @@ bool XmlConfig::copyPrivate(
     //xml_src->delDomain();
 
     my_domain = getDomain();    //we save our own settings
-    QDomDocument my_doc = doc;
+    QDomDocument my_doc = m_dom;
 
     //this->delDomain();
-    doc = doc_src;           //we overwrite our settings with the src document's settings
+    m_dom = doc_src;           //we overwrite our settings with the src document's settings
     delDomain();
     setDomain(domain_src);
 
@@ -1154,16 +1152,16 @@ bool XmlConfig::copyPrivate(
     temp_node = node.cloneNode(true);
     data = temp_node.toDocumentFragment();
 
-    doc = my_doc;        //we restore our settings
+    m_dom = my_doc;        //we restore our settings
     delDomain();
     setDomain(my_domain);
 
     //here we have the data to be copied in data
 
     if ( dst.isNull() || dst.isEmpty()) {//it we don't have where to put the data we'll just throught them in the current place
-        parent_of_data = domain;
-        if (domain.isNull()) //we have no domain, the parent must be the root document
-            parent_of_data = doc.documentElement();
+        parent_of_data = m_domain;
+        if (m_domain.isNull()) //we have no domain, the parent must be the root document
+            parent_of_data = m_dom.documentElement();
     }
     else{
         node = nodeFromTagPrivate(dst);
@@ -1219,10 +1217,10 @@ QDomNode XmlConfig::temporyDomainPrivate(const QString& domain )
             return where;
     }
     else
-        where = this->domain;
+        where = this->m_domain;
 
     if (where.isNull())
-        where = doc.documentElement();
+        where = m_dom.documentElement();
 
       return where.toElement().firstChild();
 }
@@ -1236,7 +1234,7 @@ QString XmlConfig::tagFromNodePrivate(const QDomNode& node)
     QString partial_tag;
     QDomNode i;
 
-    for(temp=node;temp!=doc.documentElement();temp=temp.parentNode())    {
+    for(temp=node;temp!=m_dom.documentElement();temp=temp.parentNode())    {
         partial_tag=temp.nodeName();
         parent=temp.parentNode();
         if (!parent.isNull())

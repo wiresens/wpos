@@ -160,9 +160,9 @@ void PayModes::showEvent(QShowEvent *e){
     actual_price = core->total();
 
     //the price is 0... nothing to pay
-    XmlConfig xml;
     if (actual_price <= 0){
         sendTicketSignal("metalico");
+        XmlConfig xml;
         xml.createElement("name", SalesScreen::PRODUCT_MENU);
         emit genericDataSignal(GDATASIGNAL::MAINSTACK_SET_PAGE, &xml);
     }

@@ -85,7 +85,7 @@ SalesScreen::SalesScreen(
     parent->addWidget(this, objectName());
     setSizePolicy(parent->sizePolicy());
 
-    auto idle_filter = new IdleFilter(this, 5);
+    auto idle_filter = new IdleFilter(this, 30);
     qApp->installEventFilter( idle_filter );
     connect( idle_filter, &IdleFilter::appIdled,
         this, &SalesScreen::showGreeter, Qt::QueuedConnection);

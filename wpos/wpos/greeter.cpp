@@ -40,7 +40,7 @@
 const QString& BLACK_FINGERPRINT    = "controls:black_fingerprint.jpg";
 const QString& BAD_FINGERPRINT      = "controls:bad_fingerprint.png";
 const QString& LOGO_CORP            = "controls:napsis_logo.png";
-const QString& DEFAULT_PICTURE      = "controls:fondo.png";
+const QString& DEFAULT_PICTURE      = "avatars:fondo.png";
 const QString& DEFAULT_TEXT         = "WireSens";
 
 const int SLEEP_TIME                = 1500;

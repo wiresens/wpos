@@ -38,12 +38,11 @@ extern "C"{
 
 using namespace std;
 
-#define TMP_LAST_Z "/tmp/last_z.xml"
-
-const QString &main_graph    = "/tmp/ntpv_x_main_graph.png";
-const QString &waiters_graph = "/tmp/ntpv_x_waiter_graph.png";
-const QString &offers_graph  = "/tmp/ntpv_x_offers_graph.png";
-const QString &options_graph = "/tmp/ntpv_x_options_graph.png";
+static const QString TMP_LAST_Z    {"tmps:last_z.xml"};
+static const QString main_graph    {"tmps:x_main_graph.png"};
+static const QString waiters_graph {"tmps:x_waiter_graph.png"};
+static const QString offers_graph  {"tmps:x_offers_graph.png"};
+static const QString options_graph {"tmps:x_options_graph.png"};
 
 XZWidget::XZWidget(QWidget *parent, const QString& name) :
     QWidget(parent)

@@ -65,8 +65,8 @@ signals:
 
 protected:
     //     void init();
-    QList<RMenuButtonData*> *r_list;
-    XmlConfig *xml;
+    QList<RMenuButtonData*> *r_list{};
+    XmlConfig *xml{};
 };
 
 #endif

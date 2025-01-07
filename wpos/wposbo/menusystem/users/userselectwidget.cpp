@@ -19,7 +19,7 @@
 
 #include <QMessageBox>
 
-static const QString& USERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/users_userslist.dtd"};
+static const QString& USERS_LIST_DTD  {"dtddocs:users_userslist.dtd"};
 //Ui Messages:
 static const QString& HARD_DELETE_BUTTON_TEXT = QObject::tr("Permanently\nDelete");
 static const QString& DB_USER_CHANGED_TITLE = QObject::tr("Change of user in the database");

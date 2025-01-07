@@ -30,8 +30,6 @@
 
 using namespace std;
 
-#define TICKET_TMP "/tmp/ticketcore_tmp.xml"
-
 TicketCore::TicketCore(QObject *parent, const QString& name):
     QObject(parent),
     m_ticket_core_db{ new TicketCoreDB("TicketCoreConnection", cfg::xmlFileByKey(cfg::XMLKey::Database))}

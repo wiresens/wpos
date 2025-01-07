@@ -21,7 +21,7 @@
 #include <QFile>
 
 const QString BasicDatabase::SQL_DRIVER {"QPSQL"};
-size_t BasicDatabase::DEFAULT_SQL_PORT {5434};
+size_t BasicDatabase::DEFAULT_SQL_PORT {5432};
 
 
 void BasicDatabase::initDB()

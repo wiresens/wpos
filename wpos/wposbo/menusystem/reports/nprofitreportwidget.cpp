@@ -52,8 +52,8 @@ the code hasn't been modified.
 
 #define USER_PIXMAP "controls32:personal.png"
 
-#define USERS_LIST_DTD  "/etc/ntpv_backoffice/dtds/users_userslist.dtd"
-#define USERS_DTD  "/etc/ntpv_backoffice/dtds/users_user.dtd"
+#define USERS_LIST_DTD  "dtddocs:users_userslist.dtd"
+#define USERS_DTD  "dtddocs:users_user.dtd"
 
 #define INTERFACE_NAME "ProfitReport"
 

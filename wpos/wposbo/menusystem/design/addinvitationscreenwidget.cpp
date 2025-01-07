@@ -32,7 +32,7 @@
 // #include <QMatrix>
 #include <QTimer>
 
-static const QString& INVITATION_XML = "/etc/ntpv_backoffice/invitations_description.xml";
+static const QString& INVITATION_XML = "xmldocs:invitations_description.xml";
 static const double ICON_SIZE = 32.00;
 static const uint TIME_OUT {10};
 static const QString ICON_PATH = "controls:offers/";

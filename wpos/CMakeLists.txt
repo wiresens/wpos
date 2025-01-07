@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.15)
+cmake_minimum_required(VERSION 3.15...3.19)
 project(wpos VERSION 2.0.0 LANGUAGES CXX C)
 
 # Set compiler flags
@@ -8,6 +8,7 @@ set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(NOT MSVC)
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wconversion -Wsign-conversion")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-deprecated-copy -Wno-narrowing")
     # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -pedantic-errors") # Warning Free
 else()
@@ -16,7 +17,7 @@ else()
 endif()
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
-set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") #Inibit all warning message
+# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") #Inibit all warning message
 
 # Add subdirectories if PROJECT_IS_TOP_LEVEL
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)

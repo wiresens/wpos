@@ -46,8 +46,8 @@
 #include <QScrollArea>
 #include <QIconDragEvent>
 
-const QString& INVITATION_OFFERS_DTD = "/etc/ntpv_backoffice/dtds/products_offerslist.dtd";
-const QString& INVITATION_OFFERS_XML = "/etc/ntpv/invitations_description.xml";
+const QString& INVITATION_OFFERS_DTD = "dtddocs:products_offerslist.dtd";
+const QString& INVITATION_OFFERS_XML = "xmldocs:invitations_description.xml";
 
 const QColor COLOR_POP_UP = QColor(255, 222, 115);
 const QColor COLOR_POP_DOWN = QColor(238, 238, 230);

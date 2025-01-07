@@ -32,12 +32,12 @@
 #include <iostream>
 using namespace std;
 
-static const QString& PRODUCTS_DTD = "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
-static const QString& SELECT_PRODUCTS_LIST_DTD = "/etc/ntpv_backoffice/dtds/products_productslist.dtd";
+static const QString& PRODUCTS_DTD = "dtddocs:products_productslist.dtd";
+static const QString& SELECT_PRODUCTS_LIST_DTD = "dtddocs:products_productslist.dtd";
 static const QString ICON_PATH = cfg::PRODUCT_DIR;
 
-static const QString& ORDER_ARTICLES_XML = "/etc/ntpv_backoffice/xml_order_articles.xml";
-static const QString& PRODUCTS_XML = "/etc/ntpv/bar.xml";
+static const QString& ORDER_ARTICLES_XML = "xmldocs:xml_order_articles.xml";
+static const QString& PRODUCTS_XML = "xmldocs:bar.xml";
 
 static const QColor DEFAULT_COLOR = QColor(238, 238, 230);
 static const double ICON_SIZE = 40.00;

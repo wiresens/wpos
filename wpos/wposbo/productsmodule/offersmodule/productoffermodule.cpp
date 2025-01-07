@@ -23,8 +23,8 @@
 using namespace std;
 
 static const QString OFFER_CONNECTION_NAME = "OfferConnection";
-static const QString OFFER_PATH_FILE = "/etc/ntpv/bar_database.xml";
-static const QString& OFFERS_DTD = "/etc/ntpv_backoffice/dtds/products_offerslist.dtd";
+static const QString OFFER_PATH_FILE = "xmldocs:bar_database.xml";
+static const QString& OFFERS_DTD = "dtddocs:products_offerslist.dtd";
 
 const QString ProductOfferModule::DBusObjectPath  = QString{"/wpos/wposbo/DBusBOProductOffer"};
 

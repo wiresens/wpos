@@ -21,7 +21,7 @@
 using std::cerr;
 using std::endl;
 
-static const QString& OFFERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
+static const QString& OFFERS_LIST_DTD  {"dtddocs:products_offerslist.dtd"};
 static const QString& ICONS_PATH {"controls:offers/"};
 
 const QString& FIXED = QObject::tr("Offer Fixed Price");

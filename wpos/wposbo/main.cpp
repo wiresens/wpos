@@ -26,17 +26,31 @@
 #include <QFileInfo>
 
 static const QString& APP_VERSION {"2.0-rc1"};
-static const QString& SPLASH_PIXMAP {"/usr/share/ntpv_backoffice/apps/ntpv_backoffice_splash.png"};
+static const QString& SPLASH_PIXMAP {"controls:bo_splashscreen.png"};
 
+static const QString CFG_XML_DIR    {"etc/wpos/wpos/"};
+static const QString CFG_DTD_DIR    {"etc/wpos/wpos/dtds/"};
+static const QString PIXMAP_DIR     {"share/wpos/"};
 QSplashScreen *splash{};
 int main(int argc, char *argv[])
 {
     QApplication app{argc, argv};
-    QDir::setSearchPaths("controls32", QStringList(cfg::CONTROLS_32_DIR));
-    QDir::setSearchPaths("controls48", QStringList(cfg::CONTROLS_48_DIR));
-    QDir::setSearchPaths("controls64", QStringList(cfg::CONTROLS_64_DIR));
-    QDir::setSearchPaths("hands", QStringList(cfg::HANDS_DIR));
-    QDir::setSearchPaths("products", QStringList(cfg::PRODUCT_DIR));
+    auto appPath = app.applicationDirPath();
+    QDir::setSearchPaths( "xmldocs",  QStringList( {appPath, appPath + "/etc/wpos/wpos/", appPath + "/etc/wpos/wposbo/"} ) );
+    QDir::setSearchPaths( "dtddocs",  QStringList( {appPath, appPath + "/etc/wpos/wposbo/dtds/", appPath + "/etc/wpos/wpos/dtds/"} ) );
+    QDir::setSearchPaths( "pixmaps",  QStringList( appPath ) );
+
+    QDir tmp_dir;
+    auto path = QDir::tempPath() + "/wpos/";
+    tmp_dir.mkpath(path);
+    QDir::setSearchPaths( "tmps",  QStringList( path ));
+
+    QDir::setSearchPaths("controls",   QStringList( appPath + "/" + cfg::CONTROLS_DIR ) );
+    QDir::setSearchPaths("controls32", QStringList( appPath + "/" + cfg::CONTROLS_32_DIR ));
+    QDir::setSearchPaths("controls48", QStringList( appPath + "/" + cfg::CONTROLS_48_DIR ));
+    QDir::setSearchPaths("controls64", QStringList( appPath + "/" + cfg::CONTROLS_64_DIR ));
+    QDir::setSearchPaths("hands", QStringList( appPath + "/" + cfg::HANDS_DIR));
+    QDir::setSearchPaths("products", QStringList( appPath + "/" + cfg::PRODUCT_DIR));
 
     app.setApplicationName(QFileInfo(QFile(argv[0]).fileName()).baseName());
     app.setApplicationVersion(APP_VERSION);

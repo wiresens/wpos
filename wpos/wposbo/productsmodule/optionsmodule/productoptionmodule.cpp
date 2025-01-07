@@ -16,8 +16,8 @@
 #include <QtDBus/QDBusConnection>
 
 const QString& OPTION_CONNECTION_NAME = "ProductOptionModuleConnectionName";
-const QString& OPTION_PATH_FILE = "/etc/ntpv/bar_database.xml";
-static const QString& OPTIONS_DTD = "/etc/ntpv_backoffice/dtds/products_optionslist.dtd";
+const QString& OPTION_PATH_FILE = "xmldocs:bar_database.xml";
+static const QString& OPTIONS_DTD = "dtddocs:products_optionslist.dtd";
 
 #include <iostream>
 using namespace std;

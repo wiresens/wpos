@@ -44,14 +44,18 @@ int main(int argc, char *argv[])
     static const QString version{"2.0.0"};
 
     QCoreApplication app(argc, argv);
-    auto appPath = app.applicationDirPath();
     auto appName = QFileInfo(QFile(argv[0]).fileName()).baseName();
+    app.setApplicationName(appName);
+    app.setApplicationVersion(version);
 
+    auto appPath = app.applicationDirPath();
     QDir::setSearchPaths( "xmldocs",  QStringList( appPath ) );
     QDir::setSearchPaths( "dtddocs",  QStringList( appPath ) );
-    app.setApplicationName(appName);
 
-    app.setApplicationVersion(version);
+    QDir tmp_dir;
+    auto path = QDir::tempPath() + "/wpos/";
+    tmp_dir.mkpath(path);
+    QDir::setSearchPaths( "tmps",  QStringList( path ));
 
     QCommandLineParser parser;
     parser.addVersionOption();

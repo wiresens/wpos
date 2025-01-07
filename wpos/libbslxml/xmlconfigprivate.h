@@ -112,14 +112,15 @@ private:
   * a new file is done either temporal or real one. But never overwrite other's headers
   * @param f the file where we write to, this file must be opened and will remain open
   */
-    inline void setXmlHeaderAndFooter(QFile &dev);
+    inline void setXmlHeaderAndFooter(QFile &file);
 
-    FILE* tmp_fd{};
-    QDomDocument m_domDocument;
-    QFile m_qfile;         //the file we are working with
+private:
+    FILE                *m_file{};
+    QDomDocument        m_dom;
+    QFile               m_qfile;         //the file we are working with
     QIODevice::OpenMode m_mode;         //the mode in which we open the file
-    bool has_tempory_file{false};  // Are we working with is tempory file or not
-    bool is_xml_file_parsed_succesfully{false};
+    bool                m_has_tempory_file{false};  // Are we working with is tempory file or not
+    bool                m_xml_parsed_succesfully{false};
 };
 
 #endif

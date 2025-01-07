@@ -154,13 +154,14 @@ void AdminWidget::init(ProductScreenStack *stack){
     toggle_double_printing = printer_operations->buttonByName("toggle_double_printing");
 
     QPushButton *button  = admin_operations->buttonByName("ntpv_backoffice");
-
     if (button)
-        connect(button, &QPushButton::clicked, this, &AdminWidget::launchBackOffice);
+        connect(button, &QPushButton::clicked,
+            this, &AdminWidget::launchBackOffice);
 
     button = admin_operations->buttonByName("xterm");
     if (button)
-        connect(button, &QPushButton::clicked ,this, &AdminWidget::launchXterm);
+        connect(button, &QPushButton::clicked ,
+            this, &AdminWidget::launchXterm);
 }
 
 void AdminWidget::loadToggleButtonStatus(){
@@ -220,8 +221,7 @@ void AdminWidget::cancelSlot(){
 
 void AdminWidget::launchBackOffice(){
     connect(process, QOverload<int,QProcess::ExitStatus>::of(&QProcess::finished),
-            this, &AdminWidget::restoreState);
-
+        this, &AdminWidget::restoreState);
     process->start( wposbo );
 }
 

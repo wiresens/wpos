@@ -9,7 +9,7 @@
 #include <iostream>
 using namespace std;
 
-static const QString& PRODUCTS_DTD {"/etc/ntpv_backoffice/dtds/products_productslist.dtd"};
+static const QString& PRODUCTS_DTD {"dtddocs:products_productslist.dtd"};
 
 AdvancedProductDeletionWidget::AdvancedProductDeletionWidget(
     ProductModule* product_model,

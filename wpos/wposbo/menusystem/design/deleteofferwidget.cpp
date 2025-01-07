@@ -20,7 +20,7 @@
 #include <QStackedWidget>
 #include <QRadioButton>
 
-static const QString& DELETE_OFFERS_LIST_DTD  {"/etc/ntpv_backoffice/dtds/products_offerslist.dtd"};
+static const QString& DELETE_OFFERS_LIST_DTD  {"dtddocs:products_offerslist.dtd"};
 
 #include <iostream>
 using namespace std;

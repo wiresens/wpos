@@ -27,8 +27,6 @@ extern "C"{
 
 #include "printer.h"
 
-#define TMP_PRINTER_CMNDS "/tmp/cmnds_for_printer"
-
 Printer::Printer () {
     if (!(fd = tmpfile()))
         perror("failed while trying to open a tmp file for printer :");

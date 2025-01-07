@@ -2,13 +2,15 @@ project(wposmodel VERSION ${PROJECT_VERSION})
 
 # Set compiler flags
 set(CMAKE_CXX_STANDARD 20)
+set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 if(MSVC)
     # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} /Wall /Qspectre")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w")
 else()
-    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Werror -Wextra -pedantic -pedantic-errors")
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wall -Wextra -pedantic")
+    # set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Werror -pedantic-errors")
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-unknown-pragmas") #to enable ODB #pragma
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-multichar") #permit definition of multichar €, ₦, £
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -Wno-overflow")
@@ -165,7 +167,8 @@ add_library(${MAIN_TARGET}
 )
 
 set_target_properties (${MAIN_TARGET} PROPERTIES
-    VERSION ${PROJECT_VERSION} SOVERSION ${PROJECT_VERSION_PATCH}
+    VERSION     ${PROJECT_VERSION}
+    SOVERSION   ${PROJECT_VERSION_PATCH}
 )
 
 target_compile_definitions(${MAIN_TARGET}
@@ -174,9 +177,9 @@ target_compile_definitions(${MAIN_TARGET}
 
 target_include_directories(${MAIN_TARGET}
     PRIVATE
-    ${ODB_INCLUDE_DIRS}
-    ${ODB_COMPILE_OUTPUT_DIR}
-    ${ODB_TAGERT_INCLUDE_DIRS}
+        ${ODB_INCLUDE_DIRS}
+        ${ODB_COMPILE_OUTPUT_DIR}
+        ${ODB_TAGERT_INCLUDE_DIRS}
 )
 
 target_link_libraries(${MAIN_TARGET} PRIVATE

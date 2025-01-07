@@ -68,15 +68,15 @@ void MemStickWidget::init(){
     ui->db_listview->setAllColumnsShowFocus(true);
 //    ui->db_listview->setColumnAlignment(0, Qt::AlignCenter);
 
-    ui->export_icons_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/usb_devices.png"));
-    ui->import_icons_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/usb_devices.png"));
-    ui->export_sql_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/ddbb_copy1.png"));
-    ui->export_csv_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/ddbb_copy1.png"));
-    ui->import_db_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/32x32/ddbb_shrink.png"));
-    ui->stick_label->setPixmap(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/stick_48x48.png"));
-    ui->ok_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    ui->accept_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_ok_48.png"));
-    ui->cancel_button->setIcon(QPixmap("/usr/share/ntpv_backoffice/apps/48x48/button_cancel.png"));
+    ui->export_icons_button->setIcon(QPixmap("controls32:usb_devices.png"));
+    ui->import_icons_button->setIcon(QPixmap("controls32:usb_devices.png"));
+    ui->export_sql_button->setIcon(QPixmap("controls32:ddbb_copy1.png"));
+    ui->export_csv_button->setIcon(QPixmap("controls32:ddbb_copy1.png"));
+    ui->import_db_button->setIcon(QPixmap("controls32:ddbb_shrink.png"));
+    ui->stick_label->setPixmap(QPixmap("controls48:stick_48x48.png"));
+    ui->ok_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    ui->accept_button->setIcon(QPixmap("controls48:button_ok_48.png"));
+    ui->cancel_button->setIcon(QPixmap("controls48:button_cancel.png"));
 
     connect(ui->export_icons_button, &QPushButton::clicked, this, &MemStickWidget::saveIconsToStick);
     connect(ui->import_icons_button, &QPushButton::clicked, this, &MemStickWidget::loadIconsFromStick);

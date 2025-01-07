@@ -80,7 +80,7 @@ signals:
     /**
         *       this signal is emmited when a correct data has arrived from the fx2000 enroll
         *       interface
-        *       @param QString containing the xml validated against /etc/ntpv/dtds/dcopfx2000_enroll.dtd
+        *       @param QString containing the xml validated against dtddocs:dcopfx2000_enroll.dtd
         *       the data has been validated so be sure it's correct.
         */
     void enrollDataAvailable(QString);

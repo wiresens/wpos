@@ -15,7 +15,7 @@
 #include "menusystem/system/fx2000enrollwidget.h"
 #include <libbslxml/xmlconfig.h>
 
-static const QString& USERS_DTD  {"/etc/ntpv_backoffice/dtds/users_user.dtd"};
+static const QString& USERS_DTD  {"dtddocs:users_user.dtd"};
 
 UserUpdateWidget::UserUpdateWidget(
         UserModule *_user_mod,

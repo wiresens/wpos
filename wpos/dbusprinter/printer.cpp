@@ -11,9 +11,6 @@ modified by Carlos Manzanedo Rueda
 %LICENCIA%
  ***************************************************************************/
 
-#define TMP_PRINTER_CMNDS "/tmp/cmnds_for_printer"
-#define TMP_PRINTER_FILE "/tmp/ntpv_printer_file.tmp"
-
 #include "printer.h"
 
 #include <QFile>
@@ -125,7 +122,7 @@ void Printer::printDirect(const QString& /*_file*/){
 }
 
 void Printer::printCups(const QString& /*_file*/){
-
+    QString TMP_PRINTER_FILE {"tmps:ntpv_printer_file.tmp"};
     QFile qfile(TMP_PRINTER_FILE);
     if (qfile.exists())  qfile.remove();
 
@@ -170,7 +167,7 @@ void Printer::printCups(const QString& /*_file*/){
         ;
 
 #ifndef _WINDOWS
-    if ( cupsPrintFile( printer_name.toStdString().c_str(), TMP_PRINTER_FILE, "ntpv_ticket", 0, 0) <= 0 ){
+    if ( cupsPrintFile( printer_name.toStdString().c_str(), TMP_PRINTER_FILE.toStdString().c_str(), "ntpv_ticket", 0, 0) <= 0 ){
          ipp_status_t status {cupsLastError()};
         cerr << "problems trying to print wPOS ticket : " << ippErrorString(status) << endl;
     }

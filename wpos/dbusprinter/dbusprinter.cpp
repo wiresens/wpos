@@ -97,13 +97,12 @@ void DBusPrinter::readConfig(const QString& path){
         QString aux  { xml.readString("server["+QString::number(i)+"].ip") };
         if (!aux.isEmpty()){
             auto xr_client = new XmlRpcPrinter(
-                 aux,
-                 qApp->applicationName(),
-                 WPOSD_RPC_PORT,
-                 this,
-                 aux.toStdString().c_str()
-             );
-
+                aux,
+                qApp->applicationName(),
+                WPOSD_RPC_PORT,
+                this,
+                aux.toStdString().c_str()
+            );
             xr_client->setAuthToken(auth_token);
             rpc_printers.append(xr_client, aux);
         }

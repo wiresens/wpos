@@ -31,12 +31,12 @@
 #include <iostream>
 using namespace std;
 
-static const QString& DEVICES_CONFIG {"/etc/ntpv/devices_config.xml"};
-static const QString& DCOPPRINTER_CONFIG {"/etc/ntpv/dcopprinter_config.xml"};
-static const QString& TEMPLATES_LOCATION {"/etc/ntpv/templates/"};
-static const QString& SAVED_CONFIG {"/etc/ntpv/company_ticket_data.xml"};
-static const QString& MAIN_TICKET_FILE {"/etc/ntpv/printerhtml.xml"};
-static const QString& MAIN_INVOICE_FILE {"/etc/ntpv/invoice.xml"};
+static const QString& DEVICES_CONFIG {"xmldocs:devices_config.xml"};
+static const QString& DCOPPRINTER_CONFIG {"xmldocs:dcopprinter_config.xml"};
+static const QString& TEMPLATES_LOCATION {"xmldocs:templates/"};
+static const QString& SAVED_CONFIG {"xmldocs:company_ticket_data.xml"};
+static const QString& MAIN_TICKET_FILE {"xmldocs:printerhtml.xml"};
+static const QString& MAIN_INVOICE_FILE {"xmldocs:invoice.xml"};
 
 static const int CHAR_42 = 42;
 static const int CHAR_40 = 40;
@@ -517,7 +517,7 @@ void DevicesConfig::prepareMainTickets(const QString& text){
         xml_file = QString(TEMPLATES_LOCATION) + "printerz_40.xml";
 
     xml = new XmlConfig(xml_file);
-    xml->save("/etc/ntpv/printerz.xml");
+    xml->save("xmldocs:printerz.xml");
     delete xml;
 
     if (text == "42")
@@ -526,7 +526,7 @@ void DevicesConfig::prepareMainTickets(const QString& text){
         xml_file = QString(TEMPLATES_LOCATION) + "printertickettotal_40.xml";
 
     xml = new XmlConfig(xml_file);
-    xml->save("/etc/ntpv/printertickettotal.xml");
+    xml->save("xmldocs:printertickettotal.xml");
     delete xml;
 
 
@@ -651,7 +651,7 @@ void DevicesConfig::prepareKitchenTickets(const QString& text){
         xml_file = QString(TEMPLATES_LOCATION) + "kitchen_printerhtml_40.xml";
 
     xml = new XmlConfig(xml_file);
-    xml->save("/etc/ntpv/kitchen_printerhtml.xml");
+    xml->save("xmldocs:kitchen_printerhtml.xml");
     delete xml;
 }
 
