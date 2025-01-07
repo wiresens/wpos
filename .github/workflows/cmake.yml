@@ -49,8 +49,8 @@ jobs:
       if: matrix.Repo != ''
     - name: Install Packages Dependencies
       run: |
-        sudo apt --yes update && sudo apt upgrade --yes
-        sudo apt --yes install libqt6webenginewidgets6 qt6-5compat-dev qt6-base-dev qt6-base-dev-tools ninja-build cmake libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libodb-sqlite-dev libodb-boost-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
+        sudo apt --yes update 
+        sudo apt --yes install libqt6websockets6 libqt6webenginewidgets6 qt6-5compat-dev qt6-base-dev qt6-base-dev-tools ninja-build cmake libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libodb-sqlite-dev libodb-boost-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
       if: matrix.PackageDeps != ''
     - name: Build wpos project
       run: |
