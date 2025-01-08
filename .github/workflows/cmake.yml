@@ -56,7 +56,7 @@ jobs:
         sudo mkdir -pv /root/.local/share/Qt
         sudo cp -a  ${{ github.workspace }}/qtaccount.ini /root/.local/share/Qt/qtaccount.ini
         sudo mkdir -pv /opt/qt
-        sudo qt-online-installer --root /opt/qt --accept-licenses --default-answer --confirm-command install ${{ matrix.Qt }}
+        sudo qt-online-installer --root /opt/qt --accept-licenses --accept-obligations --default-answer --confirm-command install ${{ matrix.Qt }}
       if: matrix.PackageDeps != ''
     - name: Build wPOS 
       run: |
