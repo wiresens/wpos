@@ -17,7 +17,7 @@ else()
 endif()
 
 option(BUILD_SHARED_LIBS "Build using shared libraries" ON)
-# set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") #Inibit all warning message
+set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -w") #Inibit all warning message
 
 # Add subdirectories if PROJECT_IS_TOP_LEVEL
 if(CMAKE_CURRENT_SOURCE_DIR STREQUAL CMAKE_SOURCE_DIR)
