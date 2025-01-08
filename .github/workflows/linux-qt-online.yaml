@@ -20,11 +20,6 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - CC: gcc-12
-            CXX: g++-12
-            PackageDeps: g++-12
-            Qt: qt.qt6.680.gcc_64
-            os: ubuntu-24.04
           - CC: gcc-13
             CXX: g++-13
             PackageDeps: g++-13
@@ -36,10 +31,6 @@ jobs:
             Qt: qt.qt6.680.clang_644
             Repo: llvm-toolchain-$(lsb_release -cs)-18
             os: ubuntu-24.04
-          - CC: vs2019
-            CXX: vs2019
-            Qt: qt.qt6.680.win64_msvc2019_64
-            os: windows-2019
     runs-on: ${{ matrix.os }}
     name: ${{ matrix.os }} ${{ matrix.CXX }}
     env:
