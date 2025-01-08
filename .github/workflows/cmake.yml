@@ -50,9 +50,9 @@ jobs:
     - name: Install Packages Dependencies
       run: |
         sudo apt --yes update 
-        sudo apt --yes install qt6-pdf-dev qt6-websockets-dev qt6-webengine-dev qt6-5compat-dev qt6-base-dev qt6-base-dev-tools ninja-build cmake libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libodb-sqlite-dev libodb-boost-dev libboost1.83-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
+        sudo apt --yes install qt6-pdf-dev qt6-websockets-dev qt6-webengine-dev qt6-5compat-dev qt6-base-dev qt6-base-dev-tools ninja-build cmake libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libsqlite3-dev libodb-sqlite-dev libodb-boost-dev libboost1.83-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
       if: matrix.PackageDeps != ''
-    - name: Build wpos project
+    - name: Build wPOS 
       run: |
         mkdir -pv ${env:WPOS_BUILD}
         cmake -S ${env:WPOS_SRC} -B ${env:WPOS_BUILD} -G Ninja
