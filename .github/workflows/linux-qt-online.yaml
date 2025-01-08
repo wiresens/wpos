@@ -23,12 +23,12 @@ jobs:
           - CC: gcc-13
             CXX: g++-13
             PackageDeps: g++-13
-            Qt: qt6.8.1-essentials qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools
+            Qt: qt6.8.1-essentials qt.qt6.681.addons.qtpdf qt.qt6.681.addons.qtwebengine  qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools
             os: ubuntu-24.04
           - CC: clang-18
             CXX: clang++-18
             PackageDeps: clang-18
-            Qt: qt6.8.1-essentials qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools
+            Qt: qt6.8.1-sdk
             Repo: llvm-toolchain-$(lsb_release -cs)-18
             os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
@@ -39,9 +39,9 @@ jobs:
       CC: ${{ matrix.CC }}
       CXX: ${{ matrix.CXX }}
     steps:
-    - name: checkout wpos
+    - name: Checkout wPOS
       uses: actions/checkout@v4
-    - name: Add Repo
+    - name: Add Repository ${{ matrix.Repo }}
       run: |
         wget -O - https://apt.llvm.org/llvm-snapshot.gpg.key|sudo apt-key add -
         sudo apt-add-repository "deb http://apt.llvm.org/$(lsb_release -cs)/ ${{ matrix.Repo }} main"
@@ -57,7 +57,7 @@ jobs:
         sudo mkdir -pv /opt/qt
         sudo qt-online-installer --root /opt/qt --accept-licenses --accept-obligations --default-answer --confirm-command install ${{ matrix.Qt }}
       if: matrix.PackageDeps != ''
-    - name: Run Configure wPOS 
+    - name: Configure wPOS 
       run: |
         mkdir -pv ${env:WPOS_BUILD}
         mkdir -pv ${env:WPOS_SRC}/../bin
