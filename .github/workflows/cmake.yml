@@ -23,12 +23,12 @@ jobs:
           - CC: gcc-13
             CXX: g++-13
             PackageDeps: g++-13
-            Qt: qt.qt6.681.gcc_64
+            Qt: qt6.8.0-sdk
             os: ubuntu-24.04
           - CC: clang-18
             CXX: clang++-18
             PackageDeps: clang-18
-            Qt: qt.qt6.681.gcc_64
+            Qt: qt6.8.0-sdk
             Repo: llvm-toolchain-$(lsb_release -cs)-18
             os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
