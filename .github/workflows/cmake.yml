@@ -23,12 +23,12 @@ jobs:
           - CC: gcc-12
             CXX: g++-12
             PackageDeps: g++-12
-            os: ubuntu-24.04
+            os: ubuntu-24.10
           - CC: clang-18
             CXX: clang++-18
             PackageDeps: clang-18
             Repo: llvm-toolchain-$(lsb_release -cs)-18
-            os: ubuntu-24.04
+            os: ubuntu-24.10
           - CC: vs2019
             CXX: vs2019
             os: windows-2019
