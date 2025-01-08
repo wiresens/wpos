@@ -53,7 +53,7 @@ jobs:
         chmod u+x ./qt-online
         sudo mkdir -pv /opt/qt
         sudo ./qt-online --root /opt/qt --accept-licenses --default-answer --confirm-command install ${{ matrix.Qt }}
-        sudo apt --yes install ninja-build cmake libcups2-dev libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libsqlite3-dev libodb-sqlite-dev libodb-boost-dev libboost1.83-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
+        sudo apt --yes install libxkbcommon-x11-0 ninja-build cmake libcups2-dev libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libsqlite3-dev libodb-sqlite-dev libodb-boost-dev libboost1.83-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
       if: matrix.PackageDeps != ''
     - name: Build wPOS 
       run: |
