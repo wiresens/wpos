@@ -36,7 +36,7 @@ jobs:
     name: ${{ matrix.os }} ${{ matrix.CXX }}
     env:
       WPOS_SRC: ${{ github.workspace }}/wpos
-      WPOS_BUILD: ${{ github.workspace }}/build
+      WPOS_BUILD: ${{ github.workspace }}/../build
       CC: ${{ matrix.CC }}
       CXX: ${{ matrix.CXX }}
     steps:
@@ -55,6 +55,8 @@ jobs:
     - name: Build wPOS 
       run: |
         mkdir -pv ${env:WPOS_BUILD}
+        mkdir -pv ${env:WPOS_SRC}/../bin
+        mkdir -pv ${env:WPOS_SRC}/../lib
         cmake -S ${env:WPOS_SRC} -B ${env:WPOS_BUILD} -G Ninja
         cmake --build ${env:WPOS_BUILD} --target all --parallel
       shell: pwsh
