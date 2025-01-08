@@ -52,6 +52,10 @@ jobs:
         wget --verbose https://d13lb3tujbc8s0.cloudfront.net/onlineinstallers/qt-online-installer-linux-x64-4.8.1.run -O qt-online 
         chmod u+x ./qt-online
         sudo mkdir -pv /opt/qt
+        cd /usr/lib/x86_64-linux-gnu
+        sudo ln -s libxkbcommon-x11.so.0.0.0 libxkbcommon-x11.so.0.0
+        sudo ln -s libxkbcommon-x11.so.0.0.0 libxkbcommon-x11.so.0
+        sudo ln -s libxkbcommon-x11.so.0.0.0 libxkbcommon-x11.so
         sudo ./qt-online --root /opt/qt --accept-licenses --default-answer --confirm-command install ${{ matrix.Qt }}
         sudo apt --yes install libxkbcommon-x11-0 ninja-build cmake libcups2-dev libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libsqlite3-dev libodb-sqlite-dev libodb-boost-dev libboost1.83-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
       if: matrix.PackageDeps != ''
