@@ -69,7 +69,7 @@ foreach( filePathUpper IN LISTS DBUS_ADAPTOR_FILES)
     get_filename_component(fileBase ${filePathLower} NAME_WE)
 
     # Invoke qdbuscpp2xml to generate .xml spec files form .h
-    qt6_generate_dbus_interface(
+    qt_generate_dbus_interface(
         ${filePathLower}
         "${WS_SERVICE}.${fileBase}.xml"
         OPTIONS -m  # export all Scriptable Public Slot
@@ -290,10 +290,10 @@ target_link_libraries(${MAIN_TARGET} PUBLIC
 #     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 # )
 
-qt_generate_deploy_app_script(
-   TARGET ${MAIN_TARGET}
-   OUTPUT_SCRIPT deploy_script
-   NO_UNSUPPORTED_PLATFORM_ERROR
-)
+# qt_generate_deploy_app_script(
+#    TARGET ${MAIN_TARGET}
+#    OUTPUT_SCRIPT deploy_script
+#    NO_UNSUPPORTED_PLATFORM_ERROR
+# )
 
-install(SCRIPT ${deploy_script})
+# install(SCRIPT ${deploy_script})

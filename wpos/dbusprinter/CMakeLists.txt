@@ -23,7 +23,7 @@ set(DBUS_HEADER_FILE
 )
 
 #Invoke qdbuscpp2xml to generate .xml spec files form .h
-qt6_generate_dbus_interface(
+qt_generate_dbus_interface(
     "${DBUS_HEADER_FILE}.h"
     "${WS_SERVICE}.${DBUS_HEADER_FILE}.xml"
     OPTIONS -M  #export all Public Slot
@@ -96,11 +96,11 @@ install(TARGETS ${MAIN_TARGET}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-qt_generate_deploy_app_script(
-   TARGET ${MAIN_TARGET}
-   OUTPUT_SCRIPT deploy_script
-   NO_UNSUPPORTED_PLATFORM_ERROR
-)
+# qt_generate_deploy_app_script(
+#    TARGET ${MAIN_TARGET}
+#    OUTPUT_SCRIPT deploy_script
+#    NO_UNSUPPORTED_PLATFORM_ERROR
+# )
 
-install(SCRIPT ${deploy_script})
+# install(SCRIPT ${deploy_script})
 

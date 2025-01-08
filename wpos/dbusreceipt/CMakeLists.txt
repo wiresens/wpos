@@ -11,14 +11,14 @@ include_directories(
 find_package(Qt6 REQUIRED COMPONENTS Core DBus Sql)
 
 #Invoke qdbuscpp2xml to generate .xml spec files form .h
-qt6_generate_dbus_interface(
+qt_generate_dbus_interface(
     dbusreceiptprimitive.h
     "${WS_SERVICE}.dbusreceiptprimitive.xml"
     OPTIONS -M  #export all Public Slot
 )
 
 #Invoke qdbuscpp2xml to generate .xml spec files form .h
-qt6_generate_dbus_interface(
+qt_generate_dbus_interface(
     dbusreceiptmediator.h
     "${WS_SERVICE}.dbusreceiptmediator.xml"
     OPTIONS -M  #export all Public Slot
@@ -94,10 +94,10 @@ install(TARGETS ${MAIN_TARGET}
     RUNTIME DESTINATION ${CMAKE_INSTALL_BINDIR}
 )
 
-qt_generate_deploy_app_script(
-   TARGET ${MAIN_TARGET}
-   OUTPUT_SCRIPT deploy_script
-   NO_UNSUPPORTED_PLATFORM_ERROR
-)
+# qt_generate_deploy_app_script(
+#    TARGET ${MAIN_TARGET}
+#    OUTPUT_SCRIPT deploy_script
+#    NO_UNSUPPORTED_PLATFORM_ERROR
+# )
 
-install(SCRIPT ${deploy_script})
+# install(SCRIPT ${deploy_script})
