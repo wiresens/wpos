@@ -28,7 +28,7 @@ jobs:
           - CC: clang-18
             CXX: clang++-18
             PackageDeps: clang-18
-            Qt: qt6.8.1-essentials qt6.8.1-addons extensions.qtpdf.681 extensions.qtwebengine.681 extensions.qtinsighttracker.681 qt.tools
+            Qt: qt6.8.1-essentials qt6.8.1-addons qt.qt6.681.addons.qt5compat extensions.qtpdf.681 extensions.qtwebengine.681 extensions.qtinsighttracker.681 qt.tools
             Repo: llvm-toolchain-$(lsb_release -cs)-18
             os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
