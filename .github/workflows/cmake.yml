@@ -23,12 +23,12 @@ jobs:
           - CC: gcc-13
             CXX: g++-13
             PackageDeps: g++-13
-            Qt: qt6.8.0-sdk
+            Qt: qt6.8.1-essentials qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools
             os: ubuntu-24.04
           - CC: clang-18
             CXX: clang++-18
             PackageDeps: clang-18
-            Qt: qt6.8.0-sdk
+            Qt: qt6.8.1-essentials qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools
             Repo: llvm-toolchain-$(lsb_release -cs)-18
             os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
@@ -49,7 +49,7 @@ jobs:
     - name: Install Packages Dependencies
       run: |
         sudo apt --yes update
-        sudo apt --yes install libxkbcommon-x11-0 ninja-build cmake libcups2-dev libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libsqlite3-dev libodb-sqlite-dev libodb-boost-dev libboost1.83-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
+        sudo apt --yes install qt6-pdf-dev qt6-websockets-dev qt6-webengine-dev qt6-5compat-dev qt6-base-dev qt6-base-dev-tools libxkbcommon-x11-0 ninja-build cmake libcups2-dev libjpeg-dev libpng-dev zlib1g-dev libcrypt-dev libgdchart-gd2-xpm-dev libgd-dev libsqlite3-dev libodb-sqlite-dev libodb-boost-dev libboost1.83-dev libodb-pgsql-dev libodb-qt-dev libodb-dev libxml2-dev odb ${{ matrix.PackageDeps }}
         sudo apt install --yes libfontconfig1-dev libfreetype-dev libx11-dev libx11-xcb-dev libxcb-cursor-dev libxcb-glx0-dev libxcb-icccm4-dev libxcb-image0-dev libxcb-keysyms1-dev libxcb-randr0-dev libxcb-render-util0-dev libxcb-shape0-dev libxcb-shm0-dev libxcb-sync-dev libxcb-util-dev libxcb-xfixes0-dev libxcb-xinerama0-dev libxcb-xkb-dev libxcb1-dev libxext-dev libxfixes-dev libxi-dev libxkbcommon-dev libxkbcommon-x11-dev libxrender-dev
         sudo wget https://d13lb3tujbc8s0.cloudfront.net/onlineinstallers/qt-online-installer-linux-x64-4.8.1.run -O /usr/bin/qt-online-installer 
         sudo chmod u+x /usr/bin/qt-online-installer
