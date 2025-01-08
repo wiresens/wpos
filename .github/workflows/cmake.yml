@@ -64,7 +64,7 @@ jobs:
         mkdir -pv ${env:WPOS_SRC}/../lib
         cmake -DCMAKE_PREFIX_PATH:PATH=/opt/qt/6.8.0/gcc_64 -S ${env:WPOS_SRC} -B ${env:WPOS_BUILD} -G Ninja
       shell: pwsh
-      - name: Build wPOS 
+    - name: Build wPOS 
       run: |
         cmake -DCMAKE_PREFIX_PATH:PATH=/opt/qt/6.8.0/gcc_64 --build ${env:WPOS_BUILD} --target all --parallel
       shell: pwsh
