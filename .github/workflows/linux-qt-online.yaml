@@ -20,16 +20,15 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - QtRepo: qt6.8.1-essentials extensions.qtpdf.681.linux_gcc_64 extensions.qtwebengine.681.linux_gcc_64 qt.qt6.681.addons.qtpositioning qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel                  qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools  
           - CC: gcc-13
             CXX: g++-13
             PackageDeps: g++-13
-            #Qt: qt6.8.1-essentials extensions.qtpdf.681.linux_gcc_64 extensions.qtwebengine.681.linux_gcc_64 qt.qt6.681.addons.qtpositioning qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools
+            Qt: qt6.8.1-essentials extensions.qtpdf.681.linux_gcc_64 extensions.qtwebengine.681.linux_gcc_64 qt.qt6.681.addons.qtpositioning qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools
             os: ubuntu-24.04
           - CC: clang-18
             CXX: clang++-18
             PackageDeps: clang-18
-            #Qt: qt6.8.1-essentials qt6.8.1-addons qt.qt6.681.addons.qt5compat extensions.qtpdf.681 extensions.qtwebengine.681 extensions.qtinsighttracker.681 qt.tools
+            Qt: qt6.8.1-essentials extensions.qtpdf.681.linux_gcc_64 extensions.qtwebengine.681.linux_gcc_64 qt.qt6.681.addons.qtpositioning qt.qt6.681.addons.qtwebsockets qt.qt6.681.addons.qtwebchannel qt.qt6.681.addons.qtwebview qt.qt6.681.addons.qt5compat qt.tools
             Repo: llvm-toolchain-$(lsb_release -cs)-18
             os: ubuntu-24.04
     runs-on: ${{ matrix.os }}
@@ -56,7 +55,7 @@ jobs:
         sudo mkdir -pv /root/.local/share/Qt
         sudo cp -a  ${{ github.workspace }}/qtaccount.ini /root/.local/share/Qt/qtaccount.ini
         sudo mkdir -pv /opt/qt
-        sudo qt-online-installer --no-default-installations --no-force-installations --root /opt/qt --accept-licenses --accept-obligations --default-answer --confirm-command install ${{ matrix.QtRepo }}
+        sudo qt-online-installer --no-default-installations --no-force-installations --root /opt/qt --accept-licenses --accept-obligations --default-answer --confirm-command install ${{ matrix.Qt }}
       if: matrix.PackageDeps != ''
     - name: Configure wPOS 
       run: |
