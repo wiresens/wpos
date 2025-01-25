@@ -13,19 +13,17 @@
 #ifndef DELETEOFFERWIDGET_H
 #define DELETEOFFERWIDGET_H
 
-#include "ui_deleteofferproductinterface.h"
 #include "productsmodule/offersmodule/productoffermodule.h"
+#include "ui_deleteofferproductinterface.h"
 
 class ProductOfferModule;
 
-class DeleteOfferWidget :
-                          public QWidget,
-                          private Ui::DeleteOfferProductInterface
-{
+class DeleteOfferWidget : public QWidget,
+                          private Ui::DeleteOfferProductInterface {
     Q_OBJECT
 
 public:
-    explicit DeleteOfferWidget(QWidget *parent=0, const QString& name = QString{});
+    explicit DeleteOfferWidget(QWidget* parent = 0, const QString& name = QString {});
     ~DeleteOfferWidget() = default;
 
     void setOffer(const QString& type, const QString& name);
@@ -45,7 +43,7 @@ private:
     void deleteOffer();
     void deleteType();
 
-    ProductOfferModule product_offer_module{};
+    ProductOfferModule product_offer_module {};
     QString offer_type, offer_name;
 };
 

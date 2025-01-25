@@ -12,6 +12,7 @@
 #ifndef REPORTINTERFACE_H
 #define REPORTINTERFACE_H
 
+#include <QString>
 class ReportInterface{
     virtual void reportSlot(QString)=0; //ASYNC
 };

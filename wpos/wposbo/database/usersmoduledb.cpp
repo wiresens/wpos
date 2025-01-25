@@ -1,116 +1,119 @@
-/***************************************************************************
-                          usersmoduledb.cpp  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
+// file      :  usersmoduledb.cpp
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
 #include "usersmoduledb.h"
 
+#include <QSqlError>
+#include <QSqlQuery>
 #include <QString>
 #include <QVariant>
-#include <QSqlQuery>
-#include <QSqlError>
 
 #include <iostream>
 using namespace std;
 
-bool UserData::isEmpty() const{
+bool UserData::isEmpty() const
+{
     return employee_id.isEmpty()
-            && name.isEmpty()
-            && last_name.isEmpty()
-            && address.isEmpty()
-            && nss.isEmpty()
-            && phone.isEmpty()
-            && cellular.isEmpty()
-            && email.isEmpty()
-            && company_id.isEmpty()
-            && picture.isEmpty()
-            && !gerente
-            && !active ;
+        && name.isEmpty()
+        && last_name.isEmpty()
+        && address.isEmpty()
+        && nss.isEmpty()
+        && phone.isEmpty()
+        && cellular.isEmpty()
+        && email.isEmpty()
+        && company_id.isEmpty()
+        && picture.isEmpty()
+        && !gerente
+        && !active;
 }
 
-void UserData::clear(){
+void UserData::clear()
+{
     using std::swap;
     UserData tmp;
     swap(*this, tmp);
 }
 
-UsersModuleDB::UsersModuleDB(const QString& _connection_name,const QString& _hostname,
-                             const QString& _database, const QString& _username,const QString& _passwd):
-    BasicDatabase(_connection_name,_hostname,_database,_username,_passwd){
+UsersModuleDB::UsersModuleDB(const QString& _connection_name, const QString& _hostname,
+    const QString& _database, const QString& _username, const QString& _passwd)
+    : BasicDatabase(_connection_name, _hostname, _database, _username, _passwd)
+{
 }
 
-UsersModuleDB::UsersModuleDB(const QString& _connection_name,XmlConfig *xml):
-    BasicDatabase(_connection_name,xml){
+UsersModuleDB::UsersModuleDB(const QString& _connection_name, XmlConfig* xml)
+    : BasicDatabase(_connection_name, xml)
+{
 }
 
-UsersModuleDB::UsersModuleDB(const QString& _connection_name,const QString& configuration_path):
-    BasicDatabase(_connection_name,configuration_path){
+UsersModuleDB::UsersModuleDB(const QString& _connection_name, const QString& configuration_path)
+    : BasicDatabase(_connection_name, configuration_path)
+{
 }
 
-UsersModuleDB::~UsersModuleDB(){
+UsersModuleDB::~UsersModuleDB()
+{
 }
 
-bool UsersModuleDB::addUser(const UserData *user_data){
+bool UsersModuleDB::addUser(const UserData* user_data)
+{
     QString query;
     QSqlError error;
-    QSqlQuery *q = 0;
+    QSqlQuery* q = 0;
 
-
-    query   =  "INSERT INTO staff ";
-    query +=  "(employee_id, name, last_name, address, nss, phone, cellular, email, company_id, picture, active ) ";
-    query +=  "VALUES ('" + user_data->employee_id+ "', ";
-    query +=  "'" + user_data->name + "', '" + user_data->last_name + "', ";
-    query +=  "'" + user_data->address + "', '" + user_data->nss + "', ";
-    query +=  "'" + user_data->phone + "', '" + user_data->cellular + "', ";
-    query +=  "'" + user_data->email + "', '" + user_data->company_id + "', ";
-    query +=  "'" + user_data->picture +"', ";
-    query +=  "'t') ;";
+    query = "INSERT INTO staff ";
+    query += "(employee_id, name, last_name, address, nss, phone, cellular, email, company_id, picture, active ) ";
+    query += "VALUES ('" + user_data->employee_id + "', ";
+    query += "'" + user_data->name + "', '" + user_data->last_name + "', ";
+    query += "'" + user_data->address + "', '" + user_data->nss + "', ";
+    query += "'" + user_data->phone + "', '" + user_data->cellular + "', ";
+    query += "'" + user_data->email + "', '" + user_data->company_id + "', ";
+    query += "'" + user_data->picture + "', ";
+    query += "'t') ;";
 
     //        cerr << query << endl;
 
     connect();
-    if(!connect()){
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+    if (!connect()) {
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return false;
     }
     q = new QSqlQuery(query, this->dbHandle());
     error = q->lastError();
-    if (error.type()!=QSqlError::NoError){
-        switch (error.type()){
-        case  QSqlError::NoError:
+    if (error.type() != QSqlError::NoError) {
+        switch (error.type()) {
+        case QSqlError::NoError:
             break;
-        case  QSqlError::ConnectionError:
+        case QSqlError::ConnectionError:
             break;
-        case  QSqlError::StatementError:
-            cout << "QUERY ERROR: "<< query.toStdString() << endl;
+        case QSqlError::StatementError:
+            cout << "QUERY ERROR: " << query.toStdString() << endl;
             break;
-        case  QSqlError::TransactionError:
+        case QSqlError::TransactionError:
             break;
-        case  QSqlError::UnknownError:
+        case QSqlError::UnknownError:
             break;
         }
-        //some errors ocurred
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << " "<< error.type()<< endl;
+        // some errors ocurred
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << " " << error.type() << endl;
     }
 
     delete q;
-    setUserAdminPermission(user_data->employee_id,user_data->gerente);
+    setUserAdminPermission(user_data->employee_id, user_data->gerente);
     disConnect();
-    return ((bool) !error.type());
+    return ((bool)!error.type());
 }
 
-bool UsersModuleDB::updateUser(const UserData *user_data){
+bool UsersModuleDB::updateUser(const UserData* user_data)
+{
     QString query;
     QSqlError error;
-    QSqlQuery *q = 0;
+    QSqlQuery* q = 0;
 
-    query =   "UPDATE staff SET name = '" + user_data->name+ "', ";
+    query = "UPDATE staff SET name = '" + user_data->name + "', ";
     query += "last_name = '" + user_data->last_name + "', ";
     query += "address = '" + user_data->address + "', ";
     query += "nss = '" + user_data->nss + "', ";
@@ -119,79 +122,81 @@ bool UsersModuleDB::updateUser(const UserData *user_data){
     query += "email = '" + user_data->email + "', ";
     query += "picture = '" + user_data->picture + "', ";
     query += "company_id = '" + user_data->company_id + "' ";
-    query += "WHERE employee_id ='" + user_data->employee_id +"';";
+    query += "WHERE employee_id ='" + user_data->employee_id + "';";
 
     connect();
-    if(!connect()){
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+    if (!connect()) {
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return false;
     }
     q = new QSqlQuery(query, this->dbHandle());
     error = q->lastError();
-    if (error.type()!=QSqlError::NoError){
-        switch (error.type()){
-        case  QSqlError::NoError:
+    if (error.type() != QSqlError::NoError) {
+        switch (error.type()) {
+        case QSqlError::NoError:
             break;
-        case  QSqlError::ConnectionError:
+        case QSqlError::ConnectionError:
             break;
-        case  QSqlError::StatementError:
-            cout << "QUERY ERROR: "<< query.toStdString() << endl;
+        case QSqlError::StatementError:
+            cout << "QUERY ERROR: " << query.toStdString() << endl;
             break;
-        case  QSqlError::TransactionError:
+        case QSqlError::TransactionError:
             break;
-        case  QSqlError::UnknownError:
+        case QSqlError::UnknownError:
             break;
         }
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << " "<< error.type()<< endl;
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << " " << error.type() << endl;
         delete q;
         disConnect();
         return false;
     }
     delete q;
-    setUserAdminPermission(user_data->employee_id,user_data->gerente);
+    setUserAdminPermission(user_data->employee_id, user_data->gerente);
     disConnect();
     return true;
 }
 
-bool UsersModuleDB::delUser(const QString& id){
-    return setActiveFlag(id,false);
+bool UsersModuleDB::delUser(const QString& id)
+{
+    return setActiveFlag(id, false);
 }
 
-bool UsersModuleDB::realDelUser(const QString& id){
+bool UsersModuleDB::realDelUser(const QString& id)
+{
     QString query;
-    QSqlQuery *q = 0;
+    QSqlQuery* q = 0;
     QSqlError error;
-    //the system user can't be deleted
+    // the system user can't be deleted
     if (id == "1")
         return false;
 
-    query = "DELETE FROM staff WHERE employee_id='"+ id +"';";
+    query = "DELETE FROM staff WHERE employee_id='" + id + "';";
     connect();
-    if(!connect()){
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+    if (!connect()) {
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return false;
     }
 
     if (getUserAdminPermission(id))
-        this->setUserAdminPermission(id,false);
+        this->setUserAdminPermission(id, false);
 
     q = new QSqlQuery(query, this->dbHandle());
     error = q->lastError();
-    if (error.type()!=QSqlError::NoError){
-        switch (error.type()){
-        case  QSqlError::NoError:
+    if (error.type() != QSqlError::NoError) {
+        switch (error.type()) {
+        case QSqlError::NoError:
             break;
-        case  QSqlError::ConnectionError:
+        case QSqlError::ConnectionError:
             break;
-        case  QSqlError::StatementError:
-            cout << "QUERY ERROR: "<< query.toStdString() << endl;
+        case QSqlError::StatementError:
+            cout << "QUERY ERROR: " << query.toStdString() << endl;
             break;
-        case  QSqlError::TransactionError:
+        case QSqlError::TransactionError:
             break;
-        case  QSqlError::UnknownError:
+        case QSqlError::UnknownError:
             break;
         }
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << " "<< error.type()<< endl;
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << " " << error.type() << endl;
         delete q;
         disConnect();
         return false;
@@ -201,9 +206,10 @@ bool UsersModuleDB::realDelUser(const QString& id){
     return true;
 }
 
-QVector<UserData> UsersModuleDB::getUserList(bool all){
-    if(!connect()){
-        cerr << "Database Connection Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+QVector<UserData> UsersModuleDB::getUserList(bool all)
+{
+    if (!connect()) {
+        cerr << "Database Connection Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         QVector<UserData>();
     }
     //    QString sql = "SELECT employee_id, name, last_name, address, nss, phone, cellular, email, company_id, picture ";
@@ -211,13 +217,13 @@ QVector<UserData> UsersModuleDB::getUserList(bool all){
     //    else sql += "FROM staff WHERE active='t' ORDER BY employee_id;";
     QString sql = "SELECT s.employee_id, name, last_name, address, nss, phone, cellular, email, company_id, picture, permission FROM staff s, acl a WHERE s.employee_id = a.employee_id ORDER BY s.employee_id;";
     QSqlQuery query(sql, dbHandle());
-    if ( !query.isActive() || !query.size()){
+    if (!query.isActive() || !query.size()) {
         disConnect();
         return QVector<UserData>();
     }
 
-    QVector<UserData> result ;
-    while(query.next()){
+    QVector<UserData> result;
+    while (query.next()) {
         UserData data;
         data.employee_id = query.value(0).toString();
         data.name = query.value(1).toString();
@@ -237,18 +243,19 @@ QVector<UserData> UsersModuleDB::getUserList(bool all){
     return result;
 }
 
-UserData UsersModuleDB::getUserInfo(QString employee_id){
+UserData UsersModuleDB::getUserInfo(QString employee_id)
+{
 
-    QString sql =   "SELECT employee_id, name, last_name, address, nss, phone, cellular, email, company_id, picture ";
+    QString sql = "SELECT employee_id, name, last_name, address, nss, phone, cellular, email, company_id, picture ";
     sql += "FROM staff WHERE employee_id='" + employee_id + "' ;";
 
-    if(!connect()){
-        cerr << "Database Connection Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+    if (!connect()) {
+        cerr << "Database Connection Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return UserData();
     }
 
     QSqlQuery query(sql, dbHandle());
-    if ( !query.isActive() || !query.size()){
+    if (!query.isActive() || !query.size()) {
         disConnect();
         return UserData();
     }
@@ -271,98 +278,99 @@ UserData UsersModuleDB::getUserInfo(QString employee_id){
     return data;
 }
 
-bool UsersModuleDB::setUserAdminPermission(const QString& employee_id, bool permission ){
+bool UsersModuleDB::setUserAdminPermission(const QString& employee_id, bool permission)
+{
     QString query;
     QSqlError error;
-    QSqlQuery *q = 0;
+    QSqlQuery* q = 0;
     bool aux_boolean;
 
     aux_boolean = this->getUserAdminPermission(employee_id);
     if (aux_boolean == permission)
         return true;
 
-    if (permission){
-        query   =  "INSERT INTO acl ";
-        query +=  "(permission, employee_id) ";
-        query +=  "VALUES ('administracion','"+employee_id+"');";
+    if (permission) {
+        query = "INSERT INTO acl ";
+        query += "(permission, employee_id) ";
+        query += "VALUES ('administracion','" + employee_id + "');";
 
-        if(!connect()){
-            cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+        if (!connect()) {
+            cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
             return false;
         }
         q = new QSqlQuery(query, this->dbHandle());
         error = q->lastError();
-        if (error.type()!=QSqlError::NoError){
-            switch (error.type()){
-            case  QSqlError::NoError:
+        if (error.type() != QSqlError::NoError) {
+            switch (error.type()) {
+            case QSqlError::NoError:
                 break;
-            case  QSqlError::ConnectionError:
+            case QSqlError::ConnectionError:
                 break;
-            case  QSqlError::StatementError:
-                cout << "QUERY ERROR: "<< query.toStdString() << endl;
+            case QSqlError::StatementError:
+                cout << "QUERY ERROR: " << query.toStdString() << endl;
                 break;
-            case  QSqlError::TransactionError:
+            case QSqlError::TransactionError:
                 break;
-            case  QSqlError::UnknownError:
+            case QSqlError::UnknownError:
                 break;
             }
-            //some errors ocurred
-            cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << " "<< error.type()<< endl;
+            // some errors ocurred
+            cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << " " << error.type() << endl;
         }
         delete q;
-        return ((bool) !error.type());
-    }
-    else{
-        query ="DELETE FROM acl ";
-        query +=  "WHERE employee_id='"+employee_id+"');";
+        return ((bool)!error.type());
+    } else {
+        query = "DELETE FROM acl ";
+        query += "WHERE employee_id='" + employee_id + "');";
 
-        if(!connect()){
-            cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+        if (!connect()) {
+            cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
             return false;
         }
         q = new QSqlQuery(query, this->dbHandle());
         error = q->lastError();
-        if (error.type()!=QSqlError::NoError){
-            switch (error.type()){
-            case  QSqlError::NoError:
+        if (error.type() != QSqlError::NoError) {
+            switch (error.type()) {
+            case QSqlError::NoError:
                 break;
-            case  QSqlError::ConnectionError:
+            case QSqlError::ConnectionError:
                 break;
-            case  QSqlError::StatementError:
-                cout << "QUERY ERROR: "<< query.toStdString() << endl;
+            case QSqlError::StatementError:
+                cout << "QUERY ERROR: " << query.toStdString() << endl;
                 break;
-            case  QSqlError::TransactionError:
+            case QSqlError::TransactionError:
                 break;
-            case  QSqlError::UnknownError:
+            case QSqlError::UnknownError:
                 break;
             }
-            //some errors ocurred
-            cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << " "<< error.type()<< endl;
+            // some errors ocurred
+            cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << " " << error.type() << endl;
         }
         delete q;
-        return ((bool) !error.type());
+        return ((bool)!error.type());
     }
 }
 
-bool UsersModuleDB::getUserAdminPermission(const QString& employee_id){
+bool UsersModuleDB::getUserAdminPermission(const QString& employee_id)
+{
     QString query;
-    QSqlQuery *q = 0;
+    QSqlQuery* q = 0;
     bool ret = false;
 
-    query =  "SELECT permission from acl ";
-    query += "WHERE employee_id='"+employee_id+"' and permission='administracion';";
+    query = "SELECT permission from acl ";
+    query += "WHERE employee_id='" + employee_id + "' and permission='administracion';";
 
-    if(!connect()){
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+    if (!connect()) {
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return ret;
     }
 
-    q= new QSqlQuery(query, this->dbHandle());
-    if (!q->isActive()){
+    q = new QSqlQuery(query, this->dbHandle());
+    if (!q->isActive()) {
         delete q;
         return ret;
     }
-    if (!q->size()){
+    if (!q->size()) {
         delete q;
         return ret;
     }
@@ -372,28 +380,28 @@ bool UsersModuleDB::getUserAdminPermission(const QString& employee_id){
     return ret;
 }
 
-bool UsersModuleDB::getActiveFlag(const QString& employee_id){
+bool UsersModuleDB::getActiveFlag(const QString& employee_id)
+{
     QString query;
-    QSqlQuery *q = 0;
+    QSqlQuery* q = 0;
     bool ret = false;
 
     connect();
-    if(!connect()){
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+    if (!connect()) {
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return ret;
     }
 
-    query =  "SELECT active from staff ";
-    query += "WHERE employee_id='"+employee_id+";";
+    query = "SELECT active from staff ";
+    query += "WHERE employee_id='" + employee_id + ";";
 
-
-    q= new QSqlQuery(query, this->dbHandle());
-    if (!q->isActive()){
+    q = new QSqlQuery(query, this->dbHandle());
+    if (!q->isActive()) {
         delete q;
         disConnect();
         return ret;
     }
-    if (!q->size()){
+    if (!q->size()) {
         delete q;
         disConnect();
         return ret;
@@ -405,43 +413,43 @@ bool UsersModuleDB::getActiveFlag(const QString& employee_id){
     return ret;
 }
 
-
-bool UsersModuleDB::setActiveFlag(const QString& employee_id,bool flag){
+bool UsersModuleDB::setActiveFlag(const QString& employee_id, bool flag)
+{
     QString query;
-    QSqlQuery *q = 0;
+    QSqlQuery* q = 0;
     QSqlError error;
-    //the system user can't be deleted
+    // the system user can't be deleted
     if (employee_id == "1")
         return false;
 
     if (flag)
-        query = "UPDATE staff SET active='t' WHERE employee_id='"+ employee_id +"';";
+        query = "UPDATE staff SET active='t' WHERE employee_id='" + employee_id + "';";
     else
-        query = "UPDATE staff SET active='f' WHERE employee_id='"+ employee_id +"';";
+        query = "UPDATE staff SET active='f' WHERE employee_id='" + employee_id + "';";
 
     connect();
-    if(!connect()){
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
+    if (!connect()) {
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << endl;
         return false;
     }
 
     q = new QSqlQuery(query, this->dbHandle());
     error = q->lastError();
-    if (error.type()!=QSqlError::NoError){
-        switch (error.type()){
-        case  QSqlError::NoError:
+    if (error.type() != QSqlError::NoError) {
+        switch (error.type()) {
+        case QSqlError::NoError:
             break;
-        case  QSqlError::ConnectionError:
+        case QSqlError::ConnectionError:
             break;
-        case  QSqlError::StatementError:
-            cout << "QUERY ERROR: "<< query.toStdString() << endl;
+        case QSqlError::StatementError:
+            cout << "QUERY ERROR: " << query.toStdString() << endl;
             break;
-        case  QSqlError::TransactionError:
+        case QSqlError::TransactionError:
             break;
-        case  QSqlError::UnknownError:
+        case QSqlError::UnknownError:
             break;
         }
-        cerr << "Error at UsersModuleDB" <<  __PRETTY_FUNCTION__ << ";" << __LINE__ << " "<< error.type()<< endl;
+        cerr << "Error at UsersModuleDB" << __PRETTY_FUNCTION__ << ";" << __LINE__ << " " << error.type() << endl;
         delete q;
         disConnect();
         return false;
@@ -450,8 +458,3 @@ bool UsersModuleDB::setActiveFlag(const QString& employee_id,bool flag){
     disConnect();
     return true;
 }
-
-
-
-
-

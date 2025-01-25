@@ -21,26 +21,24 @@ class BasicProductUpdateWidget;
 class ProductModule;
 class ProductData;
 
-class BasicProductEditionWidget :
-        public QWidget,
-        private Ui::BasicProductEditionWidgetBase
-{
+class BasicProductEditionWidget : public QWidget,
+                                  private Ui::BasicProductEditionWidgetBase {
     Q_OBJECT
 
 public:
-    enum OperationType{
+    enum OperationType {
         DeleteProduct = 0,
-        UpdateProduct =1
+        UpdateProduct = 1
     };
 
-    enum Column{
+    enum Column {
         Icon = 0,
         Name = 1,
         Code = 2
     };
 
-    BasicProductEditionWidget(ProductModule *_product_mod, int _action,
-                           QWidget *parent=0, const QString& name= QString{});
+    BasicProductEditionWidget(ProductModule* _product_mod, int _action,
+        QWidget* parent = 0, const QString& name = QString {});
 
     ~BasicProductEditionWidget() = default;
 
@@ -61,16 +59,16 @@ private slots:
     void downClickedSlot();
 
 protected:
-    void showEvent(QShowEvent *e);
-    void hideEvent(QHideEvent *e);
+    void showEvent(QShowEvent* e);
+    void hideEvent(QHideEvent* e);
     void init();
     void showSelectProduct();
     void deleteProduct();
-    void getProductFromItem(QTreeWidgetItem *item);
+    void getProductFromItem(QTreeWidgetItem* item);
 
-    ProductData *product_data{};
-    ProductModule *product_mod{};
-    BasicProductUpdateWidget *update_product{};
+    ProductData* product_data {};
+    ProductModule* product_mod {};
+    BasicProductUpdateWidget* update_product {};
     QString last_name;
 
     int action;

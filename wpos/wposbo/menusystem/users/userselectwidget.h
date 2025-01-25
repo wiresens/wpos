@@ -19,27 +19,24 @@ class UserModule;
 class DatabaseModule;
 class UserUpdateWidget;
 
-class UserSelectWidget :
-        public QWidget , private Ui::UserSelectWidgetBase
-{
+class UserSelectWidget : public QWidget, private Ui::UserSelectWidgetBase {
     Q_OBJECT
 public:
-    enum State{
+    enum State {
         Deleter = 0,
         Updater = 1
     };
 
-    enum Column{
+    enum Column {
         Number = 0,
         UserId = 1,
         UserName = 2
     };
 
     UserSelectWidget(
-            DatabaseModule *_db_mod,
-            UserModule *_user_mod, int state,
-            QWidget *parent=0, const QString& name= QString{}
-    );
+        DatabaseModule* _db_mod,
+        UserModule* _user_mod, int state,
+        QWidget* parent = 0, const QString& name = QString {});
 
     ~UserSelectWidget() = default;
 
@@ -57,14 +54,14 @@ protected slots:
     void userSelected(QTreeWidgetItem* item, int colum);
 
 protected:
-    void showEvent(QShowEvent *e);
-    void hideEvent(QHideEvent *e);
+    void showEvent(QShowEvent* e);
+    void hideEvent(QHideEvent* e);
 
-    UserModule *user_mod{};
-    DatabaseModule *db_mod{};
-    UserUpdateWidget *update_user{};
+    UserModule* user_mod {};
+    DatabaseModule* db_mod {};
+    UserUpdateWidget* update_user {};
 
-    State state{Updater};
+    State state { Updater };
 };
 
 #endif

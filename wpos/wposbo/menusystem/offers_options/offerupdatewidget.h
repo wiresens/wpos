@@ -15,16 +15,15 @@
 
 #include "offereditionwidget.h"
 
-class OfferUpdateWidget : public OfferEditionWidget
-{
+class OfferUpdateWidget : public OfferEditionWidget {
     Q_OBJECT
 public:
-    explicit OfferUpdateWidget(QWidget *parent=0, const QString &name=QString{});
+    explicit OfferUpdateWidget(QWidget* parent = 0, const QString& name = QString {});
 
 public slots:
     virtual void clear() override;
-    virtual void typeChangedSlot(const QString &type) override;
-    virtual void offerChangedSlot(const QString &type) override;
+    virtual void typeChangedSlot(const QString& type) override;
+    virtual void offerChangedSlot(const QString& type) override;
     virtual void acceptSlot() override;
 
 protected:
@@ -32,9 +31,8 @@ protected:
     virtual bool save() override;
 
 private:
-    void showOffersFromType(const QString& type); //unique
-    bool searchIcon(const QString& type, const QString& name); //unique
-
+    void showOffersFromType(const QString& type); // unique
+    bool searchIcon(const QString& type, const QString& name); // unique
 };
 
 #endif // OFFER_UPDATE_WIDGET_H

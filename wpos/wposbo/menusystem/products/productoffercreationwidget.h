@@ -22,21 +22,20 @@
 class ProductOfferData;
 class FloatKeyboard;
 
-class ProductOfferCreationWidget:
-        public QWidget,
-        private Ui::ProductOfferCreationWidgetBase {
+class ProductOfferCreationWidget : public QWidget,
+                                   private Ui::ProductOfferCreationWidgetBase {
 
     Q_OBJECT
 
 public:
-    explicit ProductOfferCreationWidget(double _product_price, QWidget *parent=0, const QString& name = QString{});
+    explicit ProductOfferCreationWidget(double _product_price, QWidget* parent = 0, const QString& name = QString {});
     ~ProductOfferCreationWidget() = default;
 
     void setProductPrice(double _product_price);
     void initOfferTypes();
     void setEditable(bool editable);
     bool saveOffersProduct(const QString& product_code);
-    bool saveOffer(ProductOfferData *offer);
+    bool saveOffer(ProductOfferData* offer);
     void saveOffers();
     void setOffer(const QString& offer_type, const QString& offer_name);
     void checkDefaultOffers();
@@ -58,16 +57,16 @@ public slots:
     void acceptErrorButtonClicked();
 
 protected:
-    virtual void showEvent(QShowEvent *e) override;
+    virtual void showEvent(QShowEvent* e) override;
     void updateOffers();
     void clearDefaults();
     void initLogos();
 
 private:
     ProductOfferModule model;
-    FloatKeyboard *float_keyboard_offer{};
+    FloatKeyboard* float_keyboard_offer {};
     QList<ProductOfferData*> offers;
-    double product_price{0};
+    double product_price { 0 };
 };
 
 #endif

@@ -74,7 +74,7 @@ int main(int argc, char *argv[]){
     QDir::setSearchPaths( "pixmaps",  QStringList( appPath ) );
 
     QDir tmp_dir;
-    auto path = QDir::tempPath() + "/wpos/";
+    auto path = QDir::tempPath() + "/wpos/"; // Dont remove the last /
     tmp_dir.mkpath(path);
     QDir::setSearchPaths( "tmps",  QStringList( path ) );
 

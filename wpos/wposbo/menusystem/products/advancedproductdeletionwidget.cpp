@@ -9,67 +9,74 @@
 #include <iostream>
 using namespace std;
 
-static const QString& PRODUCTS_DTD {"dtddocs:products_productslist.dtd"};
+static const QString& PRODUCTS_DTD { "dtddocs:products_productslist.dtd" };
 
 AdvancedProductDeletionWidget::AdvancedProductDeletionWidget(
     ProductModule* product_model,
     QWidget* parent,
-    const QString& name):
-    AdvancedProductEditionWidget(product_model, parent, name)
+    const QString& name)
+    : AdvancedProductEditionWidget(product_model, parent, name)
 {
-    connect(ok_delete_button,  &QPushButton::clicked, this, &AdvancedProductDeletionWidget::deleteSlot);
+    connect(ok_delete_button, &QPushButton::clicked, this, &AdvancedProductDeletionWidget::deleteSlot);
     connect(cancel_delete_button, &QPushButton::clicked, this, &AdvancedProductDeletionWidget::cancelDeletedSlot);
 }
 
-void AdvancedProductDeletionWidget::acceptSlot(){
+void AdvancedProductDeletionWidget::acceptSlot()
+{
     auto items = product_listview->selectedItems();
-    if( items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     auto item = items.first();
     product_name_label->setText(item->text(Name));
     stack->setCurrentWidget(delete_page);
 }
 
-void AdvancedProductDeletionWidget::cancelDeletedSlot(){
+void AdvancedProductDeletionWidget::cancelDeletedSlot()
+{
     stack->setCurrentWidget(product_page);
 }
 
-void AdvancedProductDeletionWidget::deleteSlot(){
+void AdvancedProductDeletionWidget::deleteSlot()
+{
     auto items = product_listview->selectedItems();
-    if( items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     auto item = items.first();
     auto name = item->text(Name);
     auto code = item->text(Code);
 
-    if ((productModel().isUnitaryProduct(code))&&(checkUnitaryUse(code))){
+    if ((productModel().isUnitaryProduct(code)) && (checkUnitaryUse(code))) {
         QString msg = tr("You have chosen to delete a unit product \n"
                          "found as an ingredient in other products.\n"
                          "If you want to delete the chosen product you must also delete\n"
                          "all products that contain it.\n"
-                         "Do you want to delete the compound products that contain the product %1?").arg(name);
+                         "Do you want to delete the compound products that contain the product %1?")
+                          .arg(name);
 
-        if( QMessageBox::question( this, tr("Update product"), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No ){
+        if (QMessageBox::question(this, tr("Update product"), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No) {
             cancelDeletedSlot();
             return;
-        }
-        else deleteAllProductsContaining(code);
+        } else
+            deleteAllProductsContaining(code);
     }
 
-    if ( !productModel().deleteProduct(code)) {
+    if (!productModel().deleteProduct(code)) {
         QString text = tr("The product could not be deleted %1.\n\n").arg(code);
-        QMessageBox::information(this, tr("Can't delete the product %1").arg(code),text, QMessageBox::Ok);
+        QMessageBox::information(this, tr("Can't delete the product %1").arg(code), text, QMessageBox::Ok);
         return;
     }
     startShowing();
 }
 
-bool AdvancedProductDeletionWidget::checkUnitaryUse(const QString& product_code){
+bool AdvancedProductDeletionWidget::checkUnitaryUse(const QString& product_code)
+{
     XmlConfig xml;
-    if(!xml.readXmlFromString(productModel().getCompositionsWithIngredient(product_code))){
+    if (!xml.readXmlFromString(productModel().getCompositionsWithIngredient(product_code))) {
         cerr << "can not convert the string into xml" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return false;
     }
 
-    if(!xml.validateXmlWithDTD(PRODUCTS_DTD, true)){
+    if (!xml.validateXmlWithDTD(PRODUCTS_DTD, true)) {
         cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return false;
@@ -77,23 +84,25 @@ bool AdvancedProductDeletionWidget::checkUnitaryUse(const QString& product_code)
 
     xml.delDomain();
     xml.setDomain("products");
-    for(auto i = 0; i < xml.howManyTags("product"); i++){
+    for (auto i = 0; i < xml.howManyTags("product"); i++) {
         auto code = xml.readString("product[" + QString::number(i) + "].code");
-        if ( code != product_code) return true;
+        if (code != product_code)
+            return true;
     }
 
     return false;
 }
 
-void AdvancedProductDeletionWidget::deleteAllProductsContaining(const QString& product_code){
+void AdvancedProductDeletionWidget::deleteAllProductsContaining(const QString& product_code)
+{
 
     XmlConfig xml;
-    if(!xml.readXmlFromString(productModel().getCompositionsWithIngredient(product_code))){
+    if (!xml.readXmlFromString(productModel().getCompositionsWithIngredient(product_code))) {
         cerr << "can not convert the string into xml" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
 
-    if(!xml.validateXmlWithDTD(PRODUCTS_DTD, true)){
+    if (!xml.validateXmlWithDTD(PRODUCTS_DTD, true)) {
         cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return;
@@ -101,10 +110,10 @@ void AdvancedProductDeletionWidget::deleteAllProductsContaining(const QString& p
 
     xml.delDomain();
     xml.setDomain("products");
-    for(auto i = 0; i < xml.howManyTags("product"); i++){
+    for (auto i = 0; i < xml.howManyTags("product"); i++) {
         auto code = xml.readString("product[" + QString::number(i) + "].code");
-        if ( code != product_code){
-            if ( !productModel().deleteProduct(code) ){
+        if (code != product_code) {
+            if (!productModel().deleteProduct(code)) {
                 QString text = tr("The product could not be deleted %1.\n\n").arg(code);
                 QMessageBox::information(this, tr("Deletion Error").arg(code), text, QMessageBox::Ok);
             }

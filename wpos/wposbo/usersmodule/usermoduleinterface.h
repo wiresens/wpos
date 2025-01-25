@@ -15,206 +15,206 @@
 
 #include <QString>
 
-class UserModuleInterface{
+class UserModuleInterface {
     /**
-        *  create a user. the parameter with the QString should have a valid XML like the following.
-        *
-        *<?xml version = '1.0' encoding = 'UTF-8'?>
-        *<AUTOMATICALLY_GENERATED_XML>
-        *       <user>
-        *               <employee_id>123123</employee_id>
-        *               <name>carlos</name>
-        *               <last_name>Lopez Gonzalez</last_name>
-        *               <address>C\chile n20</address>
-        *               <nss>1231312313</nss>
-        *               <phone>916334553</phone>
-        *               <cellular>656566566</cellular>
-        *               <email>carlos@bluesock.net</email>
-        *               <company_id>BlueSock S.L.</company_id>
-        *               <picture>carlos.jpg</picture>
-        *               <gerente>true</gerente>
-        *       </user>
-        *</AUTOMATICALLY_GENERATED_XML>
-        *
-        *       this XML should make a correct validation against the following DTD,
-        *       all the calls to the create element will try to validate
-        *       the QString with a DTD as the following saved at dtddocs:users_user.dtd
-        *
-        *  <!ELEMENT AUTOMATICALLY_GENERATED_XML (user)>
-        *  <!ELEMENT user (employee_id,name,last_name,address,nss,phone,cellular,email,company_id,picture,gerente)>
-        *  <!ELEMENT employee_id (#PCDATA)>
-        *  <!ELEMENT name (#PCDATA)>
-        *  <!ELEMENT last_name (#PCDATA)>
-        *  <!ELEMENT address (#PCDATA)>
-        *  <!ELEMENT phone (#PCDATA)>
-        *  <!ELEMENT nss (#PCDATA)>
-        *  <!ELEMENT cellular (#PCDATA)>
-        *  <!ELEMENT email (#PCDATA)>
-        *  <!ELEMENT company_id (#PCDATA)>
-        *  <!ELEMENT picture (#PCDATA)>
-        *  <!ELEMENT gerente (#PCDATA)>
-        *
-        *       @param  QString with an XML which validate against dtddocs:users_user.dtd that
-        *       contains all the information to add at the database.
-        *       @return true if the user has been created at the database or false otherwise
-        */
+     *  create a user. the parameter with the QString should have a valid XML like the following.
+     *
+     *<?xml version = '1.0' encoding = 'UTF-8'?>
+     *<AUTOMATICALLY_GENERATED_XML>
+     *       <user>
+     *               <employee_id>123123</employee_id>
+     *               <name>carlos</name>
+     *               <last_name>Lopez Gonzalez</last_name>
+     *               <address>C\chile n20</address>
+     *               <nss>1231312313</nss>
+     *               <phone>916334553</phone>
+     *               <cellular>656566566</cellular>
+     *               <email>carlos@bluesock.net</email>
+     *               <company_id>BlueSock S.L.</company_id>
+     *               <picture>carlos.jpg</picture>
+     *               <gerente>true</gerente>
+     *       </user>
+     *</AUTOMATICALLY_GENERATED_XML>
+     *
+     *       this XML should make a correct validation against the following DTD,
+     *       all the calls to the create element will try to validate
+     *       the QString with a DTD as the following saved at dtddocs:users_user.dtd
+     *
+     *  <!ELEMENT AUTOMATICALLY_GENERATED_XML (user)>
+     *  <!ELEMENT user (employee_id,name,last_name,address,nss,phone,cellular,email,company_id,picture,gerente)>
+     *  <!ELEMENT employee_id (#PCDATA)>
+     *  <!ELEMENT name (#PCDATA)>
+     *  <!ELEMENT last_name (#PCDATA)>
+     *  <!ELEMENT address (#PCDATA)>
+     *  <!ELEMENT phone (#PCDATA)>
+     *  <!ELEMENT nss (#PCDATA)>
+     *  <!ELEMENT cellular (#PCDATA)>
+     *  <!ELEMENT email (#PCDATA)>
+     *  <!ELEMENT company_id (#PCDATA)>
+     *  <!ELEMENT picture (#PCDATA)>
+     *  <!ELEMENT gerente (#PCDATA)>
+     *
+     *       @param  QString with an XML which validate against dtddocs:users_user.dtd that
+     *       contains all the information to add at the database.
+     *       @return true if the user has been created at the database or false otherwise
+     */
     virtual bool createUser(const QString&) = 0;
 
     /**
-        *       method to change the data of a user with an existing "employee_id". The data will be passed as a QString containign
-        *       an Xml that validate against the DTD at dtddocs:users_user.dtd (the one at createUser)
-        *       the user that is going to be changed is selected from the 'user.employee_id' tag. The user employee_id should exists in order
-        *       to change the data of that user.
-        *
-        *       @param QString containing an XML with all the information of the user... the user.employee.id tag is used to select the user
-        *       to be changed.
-        *       @returns true if the user has been changed or false if the user can't be changed (it does not exists, or problems at the database)
-        */
+     *       method to change the data of a user with an existing "employee_id". The data will be passed as a QString containign
+     *       an Xml that validate against the DTD at dtddocs:users_user.dtd (the one at createUser)
+     *       the user that is going to be changed is selected from the 'user.employee_id' tag. The user employee_id should exists in order
+     *       to change the data of that user.
+     *
+     *       @param QString containing an XML with all the information of the user... the user.employee.id tag is used to select the user
+     *       to be changed.
+     *       @returns true if the user has been changed or false if the user can't be changed (it does not exists, or problems at the database)
+     */
     virtual bool changeUser(const QString&) = 0;
 
     /**
-        *       method to delete a user from the database...
-        *       this method activate or deactivate a user, when a user is activated it can
-        *       be used from nTPV. if it's deactivated, it can't be used from nTPV but,
-        *       all the stats generated by the user are stored at the system.
-        *       @param QString with the employee_id of the user...
-        *       @return true if the user with the correct employee_id has been deleted.
-        */
+     *       method to delete a user from the database...
+     *       this method activate or deactivate a user, when a user is activated it can
+     *       be used from nTPV. if it's deactivated, it can't be used from nTPV but,
+     *       all the stats generated by the user are stored at the system.
+     *       @param QString with the employee_id of the user...
+     *       @return true if the user with the correct employee_id has been deleted.
+     */
     virtual bool deleteUser(const QString&) = 0;
 
     /**
-        *       method to delete a user from the database...
-        *       It also delete the finerprints of the user and make a real delete of the user
-        *       at the database. All the stats of the user are deleted from  the database.
-        *       @param QString with the employee_id of the user...
-        *       @return true if the user with the correct employee_id has been deleted.
-        */
+     *       method to delete a user from the database...
+     *       It also delete the finerprints of the user and make a real delete of the user
+     *       at the database. All the stats of the user are deleted from  the database.
+     *       @param QString with the employee_id of the user...
+     *       @return true if the user with the correct employee_id has been deleted.
+     */
     virtual bool realDelUser(const QString&) = 0;
 
     /**
-        *       method to delete the user fingerprints from the filesystem (nowdays the fingerprints)
-        *       are at /etc/fx2000fingerprints/
-        *       @param QString with the employee_id of the user...
-        *       @return true if the user with the correct employee_id fingerprints have been deleted.
-        */
+     *       method to delete the user fingerprints from the filesystem (nowdays the fingerprints)
+     *       are at /etc/fx2000fingerprints/
+     *       @param QString with the employee_id of the user...
+     *       @return true if the user with the correct employee_id fingerprints have been deleted.
+     */
     virtual bool delUserFingerprints(const QString&) = 0;
 
     /**
-        *       method to return an XML at a QString containing a short list of users at the database... this list only contains an XML schema as
-        *       the following:
-        *<?xml version = '1.0' encoding = 'UTF-8'?>
-        *<AUTOMATICALLY_GENERATED_XML>
-        *       <users>
-        *               <user>
-        *                       <employee_id>123123</employee_id>
-        *                       <name>carlos</name>
-        *                       <last_name>Lopez Gonzalez</last_name>
-        *               </user>
-        *               <user>
-        *                       ...
-        *                       ...
-        *               </user>
-        *               ...
-        *               ...
-        *       </users>
-        *</AUTOMATICALLY_GENERATED_XML>
-        *
-        *       that schema should validate against the dtddocs:users_userslist.dtd
-        *       @return QString that contains an XML with all the data of the users (short format) contained at the database
-        *       you could validate the XML against dtddocs:users_userslist.dtd.
-        *       if somethings goes wrong it will return an empty string.
-        */
+     *       method to return an XML at a QString containing a short list of users at the database... this list only contains an XML schema as
+     *       the following:
+     *<?xml version = '1.0' encoding = 'UTF-8'?>
+     *<AUTOMATICALLY_GENERATED_XML>
+     *       <users>
+     *               <user>
+     *                       <employee_id>123123</employee_id>
+     *                       <name>carlos</name>
+     *                       <last_name>Lopez Gonzalez</last_name>
+     *               </user>
+     *               <user>
+     *                       ...
+     *                       ...
+     *               </user>
+     *               ...
+     *               ...
+     *       </users>
+     *</AUTOMATICALLY_GENERATED_XML>
+     *
+     *       that schema should validate against the dtddocs:users_userslist.dtd
+     *       @return QString that contains an XML with all the data of the users (short format) contained at the database
+     *       you could validate the XML against dtddocs:users_userslist.dtd.
+     *       if somethings goes wrong it will return an empty string.
+     */
     virtual QString usersList(bool all) = 0;
 
     /**
-        *       method to return an XML at a QString containing a short list of users at the database... this list only contains an XML schema as
-        *       the following:
-        *<?xml version = '1.0' encoding = 'UTF-8'?>
-        *<AUTOMATICALLY_GENERATED_XML>
-        *       <users>
-        *               <user>
-        *                       <employee_id>123123</employee_id>
-        *                       <name>carlos</name>
-        *                       <last_name>Lopez Gonzalez</last_name>
-        *                       <address>C\chile n20</address>
-        *                       <nss>1231312313</nss>
-        *                       <phone>916334553</phone>
-        *                       <cellular>656566566</cellular>
-        *                       <email>carlos@bluesock.net</email>
-        *                       <company_id>BlueSock S.L.</company_id>
-        *                       <picture>carlos.jpg</picture>
-        *                       <gerente>true</gerente>
-        *               </user>
-        *               ...
-        *               ...
-        *       </users>
-        *</AUTOMATICALLY_GENERATED_XML>
-        *
-        *       the DTD which describes the model is the following:
-        *       <!ELEMENT AUTOMATICALLY_GENERATED_XML (users)>
-        *       <!ELEMENT users (user)*>
-        *       <!ELEMENT user (id,name,last_name,(address,nss,phone,cellular,email,company_id,picture)*)>
-        *       <!ELEMENT id (#PCDATA)>
-        *       <!ELEMENT name (#PCDATA)>
-        *       <!ELEMENT last_name (#PCDATA)>
-        *       <!ELEMENT address (#PCDATA)>
-        *       <!ELEMENT phone (#PCDATA)>
-        *       <!ELEMENT nss (#PCDATA)>
-        *       <!ELEMENT cellular (#PCDATA)>
-        *       <!ELEMENT email (#PCDATA)>
-        *       <!ELEMENT company_id (#PCDATA)>
-        *       <!ELEMENT picture (#PCDATA)>
-        *       <!ELEMENT gerente (#PCDATA)>
-        *
-        *       that schema should validate against the dtddocs:users_userslist.dtd
-        *       @return QString that contains an XML with all the data of the users (long format) contained at the database
-        *       you could validate the XML against dtddocs:users_userslist.dtd.
-        *       if somethings goes wrong it will return an empty string.
-        */
+     *       method to return an XML at a QString containing a short list of users at the database... this list only contains an XML schema as
+     *       the following:
+     *<?xml version = '1.0' encoding = 'UTF-8'?>
+     *<AUTOMATICALLY_GENERATED_XML>
+     *       <users>
+     *               <user>
+     *                       <employee_id>123123</employee_id>
+     *                       <name>carlos</name>
+     *                       <last_name>Lopez Gonzalez</last_name>
+     *                       <address>C\chile n20</address>
+     *                       <nss>1231312313</nss>
+     *                       <phone>916334553</phone>
+     *                       <cellular>656566566</cellular>
+     *                       <email>carlos@bluesock.net</email>
+     *                       <company_id>BlueSock S.L.</company_id>
+     *                       <picture>carlos.jpg</picture>
+     *                       <gerente>true</gerente>
+     *               </user>
+     *               ...
+     *               ...
+     *       </users>
+     *</AUTOMATICALLY_GENERATED_XML>
+     *
+     *       the DTD which describes the model is the following:
+     *       <!ELEMENT AUTOMATICALLY_GENERATED_XML (users)>
+     *       <!ELEMENT users (user)*>
+     *       <!ELEMENT user (id,name,last_name,(address,nss,phone,cellular,email,company_id,picture)*)>
+     *       <!ELEMENT id (#PCDATA)>
+     *       <!ELEMENT name (#PCDATA)>
+     *       <!ELEMENT last_name (#PCDATA)>
+     *       <!ELEMENT address (#PCDATA)>
+     *       <!ELEMENT phone (#PCDATA)>
+     *       <!ELEMENT nss (#PCDATA)>
+     *       <!ELEMENT cellular (#PCDATA)>
+     *       <!ELEMENT email (#PCDATA)>
+     *       <!ELEMENT company_id (#PCDATA)>
+     *       <!ELEMENT picture (#PCDATA)>
+     *       <!ELEMENT gerente (#PCDATA)>
+     *
+     *       that schema should validate against the dtddocs:users_userslist.dtd
+     *       @return QString that contains an XML with all the data of the users (long format) contained at the database
+     *       you could validate the XML against dtddocs:users_userslist.dtd.
+     *       if somethings goes wrong it will return an empty string.
+     */
     virtual QString usersExtendedList(bool all) = 0;
 
     /**
-        *       method to obtain all the info of the user passed at employee_id
-        *       @param QString with the employee_id of the user.
-        *       @return QString with the information of that user... it is passed as XML and can be validated against
-        *       "dtddocs:users_user.dtd" (check createUser to get an scheme of the xml).
-        */
-    virtual QString getUserInfo(const QString&)=0;
+     *       method to obtain all the info of the user passed at employee_id
+     *       @param QString with the employee_id of the user.
+     *       @return QString with the information of that user... it is passed as XML and can be validated against
+     *       "dtddocs:users_user.dtd" (check createUser to get an scheme of the xml).
+     */
+    virtual QString getUserInfo(const QString&) = 0;
 
     /**
-        *       method to get the enroll results.
-        *       the enroll results are given by the dcopfx2000module or similar module.
-        *       the results give all the data of the result process and how it was.
-        *       the data should validate agains the following dtd, and has the following xml scheme.
-        *       the DTD which describes the model is the following:
-        *
-        *       DTD of the enrroll data
-        *       --------------------------------
-        *       <!ELEMENT AUTOMATICALLY_GENERATED_XML (identity,finger,presence,quality,model_number,fingerprint_path,model_path)>
-        *       <!ELEMENT identity (#PCDATA)>
-        *       <!ELEMENT finger (#PCDATA)>
-        *       <!ELEMENT presence (#PCDATA)>
-        *       <!ELEMENT quality (#PCDATA)>
-        *       <!ELEMENT model_number (#PCDATA)>
-        *       <!ELEMENT fingerprint_path (#PCDATA)>
-        *       <!ELEMENT model_path (#PCDATA)>
-        *
-        *       Xml Scheme of the enroll data
-        *       ---------------------------------------
-        *<AUTOMATICALLY_GENERATED_XML>
-        *        <identity>the same as in employee_id</identity>
-        *        <finger>the number of the finger</finger>
-        *        <presence>the number of the presence when the fingerprint was enrolled</presence>
-        *        <quality>float with the quality of the fingerprint 0<quality<1 </quality>
-        *        <model_number>the model number 0<n<=3</model_number>
-        *        <fingerprint_path>path to the fingerprint gif image</fingerprint_path>
-        *        <model_path>path to the model data</model_path>
-        *</AUTOMATICALLY_GENERATED_XML>
-        *
-        *       there should be a dtd with this sintax at dtddocs:dcopfx2000_enroll.dtd
-        *
-        *       @param the QString with the xml containig all the enrollment result
-        */
+     *       method to get the enroll results.
+     *       the enroll results are given by the dcopfx2000module or similar module.
+     *       the results give all the data of the result process and how it was.
+     *       the data should validate agains the following dtd, and has the following xml scheme.
+     *       the DTD which describes the model is the following:
+     *
+     *       DTD of the enrroll data
+     *       --------------------------------
+     *       <!ELEMENT AUTOMATICALLY_GENERATED_XML (identity,finger,presence,quality,model_number,fingerprint_path,model_path)>
+     *       <!ELEMENT identity (#PCDATA)>
+     *       <!ELEMENT finger (#PCDATA)>
+     *       <!ELEMENT presence (#PCDATA)>
+     *       <!ELEMENT quality (#PCDATA)>
+     *       <!ELEMENT model_number (#PCDATA)>
+     *       <!ELEMENT fingerprint_path (#PCDATA)>
+     *       <!ELEMENT model_path (#PCDATA)>
+     *
+     *       Xml Scheme of the enroll data
+     *       ---------------------------------------
+     *<AUTOMATICALLY_GENERATED_XML>
+     *        <identity>the same as in employee_id</identity>
+     *        <finger>the number of the finger</finger>
+     *        <presence>the number of the presence when the fingerprint was enrolled</presence>
+     *        <quality>float with the quality of the fingerprint 0<quality<1 </quality>
+     *        <model_number>the model number 0<n<=3</model_number>
+     *        <fingerprint_path>path to the fingerprint gif image</fingerprint_path>
+     *        <model_path>path to the model data</model_path>
+     *</AUTOMATICALLY_GENERATED_XML>
+     *
+     *       there should be a dtd with this sintax at dtddocs:dcopfx2000_enroll.dtd
+     *
+     *       @param the QString with the xml containig all the enrollment result
+     */
     virtual void enrollUserData(const QString&) = 0;
 };
 

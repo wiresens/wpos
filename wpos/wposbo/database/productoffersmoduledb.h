@@ -1,55 +1,53 @@
-/***************************************************************************
-                          offer.h  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  productoffersmoduledb.h
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #ifndef PRODUCTOFFERSMODULEDB_H
 #define PRODUCTOFFERSMODULEDB_H
 
-#include <wposcore/basicdatabase.h>
 #include <libbslxml/xmlconfig.h>
+#include <wposcore/basicdatabase.h>
 
+#include <QList>
 #include <QObject>
 #include <QString>
-#include <QList>
 
-struct ProductOfferData{
+struct ProductOfferData {
     ProductOfferData() = default;
-//    ProductOfferData(const ProductOfferData& data) = default;
-//    ProductOfferData& operator=(ProductOfferData &data) = default;
-//    ~ProductOfferData() = default;
+    //    ProductOfferData(const ProductOfferData& data) = default;
+    //    ProductOfferData& operator=(ProductOfferData &data) = default;
+    //    ~ProductOfferData() = default;
 
-    ProductOfferData(const ProductOfferData *data): ProductOfferData(*data){}
+    ProductOfferData(const ProductOfferData* data)
+        : ProductOfferData(*data)
+    {
+    }
     QString offer_type;
     QString description_type;
     QString cpp_operator;
     QString offer_name;
     QString description_offer;
     QString logo;
-    double value{0.0};
-    bool is_default{false};
+    double value { 0.0 };
+    bool is_default { false };
 };
 
 class ProductOffersModuleDB : public BasicDatabase {
-public: 
+public:
     ProductOffersModuleDB(QString _name_connection,
-                          QString _path_connection,
-                          QString _database,
-                          QString _username,
-                          QString _passwd);
+        QString _path_connection,
+        QString _database,
+        QString _username,
+        QString _passwd);
 
     ProductOffersModuleDB(const QString& _connection_name,
-                          XmlConfig *xml);
+        XmlConfig* xml);
 
     ProductOffersModuleDB(const QString& _connection_name,
-                          const QString& configuration_path);
+        const QString& configuration_path);
 
     ~ProductOffersModuleDB();
 
@@ -79,13 +77,13 @@ public:
 
     QStringList* getOfferTypes();
 
-    bool insertOffer(const QString& offer_type, const QString& offer_name, const QString& description,const QString& logo="");
+    bool insertOffer(const QString& offer_type, const QString& offer_name, const QString& description, const QString& logo = "");
 
     bool insertOfferType(const QString& offer_type, const QString& description, const QString& cpp_operator);
 
     int getNumOfferTypes();
 
-    bool updateOffer(const QString& offer_type, const QString& offer_name, const QString& description,const QString& logo="");
+    bool updateOffer(const QString& offer_type, const QString& offer_name, const QString& description, const QString& logo = "");
 
     bool updateOfferType(const QString& offer_type, const QString& description, const QString& cpp_operator);
 
@@ -94,18 +92,17 @@ public:
     bool existProductAndOffer(const QString& product_code, const QString& offer_type, const QString& offer_name);
 
     bool insertOfferToProduct(const QString& product_code, const QString& offer_type,
-                              const QString& offer_name, double value, const QString& is_default="f");
+        const QString& offer_name, double value, const QString& is_default = "f");
 
     bool updateOfferToProduct(const QString& product_code, const QString& offer_type,
-                              const QString& offer_name, double value, const QString& is_default="f");
+        const QString& offer_name, double value, const QString& is_default = "f");
 
     bool deleteOfferToProduct(const QString& product_code, const QString& offer_type,
-                              const QString& offer_name);
+        const QString& offer_name);
 
+    bool setAllProductOfferValue(const QString& offer_type, const QString& offer_name, const QString& value);
 
-    bool setAllProductOfferValue(const QString& offer_type,const QString& offer_name, const QString& value);
-
-    bool updateAllProductOfferValue(const QString& offer_type,const QString& offer_name,const QString& value);
+    bool updateAllProductOfferValue(const QString& offer_type, const QString& offer_name, const QString& value);
 };
 
 #endif

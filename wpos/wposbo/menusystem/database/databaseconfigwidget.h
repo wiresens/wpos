@@ -13,23 +13,21 @@
 #define DATABASECONFIGWIDGET_H
 
 #include "ui_ddbbwidgetbase.h"
-#include <QWidget>
 #include <QProcess>
+#include <QWidget>
 
 class QString;
 class DatabaseModule;
 class QTimer;
 
-class DatabaseConfigWidget :
-        public QWidget ,
-        private Ui::DDBBWidgetBase  {
+class DatabaseConfigWidget : public QWidget,
+                             private Ui::DDBBWidgetBase {
 
     Q_OBJECT
 public:
-
     explicit DatabaseConfigWidget(
-            DatabaseModule *dbmod,
-             QWidget *parent=0, const QString& name= QString{});
+        DatabaseModule* dbmod,
+        QWidget* parent = 0, const QString& name = QString {});
 
     ~DatabaseConfigWidget() = default;
 
@@ -53,18 +51,18 @@ protected slots:
 
 protected:
     void showValues(const QStringList& captions, QListWidget* list_wgt, QPixmap icon);
-    void showEvent(QShowEvent *e);
-    void hideEvent(QHideEvent *e);
+    void showEvent(QShowEvent* e);
+    void hideEvent(QHideEvent* e);
 
     bool getHostConfig();
-    bool saveReportmanDeff(const QString& host, const QString& db_name, const QString& user,const QString& passwd);
+    bool saveReportmanDeff(const QString& host, const QString& db_name, const QString& user, const QString& passwd);
     void setEnableCommands(bool enabled);
 
 private:
-    DatabaseModule *db_mod{};
-    QProcess *worker{};
-    QTimer *timer{};
-    int prog_int{};
+    DatabaseModule* db_mod {};
+    QProcess* worker {};
+    QTimer* timer {};
+    int prog_int {};
 };
 
 #endif

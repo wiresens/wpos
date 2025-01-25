@@ -18,56 +18,54 @@
 #include "shortcutbuttonwidget.h"
 #include "menusystem/utils.h"
 
-#include "productsmodule/productmodule.h"
+#include "database/productsmoduledb.h"
 #include "productsmodule/offersmodule/productoffermodule.h"
 #include "productsmodule/optionsmodule/productoptionmodule.h"
-#include "database/productsmoduledb.h"
+#include "productsmodule/productmodule.h"
 
 #include <libbslxml/xmlconfig.h>
-#include <wposgui/common/dragobjects.h>
-#include <wposcore/signals.h>
 #include <wposcore/config.h>
+#include <wposcore/signals.h>
+#include <wposgui/common/dragobjects.h>
 
-#include <QTabWidget>
-#include <QPushButton>
-#include <QLineEdit>
-#include <QSpinBox>
-#include <QLayout>
-#include <QPixmap>
+#include <QApplication>
+#include <QCheckBox>
+#include <QComboBox>
+#include <QFrame>
 #include <QHeaderView>
 #include <QLabel>
-#include <QCheckBox>
+#include <QLayout>
+#include <QLineEdit>
 #include <QListView>
-#include <QComboBox>
-#include <QApplication>
-#include <QTimer>
-#include <QStackedWidget>
-#include <QScrollBar>
-#include <QProgressBar>
-#include <QApplication>
-#include <QProgressBar>
-#include <QFrame>
 #include <QLocale>
+#include <QPixmap>
+#include <QProgressBar>
+#include <QPushButton>
+#include <QScrollBar>
+#include <QSpinBox>
+#include <QStackedWidget>
+#include <QTabWidget>
+#include <QTimer>
 
 #include <iostream>
 #include <stdio.h>
 using namespace std;
 
-static const QString& PRODUCTS_DTD {"dtddocs:products_productslist.dtd"};
-static const QString& OFFERS_DTD {"dtddocs:products_offerslist.dtd"};
-static const QString& OPTIONS_DTD {"dtddocs:products_optionslist.dtd"};
-static const QString& SHORTCUT_XML {"xmldocs:ntpv_buttons.xml"};
-static const QString& ICON_PATH {cfg::PRODUCT_DIR};
-static const QString& OFFERS_ICON_PATH {"controls:offers/"};
+static const QString& PRODUCTS_DTD { "dtddocs:products_productslist.dtd" };
+static const QString& OFFERS_DTD { "dtddocs:products_offerslist.dtd" };
+static const QString& OPTIONS_DTD { "dtddocs:products_optionslist.dtd" };
+static const QString& SHORTCUT_XML { "xmldocs:ntpv_buttons.xml" };
+static const QString& ICON_PATH { cfg::PRODUCT_DIR };
+static const QString& OFFERS_ICON_PATH { "controls:offers/" };
 
 static const int SIZE_CONST = 50.00;
 static const int TABLE_SIZE_X = 70;
 static const int TABLE_SIZE_Y = 70;
-static const uint TIME_OUT {10};
+static const uint TIME_OUT { 10 };
 
-
-ShortcutButtonWidget::ShortcutButtonWidget(QWidget *parent, const QString& name):
-    QWidget(parent), button_list{ new HList<ShortcutButtonData>}
+ShortcutButtonWidget::ShortcutButtonWidget(QWidget* parent, const QString& name)
+    : QWidget(parent)
+    , button_list { new HList<ShortcutButtonData> }
 {
     setupUi(this);
     setObjectName(name);
@@ -80,19 +78,19 @@ ShortcutButtonWidget::ShortcutButtonWidget(QWidget *parent, const QString& name)
     last_button->setIcon(QPixmap("controls32:2downarrow.png"));
 
     auto v_layout = new QVBoxLayout(buttons_frame);
-    shortcut_button_table = new BslDDTable(buttons_frame,"button_table");
+    shortcut_button_table = new BslDDTable(buttons_frame, "button_table");
     v_layout->addWidget(shortcut_button_table);
 
     shortcut_button_table->setAcceptDrops(true);
     shortcut_button_table->setDragEnabled(true);
-    shortcut_button_table->setPalette(QPalette(QColor(220,220,220)));
+    shortcut_button_table->setPalette(QPalette(QColor(220, 220, 220)));
     shortcut_button_table->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
-    shortcut_button_table->setFont(QFont( "Arial", 8, QFont::Bold ));
+    shortcut_button_table->setFont(QFont("Arial", 8, QFont::Bold));
     shortcut_button_table->setSelectionMode(QAbstractItemView::NoSelection);
 
     auto* layout = shortcut_button_table->layout();
-    if( layout)
-        layout->setContentsMargins(0,0,0,0);
+    if (layout)
+        layout->setContentsMargins(0, 0, 0, 0);
     //@benes    shortcut_button_table->setLeftMargin(0);
     //@benes    shortcut_button_table->setTopMargin(0);
     //@benes    shortcut_button_table->setReadOnly(true);
@@ -103,55 +101,53 @@ ShortcutButtonWidget::ShortcutButtonWidget(QWidget *parent, const QString& name)
     //@benes    (shortcut_button_table->horizontalHeader())->hide();
     //@benes    (shortcut_button_table->verticalHeader())->hide();
 
-    for(auto i = 0; i < shortcut_button_table->columnCount(); i++)
+    for (auto i = 0; i < shortcut_button_table->columnCount(); i++)
         shortcut_button_table->setColumnWidth(i, 107);
-    for(auto i = 0; i < shortcut_button_table->rowCount(); i++)
+    for (auto i = 0; i < shortcut_button_table->rowCount(); i++)
         shortcut_button_table->setRowHeight(i, 98);
 
-    QHBoxLayout *h_layout  = new QHBoxLayout(products_frame);
+    QHBoxLayout* h_layout = new QHBoxLayout(products_frame);
     products_iconview = new BslDDIconView(products_frame, "produts_iconview");
     h_layout->addWidget(products_iconview);
-    products_iconview->setFont(QFont( "Arial", 8));
+    products_iconview->setFont(QFont("Arial", 8));
     //@benes    products_iconview->setGridX(TABLE_SIZE_X);
     //@benes    products_iconview->setGridY(TABLE_SIZE_Y);
 
     h_layout = new QHBoxLayout(offers_frame);
-    offers_iconview = new BslDDIconView(offers_frame,"offers_iconview");
+    offers_iconview = new BslDDIconView(offers_frame, "offers_iconview");
     h_layout->addWidget(offers_iconview);
-    offers_iconview->setFont(QFont( "Arial", 8));
+    offers_iconview->setFont(QFont("Arial", 8));
     //@benes    offers_iconview->setGridX(TABLE_SIZE_X);
     //@benes    offers_iconview->setGridY(TABLE_SIZE_Y);
 
     h_layout = new QHBoxLayout(options_frame);
-    options_iconview = new BslDDIconView(options_frame,"offers_iconview");
+    options_iconview = new BslDDIconView(options_frame, "offers_iconview");
     h_layout->addWidget(options_iconview);
-    options_iconview->setFont(QFont( "Arial", 8));
+    options_iconview->setFont(QFont("Arial", 8));
     //@benes    options_iconview->setGridX(TABLE_SIZE_X);
     //@benes    options_iconview->setGridY(TABLE_SIZE_Y);
 
-
     h_layout = new QHBoxLayout(special_button_frame);
-    special_buttons_iconview = new BslDDIconView(special_button_frame,"offers_iconview");
+    special_buttons_iconview = new BslDDIconView(special_button_frame, "offers_iconview");
     h_layout->addWidget(special_buttons_iconview);
-    special_buttons_iconview->setFont(QFont( "Arial", 8));
+    special_buttons_iconview->setFont(QFont("Arial", 8));
     //@benes    special_buttons_iconview->setGridX(TABLE_SIZE_X);
     //@benes    special_buttons_iconview->setGridY(TABLE_SIZE_Y);
 
-
     connect(up_button, &QPushButton::released, this, &ShortcutButtonWidget::scrollUpSlot);
-    connect(down_button,  &QPushButton::released, this, &ShortcutButtonWidget::scrollDownSlot);
-    connect(first_button,  &QPushButton::released, this, &ShortcutButtonWidget::selectFirstSlot);
-    connect(last_button,  &QPushButton::released, this, &ShortcutButtonWidget::selectLastSlot);
+    connect(down_button, &QPushButton::released, this, &ShortcutButtonWidget::scrollDownSlot);
+    connect(first_button, &QPushButton::released, this, &ShortcutButtonWidget::selectFirstSlot);
+    connect(last_button, &QPushButton::released, this, &ShortcutButtonWidget::selectLastSlot);
 
-    connect(reload_button,  &QPushButton::released, this, &ShortcutButtonWidget::reloadSlot);
-    connect(accept_button,  &QPushButton::released, this, &ShortcutButtonWidget::acceptSlot);
+    connect(reload_button, &QPushButton::released, this, &ShortcutButtonWidget::reloadSlot);
+    connect(accept_button, &QPushButton::released, this, &ShortcutButtonWidget::acceptSlot);
 
-    connect(this,  &ShortcutButtonWidget::itemReaded, this, &ShortcutButtonWidget::itemReadedSlot);
+    connect(this, &ShortcutButtonWidget::itemReaded, this, &ShortcutButtonWidget::itemReadedSlot);
     connect(shortcut_button_table, QOverload<int, int, const QString&>::of(&BslDDTable::textEnter), this, &ShortcutButtonWidget::draggedText);
-
 }
 
-ShortcutButtonWidget::~ShortcutButtonWidget(){
+ShortcutButtonWidget::~ShortcutButtonWidget()
+{
     delete shortcut_button_table;
     delete products_iconview;
     delete options_iconview;
@@ -161,16 +157,18 @@ ShortcutButtonWidget::~ShortcutButtonWidget(){
     delete button_list;
 }
 
-void ShortcutButtonWidget::clear(){
+void ShortcutButtonWidget::clear()
+{
     products_iconview->clear();
     offers_iconview->clear();
     special_buttons_iconview->clear();
     clearTable();
 }
 
-void ShortcutButtonWidget::clearTable(){
+void ShortcutButtonWidget::clearTable()
+{
 
-    for(auto i = 0; i < shortcut_button_table->rowCount(); i++)
+    for (auto i = 0; i < shortcut_button_table->rowCount(); i++)
         shortcut_button_table->removeRow(i);
 
     shortcut_button_table->setRowCount(1);
@@ -179,56 +177,58 @@ void ShortcutButtonWidget::clearTable(){
     shortcut_button_table->horizontalHeader()->setVisible(false);
     shortcut_button_table->verticalHeader()->setVisible(false);
 
-    for(auto i = 0; i < shortcut_button_table->columnCount(); i++)
+    for (auto i = 0; i < shortcut_button_table->columnCount(); i++)
         shortcut_button_table->setColumnWidth(i, 107);
-    for(auto i = 0; i < shortcut_button_table->rowCount(); i++)
+    for (auto i = 0; i < shortcut_button_table->rowCount(); i++)
         shortcut_button_table->setRowHeight(i, 98);
 }
 
-void ShortcutButtonWidget::acceptSlot(){
+void ShortcutButtonWidget::acceptSlot()
+{
     writeConfig();
     accept_button->setEnabled(false);
 }
 
-void ShortcutButtonWidget::reloadSlot(){
+void ShortcutButtonWidget::reloadSlot()
+{
     clear();
     startShowing();
 }
 
-void ShortcutButtonWidget::draggedText(int x, int y, const QString& text){
-    int row, col,num;
+void ShortcutButtonWidget::draggedText(int x, int y, const QString& text)
+{
+    int row, col, num;
 
     QString code;
-    ShortcutButtonData *data = 0;
-    ProductModule *product_mod = 0;
-    ProductOfferModule *offers_module = 0;
-    QListWidgetItem *item = 0;
+    ShortcutButtonData* data = 0;
+    ProductModule* product_mod = 0;
+    ProductOfferModule* offers_module = 0;
+    QListWidgetItem* item = 0;
 
     row = shortcut_button_table->rowAt(y);
     col = shortcut_button_table->columnAt(x);
 
-    if((row < 0)||(col < 0)){
+    if ((row < 0) || (col < 0)) {
         cerr << "Not valid drop Drop location " << __PRETTY_FUNCTION__ << __LINE__ << endl;
         return;
     }
 
     data = button_list->at(col);
-    if (main_tab->currentWidget() == products_page){
+    if (main_tab->currentWidget() == products_page) {
         item = products_iconview->currentItem();
         //@benes        code = item->key();
         code = item->text();
-        if (!data){
+        if (!data) {
             data = new ShortcutButtonData;
             button_list->append(data, code);
         }
-        data->pixmap ="";
+        data->pixmap = "";
         data->button_type = ShortcutButtonData::Product;
-        if (text == "solo"){
+        if (text == "solo") {
             data->code = "solo";
             data->text = "solo";
             data->pixmap = "";
-        }
-        else{
+        } else {
             product_mod = new ProductModule(this);
             data->state = true;
             data->code = code;
@@ -238,13 +238,12 @@ void ShortcutButtonWidget::draggedText(int x, int y, const QString& text){
                 data->pixmap = ICON_PATH + data->pixmap;
             delete product_mod;
         }
-    }
-    else if (main_tab->currentWidget() == offers_page){
+    } else if (main_tab->currentWidget() == offers_page) {
         item = offers_iconview->currentItem();
         code = item->text();
-        if (!data){
+        if (!data) {
             data = new ShortcutButtonData;
-            button_list->append(data,code);
+            button_list->append(data, code);
         }
         data->pixmap = "";
         data->text = text;
@@ -253,36 +252,34 @@ void ShortcutButtonWidget::draggedText(int x, int y, const QString& text){
         data->state = true;
         data->button_type = ShortcutButtonData::Offer;
         offers_module = new ProductOfferModule(this);
-        data->pixmap = offers_module->getLogo(data->type,data->name);
+        data->pixmap = offers_module->getLogo(data->type, data->name);
         if (!data->pixmap.isEmpty())
             data->pixmap = OFFERS_ICON_PATH + data->pixmap;
         delete offers_module;
-    }
-    else if (main_tab->currentWidget() == options_page){
+    } else if (main_tab->currentWidget() == options_page) {
         item = options_iconview->currentItem();
         code = item->text();
-        if (!data){
+        if (!data) {
             data = new ShortcutButtonData;
-            button_list->append(data,code);
+            button_list->append(data, code);
         }
         data->text = text;
         data->name = text;
-        data->pixmap="";
+        data->pixmap = "";
         data->type = item->text();
         data->state = true;
         data->button_type = ShortcutButtonData::Option;
-    }
-    else if (main_tab->currentWidget() == special_buttons_page){
+    } else if (main_tab->currentWidget() == special_buttons_page) {
         item = special_buttons_iconview->currentItem();
         num = (item->text()).toInt();
-        if (!data){
+        if (!data) {
             data = new ShortcutButtonData;
-            button_list->append(data,code);
+            button_list->append(data, code);
         }
         data->button_type = ShortcutButtonData::SpecialButton;
         data->text = text;
         data->num = num;
-        data->pixmap="";
+        data->pixmap = "";
         data->state = true;
     }
 
@@ -291,7 +288,7 @@ void ShortcutButtonWidget::draggedText(int x, int y, const QString& text){
 }
 
 //@benes
-//void ShortcutButtonWidget::selectFirstSlot(){
+// void ShortcutButtonWidget::selectFirstSlot(){
 //    QListWidgetItem *item = 0;
 //    if (main_tab->currentWidget() == products_page){
 //        item = products_iconview->firstItem();
@@ -311,117 +308,120 @@ void ShortcutButtonWidget::draggedText(int x, int y, const QString& text){
 //    }
 //}
 
-void ShortcutButtonWidget::selectFirstSlot(){
+void ShortcutButtonWidget::selectFirstSlot()
+{
     auto page = main_tab->currentWidget();
 
     QList<QListWidgetItem*> selection;
-    if (page == products_page){
+    if (page == products_page) {
         selection = products_iconview->selectedItems();
-    }
-    else if (page == offers_page){
+    } else if (page == offers_page) {
         selection = offers_iconview->selectedItems();
-    }
-    else if (page == options_page){
+    } else if (page == options_page) {
         selection = options_iconview->selectedItems();
-    }
-    else if (page == special_buttons_page){
+    } else if (page == special_buttons_page) {
         selection = special_buttons_iconview->selectedItems();
     }
-    if( !selection.isEmpty()) selection.first()->setHidden(false);
+    if (!selection.isEmpty())
+        selection.first()->setHidden(false);
 }
 
-void ShortcutButtonWidget::scrollUpSlot(){
+void ShortcutButtonWidget::scrollUpSlot()
+{
     if (main_tab->currentWidget() == products_page)
-        products_iconview->scroll(0,-100);
+        products_iconview->scroll(0, -100);
     else if (main_tab->currentWidget() == offers_page)
-        offers_iconview->scroll(0,-100);
+        offers_iconview->scroll(0, -100);
     else if (main_tab->currentWidget() == options_page)
-        options_iconview->scroll(0,-100);
+        options_iconview->scroll(0, -100);
     else if (main_tab->currentWidget() == special_buttons_page)
-        special_buttons_iconview->scroll(0,-100);
+        special_buttons_iconview->scroll(0, -100);
 }
 
-void ShortcutButtonWidget::scrollDownSlot(){
+void ShortcutButtonWidget::scrollDownSlot()
+{
     if (main_tab->currentWidget() == products_page)
-        products_iconview->scroll(0,100);
+        products_iconview->scroll(0, 100);
     else if (main_tab->currentWidget() == offers_page)
-        offers_iconview->scroll(0,100);
+        offers_iconview->scroll(0, 100);
     else if (main_tab->currentWidget() == options_page)
-        options_iconview->scroll(0,100);
+        options_iconview->scroll(0, 100);
     else if (main_tab->currentWidget() == special_buttons_page)
-        special_buttons_iconview->scroll(0,100);
+        special_buttons_iconview->scroll(0, 100);
 }
 
-//void ShortcutButtonWidget::selectLastSlot(){
-//    QListWidgetItem *item = 0;
-//    if (main_tab->currentWidget() == products_page){
-//        item = products_iconview->lastItem();
-//        products_iconview->ensureItemVisible(item);
-//    }
-//    else if (main_tab->currentWidget() == offers_page){
-//        item = offers_iconview->lastItem();
-//        offers_iconview->ensureItemVisible(item);
-//    }
-//    else if (main_tab->currentWidget() == options_page){
-//        item = options_iconview->lastItem();
-//        options_iconview->ensureItemVisible(item);
-//    }
-//    else if (main_tab->currentWidget() == special_buttons_page){
-//        item = special_buttons_iconview->lastItem();
-//        special_buttons_iconview->ensureItemVisible(item);
-//    }
-//}
+// void ShortcutButtonWidget::selectLastSlot(){
+//     QListWidgetItem *item = 0;
+//     if (main_tab->currentWidget() == products_page){
+//         item = products_iconview->lastItem();
+//         products_iconview->ensureItemVisible(item);
+//     }
+//     else if (main_tab->currentWidget() == offers_page){
+//         item = offers_iconview->lastItem();
+//         offers_iconview->ensureItemVisible(item);
+//     }
+//     else if (main_tab->currentWidget() == options_page){
+//         item = options_iconview->lastItem();
+//         options_iconview->ensureItemVisible(item);
+//     }
+//     else if (main_tab->currentWidget() == special_buttons_page){
+//         item = special_buttons_iconview->lastItem();
+//         special_buttons_iconview->ensureItemVisible(item);
+//     }
+// }
 
-void ShortcutButtonWidget::selectLastSlot(){
+void ShortcutButtonWidget::selectLastSlot()
+{
     auto page = main_tab->currentWidget();
 
     QList<QListWidgetItem*> selection;
-    if (page == products_page){
+    if (page == products_page) {
         selection = products_iconview->selectedItems();
-    }
-    else if (page == offers_page){
+    } else if (page == offers_page) {
         selection = offers_iconview->selectedItems();
-    }
-    else if (page == options_page){
+    } else if (page == options_page) {
         selection = options_iconview->selectedItems();
-    }
-    else if (page == special_buttons_page){
+    } else if (page == special_buttons_page) {
         selection = special_buttons_iconview->selectedItems();
     }
-    if( !selection.isEmpty()) selection.last()->setHidden(false);
+    if (!selection.isEmpty())
+        selection.last()->setHidden(false);
 }
 
-void ShortcutButtonWidget::loadShortcutButtonsSlot(){
+void ShortcutButtonWidget::loadShortcutButtonsSlot()
+{
     readButtonsXml();
     showButtonsAtList();
 }
 
-void ShortcutButtonWidget::readButtonsXml(){
+void ShortcutButtonWidget::readButtonsXml()
+{
 
-    ShortcutButtonData *button = 0;
-    ProductModule *product_mod = 0;
-    bool found {false};
+    ShortcutButtonData* button = 0;
+    ProductModule* product_mod = 0;
+    bool found { false };
 
     button_list->clear();
     XmlConfig xml(SHORTCUT_XML);
-    if ( !xml.wellFormed() ) return;
+    if (!xml.wellFormed())
+        return;
 
     xml.delDomain();
-    for (auto i=0; i < xml.howManyTags("widget"); i++){
-        if (xml.readString("widget["+QString::number(i)+"].code") == "shortcut_buttons_frame")
-        {
+    for (auto i = 0; i < xml.howManyTags("widget"); i++) {
+        if (xml.readString("widget[" + QString::number(i) + "].code") == "shortcut_buttons_frame") {
             found = true;
-            xml.setDomain("widget["+QString::number(i)+"]");
+            xml.setDomain("widget[" + QString::number(i) + "]");
         }
     }
 
-    if (!found)  return;
+    if (!found)
+        return;
 
-    for ( auto i=0; i < xml.howManyTags("item"); i++){
-        xml.setDomain("item["+QString::number(i)+"]");
+    for (auto i = 0; i < xml.howManyTags("item"); i++) {
+        xml.setDomain("item[" + QString::number(i) + "]");
         button = new ShortcutButtonData;
         button->state = false;
-        if ( xml.readString("type") == "product" ){
+        if (xml.readString("type") == "product") {
             button->button_type = ShortcutButtonData::Product;
             button->code = xml.readString("product_code");
             product_mod = new ProductModule(this);
@@ -429,10 +429,9 @@ void ShortcutButtonWidget::readButtonsXml(){
             button->pixmap = product_mod->getLogoFromProductCode(button->code);
             button->pixmap = QString(ICON_PATH) + button->pixmap;
             delete product_mod;
-            if ((button->text.isEmpty())&&(button->code=="solo"))
+            if ((button->text.isEmpty()) && (button->code == "solo"))
                 button->text = "solo";
-        }
-        else{
+        } else {
             button->button_type = ShortcutButtonData::ReadedFromXml;
             button->text = xml.readString("text");
             button->pixmap = xml.readString("iconset");
@@ -440,34 +439,37 @@ void ShortcutButtonWidget::readButtonsXml(){
                 button->pixmap = xml.readString("pixmap");
         }
         xml.releaseDomain("item");
-        button_list->append(button,button->text);
+        button_list->append(button, button->text);
     }
     xml.delDomain();
 }
 
-void ShortcutButtonWidget::showButtonsAtList(){
+void ShortcutButtonWidget::showButtonsAtList()
+{
     int count;
     count = button_list->count();
     clearTable();
-    if ( count >= 6 ) count = 6;
+    if (count >= 6)
+        count = 6;
 
     double size = 30.00;
     int i = 0;
-    for(auto button : *button_list){
+    for (auto button : *button_list) {
         auto item = new QTableWidgetItem(button->text);
-//@benes        item->setWordWrap(true);
-        if (!button->pixmap.isEmpty()){
+        //@benes        item->setWordWrap(true);
+        if (!button->pixmap.isEmpty()) {
             item->setIcon(cropedIcon(button->pixmap, size));
         }
         shortcut_button_table->setItem(0, i++, item);
     }
 }
 
-void ShortcutButtonWidget::loadProductsSlot(){
+void ShortcutButtonWidget::loadProductsSlot()
+{
     int index, count;
-    QString  icon;
+    QString icon;
 
-    BslDDIconViewItem *item = 0;
+    BslDDIconViewItem* item = 0;
     QString product_code;
     QString product_name;
 
@@ -477,12 +479,12 @@ void ShortcutButtonWidget::loadProductsSlot(){
     delete product_mod;
 
     XmlConfig xml;
-    if(!xml.readXmlFromString(xml_string)){
+    if (!xml.readXmlFromString(xml_string)) {
         cerr << "cannot convert the string into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
 
-    if(!xml.validateXmlWithDTD(PRODUCTS_DTD)){
+    if (!xml.validateXmlWithDTD(PRODUCTS_DTD)) {
         cerr << "The file does not conform a valid xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
@@ -496,45 +498,43 @@ void ShortcutButtonWidget::loadProductsSlot(){
 
     first_label->setText(tr("Product"));
     second_label->clear();
-    for(index=0; index < count; index++){
+    for (index = 0; index < count; index++) {
         xml.setDomain("product[" + QString::number(index) + "]");
         product_name = xml.readString("name");
         product_code = xml.readString("code");
-        emit itemReaded(index, product_name,"");
-        if(xml.readString("logo").isEmpty()){
-            item = new BslDDIconViewItem(products_iconview, product_name );
+        emit itemReaded(index, product_name, "");
+        if (xml.readString("logo").isEmpty()) {
+            item = new BslDDIconViewItem(products_iconview, product_name);
             item->setText(product_code);
             xml.releaseDomain("product", false);
             continue;
         }
         icon = ICON_PATH + xml.readString("logo");
-        item = new BslDDIconViewItem(products_iconview, product_name, cropedIcon(icon,size));
+        item = new BslDDIconViewItem(products_iconview, product_name, cropedIcon(icon, size));
         item->setText(product_code);
-        products_iconview->insertItem(0,item);
+        products_iconview->insertItem(0, item);
         xml.releaseDomain("product", false);
-
     }
 
-    if ( products_iconview->findItems("solo", Qt::MatchExactly).isEmpty() ){
+    if (products_iconview->findItems("solo", Qt::MatchExactly).isEmpty()) {
         item = new BslDDIconViewItem(products_iconview, "solo");
         item->setText(product_code);
-        products_iconview->insertItem(0,item);
+        products_iconview->insertItem(0, item);
     }
     xml.releaseDomain("products", true);
     (products_iconview->horizontalScrollBar())->hide();
     (products_iconview->verticalScrollBar())->hide();
-
 }
 
-void ShortcutButtonWidget::loadOffersSlot(){
+void ShortcutButtonWidget::loadOffersSlot()
+{
     int count;
     double size;
-    ProductOfferModule *offers_module = 0;
+    ProductOfferModule* offers_module = 0;
     QString xml_string;
-    QString offer_type, offer_name,icon;
+    QString offer_type, offer_name, icon;
 
-
-    BslDDIconViewItem *item = 0;
+    BslDDIconViewItem* item = 0;
 
     offers_iconview->clear();
 
@@ -542,12 +542,12 @@ void ShortcutButtonWidget::loadOffersSlot(){
     xml_string = offers_module->getAllOffers();
     delete offers_module;
     XmlConfig xml;
-    if(!xml.readXmlFromString(xml_string)){
+    if (!xml.readXmlFromString(xml_string)) {
         cerr << "cannot convert the string into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
 
-    if(!xml.validateXmlWithDTD(OFFERS_DTD)){
+    if (!xml.validateXmlWithDTD(OFFERS_DTD)) {
         cerr << "The file does not conform a valid xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
@@ -559,27 +559,28 @@ void ShortcutButtonWidget::loadOffersSlot(){
     first_label->setText(tr("Type of offer"));
     second_label->setText(tr("Offer"));
     size = SIZE_CONST;
-    for( auto i=0; i< count ;i++){
-        offer_type = xml.readString("offer["+QString::number(i)+"].offer_type");
-        offer_name = xml.readString("offer["+QString::number(i)+"].offer_name");
-        icon = xml.readString("offer["+QString::number(i)+"].logo");
-        item = new BslDDIconViewItem(offers_iconview,offer_name);
+    for (auto i = 0; i < count; i++) {
+        offer_type = xml.readString("offer[" + QString::number(i) + "].offer_type");
+        offer_name = xml.readString("offer[" + QString::number(i) + "].offer_name");
+        icon = xml.readString("offer[" + QString::number(i) + "].logo");
+        item = new BslDDIconViewItem(offers_iconview, offer_name);
         item->setText(offer_type);
-        if (!icon.isEmpty()){
+        if (!icon.isEmpty()) {
             icon = QString(OFFERS_ICON_PATH) + icon;
             item->setIcon(cropedIcon(icon, size));
         }
         emit itemReaded(i, offer_type, offer_name);
-        offers_iconview->insertItem(0,item);
+        offers_iconview->insertItem(0, item);
     }
 }
 
-void ShortcutButtonWidget::loadOptionsSlot(){
-    int i,count;
-    ProductOptionModule *options_module = 0;
+void ShortcutButtonWidget::loadOptionsSlot()
+{
+    int i, count;
+    ProductOptionModule* options_module = 0;
     QString xml_string;
     QString option_type, option_name;
-    BslDDIconViewItem *item = 0;
+    BslDDIconViewItem* item = 0;
 
     options_iconview->clear();
 
@@ -588,12 +589,12 @@ void ShortcutButtonWidget::loadOptionsSlot(){
     delete options_module;
 
     XmlConfig xml;
-    if(!xml.readXmlFromString(xml_string)){
+    if (!xml.readXmlFromString(xml_string)) {
         cerr << "Cannot convert the string into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
 
-    if(!xml.validateXmlWithDTD(OPTIONS_DTD)){
+    if (!xml.validateXmlWithDTD(OPTIONS_DTD)) {
         cerr << "The file does not conform a valid xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
@@ -605,9 +606,9 @@ void ShortcutButtonWidget::loadOptionsSlot(){
     first_label->setText(tr("Option Type"));
     second_label->setText(tr("Option"));
 
-    for(auto i=0; i< count ; i++){
-        option_type = xml.readString("option["+QString::number(i)+"].option_type");
-        option_name = xml.readString("option["+QString::number(i)+"].option_name");
+    for (auto i = 0; i < count; i++) {
+        option_type = xml.readString("option[" + QString::number(i) + "].option_type");
+        option_name = xml.readString("option[" + QString::number(i) + "].option_name");
         item = new BslDDIconViewItem(options_iconview, option_name);
         item->setText(option_type);
         options_iconview->insertItem(0, item);
@@ -615,8 +616,9 @@ void ShortcutButtonWidget::loadOptionsSlot(){
     }
 }
 
-void ShortcutButtonWidget::loadSpecialButtons(){
-    BslDDIconViewItem *item = 0;
+void ShortcutButtonWidget::loadSpecialButtons()
+{
+    BslDDIconViewItem* item = 0;
     special_buttons_iconview->clear();
 
     item = new BslDDIconViewItem(special_buttons_iconview, tr("Free Price"));
@@ -625,229 +627,221 @@ void ShortcutButtonWidget::loadSpecialButtons(){
 
     item = new BslDDIconViewItem(special_buttons_iconview, tr("Generic Product"));
     item->setText(QString::number(ShortcutButtonWidget::GenericProduct));
-    special_buttons_iconview->insertItem(0,item);
+    special_buttons_iconview->insertItem(0, item);
 
     item = new BslDDIconViewItem(special_buttons_iconview, tr("Open CashBox"));
     item->setText(QString::number(ShortcutButtonWidget::OpenCashBox));
-    special_buttons_iconview->insertItem(0,item);
+    special_buttons_iconview->insertItem(0, item);
 
     item = new BslDDIconViewItem(special_buttons_iconview, tr("Print in Kitchen"));
     item->setText(QString::number(ShortcutButtonWidget::PrintAtKitchen));
-    special_buttons_iconview->insertItem(0,item);
-
-
+    special_buttons_iconview->insertItem(0, item);
 }
 
-void ShortcutButtonWidget::writeConfig(){
+void ShortcutButtonWidget::writeConfig()
+{
     int i, count, j;
-    XmlConfig *xml = 0;
-    ShortcutButtonData *data = 0;
+    XmlConfig* xml = 0;
+    ShortcutButtonData* data = 0;
     bool founded = false;
-
 
     xml = new XmlConfig(SHORTCUT_XML);
     xml->delDomain();
 
     count = xml->howManyTags("widget");
-    for (i=0;i<count;i++){
-        if (xml->readString("widget["+QString::number(i)+"].code")=="shortcut_buttons_frame"){
+    for (i = 0; i < count; i++) {
+        if (xml->readString("widget[" + QString::number(i) + "].code") == "shortcut_buttons_frame") {
             founded = true;
-            xml->setDomain("widget["+QString::number(i)+"]");
+            xml->setDomain("widget[" + QString::number(i) + "]");
             j = i;
         }
     }
 
-    if (!founded){
+    if (!founded) {
         xml->createElementSetDomain("widget");
-        xml->createElement("code","shortcut_buttons_frame");
+        xml->createElement("code", "shortcut_buttons_frame");
         xml->createElementSetDomain("layout");
-        xml->createElement("type","hbox");
-        xml->createElement("spacing","0");
-        xml->createElement("margin","0");
+        xml->createElement("type", "hbox");
+        xml->createElement("spacing", "0");
+        xml->createElement("margin", "0");
         xml->releaseDomain("layout");
     }
 
     count = button_list->count();
 
-    if (count>=6)
-        count=6;
+    if (count >= 6)
+        count = 6;
 
-    for (i=0;i<count;i++){
+    for (i = 0; i < count; i++) {
         data = button_list->at(i);
         if (!data->state)
             continue;
-        if (xml->setDomain("item["+QString::number(i)+"]")){
+        if (xml->setDomain("item[" + QString::number(i) + "]")) {
             xml->releaseDomain("item");
-            xml->deleteElement("item["+QString::number(i)+"]");
+            xml->deleteElement("item[" + QString::number(i) + "]");
         }
-        xml->createElementSetDomain("item["+QString::number(i)+"]");
+        xml->createElementSetDomain("item[" + QString::number(i) + "]");
         data->state = false;
-        if (data->button_type == ShortcutButtonData::Product){
-            xml->createElement("type","product");
+        if (data->button_type == ShortcutButtonData::Product) {
+            xml->createElement("type", "product");
             xml->createElementSetDomain("size_policy");
-            xml->createElement("x","Expanding");
-            xml->createElement("y","Expanding");
+            xml->createElement("x", "Expanding");
+            xml->createElement("y", "Expanding");
             xml->releaseDomain("size_policy");
-            xml->createElement("fixedwidth","102");
-            xml->createElement("fixedheight","98");
-            xml->createElement("product_code",data->code);
-        }
-        else if (data->button_type == ShortcutButtonData::Offer){
-            xml->createElement("type","button");
+            xml->createElement("fixedwidth", "102");
+            xml->createElement("fixedheight", "98");
+            xml->createElement("product_code", data->code);
+        } else if (data->button_type == ShortcutButtonData::Offer) {
+            xml->createElement("type", "button");
             xml->createElementSetDomain("size_policy");
-            xml->createElement("x","Expanding");
-            xml->createElement("y","Expanding");
+            xml->createElement("x", "Expanding");
+            xml->createElement("y", "Expanding");
             xml->releaseDomain("size_policy");
-            xml->createElement("fixedwidth","102");
-            xml->createElement("fixedheight","98");
-            xml->createElement("text",data->text);
+            xml->createElement("fixedwidth", "102");
+            xml->createElement("fixedheight", "98");
+            xml->createElement("text", data->text);
             if (!data->pixmap.isEmpty())
-                xml->createElement("iconset",data->pixmap);
+                xml->createElement("iconset", data->pixmap);
             xml->createElementSetDomain("data_relationships");
             xml->createElementSetDomain("relation");
             xml->createElement("signal", GDATASIGNAL::XCORE_SET_PRODUCT_OFFER);
-            xml->createElement("event","1");
-            xml->createElement("content.domain","type");
-            xml->createElement("content.value",data->type);
-            xml->createElement("content[1].domain","name");
-            xml->createElement("content[1].value",data->name);
+            xml->createElement("event", "1");
+            xml->createElement("content.domain", "type");
+            xml->createElement("content.value", data->type);
+            xml->createElement("content[1].domain", "name");
+            xml->createElement("content[1].value", data->name);
             xml->releaseDomain("relation");
             xml->createElementSetDomain("relation");
-            xml->createElement("signal", GDATASIGNAL::PRODSELECT_COLOR_MODE );
-            xml->createElement("event","1");
-            xml->createElement("content.domain","mode");
-            xml->createElement("content.value","special");
+            xml->createElement("signal", GDATASIGNAL::PRODSELECT_COLOR_MODE);
+            xml->createElement("event", "1");
+            xml->createElement("content.domain", "mode");
+            xml->createElement("content.value", "special");
             xml->releaseDomain("relation");
             xml->releaseDomain("data_relationships");
-        }
-        else if (data->button_type == ShortcutButtonData::Option){
-            xml->createElement("type","button");
+        } else if (data->button_type == ShortcutButtonData::Option) {
+            xml->createElement("type", "button");
             xml->createElementSetDomain("size_policy");
-            xml->createElement("x","Expanding");
-            xml->createElement("y","Expanding");
+            xml->createElement("x", "Expanding");
+            xml->createElement("y", "Expanding");
             xml->releaseDomain("size_policy");
-            xml->createElement("fixedwidth","102");
-            xml->createElement("fixedheight","98");
-            xml->createElement("text",data->text);
+            xml->createElement("fixedwidth", "102");
+            xml->createElement("fixedheight", "98");
+            xml->createElement("text", data->text);
             if (!data->pixmap.isEmpty())
-                xml->createElement("iconset",data->pixmap);
+                xml->createElement("iconset", data->pixmap);
             xml->createElementSetDomain("data_relationships");
             xml->createElementSetDomain("relation");
-            xml->createElement("signal","GDATASIGNAL_XCORE_SET_PRODUCT_OPTION");
-            xml->createElement("event","1");
-            xml->createElement("content.domain","type");
-            xml->createElement("content.value",data->type);
-            xml->createElement("content[1].domain","value");
-            xml->createElement("content[1].value",data->name);
+            xml->createElement("signal", "GDATASIGNAL_XCORE_SET_PRODUCT_OPTION");
+            xml->createElement("event", "1");
+            xml->createElement("content.domain", "type");
+            xml->createElement("content.value", data->type);
+            xml->createElement("content[1].domain", "value");
+            xml->createElement("content[1].value", data->name);
             xml->releaseDomain("relation");
             xml->releaseDomain("data_relationships");
-        }
-        else if (data->button_type == ShortcutButtonData::SpecialButton){
-            if (data->num == ShortcutButtonWidget::FreePrice){
-                xml->createElement("type","button");
+        } else if (data->button_type == ShortcutButtonData::SpecialButton) {
+            if (data->num == ShortcutButtonWidget::FreePrice) {
+                xml->createElement("type", "button");
                 xml->createElementSetDomain("size_policy");
-                xml->createElement("x","Expanding");
-                xml->createElement("y","Expanding");
+                xml->createElement("x", "Expanding");
+                xml->createElement("y", "Expanding");
                 xml->releaseDomain("size_policy");
-                xml->createElement("fixedwidth","102");
-                xml->createElement("fixedheight","98");
-                xml->createElement("text",data->text);
-                xml->createElement("name",data->text);
+                xml->createElement("fixedwidth", "102");
+                xml->createElement("fixedheight", "98");
+                xml->createElement("text", data->text);
+                xml->createElement("name", data->text);
                 if (!data->pixmap.isEmpty())
-                    xml->createElement("iconset",data->pixmap);
+                    xml->createElement("iconset", data->pixmap);
                 xml->createElementSetDomain("data_relationships");
                 xml->createElementSetDomain("relation");
                 xml->createElement("signal", GDATASIGNAL::MAINSTACK_SET_PAGE);
-                xml->createElement("event","1");
-                xml->createElement("content.domain","name");
-                xml->createElement("content.value","FREE_PRICE_MENU");
+                xml->createElement("event", "1");
+                xml->createElement("content.domain", "name");
+                xml->createElement("content.value", "FREE_PRICE_MENU");
                 xml->releaseDomain("relation");
                 xml->createElementSetDomain("relation");
                 xml->createElement("signal", GDATASIGNAL::MAINWIDGET_SETENABLED);
-                xml->createElement("event","1");
-                xml->createElement("content.domain","enabled");
-                xml->createElement("content.value","false");
+                xml->createElement("event", "1");
+                xml->createElement("content.domain", "enabled");
+                xml->createElement("content.value", "false");
                 xml->releaseDomain("relation");
                 xml->releaseDomain("data_relationships");
-            }
-            else if (data->num == ShortcutButtonWidget::GenericProduct){
-                xml->createElement("type","button");
+            } else if (data->num == ShortcutButtonWidget::GenericProduct) {
+                xml->createElement("type", "button");
                 xml->createElementSetDomain("size_policy");
-                xml->createElement("x","Expanding");
-                xml->createElement("y","Expanding");
+                xml->createElement("x", "Expanding");
+                xml->createElement("y", "Expanding");
                 xml->releaseDomain("size_policy");
-                xml->createElement("fixedwidth","102");
-                xml->createElement("fixedheight","98");
-                xml->createElement("text",data->text);
-                xml->createElement("name",data->text);
+                xml->createElement("fixedwidth", "102");
+                xml->createElement("fixedheight", "98");
+                xml->createElement("text", data->text);
+                xml->createElement("name", data->text);
                 if (!data->pixmap.isEmpty())
-                    xml->createElement("iconset",data->pixmap);
+                    xml->createElement("iconset", data->pixmap);
                 xml->createElementSetDomain("data_relationships");
                 xml->createElementSetDomain("relation");
                 xml->createElement("signal", GDATASIGNAL::MAINSTACK_SET_PAGE);
-                xml->createElement("event","1");
-                xml->createElement("content.domain","name");
-                xml->createElement("content.value","GENERIC_PRODUCT_MENU");
+                xml->createElement("event", "1");
+                xml->createElement("content.domain", "name");
+                xml->createElement("content.value", "GENERIC_PRODUCT_MENU");
                 xml->releaseDomain("relation");
                 xml->createElementSetDomain("relation");
                 xml->createElement("signal", GDATASIGNAL::MAINWIDGET_SETENABLED);
-                xml->createElement("event","1");
-                xml->createElement("content.domain","enabled");
-                xml->createElement("content.value","false");
+                xml->createElement("event", "1");
+                xml->createElement("content.domain", "enabled");
+                xml->createElement("content.value", "false");
                 xml->releaseDomain("relation");
                 xml->releaseDomain("data_relationships");
-            }
-            else if (data->num == ShortcutButtonWidget::OpenCashBox){
-                xml->createElement("type","button");
+            } else if (data->num == ShortcutButtonWidget::OpenCashBox) {
+                xml->createElement("type", "button");
                 xml->createElementSetDomain("size_policy");
-                xml->createElement("x","Expanding");
-                xml->createElement("y","Expanding");
+                xml->createElement("x", "Expanding");
+                xml->createElement("y", "Expanding");
                 xml->releaseDomain("size_policy");
-                xml->createElement("fixedwidth","102");
-                xml->createElement("fixedheight","98");
-                xml->createElement("text",data->text);
-                xml->createElement("name",data->text);
+                xml->createElement("fixedwidth", "102");
+                xml->createElement("fixedheight", "98");
+                xml->createElement("text", data->text);
+                xml->createElement("name", data->text);
                 if (!data->pixmap.isEmpty())
-                    xml->createElement("iconset",data->pixmap);
+                    xml->createElement("iconset", data->pixmap);
                 xml->createElementSetDomain("relationships");
                 xml->createElementSetDomain("relation");
                 xml->createElement("signal", GSIGNAL::OPEN_CASHBOX);
-                xml->createElement("event","1");
+                xml->createElement("event", "1");
                 xml->releaseDomain("relation");
                 xml->releaseDomain("relationships");
-            }
-            else if (data->num == ShortcutButtonWidget::PrintAtKitchen){
-                xml->createElement("type","button");
+            } else if (data->num == ShortcutButtonWidget::PrintAtKitchen) {
+                xml->createElement("type", "button");
                 xml->createElementSetDomain("size_policy");
-                xml->createElement("x","Expanding");
-                xml->createElement("y","Expanding");
+                xml->createElement("x", "Expanding");
+                xml->createElement("y", "Expanding");
                 xml->releaseDomain("size_policy");
-                xml->createElement("fixedwidth","102");
-                xml->createElement("fixedheight","98");
-                xml->createElement("text",data->text);
-                xml->createElement("name",data->text);
+                xml->createElement("fixedwidth", "102");
+                xml->createElement("fixedheight", "98");
+                xml->createElement("text", data->text);
+                xml->createElement("name", data->text);
                 if (!data->pixmap.isEmpty())
-                    xml->createElement("iconset",data->pixmap);
+                    xml->createElement("iconset", data->pixmap);
                 xml->createElementSetDomain("data_relationships");
                 xml->createElementSetDomain("relation");
                 xml->createElement("signal", GDATASIGNAL::BARCORE_PRINT_ORDER_AT_SPECIAL_PRINTER);
-                xml->createElement("event","1");
-                xml->createElement("content.domain","type");
-                xml->createElement("content.value","kitchen");
+                xml->createElement("event", "1");
+                xml->createElement("content.domain", "type");
+                xml->createElement("content.value", "kitchen");
                 xml->releaseDomain("relation");
                 xml->releaseDomain("data_relationships");
             }
         }
         xml->releaseDomain("item");
-        if (!i){ //due to problems at libbslxml FIXME (at libbslxml)
-            XmlConfig *aux_xml = 0;
+        if (!i) { // due to problems at libbslxml FIXME (at libbslxml)
+            XmlConfig* aux_xml = 0;
             aux_xml = new XmlConfig();
             xml->delDomain();
             aux_xml->delDomain();
             aux_xml->readXmlFromString(xml->toString());
-            xml->deleteElement("widget["+QString::number(j)+"].item[0]");
-            xml->copy(aux_xml,"widget["+QString::number(j)+"].item[0]","widget["+QString::number(j)+"].item[1]");
-            xml->setDomain("widget["+QString::number(j)+"]");
+            xml->deleteElement("widget[" + QString::number(j) + "].item[0]");
+            xml->copy(aux_xml, "widget[" + QString::number(j) + "].item[0]", "widget[" + QString::number(j) + "].item[1]");
+            xml->setDomain("widget[" + QString::number(j) + "]");
             delete aux_xml;
 
             //                        xml->copy(xml,"item[0]","item[1]");
@@ -859,21 +853,21 @@ void ShortcutButtonWidget::writeConfig(){
     xml->save();
     xml->debug();
     delete xml;
-
-
 }
 
-void ShortcutButtonWidget::showEvent(QShowEvent *e){
+void ShortcutButtonWidget::showEvent(QShowEvent* e)
+{
     if (first_show)
         first_show = false;
-    else{
+    else {
         stack->setCurrentWidget(reading_page);
         QTimer::singleShot(TIME_OUT, this, &ShortcutButtonWidget::startShowing);
     }
     QWidget::showEvent(e);
 }
 
-void ShortcutButtonWidget::startShowing(){
+void ShortcutButtonWidget::startShowing()
+{
     stack->setCurrentWidget(reading_page);
 
     main_tab->setCurrentWidget(products_page);
@@ -887,14 +881,12 @@ void ShortcutButtonWidget::startShowing(){
 }
 
 void ShortcutButtonWidget::itemReadedSlot(
-        int num,
-        const QString& text1,
-        const QString& text2)
+    int num,
+    const QString& text1,
+    const QString& text2)
 {
     progress->setValue(num);
     a_label->setText(text1);
     b_label->setText(text2);
     qApp->processEvents();
 }
-
-

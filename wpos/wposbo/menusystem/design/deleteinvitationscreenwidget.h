@@ -13,18 +13,16 @@
 #ifndef DELETEINVITATIONSCREENWIDGET_H
 #define DELETEINVITATIONSCREENWIDGET_H
 
-#include <QWidget>
 #include <QMenu>
+#include <QWidget>
 
 #include "ui_deletescreeninvitationsinterface.h"
 
-class DeleteInvitationScreenWidget :
-        public QMenu,
-        private Ui::DeleteScreenInvitationsInterface
-{
+class DeleteInvitationScreenWidget : public QMenu,
+                                     private Ui::DeleteScreenInvitationsInterface {
     Q_OBJECT
 public:
-    explicit DeleteInvitationScreenWidget(QWidget *parent=0, const QString& name=QString{});
+    explicit DeleteInvitationScreenWidget(QWidget* parent = 0, const QString& name = QString {});
     ~DeleteInvitationScreenWidget() = default;
 
     void setScreen(const QString& screen);
@@ -37,7 +35,6 @@ private slots:
     void acceptSlot();
     void cancelSlot();
     void deleteSlot();
-
 };
 
 #endif

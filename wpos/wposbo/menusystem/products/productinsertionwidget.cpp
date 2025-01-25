@@ -13,18 +13,18 @@
 #include "productinsertionwidget.h"
 #include "menusystem/utils.h"
 
-#include "productsmodule/productmodule.h"
-#include "productsmodule/optionsmodule/productoptionmodule.h"
 #include "productsmodule/offersmodule/productoffermodule.h"
+#include "productsmodule/optionsmodule/productoptionmodule.h"
+#include "productsmodule/productmodule.h"
 
-#include "database/productoptionsmoduledb.h"
 #include "database/productoffersmoduledb.h"
+#include "database/productoptionsmoduledb.h"
 #include "database/productsmoduledb.h"
 
 #include <libbslxml/xmlconfig.h>
 #include <wposcore/config.h>
-#include <wposgui/common/toolkit.h>
 #include <wposgui/common/dragobjects.h>
+#include <wposgui/common/toolkit.h>
 #include <wposgui/keyboard/floatkeyboard.h>
 #include <wposgui/keyboard/numkeyboard.h>
 
@@ -63,42 +63,42 @@
 #include <iostream>
 using namespace std;
 
-static const QString& PRODUCTS_LIST_DTD {"dtddocs:products_productslist.dtd"};
-static const QString& PRODUCT_COMPOSITION_DTD {"dtddocs:products_composition.dtd"};
-static const QString& TAXES_DTD {"dtddocs:products_taxeslist.dtd"};
-static const QString& OPTIONS_LIST_DTD {"dtddocs:products_optionslist.dtd"};
-static const QString& OFFERS_LIST_DTD  {"dtddocs:products_offerslist.dtd"};
+static const QString& PRODUCTS_LIST_DTD { "dtddocs:products_productslist.dtd" };
+static const QString& PRODUCT_COMPOSITION_DTD { "dtddocs:products_composition.dtd" };
+static const QString& TAXES_DTD { "dtddocs:products_taxeslist.dtd" };
+static const QString& OPTIONS_LIST_DTD { "dtddocs:products_optionslist.dtd" };
+static const QString& OFFERS_LIST_DTD { "dtddocs:products_offerslist.dtd" };
 
-static const QString& UNITARY_PRODUCT_TITLE {"Creacion de productos unitarios"};
-static const QString& COMPOSED_PRODUCTS_TITLE {"Creacion de productos compuestos"};
+static const QString& UNITARY_PRODUCT_TITLE { "Creacion de productos unitarios" };
+static const QString& COMPOSED_PRODUCTS_TITLE { "Creacion de productos compuestos" };
 
-//static const QPixmap NULL_LOGO_PIXMAP = QPixmap();
-static const QString& NULL_LOGO_TEXT {"SIN LOGO"};
+// static const QPixmap NULL_LOGO_PIXMAP = QPixmap();
+static const QString& NULL_LOGO_TEXT { "SIN LOGO" };
 
-static const QString& IS_DEFAULT_OPTION_LOGO {"controls32:button_ok.png"};
-static const QString& NO_DEFAULT_OPTION_LOGO {"controls32:cancel.png"};
+static const QString& IS_DEFAULT_OPTION_LOGO { "controls32:button_ok.png" };
+static const QString& NO_DEFAULT_OPTION_LOGO { "controls32:cancel.png" };
 
 static const QColor BUTTON_OFF = QColor(238, 238, 230);
 static const QColor BUTTON_ON = QColor(107, 181, 251);
-static const QString& DEFAULT_TAX {"iva16"};
+static const QString& DEFAULT_TAX { "iva16" };
 
-static const QString& DEFAULT_QUANTITY {"1.0"};
-static const QString& ICON_PATH {cfg::PRODUCT_DIR};
-static const double ICON_BUTTON_SIZE  = 50.00;
+static const QString& DEFAULT_QUANTITY { "1.0" };
+static const QString& ICON_PATH { cfg::PRODUCT_DIR };
+static const double ICON_BUTTON_SIZE = 50.00;
 static const double ICON_SIZE = 32.00;
-static const uint TIME_OUT {10};
+static const uint TIME_OUT { 10 };
 
 ProductInsertionWidget::ProductInsertionWidget(
-        ProductModule *product_module ,
-        int _mode,
-        QWidget *parent,
-        const QString& name ):
-    QWidget(parent),
-    product_model {product_module},
-    options_list  {new HList<NOTypes>},
-    offers_list  {new HList<NOTypes>}
+    ProductModule* product_module,
+    int _mode,
+    QWidget* parent,
+    const QString& name)
+    : QWidget(parent)
+    , product_model { product_module }
+    , options_list { new HList<NOTypes> }
+    , offers_list { new HList<NOTypes> }
 
-{   
+{
     setupUi(this);
     setObjectName(name);
     mode = (ProductMode)_mode;
@@ -135,15 +135,15 @@ ProductInsertionWidget::ProductInsertionWidget(
     //    offer_listview->setColumnAlignment(0,Qt::AlignCenter);
     //    offer_listview->setColumnAlignment(1,Qt::AlignCenter);
 
-    offer_type_listview->setColumnWidth(0,320);
-    option_type_listview->setColumnWidth(0,320);
+    offer_type_listview->setColumnWidth(0, 320);
+    option_type_listview->setColumnWidth(0, 320);
 
-    option_listview->setColumnWidth(0,40);
-    option_listview->setColumnWidth(1,220);
-    option_listview->setColumnWidth(2,60);
+    option_listview->setColumnWidth(0, 40);
+    option_listview->setColumnWidth(1, 220);
+    option_listview->setColumnWidth(2, 60);
 
-    offer_listview->setColumnWidth(0,260);
-    offer_listview->setColumnWidth(1,60);
+    offer_listview->setColumnWidth(0, 260);
+    offer_listview->setColumnWidth(1, 60);
 
     //        pix_label1->setPixmap(QPixmap("controls32:package.png"));
     pix_label2->setPixmap(QPixmap("controls32:xcalc.png"));
@@ -156,7 +156,6 @@ ProductInsertionWidget::ProductInsertionWidget(
     up_unitary_button->setIcon(QPixmap("controls32:up.png"));
     down_unitary_button->setIcon(QPixmap("controls32:down.png"));
     delete_table_button->setIcon(QPixmap("controls32:edittrash.png"));
-
 
     add_option_type_button->setIcon(QPixmap("controls32:filesave.png"));
     del_option_type_button->setIcon(QPixmap("controls32:edittrash.png"));
@@ -180,8 +179,8 @@ ProductInsertionWidget::ProductInsertionWidget(
     up_offer_button->setIcon(QPixmap("controls32:up.png"));
     down_offer_button->setIcon(QPixmap("controls32:down.png"));
 
-    QHBoxLayout *hlayout;
-    if(!(hlayout =(QHBoxLayout *) ddtable_frame->layout()))
+    QHBoxLayout* hlayout;
+    if (!(hlayout = (QHBoxLayout*)ddtable_frame->layout()))
         hlayout = new QHBoxLayout(ddtable_frame);
 
     table = new BslDDTable(ddtable_frame, "table");
@@ -202,23 +201,23 @@ ProductInsertionWidget::ProductInsertionWidget(
     table->setFont(font);
     hlayout->addWidget(table);
 
-    if (!(hlayout =(QHBoxLayout *) ddiconview_frame->layout()))
+    if (!(hlayout = (QHBoxLayout*)ddiconview_frame->layout()))
         hlayout = new QHBoxLayout(ddiconview_frame);
 
-    icon_view = new BslDDIconView(ddiconview_frame,"iconview");
-    icon_view->setGridSize(QSize(70,70));
+    icon_view = new BslDDIconView(ddiconview_frame, "iconview");
+    icon_view->setGridSize(QSize(70, 70));
     icon_view->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     hlayout->addWidget(icon_view);
 
-    if(!(hlayout = (QHBoxLayout *) numblock_product_frame->layout()))
+    if (!(hlayout = (QHBoxLayout*)numblock_product_frame->layout()))
         hlayout = new QHBoxLayout(numblock_product_frame);
 
     float_kb = new FloatKeyboard(numblock_product_frame);
     float_kb->hideDisplay();
     hlayout->addWidget(float_kb);
 
-    QVBoxLayout *vlayout;
-    if(!(vlayout = (QVBoxLayout *) box_frame_offers->layout()))
+    QVBoxLayout* vlayout;
+    if (!(vlayout = (QVBoxLayout*)box_frame_offers->layout()))
         vlayout = new QVBoxLayout(box_frame_offers);
 
     float_kb_offers = new FloatKeyboard(box_frame_offers);
@@ -230,8 +229,7 @@ ProductInsertionWidget::ProductInsertionWidget(
     num_kb_offers->hide();
     price_label_offers_percent->hide();
 
-
-    if(!(hlayout = (QHBoxLayout *) box_frame_options->layout())){
+    if (!(hlayout = (QHBoxLayout*)box_frame_options->layout())) {
         hlayout = new QHBoxLayout(box_frame_options);
     }
     float_kb_options = new FloatKeyboard(box_frame_options);
@@ -239,12 +237,12 @@ ProductInsertionWidget::ProductInsertionWidget(
     hlayout->addWidget(float_kb_options);
 
     pop_logo = new QMenu(this);
-    pop_logo->setContentsMargins(10,10,10,10);
-    if (!(hlayout =(QHBoxLayout *) pop_logo->layout())){
+    pop_logo->setContentsMargins(10, 10, 10, 10);
+    if (!(hlayout = (QHBoxLayout*)pop_logo->layout())) {
         hlayout = new QHBoxLayout(pop_logo);
     }
-    logo_view = new BslDDIconView(pop_logo,"logo_view");
-    logo_view->setGridSize(QSize(60,60));
+    logo_view = new BslDDIconView(pop_logo, "logo_view");
+    logo_view->setGridSize(QSize(60, 60));
     //@benes    logo_view->setFixedHeight(475);
     //@benes    logo_view->setFixedWidth(310);
     hlayout->addWidget(logo_view);
@@ -263,7 +261,7 @@ ProductInsertionWidget::ProductInsertionWidget(
     connect(float_kb, &FloatKeyboard::valueChanged, this, &ProductInsertionWidget::numkeyChangedSlot);
     connect(float_kb_options, &FloatKeyboard::valueChanged, this, &ProductInsertionWidget::optionNumkeyChangedSlot);
     connect(float_kb_offers, &FloatKeyboard::valueChanged, this, QOverload<double>::of(&ProductInsertionWidget::offerNumkeyChangedSlot));
-    connect(num_kb_offers, &NumKeyboard::valueChanged, this,  QOverload<int>::of(&ProductInsertionWidget::offerNumkeyChangedSlot));
+    connect(num_kb_offers, &NumKeyboard::valueChanged, this, QOverload<int>::of(&ProductInsertionWidget::offerNumkeyChangedSlot));
 
     connect(logo_button, &QPushButton::clicked, this, &ProductInsertionWidget::logoButtonClicked);
     connect(pop_logo, &QMenu::aboutToShow, this, &ProductInsertionWidget::showPopLogo);
@@ -299,26 +297,26 @@ ProductInsertionWidget::ProductInsertionWidget(
     connect(del_offer_button, &QPushButton::clicked, this, &ProductInsertionWidget::delOfferSlot);
 
     connect(option_type_listview, &QTreeWidget::itemSelectionChanged,
-            this, &ProductInsertionWidget::optionTypeSelectionChangedSlot);
+        this, &ProductInsertionWidget::optionTypeSelectionChangedSlot);
 
     connect(offer_type_listview, &QTreeWidget::itemSelectionChanged,
-            this, &ProductInsertionWidget::offerTypeSelectionChangedSlot);
+        this, &ProductInsertionWidget::offerTypeSelectionChangedSlot);
 
     connect(option_listview, &QTreeWidget::itemClicked,
-            this, &ProductInsertionWidget::clickedOptionSlot);
+        this, &ProductInsertionWidget::clickedOptionSlot);
 
     connect(offer_listview, &QTreeWidget::itemSelectionChanged,
-            this, &ProductInsertionWidget::offerSelectionChangedSlot);
+        this, &ProductInsertionWidget::offerSelectionChangedSlot);
 
     connect(option_apply_price_button, &QPushButton::clicked, this, &ProductInsertionWidget::applyOptionPriceSlot);
     connect(offer_apply_price_button, &QPushButton::clicked, this, &ProductInsertionWidget::applyOfferPriceSlot);
 
     connect(ok_button, &QPushButton::clicked, this, &ProductInsertionWidget::acceptSlot);
     connect(cancel_button, &QPushButton::clicked, this, &ProductInsertionWidget::cancelSlot);
-
 }
 
-ProductInsertionWidget::~ProductInsertionWidget(){
+ProductInsertionWidget::~ProductInsertionWidget()
+{
     clearOptions();
     clearOffers();
     delete float_kb;
@@ -327,45 +325,49 @@ ProductInsertionWidget::~ProductInsertionWidget(){
     delete num_kb_offers;
 }
 
-void ProductInsertionWidget::showEvent(QShowEvent *e){
+void ProductInsertionWidget::showEvent(QShowEvent* e)
+{
     main_stack->setCurrentWidget(progress);
     clear();
     if (mode == ProductInsertionWidget::Composed)
-        QTimer::singleShot( TIME_OUT, this, &ProductInsertionWidget::showAction);
+        QTimer::singleShot(TIME_OUT, this, &ProductInsertionWidget::showAction);
     else
         main_stack->setCurrentWidget(main);
     QWidget::showEvent(e);
 }
 
-void ProductInsertionWidget::showAction(){
+void ProductInsertionWidget::showAction()
+{
     progress_label->setText("");
     main_stack->setCurrentWidget(progress);
     getUnitaryLogos();
     main_stack->setCurrentWidget(main);
 }
 
-void ProductInsertionWidget::getLogos(){
+void ProductInsertionWidget::getLogos()
+{
     logo_view->clear();
-    for(const auto& file : QDir(ICON_PATH).entryList(QStringList("*.png"), QDir::Files, QDir::Name)){
+    for (const auto& file : QDir(ICON_PATH).entryList(QStringList("*.png"), QDir::Files, QDir::Name)) {
         auto absolute_file_path = ICON_PATH + file;
-        auto item = new QListWidgetItem(cropedIcon(absolute_file_path, ICON_SIZE),file, logo_view);
+        auto item = new QListWidgetItem(cropedIcon(absolute_file_path, ICON_SIZE), file, logo_view);
         logo_view->addItem(item);
     }
-    //set also the null logo icon
-    logo_view->addItem(new QListWidgetItem(tr("WITHOUT LOGO"),logo_view));
+    // set also the null logo icon
+    logo_view->addItem(new QListWidgetItem(tr("WITHOUT LOGO"), logo_view));
 }
 
-void ProductInsertionWidget::getUnitaryLogos(){
+void ProductInsertionWidget::getUnitaryLogos()
+{
 
     icon_view->clear();
     XmlConfig xml;
-    if(!xml.readXmlFromString(product_model->getUnitaryProducts())){
+    if (!xml.readXmlFromString(product_model->getUnitaryProducts())) {
         cerr << "Cannot convert the string into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
 
-    if(!xml.validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-        cerr << "Xml does not validate against dtd " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml.validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+        cerr << "Xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return;
     }
@@ -374,36 +376,38 @@ void ProductInsertionWidget::getUnitaryLogos(){
     xml.setDomain("products");
     auto count = xml.howManyTags("product");
     progress_bar->setValue(count);
-    for(auto  i=0; i < count; i++){
+    for (auto i = 0; i < count; i++) {
         xml.setDomain("product[" + QString::number(i) + "]");
         auto icon = ICON_PATH + xml.readString("logo");
         auto name = xml.readString("name");
-        auto item = new QListWidgetItem(cropedIcon(icon,ICON_SIZE), name, icon_view);
+        auto item = new QListWidgetItem(cropedIcon(icon, ICON_SIZE), name, icon_view);
         icon_view->addItem(item);
         emit progressSignal(i, name);
         xml.releaseDomain("product", false);
     }
-
 }
 
-void ProductInsertionWidget::setProgressSlot(int num, const QString& product){
+void ProductInsertionWidget::setProgressSlot(int num, const QString& product)
+{
     progress_bar->setValue(num);
     progress_label->setText(product);
     qApp->processEvents();
 }
 
-void ProductInsertionWidget::setMode(int _mode){
-    if ( _mode != ProductInsertionWidget::Unitary && _mode != ProductInsertionWidget::Composed ) return;
+void ProductInsertionWidget::setMode(int _mode)
+{
+    if (_mode != ProductInsertionWidget::Unitary && _mode != ProductInsertionWidget::Composed)
+        return;
 
-    mode = (ProductMode) _mode;
-    switch (mode){
-    case ProductInsertionWidget::Unitary :
-        tab->setTabEnabled(tab->indexOf(composition),false);
+    mode = (ProductMode)_mode;
+    switch (mode) {
+    case ProductInsertionWidget::Unitary:
+        tab->setTabEnabled(tab->indexOf(composition), false);
         title_label->setText(UNITARY_PRODUCT_TITLE);
         this->clearComposedTab();
         logo_button->show();
         break;
-    case ProductInsertionWidget::Composed :
+    case ProductInsertionWidget::Composed:
         tab->setTabEnabled(tab->indexOf(composition), true);
         title_label->setText(COMPOSED_PRODUCTS_TITLE);
         logo_button->hide();
@@ -412,11 +416,13 @@ void ProductInsertionWidget::setMode(int _mode){
     }
 }
 
-int ProductInsertionWidget::getMode(){
+int ProductInsertionWidget::getMode()
+{
     return mode;
 }
 
-void ProductInsertionWidget::clear(){
+void ProductInsertionWidget::clear()
+{
     logo.clear();
     product_name_lineedit->clear();
     logo_button->setIcon(QPixmap());
@@ -431,17 +437,20 @@ void ProductInsertionWidget::clear(){
     clearOffers();
 }
 
-void ProductInsertionWidget::clearMainTab(){
+void ProductInsertionWidget::clearMainTab()
+{
     float_kb->clear();
 }
 
-void ProductInsertionWidget::clearComposedTab(){
+void ProductInsertionWidget::clearComposedTab()
+{
     table->setRowCount(0);
     search_lineedit->clear();
     icon_view->clear();
 }
 
-void ProductInsertionWidget::clearOptionTab(){
+void ProductInsertionWidget::clearOptionTab()
+{
     //@benes    option_type_listview->clear();
     option_type_combobox->clear();
     //@benes        option_listview->clear();
@@ -450,7 +459,8 @@ void ProductInsertionWidget::clearOptionTab(){
     option_group_box_price->setEnabled(false);
 }
 
-void ProductInsertionWidget::clearOfferTab(){
+void ProductInsertionWidget::clearOfferTab()
+{
     offer_type_listview->clear();
     offer_type_combobox->clear();
     offer_listview->clear();
@@ -460,32 +470,32 @@ void ProductInsertionWidget::clearOfferTab(){
     offer_group_box_price->setEnabled(false);
 }
 
-void ProductInsertionWidget::getTaxesButtons(){
-    QVBoxLayout *vlayout = 0;
-    if (!(vlayout =(QVBoxLayout *) tax_group->layout()))
+void ProductInsertionWidget::getTaxesButtons()
+{
+    QVBoxLayout* vlayout = 0;
+    if (!(vlayout = (QVBoxLayout*)tax_group->layout()))
         vlayout = new QVBoxLayout(tax_group);
 
     XmlConfig xml;
-    if(!xml.readXmlFromString(product_model->getTaxes())){
+    if (!xml.readXmlFromString(product_model->getTaxes())) {
         return;
     }
-    if (!xml.validateXmlWithDTD(TAXES_DTD, true)){
-        cerr << "Xml does not validate against dtd " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml.validateXmlWithDTD(TAXES_DTD, true)) {
+        cerr << "Xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return;
     }
     xml.setDomain("taxes");
-    for(auto i=0; i< xml.howManyTags("tax"); i++){
-        auto tpm_str = xml.readString("tax["+ QString::number(i)+"]");
+    for (auto i = 0; i < xml.howManyTags("tax"); i++) {
+        auto tpm_str = xml.readString("tax[" + QString::number(i) + "]");
         auto button = new QPushButton(tpm_str, tax_group);
         button->setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
         button->setFixedHeight(60);
         button->setCheckable(true);
-        if (tpm_str == DEFAULT_TAX){
+        if (tpm_str == DEFAULT_TAX) {
             button->setPalette(QPalette(BUTTON_ON));
             button->setChecked(true);
-        }
-        else{
+        } else {
             button->setPalette(QPalette(BUTTON_OFF));
             button->setChecked(false);
         }
@@ -496,21 +506,26 @@ void ProductInsertionWidget::getTaxesButtons(){
     }
 }
 
-void ProductInsertionWidget::clearTaxesButtons(){
+void ProductInsertionWidget::clearTaxesButtons()
+{
     //@benes    while (tax_group->count())
     //@benes        tax_group->remove(tax_group->find(0));
 
-    for(auto* button : tax_button_group->buttons())
+    for (auto* button : tax_button_group->buttons())
         tax_button_group->removeButton(button);
 }
 
-void ProductInsertionWidget::taxChanged(){
-    for(auto* button : tax_button_group->buttons())
-        if(!button->isDown()) button->setPalette(QPalette(BUTTON_ON));
-        else button->setPalette(QPalette(BUTTON_OFF));
+void ProductInsertionWidget::taxChanged()
+{
+    for (auto* button : tax_button_group->buttons())
+        if (!button->isDown())
+            button->setPalette(QPalette(BUTTON_ON));
+        else
+            button->setPalette(QPalette(BUTTON_OFF));
 }
 
-QString ProductInsertionWidget::getActualTax(){
+QString ProductInsertionWidget::getActualTax()
+{
     //@benes    QString ret;
     //    QButton *button = 0;
     //    button  = tax_group->selected();
@@ -519,83 +534,98 @@ QString ProductInsertionWidget::getActualTax(){
     //    return ret;
 
     auto button = tax_button_group->checkedButton();
-    if(button) return button->objectName();
-    return QString{};
+    if (button)
+        return button->objectName();
+    return QString {};
 }
 
-void ProductInsertionWidget::numkeyChangedSlot(double num){
-    price_label->setText(QString::number(num,'f',2) + tr(" Euros"));
+void ProductInsertionWidget::numkeyChangedSlot(double num)
+{
+    price_label->setText(QString::number(num, 'f', 2) + tr(" Euros"));
 }
 
-void ProductInsertionWidget::optionNumkeyChangedSlot(double num){
-    price_label_options->setText(QString::number(num,'f',2)+ tr(" Euros"));
+void ProductInsertionWidget::optionNumkeyChangedSlot(double num)
+{
+    price_label_options->setText(QString::number(num, 'f', 2) + tr(" Euros"));
 }
 
-void ProductInsertionWidget::offerNumkeyChangedSlot(double num){
-    price_label_offers_fixed->setText(QString::number(num,'f',2)+ tr("Euros"));
+void ProductInsertionWidget::offerNumkeyChangedSlot(double num)
+{
+    price_label_offers_fixed->setText(QString::number(num, 'f', 2) + tr("Euros"));
 }
 
-void ProductInsertionWidget::offerNumkeyChangedSlot(int num){
-    price_label_offers_percent->setText(QString::number(num)+ " %");
+void ProductInsertionWidget::offerNumkeyChangedSlot(int num)
+{
+    price_label_offers_percent->setText(QString::number(num) + " %");
 }
 
-void ProductInsertionWidget::logoButtonClicked(){
+void ProductInsertionWidget::logoButtonClicked()
+{
     pop_logo->setFixedSize(300, 300);
-    auto x = frame_logo->mapToGlobal(QPoint(0,0)).x() + frame_logo->height();
-    auto y = frame_logo->mapToGlobal(QPoint(0,0)).y();
-    pop_logo->exec(QPoint(x,y));
+    auto x = frame_logo->mapToGlobal(QPoint(0, 0)).x() + frame_logo->height();
+    auto y = frame_logo->mapToGlobal(QPoint(0, 0)).y();
+    pop_logo->exec(QPoint(x, y));
 }
 
-void ProductInsertionWidget::showPopLogo(){
+void ProductInsertionWidget::showPopLogo()
+{
     tab->setEnabled(false);
 }
 
-void ProductInsertionWidget::hidePopLogo(){
+void ProductInsertionWidget::hidePopLogo()
+{
     tab->setEnabled(true);
 }
 
-void ProductInsertionWidget::logoClickedSlot(QListWidgetItem* item){
+void ProductInsertionWidget::logoClickedSlot(QListWidgetItem* item)
+{
 
     logo.clear();
-    if( item && item->text() != tr("WITHOUT LOGO"))
+    if (item && item->text() != tr("WITHOUT LOGO"))
         logo = item->text();
 
     pop_logo->hide();
-    if (logo.isEmpty()){
+    if (logo.isEmpty()) {
         logo_button->setText("Logo");
         return;
     }
 
-    logo_button->setIcon(cropedIcon(ICON_PATH + logo,ICON_BUTTON_SIZE));
+    logo_button->setIcon(cropedIcon(ICON_PATH + logo, ICON_BUTTON_SIZE));
 }
 
-void ProductInsertionWidget::searchButtonClickedSlot(){
+void ProductInsertionWidget::searchButtonClickedSlot()
+{
     QString name, code;
     selectProduct(search_lineedit->text());
 }
 
-void ProductInsertionWidget::searchEditChangedSlot(const QString &text){
+void ProductInsertionWidget::searchEditChangedSlot(const QString& text)
+{
     selectProduct(text);
 }
 
-void ProductInsertionWidget::selectProduct(const QString& product){
+void ProductInsertionWidget::selectProduct(const QString& product)
+{
 
     auto items = icon_view->findItems(product, Qt::MatchContains);
-    if(!items.isEmpty()){
+    if (!items.isEmpty()) {
         icon_view->setCurrentItem(items.first());
         items.first()->setHidden(false);
     }
 }
 
-void ProductInsertionWidget::upScrollUnitaryViewSlot(){
-    icon_view->scroll(0,-70);
+void ProductInsertionWidget::upScrollUnitaryViewSlot()
+{
+    icon_view->scroll(0, -70);
 }
 
-void ProductInsertionWidget::downScrollUnitaryViewSlot(){
-    icon_view->scroll(0,70);
+void ProductInsertionWidget::downScrollUnitaryViewSlot()
+{
+    icon_view->scroll(0, 70);
 }
 
-void ProductInsertionWidget::draggedText(int x, int y, const QString& text){
+void ProductInsertionWidget::draggedText(int x, int y, const QString& text)
+{
     auto row = table->rowCount();
     auto item = new QTableWidgetItem(text);
     table->insertRow(row);
@@ -606,90 +636,105 @@ void ProductInsertionWidget::draggedText(int x, int y, const QString& text){
     ok_button->setEnabled(checkAllValues());
 }
 
-void ProductInsertionWidget::upTableButtonClicked(){
+void ProductInsertionWidget::upTableButtonClicked()
+{
     auto row = table->currentRow();
-    if(!row)  return;
+    if (!row)
+        return;
     table->swapRows(row, row - 1); //@ does swap, must be implemented
-    for(auto col = 0; col < table->columnCount(); col++){
+    for (auto col = 0; col < table->columnCount(); col++) {
         table->update(table->model()->index(row - 1, col));
         table->update(table->model()->index(row, col));
     }
 }
 
-void ProductInsertionWidget::downTableButtonClicked(){
+void ProductInsertionWidget::downTableButtonClicked()
+{
     auto row = table->currentRow();
-    if(row == table->rowCount() - 1) return;
+    if (row == table->rowCount() - 1)
+        return;
     table->swapRows(row, row + 1); //@ does swap, must be implemented
-    for(auto col = 0; col < table->columnCount(); col++){
+    for (auto col = 0; col < table->columnCount(); col++) {
         table->update(table->model()->index(row + 1, col));
         table->update(table->model()->index(row, col));
     }
 }
 
-void ProductInsertionWidget::deleteTableButtonClicked(){
+void ProductInsertionWidget::deleteTableButtonClicked()
+{
     table->removeRow(table->currentRow());
 }
 
-bool ProductInsertionWidget::checkAllValues(){
+bool ProductInsertionWidget::checkAllValues()
+{
 
     bool ret = false;
     auto name = product_name_lineedit->text();
-    if ( mode == ProductInsertionWidget::Unitary){
-        if ( !name.isEmpty() ) ret =  true;
-    }
-    else if ( mode == ProductInsertionWidget::Composed){
-        if ( !name.isEmpty() && table->rowCount() > 1 )
+    if (mode == ProductInsertionWidget::Unitary) {
+        if (!name.isEmpty())
+            ret = true;
+    } else if (mode == ProductInsertionWidget::Composed) {
+        if (!name.isEmpty() && table->rowCount() > 1)
             ret = true;
     }
     return ret;
 }
 
-void ProductInsertionWidget::nameChangedSlot(const QString& text){
+void ProductInsertionWidget::nameChangedSlot(const QString& text)
+{
     ok_button->setEnabled(checkAllValues());
 }
 
-void ProductInsertionWidget::upOptionTypeSlot(){
+void ProductInsertionWidget::upOptionTypeSlot()
+{
     selectTreeItemUp(option_type_listview);
 }
 
-void ProductInsertionWidget::downOptionTypeSlot(){
+void ProductInsertionWidget::downOptionTypeSlot()
+{
     selectTreeItemDown(option_type_listview);
 }
 
-void ProductInsertionWidget::upOptionSlot(){
+void ProductInsertionWidget::upOptionSlot()
+{
     selectTreeItemUp(option_listview);
 }
 
-void ProductInsertionWidget::downOptionSlot(){
+void ProductInsertionWidget::downOptionSlot()
+{
     selectTreeItemDown(option_listview);
 }
 
-void ProductInsertionWidget::upOfferTypeSlot(){
+void ProductInsertionWidget::upOfferTypeSlot()
+{
     selectTreeItemUp(offer_type_listview);
 }
 
-void ProductInsertionWidget::downOfferTypeSlot(){
+void ProductInsertionWidget::downOfferTypeSlot()
+{
     selectTreeItemDown(offer_type_listview);
 }
 
-void ProductInsertionWidget::upOfferSlot(){
+void ProductInsertionWidget::upOfferSlot()
+{
     selectTreeItemUp(offer_listview);
 }
 
-void ProductInsertionWidget::downOfferSlot(){
+void ProductInsertionWidget::downOfferSlot()
+{
     selectTreeItemDown(offer_listview);
 }
 
-void ProductInsertionWidget::tabChangedSlot(int index){
+void ProductInsertionWidget::tabChangedSlot(int index)
+{
     auto w = tab->widget(index);
-    if (w == opciones){
+    if (w == opciones) {
         this->clearOptionTab();
         option_type_listview->clearSelection();
         option_listview->clearSelection();
         this->getOptionTypes();
         showOptionTypes();
-    }
-    else if (w == ofertas){
+    } else if (w == ofertas) {
         clearOfferTab();
         offer_type_listview->clearSelection();
         offer_listview->clearSelection();
@@ -698,7 +743,7 @@ void ProductInsertionWidget::tabChangedSlot(int index){
     }
 }
 
-//void NAddProductWidget::getOptionTypes(){
+// void NAddProductWidget::getOptionTypes(){
 
 //    XmlConfig xml;
 //    if(!xml.readXmlFromString(optionModel.getOptionTypes())){
@@ -721,7 +766,7 @@ void ProductInsertionWidget::tabChangedSlot(int index){
 //    option_type_combobox->addItems(option_types);
 //}
 
-//void NAddProductWidget::getOptionsFromType(const QString& type){
+// void NAddProductWidget::getOptionsFromType(const QString& type){
 
 ////@benes     option_combobox->clear(); moved below
 //    XmlConfig xml;
@@ -746,27 +791,32 @@ void ProductInsertionWidget::tabChangedSlot(int index){
 //    option_combobox->addItems(option_names);
 //}
 
-void ProductInsertionWidget::getOptionTypes(){
-    fillOptions("options","option_type","option", option_type_combobox, product_option_model.getOptionTypes());
+void ProductInsertionWidget::getOptionTypes()
+{
+    fillOptions("options", "option_type", "option", option_type_combobox, product_option_model.getOptionTypes());
 }
 
-void ProductInsertionWidget::getOptionsFromType(const QString& type){
-    fillOptions("options","option_name","option", option_combobox, product_option_model.getOptions(type));
+void ProductInsertionWidget::getOptionsFromType(const QString& type)
+{
+    fillOptions("options", "option_name", "option", option_combobox, product_option_model.getOptions(type));
 }
 
-void ProductInsertionWidget::getOfferTypes(){
-    fillOptions("offers","offer_type","offer", offer_type_combobox, ProductOfferModule().getOfferTypes());
+void ProductInsertionWidget::getOfferTypes()
+{
+    fillOptions("offers", "offer_type", "offer", offer_type_combobox, ProductOfferModule().getOfferTypes());
 }
 
-void ProductInsertionWidget::getOffersFromType(const QString& type){
-    fillOptions("offers","offer_name","offer", offer_combobox, ProductOfferModule().getOffers(type));
+void ProductInsertionWidget::getOffersFromType(const QString& type)
+{
+    fillOptions("offers", "offer_name", "offer", offer_combobox, ProductOfferModule().getOffers(type));
 }
 
-void ProductInsertionWidget::showOptionTypes(){
+void ProductInsertionWidget::showOptionTypes()
+{
     option_type_listview->clear();
     option_listview->clear();
 
-    for (const auto* op_type : *options_list ){
+    for (const auto* op_type : *options_list) {
         auto item = new QTreeWidgetItem(option_type_listview);
         item->setText(0, op_type->type);
     }
@@ -775,11 +825,12 @@ void ProductInsertionWidget::showOptionTypes(){
     float_kb_options->clear();
 }
 
-void ProductInsertionWidget::showOfferTypes(){
+void ProductInsertionWidget::showOfferTypes()
+{
     offer_type_listview->clear();
     offer_listview->clear();
 
-    for (const auto* op_type : *offers_list){
+    for (const auto* op_type : *offers_list) {
         auto item = new QTreeWidgetItem(offer_type_listview);
         item->setText(0, op_type->type);
     }
@@ -790,36 +841,44 @@ void ProductInsertionWidget::showOfferTypes(){
     num_kb_offers->clear();
 }
 
-void ProductInsertionWidget::addOptionTypeSlot(){
+void ProductInsertionWidget::addOptionTypeSlot()
+{
     auto type = option_type_combobox->currentText();
-    if (type.isEmpty()) return;
+    if (type.isEmpty())
+        return;
 
-    NOTypes *op_type = options_list->find(type);
-    if ( op_type ) return;
+    NOTypes* op_type = options_list->find(type);
+    if (op_type)
+        return;
     op_type = new NOTypes;
     op_type->type = type;
-    options_list->append(op_type,type);
+    options_list->append(op_type, type);
 
     showOptionTypes();
 }
 
-void ProductInsertionWidget::addOfferTypeSlot(){
+void ProductInsertionWidget::addOfferTypeSlot()
+{
     auto type = offer_type_combobox->currentText();
-    if (type.isEmpty()) return;
+    if (type.isEmpty())
+        return;
 
-    NOTypes *op_type = offers_list->find(type);
-    if (op_type) return;
+    NOTypes* op_type = offers_list->find(type);
+    if (op_type)
+        return;
     op_type = new NOTypes;
     op_type->type = type;
-    offers_list->append(op_type,type);
+    offers_list->append(op_type, type);
 
     showOfferTypes();
     option_listview->clear();
 }
 
-void ProductInsertionWidget::delOptionTypeSlot(){
+void ProductInsertionWidget::delOptionTypeSlot()
+{
     auto items = option_type_listview->selectedItems();
-    if (items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     auto type = items.first()->text(0);
     options_list->remove(type);
 
@@ -828,9 +887,11 @@ void ProductInsertionWidget::delOptionTypeSlot(){
     option_combobox->clear();
 }
 
-void ProductInsertionWidget::delOfferTypeSlot(){
+void ProductInsertionWidget::delOfferTypeSlot()
+{
     auto items = offer_type_listview->selectedItems();
-    if ( items.isEmpty() ) return;
+    if (items.isEmpty())
+        return;
     auto type = items.first()->text(0);
     offers_list->remove(type);
 
@@ -839,19 +900,22 @@ void ProductInsertionWidget::delOfferTypeSlot(){
     offer_combobox->clear();
 }
 
-void ProductInsertionWidget::showOptionsFromType(const QString& type){
+void ProductInsertionWidget::showOptionsFromType(const QString& type)
+{
     option_listview->clear();
-    NOTypes *no_type = options_list->find(type);
-    if ( !no_type ) return;
+    NOTypes* no_type = options_list->find(type);
+    if (!no_type)
+        return;
 
-    NOData *no_data = getDefaultFromOptionType(no_type->type);
-    if ( !no_data && no_type->list.count() ){
+    NOData* no_data = getDefaultFromOptionType(no_type->type);
+    if (!no_data && no_type->list.count()) {
         no_data = no_type->list.getFirst();
         no_data->is_default = true;
     }
 
-    for (const auto* no_data : no_type->list){
-        if (no_data->state == NOData::Deleted) continue;
+    for (const auto* no_data : no_type->list) {
+        if (no_data->state == NOData::Deleted)
+            continue;
         auto aux_double = no_data->value.toDouble();
         auto item = new QTreeWidgetItem(option_listview);
 
@@ -861,31 +925,32 @@ void ProductInsertionWidget::showOptionsFromType(const QString& type){
             item->setIcon(0, QPixmap(NO_DEFAULT_OPTION_LOGO));
 
         item->setText(1, no_data->name);
-        item->setText(2, QString::number(aux_double,'f',2));
-
+        item->setText(2, QString::number(aux_double, 'f', 2));
     }
     option_group_box_price->setEnabled(isOptionSelected());
     float_kb_options->clear();
 }
 
-void ProductInsertionWidget::showOffersFromType(const QString& type){
+void ProductInsertionWidget::showOffersFromType(const QString& type)
+{
 
     offer_listview->clear();
-    NOTypes *no_type = offers_list->find(type);
-    if (!no_type) return;
+    NOTypes* no_type = offers_list->find(type);
+    if (!no_type)
+        return;
     QString cpp = getCurrentCppOperator();
 
-    for (const auto* no_data : no_type->list){
-        if (no_data->state == NOData::Deleted) continue;
+    for (const auto* no_data : no_type->list) {
+        if (no_data->state == NOData::Deleted)
+            continue;
         auto item = new QTreeWidgetItem(offer_listview);
         item->setText(0, no_data->name);
 
-        if (cpp == "="){
+        if (cpp == "=") {
             auto aux_double = no_data->value.toDouble();
-            item->setText( 1, QString::number(aux_double,'f',2));
-        }
-        else if (cpp == "x")
-            item->setText( 1, no_data->value+ " %");
+            item->setText(1, QString::number(aux_double, 'f', 2));
+        } else if (cpp == "x")
+            item->setText(1, no_data->value + " %");
     }
 
     offer_group_box_price->setEnabled(isOfferSelected());
@@ -893,9 +958,11 @@ void ProductInsertionWidget::showOffersFromType(const QString& type){
     num_kb_offers->clear();
 }
 
-void ProductInsertionWidget::optionTypeSelectionChangedSlot(){
+void ProductInsertionWidget::optionTypeSelectionChangedSlot()
+{
     auto item = selectedItem();
-    if( !item) return;
+    if (!item)
+        return;
 
     auto type = item->text(0);
     getOptionsFromType(type);
@@ -904,9 +971,11 @@ void ProductInsertionWidget::optionTypeSelectionChangedSlot(){
     float_kb_options->clear();
 }
 
-void ProductInsertionWidget::offerTypeSelectionChangedSlot(){
+void ProductInsertionWidget::offerTypeSelectionChangedSlot()
+{
     auto item = selectedItem();
-    if( !item) return;
+    if (!item)
+        return;
 
     auto type = item->text(0);
     getOffersFromType(type);
@@ -916,27 +985,32 @@ void ProductInsertionWidget::offerTypeSelectionChangedSlot(){
     num_kb_offers->clear();
 }
 
-void ProductInsertionWidget::addOptionSlot(){
+void ProductInsertionWidget::addOptionSlot()
+{
 
     auto items = option_type_listview->selectedItems();
-    if (items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     auto item = items.first();
 
-    NOTypes *no_type = options_list->find(item->text(0));
-    if (!no_type) return;
+    NOTypes* no_type = options_list->find(item->text(0));
+    if (!no_type)
+        return;
 
     auto name = option_combobox->currentText();
-    if (name.isEmpty()) return;
+    if (name.isEmpty())
+        return;
 
-    NOData *no_data = no_type->list.find(name);
-    if (no_data) return;
+    NOData* no_data = no_type->list.find(name);
+    if (no_data)
+        return;
 
     no_data = new NOData();
     no_data->name = option_combobox->currentText();
-    no_data->value = QString::number(float_kb->value(),'f',2);
+    no_data->value = QString::number(float_kb->value(), 'f', 2);
     no_data->state = NOData::New;
     no_data->is_default = false;
-    no_type->list.append(no_data,no_data->name);
+    no_type->list.append(no_data, no_data->name);
     showOptionsFromType(no_type->type);
     //        item = option_listview->findItem(no_data->name,0);
     //        if (item){
@@ -945,56 +1019,67 @@ void ProductInsertionWidget::addOptionSlot(){
     //        }
 }
 
-void ProductInsertionWidget::delOptionSlot(){
+void ProductInsertionWidget::delOptionSlot()
+{
     auto items = option_type_listview->selectedItems();
-    if (items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     auto item = items.first();
 
-    NOTypes *no_type = options_list->find(item->text(0));
-    if (!no_type) return;
+    NOTypes* no_type = options_list->find(item->text(0));
+    if (!no_type)
+        return;
 
     items = option_listview->selectedItems();
-    if (items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     item = items.first();
 
-    NOData *no_data = no_type->list.find(item->text(1));
-    if (!no_data) return;
+    NOData* no_data = no_type->list.find(item->text(1));
+    if (!no_data)
+        return;
 
-    if ( no_data->state != NOData::New){
+    if (no_data->state != NOData::New) {
         no_data->state = NOData::Deleted;
         no_data->is_default = false;
-    }
-    else{
+    } else {
         no_data = nullptr;
         no_type->list.remove(item->text(1));
     }
     showOptionsFromType(no_type->type);
 }
 
-void ProductInsertionWidget::addOfferSlot(){
+void ProductInsertionWidget::addOfferSlot()
+{
 
     auto items = offer_type_listview->selectedItems();
-    if (items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     auto item = items.first();
 
-    NOTypes *no_type = offers_list->find(item->text(0));
-    if (!no_type)  return;
+    NOTypes* no_type = offers_list->find(item->text(0));
+    if (!no_type)
+        return;
 
     auto name = offer_combobox->currentText();
-    if (name.isEmpty()) return;
+    if (name.isEmpty())
+        return;
 
-    NOData *no_data = no_type->list.find(name);
-    if ( no_data )  return;
+    NOData* no_data = no_type->list.find(name);
+    if (no_data)
+        return;
 
     QString cpp = getCurrentCppOperator();
 
     no_data = new NOData();
     no_data->name = offer_combobox->currentText();
-    if (cpp == "=") no_data->value = "0.00";
-    else if (cpp == "x") no_data->value = "0";
+    if (cpp == "=")
+        no_data->value = "0.00";
+    else if (cpp == "x")
+        no_data->value = "0";
 
     no_data->state = NOData::New;
-    no_type->list.append(no_data,no_data->name);
+    no_type->list.append(no_data, no_data->name);
 
     showOffersFromType(no_type->type);
     //        item = offer_listview->findItem(no_data->name,0);
@@ -1004,26 +1089,30 @@ void ProductInsertionWidget::addOfferSlot(){
     //        }
 }
 
-void ProductInsertionWidget::delOfferSlot(){
+void ProductInsertionWidget::delOfferSlot()
+{
 
     auto items = offer_type_listview->selectedItems();
-    if (items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     auto item = items.first();
 
-    NOTypes *no_type = offers_list->find(item->text(0));
-    if (!no_type)  return;
+    NOTypes* no_type = offers_list->find(item->text(0));
+    if (!no_type)
+        return;
 
     items = offer_listview->selectedItems();
-    if (items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     item = items.first();
 
-    NOData *no_data = no_type->list.find(item->text(0));
-    if (!no_data) return;
+    NOData* no_data = no_type->list.find(item->text(0));
+    if (!no_data)
+        return;
 
-    if (no_data->state !=NOData::New)
+    if (no_data->state != NOData::New)
         no_data->state = NOData::Deleted;
-    else
-    {
+    else {
         no_data = 0;
         no_type->list.remove(item->text(0));
     }
@@ -1031,37 +1120,44 @@ void ProductInsertionWidget::delOfferSlot(){
     showOffersFromType(no_type->type);
 }
 
-NOData* ProductInsertionWidget::getDefaultFromOptionType(const QString& type){
-    NOTypes *no_type  =  options_list->find(type);
-    if (!no_type)  return nullptr;
+NOData* ProductInsertionWidget::getDefaultFromOptionType(const QString& type)
+{
+    NOTypes* no_type = options_list->find(type);
+    if (!no_type)
+        return nullptr;
 
-    for (auto * no_data : no_type->list)
-        if ( no_data->is_default ) return no_data;
+    for (auto* no_data : no_type->list)
+        if (no_data->is_default)
+            return no_data;
     return nullptr;
 }
 
+void ProductInsertionWidget::clickedOptionSlot(QTreeWidgetItem* item, int column)
+{
 
-void ProductInsertionWidget::clickedOptionSlot(QTreeWidgetItem * item, int column ){
-
-    if (! item)  return;
-    if (column == 0){
+    if (!item)
+        return;
+    if (column == 0) {
         auto items = option_type_listview->selectedItems();
-        if ( items.isEmpty() )  return;
+        if (items.isEmpty())
+            return;
         auto type_item = items.first();
 
-        NOTypes *no_type = options_list->find(type_item->text(0));
-        NOData *no_data = no_type->list.find(item->text(1));
+        NOTypes* no_type = options_list->find(type_item->text(0));
+        NOData* no_data = no_type->list.find(item->text(1));
 
-        if (!no_data) return;
-        if (! no_data->is_default )
-        {
-            NOData *tmp_no_data = getDefaultFromOptionType(no_type->type);
-            if (tmp_no_data){
-                if ( tmp_no_data->state == NOData::Original ) tmp_no_data->state = NOData::Modified;
+        if (!no_data)
+            return;
+        if (!no_data->is_default) {
+            NOData* tmp_no_data = getDefaultFromOptionType(no_type->type);
+            if (tmp_no_data) {
+                if (tmp_no_data->state == NOData::Original)
+                    tmp_no_data->state = NOData::Modified;
                 tmp_no_data->is_default = false;
             }
 
-            if ( no_data->state == NOData::Original) no_data->state = NOData::Modified;
+            if (no_data->state == NOData::Original)
+                no_data->state = NOData::Modified;
             no_data->is_default = true;
         }
         showOptionsFromType(no_type->type);
@@ -1071,20 +1167,21 @@ void ProductInsertionWidget::clickedOptionSlot(QTreeWidgetItem * item, int colum
     float_kb_options->clear();
 }
 
-void ProductInsertionWidget::offerSelectionChangedSlot(){
+void ProductInsertionWidget::offerSelectionChangedSlot()
+{
     auto item = selectedItem();
 
     QString cpp_operator = getCurrentCppOperator();
-    if ( !item  || cpp_operator.isEmpty() ) return;
+    if (!item || cpp_operator.isEmpty())
+        return;
 
-    if (cpp_operator == "x"){
+    if (cpp_operator == "x") {
         advertise_offer_label->setText(tr("Oferta a tipo porcentual\nintroduzca porcentaje"));
         num_kb_offers->show();
         float_kb_offers->hide();
         price_label_offers_percent->show();
         price_label_offers_fixed->hide();
-    }
-    else if (cpp_operator == "="){
+    } else if (cpp_operator == "=") {
         advertise_offer_label->setText(tr("Oferta a precio fijo\nintroduzca el precio"));
         num_kb_offers->hide();
         float_kb_offers->show();
@@ -1096,103 +1193,124 @@ void ProductInsertionWidget::offerSelectionChangedSlot(){
     num_kb_offers->clear();
 }
 
-bool ProductInsertionWidget::isOptionSelected(){
+bool ProductInsertionWidget::isOptionSelected()
+{
     return !option_type_listview->selectedItems().isEmpty() && !option_listview->selectedItems().isEmpty();
 }
 
-bool ProductInsertionWidget::isOfferSelected(){
+bool ProductInsertionWidget::isOfferSelected()
+{
 
     return !offer_type_listview->selectedItems().isEmpty() && !offer_listview->selectedItems().isEmpty();
 }
 
-void ProductInsertionWidget::clearOptions(){
-    for( auto* item : *options_list)
+void ProductInsertionWidget::clearOptions()
+{
+    for (auto* item : *options_list)
         delete item;
     options_list->clear();
 }
 
- void ProductInsertionWidget::clearOffers(){
-     for( auto* item : *offers_list)
-         delete item;
-     offers_list->clear();
- }
+void ProductInsertionWidget::clearOffers()
+{
+    for (auto* item : *offers_list)
+        delete item;
+    offers_list->clear();
+}
 
-void ProductInsertionWidget::applyOptionPriceSlot(){
+void ProductInsertionWidget::applyOptionPriceSlot()
+{
 
-    if( !isOptionSelected() ) return;
+    if (!isOptionSelected())
+        return;
 
-    NOTypes *no_type = options_list->find( option_type_listview->selectedItems().first()->text(0) );
-    if (!no_type) return;
+    NOTypes* no_type = options_list->find(option_type_listview->selectedItems().first()->text(0));
+    if (!no_type)
+        return;
 
-    NOData *no_data = no_type->list.find( option_listview->selectedItems().first()->text(1));
-    if (!no_data) return;
+    NOData* no_data = no_type->list.find(option_listview->selectedItems().first()->text(1));
+    if (!no_data)
+        return;
 
     if (no_data->state == NOData::Original)
         no_data->state = NOData::Modified;
-    no_data->value = QString::number(float_kb_options->value(),'f',2);
+    no_data->value = QString::number(float_kb_options->value(), 'f', 2);
     showOptionsFromType(no_type->type);
 }
 
-void ProductInsertionWidget::applyOfferPriceSlot(){
+void ProductInsertionWidget::applyOfferPriceSlot()
+{
 
     QString cpp_operator;
-    if( !isOfferSelected() ) return;
+    if (!isOfferSelected())
+        return;
 
-    NOTypes *no_type = offers_list->find(offer_type_listview->selectedItems().first()->text(0));
-    if (!no_type) return;
+    NOTypes* no_type = offers_list->find(offer_type_listview->selectedItems().first()->text(0));
+    if (!no_type)
+        return;
 
-    NOData *no_data = no_type->list.find(offer_listview->selectedItems().first()->text(0));
-    if (!no_data)  return;
+    NOData* no_data = no_type->list.find(offer_listview->selectedItems().first()->text(0));
+    if (!no_data)
+        return;
 
-    if (no_data->state == NOData::Original) no_data->state = NOData::Modified;
+    if (no_data->state == NOData::Original)
+        no_data->state = NOData::Modified;
     cpp_operator = getCurrentCppOperator();
 
-    if (cpp_operator == "x")  no_data->value = QString::number(num_kb_offers->value());
-    else if (cpp_operator == "=") no_data->value = QString::number(float_kb_offers->value(),'f', 2);
+    if (cpp_operator == "x")
+        no_data->value = QString::number(num_kb_offers->value());
+    else if (cpp_operator == "=")
+        no_data->value = QString::number(float_kb_offers->value(), 'f', 2);
     showOffersFromType(no_type->type);
 }
 
-QString ProductInsertionWidget::getCurrentCppOperator(){
+QString ProductInsertionWidget::getCurrentCppOperator()
+{
 
     auto items = offer_type_listview->selectedItems();
-    if ( items.isEmpty())
-        return QString{};
+    if (items.isEmpty())
+        return QString {};
     auto type_item = items.first();
 
-    NOTypes *no_type = offers_list->find(type_item->text(0));
-    if (!no_type) return QString{};
+    NOTypes* no_type = offers_list->find(type_item->text(0));
+    if (!no_type)
+        return QString {};
 
     return ProductOfferModule().getCppOperator(no_type->type);
 }
 
-void ProductInsertionWidget::save(){
-    if ( !saveProduct() ) return;
-    if (!saveProductComposition()) return;
+void ProductInsertionWidget::save()
+{
+    if (!saveProduct())
+        return;
+    if (!saveProductComposition())
+        return;
     saveOptions();
     saveOffers();
-    product_model->setProductAtPrinter( product_name_lineedit->text(), "kitchen", kitchen_checkbox_button->isChecked());
+    product_model->setProductAtPrinter(product_name_lineedit->text(), "kitchen", kitchen_checkbox_button->isChecked());
 }
 
-bool ProductInsertionWidget::saveProduct(){
+bool ProductInsertionWidget::saveProduct()
+{
 
     auto product_code = getCurrentProductCode();
-    if (product_code.isEmpty()){
+    if (product_code.isEmpty()) {
         QString text = tr("There is no product code. Maybe you have not entered the name\n or the composition of the product");
         QMessageBox::information(this, tr("Can't insert product"), text, QMessageBox::Ok);
         return false;
     }
 
     QString p_name = product_model->getProductName(product_code);
-    if ( !p_name.isEmpty() ){
-        //the product exists
-        if ( !mode ){
+    if (!p_name.isEmpty()) {
+        // the product exists
+        if (!mode) {
             auto text = tr("This product cannot be stored due to existing \n unitary product called : %1 with the same product code.\n Try to change the name").arg(p_name);
             QMessageBox::information(this, tr("Can't save product"), text, QMessageBox::Ok);
             return false;
-        }
-        else{
+        } else {
             auto msg = tr("There is already a product with this composition with the name : %1\n Do you want to update the product : %2 ?").arg(p_name).arg(p_name);
-            if( QMessageBox::question( this, tr("Update product"), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No ) return false;
+            if (QMessageBox::question(this, tr("Update product"), msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+                return false;
             product_model->deleteProduct(product_code);
         }
     }
@@ -1201,40 +1319,41 @@ bool ProductInsertionWidget::saveProduct(){
     xml.createElementSetDomain("products");
     xml.createElementSetDomain("product");
     xml.createElement("code", product_code);
-    xml.createElement("name",product_name_lineedit->text());
-    xml.createElement("price", QString::number(float_kb->value(),'f',2));
+    xml.createElement("name", product_name_lineedit->text());
+    xml.createElement("price", QString::number(float_kb->value(), 'f', 2));
     xml.createElement("tax", getActualTax());
     xml.createElement("logo", logo);
     if (!mode)
-        xml.createElement("description", product_name_lineedit->text()+"_unitary_product");
+        xml.createElement("description", product_name_lineedit->text() + "_unitary_product");
     else
-        xml.createElement("description", product_name_lineedit->text()+"_composed_product");
+        xml.createElement("description", product_name_lineedit->text() + "_composed_product");
     xml.releaseDomain("products");
 
     return product_model->insertProduct(xml.toString());
 }
 
-bool ProductInsertionWidget::saveProductComposition(){
+bool ProductInsertionWidget::saveProductComposition()
+{
 
     auto product_code = getCurrentProductCode();
-    if (product_code.isEmpty()) return false;
+    if (product_code.isEmpty())
+        return false;
 
     XmlConfig xml;
     xml.createElementSetDomain("composition");
     xml.createElement("composition_code", product_code);
-    if ( !mode ){ //unitary
+    if (!mode) { // unitary
         xml.createElementSetDomain("ingredient");
         xml.createElement("ingredient_code", product_code);
         xml.createElement("quantity", "1.0");
         xml.releaseDomain("composition");
-    }
-    else{  //composed
-        for ( auto i=0; i< table->rowCount(); i++) {
-            auto p_name = table->item(i,0)->text();
-            auto p_quantity = table->item(i,1)->text();
+    } else { // composed
+        for (auto i = 0; i < table->rowCount(); i++) {
+            auto p_name = table->item(i, 0)->text();
+            auto p_quantity = table->item(i, 1)->text();
             auto p_code = product_model->getProductCodeByProductName(p_name);
             xml.createElementSetDomain("ingredient");
-            xml.createElement("ingredient_code",p_code);
+            xml.createElement("ingredient_code", p_code);
             xml.createElement("quantity", p_quantity);
             xml.releaseDomain("ingredient");
         }
@@ -1244,57 +1363,59 @@ bool ProductInsertionWidget::saveProductComposition(){
     return product_model->insertProductComposition(xml.toString());
 }
 
-bool ProductInsertionWidget::saveOptions(){
-    double aux_value=0.0;
-    bool ret=true;
+bool ProductInsertionWidget::saveOptions()
+{
+    double aux_value = 0.0;
+    bool ret = true;
 
     auto product_code = getCurrentProductCode();
-    if (product_code.isEmpty())  return false;
+    if (product_code.isEmpty())
+        return false;
     ProductOptionModule option_module;
 
-    for (auto* no_type : *options_list){
-        for (const auto* no_data : no_type->list){
-            switch (no_data->state){
+    for (auto* no_type : *options_list) {
+        for (const auto* no_data : no_type->list) {
+            switch (no_data->state) {
             case NOData::Original:
-                if (!mode) continue;
+                if (!mode)
+                    continue;
                 break;
-            case NOData::New :
-            {
+            case NOData::New: {
                 XmlConfig xml;
                 xml.createElement("product_code", product_code);
                 xml.createElementSetDomain("options.option");
                 xml.createElement("option_type", no_type->type);
-                xml.createElement("description_type", no_type->type+"_option_type");
+                xml.createElement("description_type", no_type->type + "_option_type");
                 xml.createElement("option_name", no_data->name);
-                xml.createElement("description_option", no_data->name+"option");
-                aux_value = (double) ((no_data->value).toDouble() -  float_kb->value());
-                xml.createElement("value", QString::number(aux_value,'f',2));
+                xml.createElement("description_option", no_data->name + "option");
+                aux_value = (double)((no_data->value).toDouble() - float_kb->value());
+                xml.createElement("value", QString::number(aux_value, 'f', 2));
 
-                if(no_data->is_default) xml.createElement("default", "t");
-                else xml.createElement("default", "f");
+                if (no_data->is_default)
+                    xml.createElement("default", "t");
+                else
+                    xml.createElement("default", "f");
                 xml.releaseDomain("options");
                 auto xml_string = xml.toString();
-                if (!option_module.insertOptionsToProduct(xml_string))
-                {
-                    cerr << "Failed while trying to save new option "<< no_type->type.toStdString() << " " << no_data->name.toStdString() << endl;
+                if (!option_module.insertOptionsToProduct(xml_string)) {
+                    cerr << "Failed while trying to save new option " << no_type->type.toStdString() << " " << no_data->name.toStdString() << endl;
                     ret = false;
                 }
             }
 
-                break;
-            case NOData::Modified :
-            {
+            break;
+            case NOData::Modified: {
                 XmlConfig xml;
                 xml.createElement("product_code", product_code);
                 xml.createElementSetDomain("options.option");
                 xml.createElement("option_type", no_type->type);
-                xml.createElement("description_type", no_type->type+"_option_type");
+                xml.createElement("description_type", no_type->type + "_option_type");
                 xml.createElement("option_name", no_data->name);
-                xml.createElement("description_option", no_data->name+"option");
-                aux_value = (double) ((no_data->value).toDouble() -  float_kb->value());
-                xml.createElement("value", QString::number(aux_value,'f',2));
+                xml.createElement("description_option", no_data->name + "option");
+                aux_value = (double)((no_data->value).toDouble() - float_kb->value());
+                xml.createElement("value", QString::number(aux_value, 'f', 2));
 
-                if(no_data->is_default)
+                if (no_data->is_default)
                     xml.createElement("default", "t");
                 else
                     xml.createElement("default", "f");
@@ -1302,16 +1423,16 @@ bool ProductInsertionWidget::saveOptions(){
                 auto xml_string = xml.toString();
                 xml.debug();
 
-                if ( !option_module.updateOptionsToProduct(xml_string)){
-                    cerr << "Failed while trying to update the option "  << no_type->type.toStdString() << " " << no_data->name.toStdString() << endl;
+                if (!option_module.updateOptionsToProduct(xml_string)) {
+                    cerr << "Failed while trying to update the option " << no_type->type.toStdString() << " " << no_data->name.toStdString() << endl;
                     ret = false;
                 }
             }
 
-                break;
+            break;
             case NOData::Deleted:
-                if ( !option_module.deleteOptionsToProduct(product_code,no_type->type,no_data->name) ){
-                    cerr << "fail while trying to del the option " << no_type->type .toStdString() << " " << no_data->name.toStdString() << endl;
+                if (!option_module.deleteOptionsToProduct(product_code, no_type->type, no_data->name)) {
+                    cerr << "fail while trying to del the option " << no_type->type.toStdString() << " " << no_data->name.toStdString() << endl;
                     ret = false;
                 }
                 break;
@@ -1321,28 +1442,53 @@ bool ProductInsertionWidget::saveOptions(){
     return ret;
 }
 
-bool ProductInsertionWidget::saveOffers(){
-    double aux_value=0.0;
-    bool ret=true;
+bool ProductInsertionWidget::saveOffers()
+{
+    double aux_value = 0.0;
+    bool ret = true;
     int types_count;
     QString aux_cpp;
 
     QString xml_string;
 
-
     auto product_code = getCurrentProductCode();
-    if (product_code.isEmpty())  return false;
+    if (product_code.isEmpty())
+        return false;
     ProductOfferModule offer_module;
 
-    for (auto *no_type : *offers_list){
-        for (const auto* no_data : no_type->list){
-            switch (no_data->state){
+    for (auto* no_type : *offers_list) {
+        for (const auto* no_data : no_type->list) {
+            switch (no_data->state) {
             case NOData::Original:
-                if (!mode) continue;
+                if (!mode)
+                    continue;
+                break;
+
+            case NOData::New: {
+                XmlConfig xml;
+                xml.createElement("product_code", product_code);
+                xml.createElementSetDomain("offers.offer");
+                xml.createElement("offer_type", no_type->type);
+                xml.createElement("offer_name", no_data->name);
+                auto aux_cpp = offer_module.getCppOperator(no_type->type);
+
+                if (aux_cpp == "x") {
+                    auto aux_value = (double)(no_data->value).toDouble() / 100;
+                    xml.createElement("value", QString::number(aux_value, 'f', 2));
+                } else if (aux_cpp == "=")
+                    xml.createElement("value", no_data->value);
+
+                xml.releaseDomain("offers");
+                auto xml_string = xml.toString();
+                if (!offer_module.insertOffersToProduct(xml_string)) {
+                    cerr << "fail while trying to save the offer " << (no_type->type).toStdString() << " " << (no_data->name).toStdString() << endl;
+                    ret = false;
+                }
+            }
+
             break;
 
-            case NOData::New:
-            {
+            case NOData::Modified: {
                 XmlConfig xml;
                 xml.createElement("product_code", product_code);
                 xml.createElementSetDomain("offers.offer");
@@ -1350,53 +1496,26 @@ bool ProductInsertionWidget::saveOffers(){
                 xml.createElement("offer_name", no_data->name);
                 auto aux_cpp = offer_module.getCppOperator(no_type->type);
 
-                if (aux_cpp == "x"){
-                    auto aux_value = (double) (no_data->value).toDouble() / 100;
-                    xml.createElement("value", QString::number(aux_value,'f', 2));
-                }
-                else if (aux_cpp == "=")
-                    xml.createElement("value", no_data->value);
-
-                xml.releaseDomain("offers");
-                auto xml_string = xml.toString();
-                if (!offer_module.insertOffersToProduct(xml_string)){
-                    cerr << "fail while trying to save the offer "  <<(no_type->type).toStdString()<< " "<<(no_data->name).toStdString()<< endl;
-                    ret = false;
-                }
-            }
-
-                break;
-
-            case NOData::Modified:
-            {
-                XmlConfig xml;
-                xml.createElement("product_code", product_code);
-                xml.createElementSetDomain("offers.offer");
-                xml.createElement("offer_type", no_type->type);
-                xml.createElement("offer_name", no_data->name);
-                auto aux_cpp = offer_module.getCppOperator(no_type->type);
-
-                if (aux_cpp == "x"){
-                    auto aux_value = (double) (no_data->value).toDouble() / 100;
-                    xml.createElement("value", QString::number(aux_value,'f',2));
-                }
-                else if (aux_cpp == "=")
+                if (aux_cpp == "x") {
+                    auto aux_value = (double)(no_data->value).toDouble() / 100;
+                    xml.createElement("value", QString::number(aux_value, 'f', 2));
+                } else if (aux_cpp == "=")
                     xml.createElement("value", no_data->value);
 
                 xml.releaseDomain("offers");
                 auto xml_string = xml.toString();
 
-                if (!offer_module.updateOffersToProduct(xml_string)){
-                    cerr << "fail while trying to update the offer "  <<(no_type->type).toStdString()<< " "<<(no_data->name).toStdString()<< endl;
+                if (!offer_module.updateOffersToProduct(xml_string)) {
+                    cerr << "fail while trying to update the offer " << (no_type->type).toStdString() << " " << (no_data->name).toStdString() << endl;
                     ret = false;
                 }
             }
 
-                break;
+            break;
 
             case NOData::Deleted:
-                if ( !offer_module.deleteOffersToProduct(product_code,no_type->type, no_data->name) ){
-                    cerr << "Failed while trying to del the offer "  << no_type->type.toStdString() << " " << no_data->name.toStdString() << endl;
+                if (!offer_module.deleteOffersToProduct(product_code, no_type->type, no_data->name)) {
+                    cerr << "Failed while trying to del the offer " << no_type->type.toStdString() << " " << no_data->name.toStdString() << endl;
                     ret = false;
                 }
                 break;
@@ -1406,27 +1525,29 @@ bool ProductInsertionWidget::saveOffers(){
     return ret;
 }
 
-QString ProductInsertionWidget::getCurrentProductCode(){
+QString ProductInsertionWidget::getCurrentProductCode()
+{
 
     QString product_name;
     QString product_code;
     QStringList product_codes;
-    if (mode == ProductInsertionWidget::Unitary){
+    if (mode == ProductInsertionWidget::Unitary) {
         product_name = product_name_lineedit->text();
         product_code = product_model->getProductCodeByProductName(product_name);
-        if (product_code.isEmpty()){    //create new product_code
+        if (product_code.isEmpty()) { // create new product_code
             product_code = product_name_lineedit->text();
             product_code = product_code.toLower().simplified().replace(" ", "_");
         }
-    }
-    else if (mode == ProductInsertionWidget::Composed){
+    } else if (mode == ProductInsertionWidget::Composed) {
         auto count = table->rowCount();
-        if ( count <= 1) return product_code;
-        for (auto i=0; i < count; i++ ){
-            product_name = table->item(i,0)->text();
+        if (count <= 1)
+            return product_code;
+        for (auto i = 0; i < count; i++) {
+            product_name = table->item(i, 0)->text();
             product_code = product_model->getProductCodeByProductName(product_name);
 
-            if ( product_code.isEmpty() ) return QString{};
+            if (product_code.isEmpty())
+                return QString {};
             product_codes << product_code;
         }
 
@@ -1436,13 +1557,15 @@ QString ProductInsertionWidget::getCurrentProductCode(){
     return product_code;
 }
 
-void ProductInsertionWidget::timerSlot(){
+void ProductInsertionWidget::timerSlot()
+{
     aux_counter++;
     progress_bar->setValue(aux_counter);
     qApp->processEvents();
 }
 
-void ProductInsertionWidget::acceptSlot(){
+void ProductInsertionWidget::acceptSlot()
+{
     main_stack->setCurrentWidget(progress);
     progress_title_label->setText(tr("guardando el producto"));
     progress_label->setText(product_name_lineedit->text());
@@ -1464,7 +1587,8 @@ void ProductInsertionWidget::acceptSlot(){
     emit acceptSignal();
 }
 
-void ProductInsertionWidget::cancelSlot(){
+void ProductInsertionWidget::cancelSlot()
+{
     clear();
     if (mode == ProductInsertionWidget::Composed)
         QTimer::singleShot(TIME_OUT, this, &ProductInsertionWidget::showAction);
@@ -1474,17 +1598,17 @@ void ProductInsertionWidget::cancelSlot(){
 }
 
 void ProductInsertionWidget::fillOptions(
-        const QString& domain,  const QString& sub_domain,
-        const QString& tag, QComboBox* cbx, const QString& data)
+    const QString& domain, const QString& sub_domain,
+    const QString& tag, QComboBox* cbx, const QString& data)
 {
     XmlConfig xml;
-    if(!xml.readXmlFromString(data)){
-        cerr << "Can not convert the string into xml " << __PRETTY_FUNCTION__ << ": " <<__LINE__ << endl;
+    if (!xml.readXmlFromString(data)) {
+        cerr << "Can not convert the string into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
 
-    if(!xml.validateXmlWithDTD(OPTIONS_LIST_DTD, true)){
-        cerr << "Xml does not validate against dtd " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml.validateXmlWithDTD(OPTIONS_LIST_DTD, true)) {
+        cerr << "Xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return;
     }
@@ -1493,16 +1617,17 @@ void ProductInsertionWidget::fillOptions(
     QStringList option_types;
     auto left = tag + "[";
     auto right = "]." + sub_domain;
-    for(auto i = 0; i < xml.howManyTags(tag); i++)
-        option_types << xml.readString( left + QString::number(i) + right);
+    for (auto i = 0; i < xml.howManyTags(tag); i++)
+        option_types << xml.readString(left + QString::number(i) + right);
 
     cbx->clear();
     cbx->addItems(option_types);
 }
-QTreeWidgetItem* ProductInsertionWidget::selectedItem() const{
+QTreeWidgetItem* ProductInsertionWidget::selectedItem() const
+{
     auto source = qobject_cast<QTreeWidget*>(sender());
 
-    if( !source || source->selectedItems().isEmpty()) return nullptr;
+    if (!source || source->selectedItems().isEmpty())
+        return nullptr;
     return source->selectedItems().first();
-
 }

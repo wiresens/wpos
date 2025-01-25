@@ -28,9 +28,9 @@ class QMenu;
 class QString;
 class QListWidgetItem;
 
-struct NOData{
+struct NOData {
 
-    enum State{
+    enum State {
         Original = 0,
         New = 1,
         Modified = 2,
@@ -38,8 +38,8 @@ struct NOData{
     };
 
     QString name;
-    QString value{"0.0"};
-    bool is_default{false};
+    QString value { "0.0" };
+    bool is_default { false };
     State state;
 };
 
@@ -48,34 +48,33 @@ struct NOTypes {
     HList<NOData> list;
 };
 
-class ProductInsertionWidget :
-        public QWidget,
-        protected Ui::ProductInsertionWidgetBase  {
+class ProductInsertionWidget : public QWidget,
+                               protected Ui::ProductInsertionWidgetBase {
     Q_OBJECT
 
 public:
-    enum ProductMode{
+    enum ProductMode {
         Unitary = 0,
-        Composed =1
+        Composed = 1
     };
 
-    enum OfferColumn{
-
-    };
-
-    enum OfferTypeColumn{
+    enum OfferColumn {
 
     };
 
-    enum OptionColumn{
+    enum OfferTypeColumn {
 
     };
 
-    enum OptionTypeColumn{
+    enum OptionColumn {
 
     };
 
-    explicit ProductInsertionWidget(ProductModule *product_module ,int mode=0, QWidget *parent=0, const QString &name=QString{});
+    enum OptionTypeColumn {
+
+    };
+
+    explicit ProductInsertionWidget(ProductModule* product_module, int mode = 0, QWidget* parent = 0, const QString& name = QString {});
     ~ProductInsertionWidget();
 
     virtual int getMode();
@@ -93,21 +92,21 @@ public slots:
     void clearTaxesButtons();
     void taxChanged();
 
-    //numkeys
+    // numkeys
     virtual void numkeyChangedSlot(double);
     void optionNumkeyChangedSlot(double);
     void offerNumkeyChangedSlot(double);
     void offerNumkeyChangedSlot(int);
 
-    //main tab section slots
+    // main tab section slots
     void logoButtonClicked();
     void showPopLogo();
     void hidePopLogo();
     void logoClickedSlot(QListWidgetItem* item);
 
-    //composed tab section slots
+    // composed tab section slots
     void searchButtonClickedSlot();
-    void searchEditChangedSlot(const QString &text);
+    void searchEditChangedSlot(const QString& text);
     void upScrollUnitaryViewSlot();
     void downScrollUnitaryViewSlot();
     void draggedText(int x, int y, const QString& text);
@@ -137,7 +136,7 @@ public slots:
     void optionTypeSelectionChangedSlot();
     void offerTypeSelectionChangedSlot();
 
-    void clickedOptionSlot(QTreeWidgetItem * item, int column );
+    void clickedOptionSlot(QTreeWidgetItem* item, int column);
     void offerSelectionChangedSlot();
 
     void applyOptionPriceSlot();
@@ -161,18 +160,18 @@ protected slots:
     void timerSlot();
 
 protected:
-    virtual void showEvent(QShowEvent *e);
+    virtual void showEvent(QShowEvent* e);
 
     void getLogos();
     void getUnitaryLogos();
 
-    //methods to fill the comboboxes
+    // methods to fill the comboboxes
     void getOptionTypes();
     void getOfferTypes();
     void getOptionsFromType(const QString& type);
     void getOffersFromType(const QString& type);
 
-    //method to show the lists at the listviews
+    // method to show the lists at the listviews
     void showOptionTypes();
     void showOfferTypes();
     void showOptionsFromType(const QString& type);
@@ -198,28 +197,29 @@ protected:
 private:
     void fillOptions(const QString& domain, const QString& sub_domain, const QString& tag, QComboBox* cbx, const QString& data);
     QTreeWidgetItem* selectedItem() const;
+
 protected:
     ProductOptionModule product_option_model;
-    ProductModule *product_model{};
-    FloatKeyboard *float_kb{};
-    QButtonGroup *tax_button_group;
-    BslDDTable *table{};
-    HList<NOTypes> *options_list{};
-    HList<NOTypes> *offers_list{};
+    ProductModule* product_model {};
+    FloatKeyboard* float_kb {};
+    QButtonGroup* tax_button_group;
+    BslDDTable* table {};
+    HList<NOTypes>* options_list {};
+    HList<NOTypes>* offers_list {};
 
     QString logo;
     int aux_counter;
-    ProductMode mode{Unitary};
+    ProductMode mode { Unitary };
 
 private:
-    FloatKeyboard *float_kb_options{};
-    FloatKeyboard *float_kb_offers{};
-    NumKeyboard *num_kb_offers{};
-    BslDDIconView *logo_view{};
-    BslDDIconView *icon_view{};
+    FloatKeyboard* float_kb_options {};
+    FloatKeyboard* float_kb_offers {};
+    NumKeyboard* num_kb_offers {};
+    BslDDIconView* logo_view {};
+    BslDDIconView* icon_view {};
 
-    QMenu *pop_logo{};
-    QTimer *timer{};
+    QMenu* pop_logo {};
+    QTimer* timer {};
 };
 
 #endif

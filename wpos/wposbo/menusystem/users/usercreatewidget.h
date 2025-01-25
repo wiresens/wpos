@@ -18,17 +18,16 @@
 class QString;
 class FX2000EnrollWidget;
 
-class UserCreationWidget : public UserEditionWidget  {
+class UserCreationWidget : public UserEditionWidget {
     Q_OBJECT
 public:
-
-    enum State{
+    enum State {
         Creation = 1,
         Enrollment = 2,
         AccesControl = 3
     };
 
-    explicit UserCreationWidget(UserModule *_user_mod, QWidget *parent=0, const QString& name=QString{});
+    explicit UserCreationWidget(UserModule* _user_mod, QWidget* parent = 0, const QString& name = QString {});
 
 protected slots:
     virtual void apply() override;
@@ -45,7 +44,7 @@ protected:
     virtual bool setReturnApplication();
 
 private:
-    State state{Creation}; //1 for data, 2 to acquire fingerprint, 3 to ACL
+    State state { Creation }; // 1 for data, 2 to acquire fingerprint, 3 to ACL
 };
 
-#endif  // USER_CREATION_WIDGET_H
+#endif // USER_CREATION_WIDGET_H

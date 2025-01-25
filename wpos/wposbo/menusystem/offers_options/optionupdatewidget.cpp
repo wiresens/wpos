@@ -16,25 +16,25 @@
  ***************************************************************************/
 
 #include "optionupdatewidget.h"
-//#include "optionupdatewidget_adapter.h"
+// #include "optionupdatewidget_adapter.h"
 
 #include "productsmodule/optionsmodule/productoptionmodule.h"
-#include <wposgui/keyboard/floatkeyboard.h>
 #include <libbslxml/xmlconfig.h>
+#include <wposgui/keyboard/floatkeyboard.h>
 
-#include <QtDBus/QDBusConnection>
 #include <QMessageBox>
+#include <QtDBus/QDBusConnection>
 
 static const QString& NUPDATE_ADVERTISE_TEXT = QObject::tr("If you want to apply the option to all products, click apply.\nWarnning: if you add a value to this option, all the products \n will add to their original price, the entered value.\nIf you want to set a value for each product, go to the products section.");
 
-const QString OptionUpdateWidget::DBusObjectPath  = QString{"/wpos/wposbo/OptionUpdateModel"};
+const QString OptionUpdateWidget::DBusObjectPath = QString { "/wpos/wposbo/OptionUpdateModel" };
 
-OptionUpdateWidget::OptionUpdateWidget(QWidget *parent, const QString& name ) :
-    OptionEditionWidget(parent, name)
+OptionUpdateWidget::OptionUpdateWidget(QWidget* parent, const QString& name)
+    : OptionEditionWidget(parent, name)
 {
-//    new OptionUpdateModelAdaptor(this);
-//    QDBusConnection dbus = QDBusConnection::sessionBus();
-//    dbus.registerObject(OptionUpdateWidget::DBusObjectPath, this);
+    //    new OptionUpdateModelAdaptor(this);
+    //    QDBusConnection dbus = QDBusConnection::sessionBus();
+    //    dbus.registerObject(OptionUpdateWidget::DBusObjectPath, this);
 
     title_label->setText(tr("Modify Prices in Options"));
     option_lineedit->hide();
@@ -43,33 +43,37 @@ OptionUpdateWidget::OptionUpdateWidget(QWidget *parent, const QString& name ) :
     type_lineedit->hide();
     del_type_button->hide();
 
-    //unique
+    // unique
     group_box->setCheckable(false);
     advertise_label->setText(NUPDATE_ADVERTISE_TEXT);
     box_button->setText(tr("Insert Option\n in all\nproducts"));
 
-    connect(option_listview, &QTreeWidget::itemSelectionChanged, this, &OptionUpdateWidget::optionClickedSlot); //idem
-    connect(box_button,  &QPushButton::clicked, this, &OptionUpdateWidget::applyToAllProductsSlot);
+    connect(option_listview, &QTreeWidget::itemSelectionChanged, this, &OptionUpdateWidget::optionClickedSlot); // idem
+    connect(box_button, &QPushButton::clicked, this, &OptionUpdateWidget::applyToAllProductsSlot);
 }
 
-void OptionUpdateWidget::optionClickedSlot(){
+void OptionUpdateWidget::optionClickedSlot()
+{
     group_box->setEnabled(checkAllValues());
     ok_button->setEnabled(checkAllValues());
 }
 
-void OptionUpdateWidget::getTypes(){
+void OptionUpdateWidget::getTypes()
+{
     OptionEditionWidget::getTypes();
     ok_button->setEnabled(checkAllValues());
     group_box->setEnabled(checkAllValues());
 }
 
-void OptionUpdateWidget::getOptionTypes(const QString& type){
+void OptionUpdateWidget::getOptionTypes(const QString& type)
+{
     OptionEditionWidget::getOptionTypes(type);
     ok_button->setEnabled(checkAllValues());
     group_box->setEnabled(checkAllValues());
 }
 
-void OptionUpdateWidget::showEvent(QShowEvent *e){
+void OptionUpdateWidget::showEvent(QShowEvent* e)
+{
     clear();
     getTypes();
     group_box->setEnabled(checkAllValues());
@@ -77,53 +81,66 @@ void OptionUpdateWidget::showEvent(QShowEvent *e){
     QWidget::showEvent(e);
 }
 
-void OptionUpdateWidget::acceptSlot(){
-    if (!checkAllValues()) return;
+void OptionUpdateWidget::acceptSlot()
+{
+    if (!checkAllValues())
+        return;
     auto option = option_listview->selectedItems().first()->text(0);
     auto type = type_listview->selectedItems().first()->text(0);
 
     double mul = 1.0;
-    if ( !plus_button->isDown() )  mul = 1.0;
-    else if ( !minus_button->isDown()) mul = -1.0;
+    if (!plus_button->isDown())
+        mul = 1.0;
+    else if (!minus_button->isDown())
+        mul = -1.0;
     auto value = mul * float_kb->value();
 
     auto title = tr("Aplicar nuevo precio a opcion");
-    auto msg = tr("Se va a proceder a la actualizacion de todos los productos\n que posean la opcion %1 - %2 Estos productos pasaran a valer: %3").arg(type).arg(option).arg(QString::number(value,'f', 2));
-    if ( value > 0) msg += tr(" mas", "suma");
-    msg += tr("sobre su valor, cuando se pulse esa opcion\n\n\Esta seguro de querer aplicar el cambio ?","Actualizacion de precios de productos");
+    auto msg = tr("Se va a proceder a la actualizacion de todos los productos\n que posean la opcion %1 - %2 Estos productos pasaran a valer: %3").arg(type).arg(option).arg(QString::number(value, 'f', 2));
+    if (value > 0)
+        msg += tr(" mas", "suma");
+    msg += tr("sobre su valor, cuando se pulse esa opcion\n\n\Esta seguro de querer aplicar el cambio ?", "Actualizacion de precios de productos");
 
-    if( QMessageBox::question( this, title, msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No ) return;
+    if (QMessageBox::question(this, title, msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+        return;
     mod.updateAllProductOptionValue(type, option, QString::number(value, 'f', 2));
     clear();
     getTypes();
 }
 
-void OptionUpdateWidget::applyToAllProductsSlot(){
+void OptionUpdateWidget::applyToAllProductsSlot()
+{
 
-    if (!checkAllValues()) return;
+    if (!checkAllValues())
+        return;
     auto option = option_listview->selectedItems().first()->text(0);
     auto type = type_listview->selectedItems().first()->text(0);
 
     double mul = 1.0;
-    if ( !plus_button->isDown())  mul = 1.0;
-    else if ( !minus_button->isDown()) mul = -1.0;
+    if (!plus_button->isDown())
+        mul = 1.0;
+    else if (!minus_button->isDown())
+        mul = -1.0;
     auto value = mul * float_kb->value();
     auto title = tr("Aplicar nuevo precio a opcion");
 
-    auto msg = tr("Se va a proceder a insertar la opcion : %1 - %2 \n\en todos los productos. Estos productos pasaran a valer : %3").arg(type).arg(option).arg(QString::number(value,'f',2));
-    if (value > 0) msg += tr(" mas");
+    auto msg = tr("Se va a proceder a insertar la opcion : %1 - %2 \n\en todos los productos. Estos productos pasaran a valer : %3").arg(type).arg(option).arg(QString::number(value, 'f', 2));
+    if (value > 0)
+        msg += tr(" mas");
     msg += tr(" sobre su valor, cuando se pulse esa opcion\n\n\Esta seguro de querer aplicar el cambio ?");
 
-    if( QMessageBox::question( this, title, msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No ) return;
+    if (QMessageBox::question(this, title, msg, QMessageBox::Yes | QMessageBox::No) == QMessageBox::No)
+        return;
 
-    mod.setAllProductOptionValue(type, option, QString::number(value,'f',2));
+    mod.setAllProductOptionValue(type, option, QString::number(value, 'f', 2));
     clear();
     getTypes();
 }
 
-void OptionUpdateWidget::notify(){
-//    QByteArray params;
-//    QDataStream stream(params, IO_WriteOnly);
-//    kapp->dcopClient()->emitDCOPSignal("optionChanged()", params);
+void OptionUpdateWidget::notify()
+{
+    //    QByteArray params;
+    //    QDataStream stream(params, IO_WriteOnly);
+    //    kapp->dcopClient()->emitDCOPSignal("optionChanged()", params);
     emit optionChanged();
 }

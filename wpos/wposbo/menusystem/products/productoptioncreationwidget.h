@@ -17,17 +17,16 @@
 #include "productsmodule/optionsmodule/productoptionmodule.h"
 
 #include <QList>
-#include <QWidget>
 #include <QStringList>
+#include <QWidget>
 
 class FloatKeyboard;
 
-class ProductOptionCreationWidget :
-        public QWidget,
-        private Ui::ProductOptionCreationWidgetBase {
+class ProductOptionCreationWidget : public QWidget,
+                                    private Ui::ProductOptionCreationWidgetBase {
     Q_OBJECT
 public:
-    explicit ProductOptionCreationWidget(double _product_price, QWidget *parent=0, const QString& name = QString{});
+    explicit ProductOptionCreationWidget(double _product_price, QWidget* parent = 0, const QString& name = QString {});
     ~ProductOptionCreationWidget() = default;
 
     void setProductPrice(double _product_price);
@@ -49,7 +48,7 @@ protected:
     void initLogos();
 
 private:
-    FloatKeyboard *float_keyboard_option{};
+    FloatKeyboard* float_keyboard_option {};
     ProductOptionModule model;
     QList<ProductOptionData> options;
     double product_price;

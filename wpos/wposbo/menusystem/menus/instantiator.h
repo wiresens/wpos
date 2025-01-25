@@ -13,31 +13,31 @@
 #ifndef INSTANTIATOR_H
 #define INSTANTIATOR_H
 
-#include <wposcore/hlist.h>
 #include <QObject>
 #include <QWidget>
+#include <wposcore/hlist.h>
 
-//class XmlConfig;
+// class XmlConfig;
 
 class UserModule;
 class DatabaseModule;
 class ProductModule;
 
-class Instantiator : public QObject{
+class Instantiator : public QObject {
     Q_OBJECT
 public:
-    explicit Instantiator(QWidget* parent=0, const QString & name= QString{});
+    explicit Instantiator(QWidget* parent = 0, const QString& name = QString {});
     ~Instantiator() = default;
 
     bool hasMenu(const QString& menuName);
 
 public slots:
-    QWidget *getMenu(QWidget *parent, const QString& menuName); //@benes , maybe getSubMenu
+    QWidget* getMenu(QWidget* parent, const QString& menuName); //@benes , maybe getSubMenu
     void showMenu(const QString& pageName);
 
 signals:
     void showPageMenu(const QString& pageName);
-    void splashRequested(const QString& msg, int flags, const QColor &color);
+    void splashRequested(const QString& msg, int flags, const QColor& color);
 
 protected:
     void initDcopModules();
@@ -50,16 +50,16 @@ protected:
     void initReportMenu();
     void initSupportMenu();
     void initStickMenu();
-    
+
     HList<QWidget> menus;
-    QWidget *parent{};
+    QWidget* parent {};
 
-    UserModule *user_mod{};
-    DatabaseModule *db_mod{};
-    ProductModule *product_mod{};
+    UserModule* user_mod {};
+    DatabaseModule* db_mod {};
+    ProductModule* product_mod {};
 
-    Qt::Alignment splash_align   {Qt::AlignBottom | Qt::AlignRight};
-    Qt::GlobalColor splash_color {Qt::darkBlue};
+    Qt::Alignment splash_align { Qt::AlignBottom | Qt::AlignRight };
+    Qt::GlobalColor splash_color { Qt::darkBlue };
 };
 
 #endif

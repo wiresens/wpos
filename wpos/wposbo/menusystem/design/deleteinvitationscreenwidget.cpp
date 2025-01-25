@@ -13,12 +13,12 @@
 #include "deleteinvitationscreenwidget.h"
 
 #include <QLabel>
-#include <QStackedWidget>
 #include <QPushButton>
+#include <QStackedWidget>
 
 DeleteInvitationScreenWidget::DeleteInvitationScreenWidget(
-        QWidget *parent, const QString& name):
-    QMenu(parent)
+    QWidget* parent, const QString& name)
+    : QMenu(parent)
 {
     setupUi(this);
     setObjectName(name);
@@ -28,24 +28,29 @@ DeleteInvitationScreenWidget::DeleteInvitationScreenWidget(
     connect(delete_button, &QPushButton::released, this, &DeleteInvitationScreenWidget::deleteSlot);
 }
 
-void DeleteInvitationScreenWidget::setScreen(const QString& screen){
+void DeleteInvitationScreenWidget::setScreen(const QString& screen)
+{
     delete_stack->setCurrentWidget(delete_screen_page);
     screen_name_label->setText(screen);
 }
 
-void DeleteInvitationScreenWidget::showSelectScreen(){
+void DeleteInvitationScreenWidget::showSelectScreen()
+{
     delete_stack->setCurrentWidget(select_screen_page);
 }
 
-void DeleteInvitationScreenWidget::acceptSlot(){
+void DeleteInvitationScreenWidget::acceptSlot()
+{
     delete_stack->setCurrentWidget(delete_screen_page);
     emit screenDeleted(false);
 }
 
-void DeleteInvitationScreenWidget::cancelSlot(){
+void DeleteInvitationScreenWidget::cancelSlot()
+{
     emit screenDeleted(false);
 }
 
-void DeleteInvitationScreenWidget::deleteSlot(){
+void DeleteInvitationScreenWidget::deleteSlot()
+{
     emit screenDeleted(true);
 }

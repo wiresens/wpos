@@ -1,29 +1,23 @@
-/***************************************************************************
-                          productoption.h  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  productoptionmodule.h
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #ifndef PRODUCTOPTIONMODULE_H
 #define PRODUCTOPTIONMODULE_H
 #include "database/productoptionsmoduledb.h"
 #include "productoptionmoduleinterface.h"
 
-#include <wposcore/basicdatabase.h>
 #include <libbslxml/xmlconfig.h>
+#include <wposcore/basicdatabase.h>
 
-#include <QtCore/QObject>
 #include <QString>
+#include <QtCore/QObject>
 
-class ProductOptionModule :
-        public QObject,
-        public ProductOptionModuleInterface {
+class ProductOptionModule : public QObject,
+                            public ProductOptionModuleInterface {
 
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wposbo.DBusBOProductOption")
@@ -31,7 +25,7 @@ class ProductOptionModule :
 public:
     static const QString DBusObjectPath;
 
-    explicit ProductOptionModule(QObject *parent= 0, const QString& name = QString{});
+    explicit ProductOptionModule(QObject* parent = 0, const QString& name = QString {});
     ~ProductOptionModule() = default;
 
 public slots:
@@ -80,10 +74,10 @@ public slots:
     Q_SCRIPTABLE void updateAllProductOptionValue(const QString& option_type, const QString& option_name, const QString& value) override;
 
 private:
-    QString getStringXmlOption(ProductOptionData *option);
+    QString getStringXmlOption(ProductOptionData* option);
 
 private:
-    ProductOptionsModuleDB *db;
+    ProductOptionsModuleDB* db;
 };
 
 #endif

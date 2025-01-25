@@ -9,29 +9,27 @@
 #ifndef MEMSTICKWIDGET_H
 #define MEMSTICKWIDGET_H
 
-#include <QtCore/QObject>
-#include <QWidget>
 #include "memstickinterface.h"
+#include <QWidget>
+#include <QtCore/QObject>
 
-namespace Ui{
-    class MemStickWidgetBase;
+namespace Ui {
+class MemStickWidgetBase;
 } // namespace Ui
 
 class QTimer;
 class QTreeWidgetItem;
 class MemStickWidgetBase;
 
-class MemStickWidget :
-    public QWidget,
-    public MemStickInterface
-{
+class MemStickWidget : public QWidget,
+                       public MemStickInterface {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wposbo.MemStick")
 
 public:
     static const QString DBusObject;
 
-    explicit MemStickWidget(QWidget *parent=0, const QString& name=QString{});
+    explicit MemStickWidget(QWidget* parent = 0, const QString& name = QString {});
     ~MemStickWidget();
 
 public slots:
@@ -55,9 +53,9 @@ protected slots:
     void stopTimer();
 
 protected:
-    void showEvent(QShowEvent *event) override;
+    void showEvent(QShowEvent* event) override;
     virtual bool wposStckicRunning();
-    void init();   
+    void init();
     bool stickModuleAvailable();
     bool showErrorScreen();
 
@@ -65,10 +63,10 @@ protected:
     void checkAllDB();
 
 private:
-    void errorMessage(const QString& caption, const QString& msg , std::ostream& s);
+    void errorMessage(const QString& caption, const QString& msg, std::ostream& s);
     int pos;
-    QTimer *timer{};
-    Ui::MemStickWidgetBase* ui{};
+    QTimer* timer {};
+    Ui::MemStickWidgetBase* ui {};
 };
 
 #endif

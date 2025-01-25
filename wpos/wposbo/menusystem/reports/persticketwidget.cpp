@@ -13,33 +13,31 @@
 #include "persticketwidget.h"
 #include <libbslxml/xmlconfig.h>
 
-
-
-#include <wposgui/order/orderview.h>
-#include <wposgui/order/ordercontentview.h>
-#include <wposgui/common/toolkit.h>
 #include <wposcore/signals.h>
+#include <wposgui/common/toolkit.h>
+#include <wposgui/order/ordercontentview.h>
+#include <wposgui/order/orderview.h>
 
 #include <QDataStream>
-#include <QPushButton>
 #include <QFrame>
-#include <QLayout>
 #include <QGroupBox>
+#include <QLabel>
+#include <QLayout>
 #include <QListView>
 #include <QPixmap>
-#include <QLabel>
+#include <QPushButton>
 #include <QString>
 
-#include <QStringList>
-#include <qdatetime.h>
+#include <QApplication>
 #include <QDataStream>
 #include <QMessageBox>
-#include <QApplication>
+#include <QStringList>
+#include <qdatetime.h>
 
 #include <QProgressBar>
-#include <QTimer>
-#include <QStackedWidget>
 #include <QSplitter>
+#include <QStackedWidget>
+#include <QTimer>
 
 #include <QLocale>
 
@@ -49,11 +47,13 @@ using namespace std;
 #define INIT_RES 0
 #define TIMER_TIME 2
 
-PersTicketWidget::PersTicketWidget(QWidget *parent, const QString& name):
-    QWidget(parent)
+PersTicketWidget::PersTicketWidget(QWidget* parent, const QString& name)
+    : QWidget(parent)
 {
     setupUi(this);
     setObjectName(name);
+    database.connect();
+    order_view = new OrderView(order_frame, "ORDER");
     order_up_button->setVisible(false);
     order_down_button->setVisible(false);
     first_ticket_button->setVisible(false);
@@ -67,42 +67,42 @@ PersTicketWidget::PersTicketWidget(QWidget *parent, const QString& name):
     last_ticket_button->setIcon(QPixmap("controls32:2downarrow.png"));
     order_up_button->setIcon(QPixmap("controls48:up.png"));
     order_down_button->setIcon(QPixmap("controls48:down.png"));
-    ok_button->setIcon(QPixmap("controls32:printer2.png"));
+    print_button->setIcon(QPixmap("controls32:printer2.png"));
 
     // Create the connection to the database
     timer = new QTimer(this);
 
-    //establish the listView Aspect
-    ticketnum_listview->setHeaderLabels(QStringList{ tr("State"), tr("Code"), tr("Empoyee"), tr("Date")});
+    // establish the listView Aspect
+    ticketnum_listview->setHeaderLabels(QStringList { tr("State"), tr("Code"), tr("Empoyee"), tr("Date") });
     ticketnum_listview->setAllColumnsShowFocus(true);
-    ticketnum_listview->setColumnWidth(0,60);
-    ticketnum_listview->setColumnWidth(1,100);
-    ticketnum_listview->setColumnWidth(2,160);
-    ticketnum_listview->setColumnWidth(3,120);
+    ticketnum_listview->setColumnWidth(0, 60);
+    ticketnum_listview->setColumnWidth(1, 100);
+    ticketnum_listview->setColumnWidth(2, 160);
+    ticketnum_listview->setColumnWidth(3, 120);
     ticketnum_listview->setVerticalScrollBarPolicy(Qt::ScrollBarAsNeeded);
 
     layoutItems();
 
     clear();
-    //        getPersTickets();
+    getPersTickets();
 
     ticketnum_listview->sortByColumn(3, Qt::AscendingOrder);
     ticketnum_listview->setSelectionMode(QListView::SingleSelection);
 
     // Establish standart connections
     connect(this, &PersTicketWidget::genericDataSignal,
-            order->contentView(), &OrderContentView::genericDataSignalSlot);
+        order_view->contentView(), &OrderContentView::genericDataSignalSlot);
 
-    connect(ok_button, &QPushButton::clicked, order->contentView(), &OrderContentView::printTicket);
+    connect(print_button, &QPushButton::clicked, order_view->contentView(), &OrderContentView::printTicket);
 
-    connect(down_type_button,  &QPushButton::clicked, this, &PersTicketWidget::downTicketSlot);
-    connect(up_type_button,  &QPushButton::clicked, this, &PersTicketWidget::upTicketSlot);
+    connect(down_type_button, &QPushButton::clicked, this, &PersTicketWidget::downTicketSlot);
+    connect(up_type_button, &QPushButton::clicked, this, &PersTicketWidget::upTicketSlot);
 
-    connect(first_ticket_button,  &QPushButton::clicked, this, &PersTicketWidget::firstTicketSlot);
-    connect(last_ticket_button,  &QPushButton::clicked, this, &PersTicketWidget::lastTicketSlot);
+    connect(first_ticket_button, &QPushButton::clicked, this, &PersTicketWidget::firstTicketSlot);
+    connect(last_ticket_button, &QPushButton::clicked, this, &PersTicketWidget::lastTicketSlot);
 
-    connect(order_down_button,   &QPushButton::clicked, order->contentView(), &OrderContentView::selectDown);
-    connect(order_up_button,   &QPushButton::clicked, order->contentView(), &OrderContentView::selectUp);
+    connect(order_down_button, &QPushButton::clicked, order_view->contentView(), &OrderContentView::selectDown);
+    connect(order_up_button, &QPushButton::clicked, order_view->contentView(), &OrderContentView::selectUp);
 
     connect(ticketnum_listview, &QTreeWidget::itemClicked, this, &PersTicketWidget::ticketSelectedSlot);
 
@@ -113,18 +113,19 @@ PersTicketWidget::PersTicketWidget(QWidget *parent, const QString& name):
     stack->setCurrentWidget(main_page);
 }
 
-//void PersTicketWidget::layoutItems(){
-//    // Create an instance of order and add it to this menu
-//    order_main_layout->removeItem(nav_button_hlayout);
+// void PersTicketWidget::layoutItems(){
+//     // Create an instance of order and add it to this menu
+//     order_main_layout->removeItem(nav_button_hlayout);
 
-//    order = new BslOrderWidget(order_frame, "ORDER", 0);
+//    order_view = new BslOrderWidget(order_frame, "ORDER", 0);
 //    QVBoxLayout *order_layout = new QVBoxLayout(order_frame);
-//    order_layout->addWidget(order);
+//    order_layout->addWidget(order_view);
 //    order_main_layout->addLayout(order_layout);
 //    order_main_layout->addLayout( nav_button_hlayout);
 //}
 
-void PersTicketWidget::layoutItems(){
+void PersTicketWidget::layoutItems()
+{
     // Create an instance of order and add it to this menu
     main_page_hlayout->removeItem(order_main_hlayout);
     main_page_hlayout->removeWidget(tickets_frame);
@@ -141,52 +142,55 @@ void PersTicketWidget::layoutItems(){
     splitter->addWidget(order_frame);
     splitter->addWidget(tickets_frame);
 
-    order = new OrderView(order_frame, "ORDER");
-    QVBoxLayout *order_layout = new QVBoxLayout(order_frame);
-    order_layout->addWidget(order);
+    QVBoxLayout* order_layout = new QVBoxLayout(order_frame);
+    order_layout->addWidget(order_view);
     order_main_layout->addLayout(order_layout);
-    order_main_layout->addLayout( nav_button_hlayout);
+    order_main_layout->addLayout(nav_button_hlayout);
 }
 
-PersTicketWidget::~PersTicketWidget(){
+PersTicketWidget::~PersTicketWidget()
+{
     ticketnum_listview->clear();
-    delete order;
+    database.disConnect();
 }
 
-void PersTicketWidget::clear(){
+void PersTicketWidget::clear()
+{
     ticketnum_listview->clear();
-    init_datepicker->setDate((QDate::currentDate()).addDays(-INIT_RES));
-    end_datepicker->setDate(QDate::currentDate());
+    // init_datepicker->setDate((QDate::currentDate()).addDays(-INIT_RES));
+    // end_datepicker->setDate(QDate::currentDate());
     clearOrder();
-    ok_button->setEnabled(checkAllValues());
+    print_button->setEnabled(checkAllValues());
 }
 
-void PersTicketWidget::tableClickedSlot(){
+void PersTicketWidget::tableClickedSlot()
+{
     clearOrder();
-    this->startGetingZ();
+    startGetingZ();
     getPersTickets();
-    this->stopGettingZ();
+    stopGettingZ();
 }
 
-void PersTicketWidget::getPersTickets(){
+void PersTicketWidget::getPersTickets()
+{
 
-    QDate init_date = init_datepicker->date();
-    QDate finish_date = end_datepicker->date();
+    QDateTime init_date = init_datepicker->dateTime();
+    QDateTime finish_date = end_datepicker->dateTime();
 
-    if (init_date > finish_date){
-        QString text = tr("The dates entered are not correct.\en\The start date is earlier than the end date");
-        QMessageBox::warning(this,tr("Can't get tickets"),text);
+    if (init_date > finish_date) {
+        QString text = tr("The dates entered are not correct.\nStart date is earlier than the End date");
+        QMessageBox::warning(this, tr("Can't get tickets"), text);
         return;
     }
 
     ticketnum_listview->clear();
-    database.connect();
-    QVector<TicketResumeData> resumes = database.getTicketResume(init_date.toString("dd/MM/yyyy")+" 00:00:00", finish_date.toString("dd/MM/yyyy")+" 23:59:59");
-    database.disConnect();
+    // QVector<TicketResumeData> resumes = database.getTicketResume(init_date.toString("MM/dd/yyyy") + " 00:00:00", finish_date.toString("MM/dd/yyyy") + " 23:59:59");
+    QVector<TicketResumeData> resumes = database.getTicketResume(init_date.toString(), finish_date.toString());
 
-    if (resumes.isEmpty()) return;
+    if (resumes.isEmpty())
+        return;
 
-    for (const auto & data : resumes){
+    for (const auto& data : resumes) {
         auto item = new QTreeWidgetItem(ticketnum_listview);
         if (data.ticket_state == "cancelado")
             item->setIcon(0, anulation_pixmap);
@@ -198,10 +202,11 @@ void PersTicketWidget::getPersTickets(){
         item->setText(3, data.stamp_time);
         item->setText(4, data.ticket_state);
     }
-    ok_button->setEnabled(checkAllValues());
+    print_button->setEnabled(checkAllValues());
 }
 
-void PersTicketWidget::startGetingZ(){
+void PersTicketWidget::startGetingZ()
+{
     stack->setCurrentWidget(progress_page);
     progress_step = 0;
     progress_bar->setValue(0);
@@ -209,103 +214,104 @@ void PersTicketWidget::startGetingZ(){
     qApp->processEvents();
 }
 
-void PersTicketWidget::stopGettingZ(){
+void PersTicketWidget::stopGettingZ()
+{
     timer->stop();
     stack->setCurrentWidget(main_page);
     qApp->processEvents();
 }
 
-void PersTicketWidget::timerDone(){
+void PersTicketWidget::timerDone()
+{
     progress_step++;
     progress_bar->setValue(progress_step);
     qApp->processEvents();
 }
 
-void PersTicketWidget::showEvent(QShowEvent *e){
-    clear();
-    getPersTickets();
-//    ticketnum_listview->scrollToItem(ticketnum_listview->lastItem());
-    QWidget::showEvent(e);
-}
+// void PersTicketWidget::showEvent(QShowEvent* e)
+// {
+//     clear();
+//     getPersTickets();
+//     //    ticketnum_listview->scrollToItem(ticketnum_listview->lastItem());
+//     QWidget::showEvent(e);
+// }
 
-void PersTicketWidget::clearOrder(){
+void PersTicketWidget::clearOrder()
+{
     XmlConfig xml;
-    order->updateOrder(&xml);
-    ok_button->setEnabled(checkAllValues());
+    order_view->updateOrder(&xml);
+    print_button->setEnabled(checkAllValues());
 }
 
-void PersTicketWidget::downTicketSlot(){
-    selectTreeItemDown( ticketnum_listview);
+void PersTicketWidget::downTicketSlot()
+{
+    selectTreeItemDown(ticketnum_listview);
 }
 
-void PersTicketWidget::upTicketSlot(){
-    selectTreeItemUp( ticketnum_listview);
+void PersTicketWidget::upTicketSlot()
+{
+    selectTreeItemUp(ticketnum_listview);
 }
 
-void PersTicketWidget::firstTicketSlot(){
-    selectTreeItemFirst( ticketnum_listview);
+void PersTicketWidget::firstTicketSlot()
+{
+    selectTreeItemFirst(ticketnum_listview);
 }
 
-void PersTicketWidget::lastTicketSlot(){
-    selectTreeItemLast( ticketnum_listview);
+void PersTicketWidget::lastTicketSlot()
+{
+    selectTreeItemLast(ticketnum_listview);
 }
 
-void PersTicketWidget::ticketSelectedSlot(QTreeWidgetItem* item) {
-    int tid=0;
+void PersTicketWidget::ticketSelectedSlot(QTreeWidgetItem* item)
+{
+    int tid = 0;
 
     /* Get the ticket ID */
-    if (!item) return;
+    if (!item)
+        return;
     tid = item->text(1).toInt();
 
     {
-        XmlConfig xml;
+        XmlConfig xml_event;
         if (item->text(4) == "cancelado")
-            xml.createElement ("mode", "product_anulation");
+            xml_event.createElement("mode", "product_anulation");
         else
-            xml.createElement ("mode", "normal");
-        emit genericDataSignal ( GDATASIGNAL::SETCORE_MODE, &xml);
+            xml_event.createElement("mode", "normal");
+        emit genericDataSignal(GDATASIGNAL::SETCORE_MODE, &xml_event);
     }
 
-
     /* Get the ticket */
-    database.connect();
-    auto xml = database.getTicketFromDatabase(tid);
-    database.disConnect();
-
-    if (!xml)  return;
-    order->updateOrder(xml);
-    order->contentView()->selectFirst();
-    delete xml;
-    ok_button->setEnabled(checkAllValues());
+    auto xml_order = database.getTicketFromDatabase(tid);
+    order_view->updateOrder(&xml_order);
+    order_view->contentView()->selectFirst();
+    print_button->setEnabled(checkAllValues());
 }
 
-bool PersTicketWidget::checkAllValues(){
-
+bool PersTicketWidget::checkAllValues()
+{
     auto items = ticketnum_listview->selectedItems();
-    if (items.isEmpty()) return false;
+    if (items.isEmpty())
+        return false;
 
     QDate init_date = init_datepicker->date();
     QDate finish_date = end_datepicker->date();
 
-    if (init_date>finish_date)  return false;
+    if (init_date > finish_date)
+        return false;
 
-    std::unique_ptr<XmlConfig> xml {order->contentView()->orderAsXml()};
-    if (!xml) return false;
+    XmlConfig* xml { order_view->contentView()->orderAsXml() };
+    if (!xml)
+        return false;
 
     xml->pushDomain();
     xml->delDomain();
-    if (!xml->setDomain("products")){
+    if (!xml->setDomain("products")
+        || !xml->howManyTags("product"))
+    {
         xml->popDomain();
         return false;
     }
-
-    if (!xml->howManyTags("product")){
-        xml->popDomain();
-        return false;
-    }
-
     xml->popDomain();
-//@benes    delete xml;
-
     return true;
 }

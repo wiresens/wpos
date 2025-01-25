@@ -18,26 +18,23 @@
 class ProductScreenDesignWidget;
 class InvitationScreenDesignWidget;
 
-class POSDesignSelectorWidget :
-        public QWidget,
-        private Ui::POSDesignSelectorInterface
-{
+class POSDesignSelectorWidget : public QWidget,
+                                private Ui::POSDesignSelectorInterface {
     Q_OBJECT
 
 public:
-    explicit POSDesignSelectorWidget(QWidget *parent = 0, const QString& name = QString{});
+    explicit POSDesignSelectorWidget(QWidget* parent = 0, const QString& name = QString {});
     ~POSDesignSelectorWidget() = default;
 
 private slots:
     void actionSelectedChanged();
     void cancel();
-    virtual void showEvent(QShowEvent *e) override;
+    virtual void showEvent(QShowEvent* e) override;
 
 private:
-    ProductScreenDesignWidget *screen;
-    InvitationScreenDesignWidget *offers;
+    ProductScreenDesignWidget* screen;
+    InvitationScreenDesignWidget* offers;
     QMap<QListWidgetItem*, QString> submenu_item_relantionships;
-
 };
 
 #endif

@@ -18,20 +18,18 @@
 class ProductModule;
 class QTreeWidgetItem;
 
-class AdvancedProductEditionWidget :
-        public QWidget,
-        protected Ui::AdvancedProductEditionWidgetBase
-{
+class AdvancedProductEditionWidget : public QWidget,
+                                     protected Ui::AdvancedProductEditionWidgetBase {
     Q_OBJECT
 
-public: 
-    enum ProductColumn{
+public:
+    enum ProductColumn {
         Icon = 0,
         Name = 1,
         Code = 2
     };
 
-    explicit AdvancedProductEditionWidget(ProductModule *product_model, QWidget *parent=0, const QString& name=QString{});
+    explicit AdvancedProductEditionWidget(ProductModule* product_model, QWidget* parent = 0, const QString& name = QString {});
     ~AdvancedProductEditionWidget() = default;
 
 public slots:
@@ -51,20 +49,21 @@ protected slots:
     void setProgressSlot(int num, const QString& product);
 
 signals:
-    void progressSignal(int num , const QString& product);
+    void progressSignal(int num, const QString& product);
 
 protected:
-    virtual void showEvent(QShowEvent *e) override;
+    virtual void showEvent(QShowEvent* e) override;
     void loadList();
     bool isItemSelected();
     QTreeWidgetItem* selectedItem() const;
 
-inline  ProductModule &productModel() const{
+    inline ProductModule& productModel() const
+    {
         return *product_model;
     }
 
 private:
-    ProductModule *product_model;
+    ProductModule* product_model;
 };
 
 #endif

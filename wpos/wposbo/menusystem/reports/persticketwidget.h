@@ -13,9 +13,9 @@
 #ifndef PERSTICKETWIDGET_H
 #define PERSTICKETWIDGET_H
 
+#include "database/historicdb.h"
 #include "ui_persticketswidgetbase.h"
 #include <wposcore/config.h>
-#include "database/historicdb.h"
 
 class QDate;
 class HistoricDB;
@@ -25,11 +25,10 @@ class QTreeWidgetItem;
 class XmlConfig;
 class QTimer;
 
-class PersTicketWidget :
-        public QWidget , private Ui::PersTicketsWidgetBase {
+class PersTicketWidget : public QWidget, private Ui::PersTicketsWidgetBase {
     Q_OBJECT
 public:
-    explicit PersTicketWidget(QWidget *parent=0, const QString& name=QString{});
+    explicit PersTicketWidget(QWidget* parent = 0, const QString& name = QString {});
     ~PersTicketWidget();
 
 public slots:
@@ -44,16 +43,15 @@ public slots:
 
     void tableClickedSlot();
 
-
     void ticketSelectedSlot(QTreeWidgetItem* item);
 
     void timerDone();
 
 signals:
-    void genericDataSignal(const QString& signal_name, XmlConfig *xml);
+    void genericDataSignal(const QString& signal_name, XmlConfig* xml);
 
 protected:
-    void showEvent(QShowEvent *e);
+    // void showEvent(QShowEvent* e);
     void getPersTickets();
 
     bool checkAllValues();
@@ -64,14 +62,14 @@ protected:
 private:
     void layoutItems();
 
-    QPixmap null_pixmap{"controls:view_text.png"};
-    QPixmap error_pixmap{"controls:stop.png"};
-    QPixmap anulation_pixmap{"controls:view_text_red.png"};
+    QPixmap null_pixmap { "controls:view_text.png" };
+    QPixmap error_pixmap { "controls:stop.png" };
+    QPixmap anulation_pixmap { "controls:view_text_red.png" };
 
-    HistoricDB database{"HistoricTicketConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
-    OrderView *order{};
-    QTimer *timer{};
-    int progress_step{};
+    HistoricDB database { "HistoricTicketConnection", cfg::xmlFileByKey(cfg::XMLKey::Database) };
+    OrderView* order_view {};
+    QTimer* timer {};
+    int progress_step {};
 };
 
 #endif

@@ -1,14 +1,9 @@
-/***************************************************************************
-                          product.cpp  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  productmodule.cpp
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #include "productmodule.h"
 #include "productmodule_adaptor.h"
@@ -17,8 +12,8 @@
 
 #include <wposcore/config.h>
 
-#include <QSqlQuery>
 #include <QSqlError>
+#include <QSqlQuery>
 
 #include <iostream>
 using namespace std;
@@ -33,10 +28,10 @@ static const QString& FAMILIES_LIST_DTD = "dtddocs:products_familieslist.dtd";
 static const QString& TAXES_LIST_DTD = "dtddocs:products_taxeslist.dtd";
 static const QString& COMPOSITION_DTD = "dtddocs:products_composition.dtd";
 
-const QString ProductModule::DBusObjectPath  = QString{"/wpos/wposbo/DBusBOProduct"};
+const QString ProductModule::DBusObjectPath = QString { "/wpos/wposbo/DBusBOProduct" };
 
-ProductModule::ProductModule(QObject *parent, const QString& name):
-    QObject(parent)
+ProductModule::ProductModule(QObject* parent, const QString& name)
+    : QObject(parent)
 {
     setObjectName(name);
     new DBusBOProductAdaptor(this);
@@ -44,26 +39,27 @@ ProductModule::ProductModule(QObject *parent, const QString& name):
     dbus.registerObject(ProductModule::DBusObjectPath, this);
 }
 
-bool ProductModule::isUnitaryProduct(QString product_code){
-    ProductsModuleDB *db = 0;
+bool ProductModule::isUnitaryProduct(QString product_code)
+{
+    ProductsModuleDB* db = 0;
 
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
 
-    if(db->isUnitaryProduct(product_code)){
+    if (db->isUnitaryProduct(product_code)) {
         delete db;
         return true;
-    }
-    else{
+    } else {
         delete db;
         return false;
     }
 }
 
-bool ProductModule::deleteProduct(const QString& product_code){
-    ProductsModuleDB *db = 0;
+bool ProductModule::deleteProduct(const QString& product_code)
+{
+    ProductsModuleDB* db = 0;
     bool deleted = false;
 
-    if(product_code.isEmpty()){
+    if (product_code.isEmpty()) {
         cerr << "empty product code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return false;
     }
@@ -72,17 +68,18 @@ bool ProductModule::deleteProduct(const QString& product_code){
     deleted = db->deleteProduct(product_code);
     delete db;
 
-    if(deleted)
+    if (deleted)
         emit productDeleted(product_code);
 
     return deleted;
 }
 
-QString ProductModule::getLogo(const QString& product_name){
-    XmlConfig *xml = 0;
+QString ProductModule::getLogo(const QString& product_name)
+{
+    XmlConfig* xml = 0;
     QString xml_string;
-    ProductsModuleDB *db = 0;
-    ProductData *product = 0;
+    ProductsModuleDB* db = 0;
+    ProductData* product = 0;
 
     xml_string = "";
 
@@ -106,10 +103,11 @@ QString ProductModule::getLogo(const QString& product_name){
     return xml_string;
 }
 
-QString ProductModule::getLogoFromProductCode(const QString& product_code){
+QString ProductModule::getLogoFromProductCode(const QString& product_code)
+{
     QString ret = "";
-    ProductsModuleDB *db = 0;
-    ProductData *product = 0;
+    ProductsModuleDB* db = 0;
+    ProductData* product = 0;
 
     if (product_code.isEmpty())
         return ret;
@@ -124,25 +122,26 @@ QString ProductModule::getLogoFromProductCode(const QString& product_code){
     return product->logo;
 }
 
-QString ProductModule::getLogos(const QString& xml_string){
+QString ProductModule::getLogos(const QString& xml_string)
+{
     QString string_return;
-    XmlConfig *xml = 0;
+    XmlConfig* xml = 0;
     QStringList products_name;
-    ProductsModuleDB *db = 0;
-    QPtrList<ProductData> *products = 0;
-    ProductData *product = 0;
+    ProductsModuleDB* db = 0;
+    QPtrList<ProductData>* products = 0;
+    ProductData* product = 0;
     int index, count;
 
     string_return = "";
     xml = new XmlConfig();
 
-    if(!xml->readXmlFromString(xml_string)){
+    if (!xml->readXmlFromString(xml_string)) {
         cerr << "cannot convert the sitring into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return string_return;
     }
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD)){
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD)) {
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return string_return;
@@ -151,7 +150,7 @@ QString ProductModule::getLogos(const QString& xml_string){
     xml->setDomain("products[0]");
 
     count = xml->howManyTags("product");
-    for(index = 0; index < count; index++)
+    for (index = 0; index < count; index++)
         products_name.append(xml->readString("product[" + QString::number(index) + "].name"));
 
     delete xml;
@@ -164,7 +163,7 @@ QString ProductModule::getLogos(const QString& xml_string){
     xml->createElementSetDomain("products");
 
     count = products->count();
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         product = 0;
         product = products->at(index);
 
@@ -176,7 +175,7 @@ QString ProductModule::getLogos(const QString& xml_string){
     }
     xml->releaseDomain("products", true);
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD)){
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD)) {
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return string_return;
@@ -191,15 +190,16 @@ QString ProductModule::getLogos(const QString& xml_string){
     return string_return;
 }
 
-QString ProductModule::getProduct(const QString& product_code){
+QString ProductModule::getProduct(const QString& product_code)
+{
     QString xml_string;
-    XmlConfig *xml = 0;
-    ProductsModuleDB *db = 0;
-    ProductData *product = 0;
+    XmlConfig* xml = 0;
+    ProductsModuleDB* db = 0;
+    ProductData* product = 0;
 
     xml_string = "";
 
-    if(product_code.isEmpty()){
+    if (product_code.isEmpty()) {
         cerr << "empty product code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
@@ -208,7 +208,7 @@ QString ProductModule::getProduct(const QString& product_code){
     product = db->getProduct(product_code);
     delete db;
 
-    if(!product){
+    if (!product) {
         cerr << "there are not product with this product code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
@@ -229,11 +229,11 @@ QString ProductModule::getProduct(const QString& product_code){
     delete product;
     //     xml->debug();
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
-        return QString{};
+        return QString {};
     }
 
     xml_string = xml->toString();
@@ -242,12 +242,13 @@ QString ProductModule::getProduct(const QString& product_code){
     return xml_string;
 }
 
-QString ProductModule::getProductName(const QString& product_code){
-    QString string="";
-    ProductsModuleDB *db = 0;
-    ProductData *product = 0;
+QString ProductModule::getProductName(const QString& product_code)
+{
+    QString string = "";
+    ProductsModuleDB* db = 0;
+    ProductData* product = 0;
 
-    if(product_code.isEmpty()){
+    if (product_code.isEmpty()) {
         cerr << "empty product code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return string;
     }
@@ -256,7 +257,7 @@ QString ProductModule::getProductName(const QString& product_code){
     product = db->getProduct(product_code);
     delete db;
 
-    if(!product){
+    if (!product) {
         //          cerr << "there are not product with this product code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return string;
     }
@@ -265,9 +266,10 @@ QString ProductModule::getProductName(const QString& product_code){
     return string;
 }
 
-QString ProductModule::getProductLike(const QString& product_name){
+QString ProductModule::getProductLike(const QString& product_name)
+{
     QString code;
-    ProductsModuleDB *db = 0;
+    ProductsModuleDB* db = 0;
 
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
     code = db->getProductLike(product_name);
@@ -276,11 +278,12 @@ QString ProductModule::getProductLike(const QString& product_name){
     return code;
 }
 
-QString ProductModule::getFamilies(){
+QString ProductModule::getFamilies()
+{
     QString xml_string;
-    XmlConfig *xml = 0;
-    QStringList *families = 0;
-    ProductsModuleDB *db = 0;
+    XmlConfig* xml = 0;
+    QStringList* families = 0;
+    ProductsModuleDB* db = 0;
     int index, count;
 
     xml_string = "";
@@ -288,7 +291,7 @@ QString ProductModule::getFamilies(){
     families = db->getFamilies();
     delete db;
 
-    if(!families){
+    if (!families) {
         cerr << "there are not families " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
@@ -297,11 +300,11 @@ QString ProductModule::getFamilies(){
     xml->delDomain();
     xml->createElementSetDomain("families");
 
-    if(!families){
+    if (!families) {
         xml->releaseDomain("families");
 
-        if(!xml->validateXmlWithDTD(FAMILIES_LIST_DTD, true)){
-            cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+        if (!xml->validateXmlWithDTD(FAMILIES_LIST_DTD, true)) {
+            cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
             xml->debug();
             delete families;
             delete xml;
@@ -315,15 +318,15 @@ QString ProductModule::getFamilies(){
     }
     count = families->count();
 
-    for(index = 0; index < count; index++)
+    for (index = 0; index < count; index++)
         xml->createElement("family", (*families)[index]);
 
     xml->releaseDomain("families", true);
     xml->delDomain();
     delete families;
 
-    if(!xml->validateXmlWithDTD(FAMILIES_LIST_DTD, true)){
-        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->validateXmlWithDTD(FAMILIES_LIST_DTD, true)) {
+        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
         return xml_string;
@@ -334,11 +337,12 @@ QString ProductModule::getFamilies(){
     return xml_string;
 }
 
-QString ProductModule::getTaxes(){
+QString ProductModule::getTaxes()
+{
     QString xml_string;
-    XmlConfig *xml = 0;
-    QStringList *taxes_list = 0;
-    ProductsModuleDB *db = 0;
+    XmlConfig* xml = 0;
+    QStringList* taxes_list = 0;
+    ProductsModuleDB* db = 0;
     int index, count;
 
     xml_string = "";
@@ -346,7 +350,7 @@ QString ProductModule::getTaxes(){
     taxes_list = db->getTaxes();
     delete db;
 
-    if(!taxes_list){
+    if (!taxes_list) {
         cerr << "there are no taxes " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
@@ -355,20 +359,20 @@ QString ProductModule::getTaxes(){
     xml->delDomain();
     xml->createElementSetDomain("taxes");
 
-    if(taxes_list)
+    if (taxes_list)
         count = taxes_list->count();
     else
         count = 0;
 
-    for(index=0; index < count; index++)
+    for (index = 0; index < count; index++)
         xml->createElement("tax", (*taxes_list)[index]);
 
     xml->releaseDomain("taxes", true);
     xml->delDomain();
     delete taxes_list;
 
-    if(!xml->validateXmlWithDTD(TAXES_LIST_DTD, true)){
-        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->validateXmlWithDTD(TAXES_LIST_DTD, true)) {
+        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
         return xml_string;
@@ -379,13 +383,14 @@ QString ProductModule::getTaxes(){
     return xml_string;
 }
 
-QString ProductModule::getProductsExtend(){
+QString ProductModule::getProductsExtend()
+{
     QString xml_string;
-    XmlConfig *xml = 0;
-    QPtrList<ProductData> *products = 0;
-    ProductsModuleDB *db = 0;
+    XmlConfig* xml = 0;
+    QPtrList<ProductData>* products = 0;
+    ProductsModuleDB* db = 0;
     int index, count;
-    ProductData *product = 0;
+    ProductData* product = 0;
 
     xml_string = "";
 
@@ -393,7 +398,7 @@ QString ProductModule::getProductsExtend(){
     products = db->getProductsExtend();
     delete db;
 
-    if(!products){
+    if (!products) {
         cerr << "there are no products " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
@@ -404,7 +409,7 @@ QString ProductModule::getProductsExtend(){
     xml->createElementSetDomain("products");
     count = products->count();
 
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         //          cout << "                                                   " << index << endl;
         product = products->at(index);
         xml->createElementSetDomain("product");
@@ -422,7 +427,7 @@ QString ProductModule::getProductsExtend(){
     delete products;
     delete product;
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD)){
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD)) {
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
@@ -436,13 +441,14 @@ QString ProductModule::getProductsExtend(){
     return xml_string;
 }
 
-QString ProductModule::getProducts(){
+QString ProductModule::getProducts()
+{
     QString xml_string;
-    XmlConfig *xml = 0;
-    QPtrList<ProductData> *products = 0;
-    ProductsModuleDB *db = 0;
+    XmlConfig* xml = 0;
+    QPtrList<ProductData>* products = 0;
+    ProductsModuleDB* db = 0;
     int index, count;
-    ProductData *product = 0;
+    ProductData* product = 0;
 
     xml_string = "";
 
@@ -450,7 +456,7 @@ QString ProductModule::getProducts(){
     products = db->getProducts();
     delete db;
 
-    if(!products){
+    if (!products) {
         cerr << "there are no products " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
@@ -461,7 +467,7 @@ QString ProductModule::getProducts(){
     xml->createElementSetDomain("products");
     count = products->count();
 
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         //          cout << "                                                   " << index << endl;
         product = products->at(index);
         xml->createElementSetDomain("product");
@@ -476,7 +482,7 @@ QString ProductModule::getProducts(){
     delete products;
     delete product;
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD)){
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD)) {
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
@@ -489,12 +495,13 @@ QString ProductModule::getProducts(){
     return xml_string;
 }
 
-QString ProductModule::getUnitaryProducts(){
+QString ProductModule::getUnitaryProducts()
+{
     QString xml_string;
-    XmlConfig *xml = 0;
-    QPtrList<ProductData> *products_list = 0;
-    ProductData *product = 0;
-    ProductsModuleDB *db = 0;
+    XmlConfig* xml = 0;
+    QPtrList<ProductData>* products_list = 0;
+    ProductData* product = 0;
+    ProductsModuleDB* db = 0;
     int index, count;
 
     xml_string = "";
@@ -503,18 +510,18 @@ QString ProductModule::getUnitaryProducts(){
     products_list = db->getUnitaryProducts();
     delete db;
 
-    if(!products_list){
+    if (!products_list) {
         cerr << "there are no products " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
 
-    //ok we can get the the list of unitary products
+    // ok we can get the the list of unitary products
     xml = new XmlConfig();
     xml->delDomain();
 
     xml->createElementSetDomain("products");
     count = products_list->count();
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         xml->createElementSetDomain("product");
 
         product = products_list->at(index);
@@ -532,8 +539,8 @@ QString ProductModule::getUnitaryProducts(){
     delete product;
     delete products_list;
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
         return xml_string;
@@ -545,20 +552,21 @@ QString ProductModule::getUnitaryProducts(){
     return xml_string;
 }
 
-bool ProductModule::insertProduct(const QString& xml_string){
-    XmlConfig *xml = 0;
-    ProductData *product = 0;
-    ProductsModuleDB *db = 0;
+bool ProductModule::insertProduct(const QString& xml_string)
+{
+    XmlConfig* xml = 0;
+    ProductData* product = 0;
+    ProductsModuleDB* db = 0;
 
     xml = new XmlConfig();
-    if(!xml->readXmlFromString(xml_string)){
-        cerr << "cannot convert the sitring into xml " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->readXmlFromString(xml_string)) {
+        cerr << "cannot convert the sitring into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return false;
     }
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
         return false;
@@ -568,7 +576,7 @@ bool ProductModule::insertProduct(const QString& xml_string){
     xml->setDomain("products[0]");
     xml->setDomain("product[0]");
 
-    if(xml->readString("code").isEmpty()){
+    if (xml->readString("code").isEmpty()) {
         cerr << "empty product code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         delete product;
@@ -576,7 +584,7 @@ bool ProductModule::insertProduct(const QString& xml_string){
     }
     product->code = xml->readString("code");
 
-    if(xml->readString("name").isEmpty()){
+    if (xml->readString("name").isEmpty()) {
         cerr << "Nombre de producto vacio " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         delete product;
@@ -591,34 +599,34 @@ bool ProductModule::insertProduct(const QString& xml_string){
 
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
 
-    if(db->insertProduct(product)){
+    if (db->insertProduct(product)) {
         emit productCreated(product->code);
         delete product;
         delete db;
         return true;
-    }
-    else{
+    } else {
         delete product;
         delete db;
         return false;
     }
 }
 
-bool ProductModule::updateProduct(const QString& xml_string){
-    XmlConfig *xml = 0;
-    ProductData *product = 0;
-    ProductsModuleDB *db = 0;
+bool ProductModule::updateProduct(const QString& xml_string)
+{
+    XmlConfig* xml = 0;
+    ProductData* product = 0;
+    ProductsModuleDB* db = 0;
     bool updated = false;
 
     xml = new XmlConfig();
-    if(!xml->readXmlFromString(xml_string)){
+    if (!xml->readXmlFromString(xml_string)) {
         cerr << "cannot convert the sitring into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return false;
     }
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
         return false;
@@ -628,7 +636,7 @@ bool ProductModule::updateProduct(const QString& xml_string){
     xml->setDomain("products[0]");
     xml->setDomain("product[0]");
 
-    if(xml->readString("code").isEmpty()){
+    if (xml->readString("code").isEmpty()) {
         cerr << "empty product code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         delete product;
@@ -636,7 +644,7 @@ bool ProductModule::updateProduct(const QString& xml_string){
     }
     product->code = xml->readString("code");
 
-    if(xml->readString("name").isEmpty()){
+    if (xml->readString("name").isEmpty()) {
         cerr << "Nombre de producto vacio " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         delete product;
@@ -651,12 +659,12 @@ bool ProductModule::updateProduct(const QString& xml_string){
 
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
 
-    if(!db->existProduct(product->code))
+    if (!db->existProduct(product->code))
         updated = db->insertProduct(product);
     else
         updated = db->updateProduct(product);
 
-    if(updated)
+    if (updated)
         emit productUpdated(product->code);
 
     delete product;
@@ -664,12 +672,13 @@ bool ProductModule::updateProduct(const QString& xml_string){
     return updated;
 }
 
-QString ProductModule::getCompositions(){
+QString ProductModule::getCompositions()
+{
     QString xml_string;
-    XmlConfig *xml = 0;
-    QPtrList<ProductData> *products_list = 0;
-    ProductData *product = 0;
-    ProductsModuleDB *db = 0;
+    XmlConfig* xml = 0;
+    QPtrList<ProductData>* products_list = 0;
+    ProductData* product = 0;
+    ProductsModuleDB* db = 0;
     int index, count;
 
     xml_string = "";
@@ -678,7 +687,7 @@ QString ProductModule::getCompositions(){
     products_list = db->getCompositions();
     delete db;
 
-    if(!products_list){
+    if (!products_list) {
         cerr << "there are no products " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
@@ -688,11 +697,11 @@ QString ProductModule::getCompositions(){
     xml->delDomain();
     xml->createElementSetDomain("products");
     count = products_list->count();
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         product = 0;
         product = products_list->at(index);
 
-        if(!product)
+        if (!product)
             continue;
 
         xml->createElementSetDomain("product");
@@ -709,11 +718,11 @@ QString ProductModule::getCompositions(){
     delete product;
     delete products_list;
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
-        return QString{};
+        return QString {};
     }
 
     xml_string = xml->toString();
@@ -721,24 +730,25 @@ QString ProductModule::getCompositions(){
     return xml_string;
 }
 
-bool ProductModule::insertProductComposition(const QString& xml_string){
+bool ProductModule::insertProductComposition(const QString& xml_string)
+{
     QString composition_code, ingredient_code;
-    XmlConfig *xml = 0;
+    XmlConfig* xml = 0;
     int index, count = 0;
-    ProductsModuleDB *db = 0;
+    ProductsModuleDB* db = 0;
     double quantity;
 
     xml = new XmlConfig();
     xml->delDomain();
 
-    if(!xml->readXmlFromString(xml_string)){
+    if (!xml->readXmlFromString(xml_string)) {
         cerr << "No se pudo convertir en xml el string " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return false;
     }
 
-    if(!xml->validateXmlWithDTD(COMPOSITION_DTD, true)){
-        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml->validateXmlWithDTD(COMPOSITION_DTD, true)) {
+        cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
         return false;
@@ -747,17 +757,17 @@ bool ProductModule::insertProductComposition(const QString& xml_string){
     xml->setDomain("composition[0]");
     composition_code = xml->readString("composition_code");
     count = xml->howManyTags("ingredient");
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         xml->setDomain("ingredient[" + QString::number(index) + "]");
 
         ingredient_code = xml->readString("ingredient_code");
-        if(ingredient_code.isEmpty()){
+        if (ingredient_code.isEmpty()) {
             cerr << "empty product code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
             xml->debug();
             xml->releaseDomain("ingredient", true);
             continue;
         }
-        if(xml->readString("quantity").isEmpty()){
+        if (xml->readString("quantity").isEmpty()) {
             cerr << "empty product cuantity " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
             xml->releaseDomain("ingredient", true);
             continue;
@@ -765,7 +775,7 @@ bool ProductModule::insertProductComposition(const QString& xml_string){
         quantity = xml->readString("quantity").toDouble();
 
         db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
-        if(!db->insertProductComposition(composition_code, ingredient_code,quantity,index)){
+        if (!db->insertProductComposition(composition_code, ingredient_code, quantity, index)) {
             delete xml;
             delete db;
             return false;
@@ -779,15 +789,16 @@ bool ProductModule::insertProductComposition(const QString& xml_string){
     return true;
 }
 
-bool ProductModule::updateProductComposition(const QString& xml_string){
+bool ProductModule::updateProductComposition(const QString& xml_string)
+{
     QString composition_code, ingredient_code;
-    XmlConfig *xml = 0;
+    XmlConfig* xml = 0;
     int index, count;
-    ProductsModuleDB *db = 0;
+    ProductsModuleDB* db = 0;
 
     xml = new XmlConfig();
 
-    if(!xml->readXmlFromString(xml_string)){
+    if (!xml->readXmlFromString(xml_string)) {
         cerr << "cannot convert string into xml " << __PRETTY_FUNCTION__ << ": " << endl;
         delete xml;
         return false;
@@ -797,32 +808,32 @@ bool ProductModule::updateProductComposition(const QString& xml_string){
     xml->delDomain();
     xml->setDomain("composition[0]");
     composition_code = xml->readString("composition_code");
-    if(composition_code.isEmpty()){
+    if (composition_code.isEmpty()) {
         cerr << "empty composition code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return false;
     }
 
     count = xml->howManyTags("ingredient");
-    for(index = 0; index < count; index ++){
+    for (index = 0; index < count; index++) {
         xml->setDomain("ingredient[" + QString::number(index) + "]");
 
         ingredient_code = xml->readString("ingredient_code");
-        if(ingredient_code.isEmpty()){
+        if (ingredient_code.isEmpty()) {
             cerr << "component code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
             xml->releaseDomain("ingredient", true);
             continue;
         }
 
-        if(xml->readString("quantity").isEmpty()){
+        if (xml->readString("quantity").isEmpty()) {
             cerr << "component cuantity " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
             xml->releaseDomain("ingredient", true);
             continue;
         }
 
         db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
-        if(!db->updateProductComposition(composition_code, ingredient_code,
-                                         (xml->readString("quantity").toDouble()))){
+        if (!db->updateProductComposition(composition_code, ingredient_code,
+                (xml->readString("quantity").toDouble()))) {
             delete xml;
             delete db;
             return false;
@@ -835,15 +846,16 @@ bool ProductModule::updateProductComposition(const QString& xml_string){
     return true;
 }
 
-bool ProductModule::existProductComposition(const QString& xml_string){
+bool ProductModule::existProductComposition(const QString& xml_string)
+{
     QString composition_code, ingredient_code;
-    XmlConfig *xml = 0;
+    XmlConfig* xml = 0;
     int index, count;
-    ProductsModuleDB *db = 0;
+    ProductsModuleDB* db = 0;
 
     xml = new XmlConfig();
 
-    if(!xml->readXmlFromString(xml_string)){
+    if (!xml->readXmlFromString(xml_string)) {
         cerr << "cannot convert the sitring into xml " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return false;
@@ -852,18 +864,18 @@ bool ProductModule::existProductComposition(const QString& xml_string){
     xml->delDomain();
     xml->setDomain("composition[0]");
     composition_code = xml->readString("composition_code");
-    if(composition_code.isEmpty()){
+    if (composition_code.isEmpty()) {
         cerr << "empty composition code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         delete xml;
         return false;
     }
 
     count = xml->howManyTags("ingredient");
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         xml->setDomain("ingredient[" + QString::number(index) + "]");
         ingredient_code = xml->readString("ingredient_code");
 
-        if(ingredient_code.isEmpty()){
+        if (ingredient_code.isEmpty()) {
             cerr << "empty component code " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
             xml->releaseDomain("ingredient", true);
             continue;
@@ -871,7 +883,7 @@ bool ProductModule::existProductComposition(const QString& xml_string){
 
         db = 0;
         db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
-        if(!db->existProductComposition(composition_code, ingredient_code)){
+        if (!db->existProductComposition(composition_code, ingredient_code)) {
             delete xml;
             delete db;
             return false;
@@ -883,13 +895,14 @@ bool ProductModule::existProductComposition(const QString& xml_string){
     return true;
 }
 
-QString ProductModule::getIngredients(const QString& product_code){
+QString ProductModule::getIngredients(const QString& product_code)
+{
     QString xml_string;
-    XmlConfig *xml = 0;
-    QPtrList<IngredientData> *ingredient_list = 0;
-    IngredientData *ingredient = 0;
+    XmlConfig* xml = 0;
+    QPtrList<IngredientData>* ingredient_list = 0;
+    IngredientData* ingredient = 0;
     int index, count;
-    ProductsModuleDB *db = 0;
+    ProductsModuleDB* db = 0;
 
     xml_string = "";
     db = 0;
@@ -897,15 +910,15 @@ QString ProductModule::getIngredients(const QString& product_code){
     ingredient_list = db->getIngredients(product_code);
     delete db;
 
-    if(!ingredient_list){
+    if (!ingredient_list) {
         cerr << "product " << product_code.toStdString() << " does not have ingredients " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
 
-    if(!ingredient_list)
+    if (!ingredient_list)
         return xml_string;
 
-    if(ingredient_list->isEmpty()){
+    if (ingredient_list->isEmpty()) {
         delete ingredient_list;
         return xml_string;
     }
@@ -915,7 +928,7 @@ QString ProductModule::getIngredients(const QString& product_code){
     xml->createElement("composition_code", product_code);
 
     count = ingredient_list->count();
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         ingredient = 0;
         ingredient = ingredient_list->at(index);
 
@@ -928,7 +941,7 @@ QString ProductModule::getIngredients(const QString& product_code){
     delete ingredient_list;
     delete ingredient;
 
-    if(!xml->validateXmlWithDTD(COMPOSITION_DTD, true)){
+    if (!xml->validateXmlWithDTD(COMPOSITION_DTD, true)) {
         cerr << "xml does not validate against DTD " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
@@ -940,22 +953,23 @@ QString ProductModule::getIngredients(const QString& product_code){
     return xml_string;
 }
 
-QString ProductModule::getCompositionsWithIngredient(const QString& ingredient_code){
-    XmlConfig *xml = 0;
+QString ProductModule::getCompositionsWithIngredient(const QString& ingredient_code)
+{
+    XmlConfig* xml = 0;
     QString xml_string;
-    QPtrList<ProductData> *products_list{} ;
+    QPtrList<ProductData>* products_list {};
     int index, count;
-    ProductData *p = 0;
-    ProductsModuleDB *db = 0;
+    ProductData* p = 0;
+    ProductsModuleDB* db = 0;
 
     xml_string = "";
     db = 0;
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
-    //FIXME
+    // FIXME
     products_list = db->getCompositionsWithIngredient(ingredient_code);
     delete db;
 
-    if(!products_list){
+    if (!products_list) {
         cerr << "there are no combinations " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return xml_string;
     }
@@ -963,18 +977,18 @@ QString ProductModule::getCompositionsWithIngredient(const QString& ingredient_c
     xml = new XmlConfig();
     xml->createElementSetDomain("products");
 
-    if(!products_list){
+    if (!products_list) {
         xml->releaseDomain("products");
         xml_string = xml->toString();
         return xml_string;
     }
 
     count = products_list->count();
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         p = products_list->at(index);
         xml->createElementSetDomain("product");
-        xml->createElement("code",p->code);
-        xml->createElement("name",p->name);
+        xml->createElement("code", p->code);
+        xml->createElement("name", p->name);
         xml->releaseDomain("product", true);
     }
 
@@ -983,7 +997,7 @@ QString ProductModule::getCompositionsWithIngredient(const QString& ingredient_c
 
     xml->releaseDomain("products", true);
 
-    if(!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
+    if (!xml->validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
         cerr << "xml does not validate against DTD" << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml->debug();
         delete xml;
@@ -995,9 +1009,10 @@ QString ProductModule::getCompositionsWithIngredient(const QString& ingredient_c
     return xml_string;
 }
 
-QString ProductModule::getProductCodeByProductName(const QString& product_name){
+QString ProductModule::getProductCodeByProductName(const QString& product_name)
+{
     QString xml_string;
-    ProductsModuleDB *db = 0;
+    ProductsModuleDB* db = 0;
     QString name;
 
     xml_string = "";
@@ -1008,34 +1023,33 @@ QString ProductModule::getProductCodeByProductName(const QString& product_name){
     return name;
 }
 
-int ProductModule::getNumberOfProducts(){
+int ProductModule::getNumberOfProducts()
+{
     int ret;
-    ProductsModuleDB *db = 0;
+    ProductsModuleDB* db = 0;
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
     ret = db->getNumberOfProducts();
     delete db;
     return ret;
 }
 
-
-
-
-void ProductModule::saveBarXml(){
-    int i, count,j,ing_count;
-    QPtrList<ProductData> *products = 0;
-    QPtrList<ProductOptionData> *options = 0;
-    QPtrList<IngredientData> *ingredients = 0;
-    ProductData *product = 0;
-    ProductData *aux_product = 0;
-    ProductOptionData *option = 0;
-    IngredientData *ingredient = 0;
-    ProductsModuleDB *db = 0;
-    ProductOptionsModuleDB *odb = 0;
-    XmlConfig *xml = 0;
-    int position=0;
+void ProductModule::saveBarXml()
+{
+    int i, count, j, ing_count;
+    QPtrList<ProductData>* products = 0;
+    QPtrList<ProductOptionData>* options = 0;
+    QPtrList<IngredientData>* ingredients = 0;
+    ProductData* product = 0;
+    ProductData* aux_product = 0;
+    ProductOptionData* option = 0;
+    IngredientData* ingredient = 0;
+    ProductsModuleDB* db = 0;
+    ProductOptionsModuleDB* odb = 0;
+    XmlConfig* xml = 0;
+    int position = 0;
 
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
-    odb = new ProductOptionsModuleDB(PRODUCT_CONNECTION_NAME+"option_module",PRODUCT_PATH_FILE);
+    odb = new ProductOptionsModuleDB(PRODUCT_CONNECTION_NAME + "option_module", PRODUCT_PATH_FILE);
 
     xml = new XmlConfig(XML_BAR_PATH);
     xml->delDomain();
@@ -1043,10 +1057,9 @@ void ProductModule::saveBarXml(){
         xml->deleteElement("products");
     xml->createElementSetDomain("products");
 
-
     products = db->getProducts();
 
-    if (!products){
+    if (!products) {
         xml->save();
         delete xml;
         delete db;
@@ -1054,51 +1067,49 @@ void ProductModule::saveBarXml(){
     }
 
     count = products->count();
-    for (i=0;i<count;i++){
+    for (i = 0; i < count; i++) {
         product = products->at(i);
-        emit productAtXml(i,product->name);
+        emit productAtXml(i, product->name);
         options = odb->getProductOptions(product->code);
         ingredients = db->getIngredients(product->code);
         if (!ingredients)
             continue;
         ing_count = ingredients->count();
         ingredient = ingredients->at(0);
-        position = productPosition(ingredient->ingredient_code,xml);
-        if (position<0){
+        position = productPosition(ingredient->ingredient_code, xml);
+        if (position < 0) {
             aux_product = db->getProduct(ingredient->ingredient_code);
             xml->createElementSetDomain("product");
-            xml->createElement("name",ingredient->ingredient_code);
+            xml->createElement("name", ingredient->ingredient_code);
             if (!aux_product->logo.isEmpty())
                 xml->createElement("icon", cfg::PRODUCT_DIR + aux_product->logo);
             delete aux_product;
+        } else {
+            xml->setDomain("product[" + QString::number(position) + "]");
         }
-        else{
-            xml->setDomain("product["+QString::number(position)+"]");
+        if (ing_count > 1) {
+            position = productPosition("solo", xml);
+            if (position < 0)
+                xml->createElement("product.name", "solo");
         }
-        if (ing_count>1){
-            position = productPosition("solo",xml);
-            if (position<0)
-                xml->createElement("product.name","solo");
-        }
-        for (j=1;j<ing_count;j++){
+        for (j = 1; j < ing_count; j++) {
             ingredient = ingredients->at(j);
-            position = productPosition(ingredient->ingredient_code,xml);
-            if (position>=0){
-                xml->setDomain("product["+QString::number(j)+"]");
+            position = productPosition(ingredient->ingredient_code, xml);
+            if (position >= 0) {
+                xml->setDomain("product[" + QString::number(j) + "]");
                 continue;
-            }
-            else{
+            } else {
                 xml->createElementSetDomain("product");
                 xml->createElement("name", ingredient->ingredient_code);
             }
         }
         this->writeOptions(options, xml);
         xml->releaseDomain("product");
-        if (options){
+        if (options) {
             options->clear();
             delete options;
         }
-        if (ingredients){
+        if (ingredients) {
             ingredients->clear();
             delete ingredients;
         }
@@ -1111,9 +1122,9 @@ void ProductModule::saveBarXml(){
     delete xml;
 }
 
-
-void ProductModule::writeOptions(QList<ProductOptionData*>* options, XmlConfig *xml){
-    ProductOptionData *option = 0;
+void ProductModule::writeOptions(QList<ProductOptionData*>* options, XmlConfig* xml)
+{
+    ProductOptionData* option = 0;
     int index, count, i, j;
 
     if (!options)
@@ -1123,30 +1134,30 @@ void ProductModule::writeOptions(QList<ProductOptionData*>* options, XmlConfig *
     if (!count)
         return;
     xml->pushDomain();
-    if(!xml->setDomain("options"))
+    if (!xml->setDomain("options"))
         xml->createElementSetDomain("options");
     count = options->count();
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         option = 0;
         option = options->at(index);
         j = xml->howManyTags("option");
-        for(i = 0; i < j; i++){
+        for (i = 0; i < j; i++) {
             xml->setDomain("option[" + QString::number(i) + "]");
-            if(xml->readString("type") == option->option_type)
+            if (xml->readString("type") == option->option_type)
                 break;
             xml->releaseDomain("option", false);
         }
-        if(i == j){
+        if (i == j) {
             xml->createElementSetDomain("option");
             xml->createElement("type", option->option_type);
         }
         j = xml->howManyTags("value");
-        for(i = 0; i < j; i++)
-            if(xml->readString("value") == option->option_name)
+        for (i = 0; i < j; i++)
+            if (xml->readString("value") == option->option_name)
                 break;
-        if(i == j)
+        if (i == j)
             xml->createElement("value", option->option_name);
-        if(option->is_default)
+        if (option->is_default)
             xml->createAttribute("value[" + QString::number(i) + "]", "type", "default");
         xml->releaseDomain("option", false);
     }
@@ -1154,22 +1165,19 @@ void ProductModule::writeOptions(QList<ProductOptionData*>* options, XmlConfig *
     xml->popDomain();
 }
 
-
-
-
-
-int ProductModule::productPosition(const QString& name, XmlConfig *xml){
-    //if the xml haven't this product's name, return a negative number
+int ProductModule::productPosition(const QString& name, XmlConfig* xml)
+{
+    // if the xml haven't this product's name, return a negative number
     int position = -1;
     int i, count;
     QString auxiliar;
 
     count = xml->howManyTags("product");
-    for(i = 0; i < count; i++){
-        //Read the product's name
-        auxiliar = xml->readString("product["+QString::number(i)+"].name");
+    for (i = 0; i < count; i++) {
+        // Read the product's name
+        auxiliar = xml->readString("product[" + QString::number(i) + "].name");
 
-        if (auxiliar == name){
+        if (auxiliar == name) {
             position = i;
             break;
         }
@@ -1178,32 +1186,20 @@ int ProductModule::productPosition(const QString& name, XmlConfig *xml){
     return position;
 }
 
-void ProductModule::setProductAtPrinter(const QString& product_name, const QString& printer,bool on){
-    ProductsModuleDB *db = 0;
+void ProductModule::setProductAtPrinter(const QString& product_name, const QString& printer, bool on)
+{
+    ProductsModuleDB* db = 0;
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
-    db->setProductAtPrinter(product_name,printer,on);
+    db->setProductAtPrinter(product_name, printer, on);
     delete db;
 }
 
-bool ProductModule::getProductAtPrinter(const QString& product_name, const QString& printer){
+bool ProductModule::getProductAtPrinter(const QString& product_name, const QString& printer)
+{
     bool ret = false;
-    ProductsModuleDB *db = 0;
+    ProductsModuleDB* db = 0;
     db = new ProductsModuleDB(PRODUCT_CONNECTION_NAME, PRODUCT_PATH_FILE);
-    ret = db->getProductAtPrinter(product_name,printer);
+    ret = db->getProductAtPrinter(product_name, printer);
     delete db;
     return ret;
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

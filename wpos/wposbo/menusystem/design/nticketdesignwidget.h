@@ -17,13 +17,12 @@
 
 #include "ui_ticketdesigninterface.h"
 
-class NTicketDesignWidget :
-        public QWidget,
-        private Ui::TicketDesignInterface  {
+class NTicketDesignWidget : public QWidget,
+                            private Ui::TicketDesignInterface {
 
     Q_OBJECT
 public:
-    explicit NTicketDesignWidget(QWidget *parent=0, const QString& name= QString{});
+    explicit NTicketDesignWidget(QWidget* parent = 0, const QString& name = QString {});
     ~NTicketDesignWidget() = default;
 
 public slots:
@@ -32,7 +31,7 @@ public slots:
     void somethingChanged(const QString& text);
 
 protected:
-    virtual void showEvent(QShowEvent *e) override;
+    virtual void showEvent(QShowEvent* e) override;
     bool readXml();
     void writeXml();
 };

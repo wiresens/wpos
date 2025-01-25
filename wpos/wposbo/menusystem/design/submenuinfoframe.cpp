@@ -13,29 +13,31 @@
 #include "submenuinfoframe.h"
 #include <QtWebEngineWidgets/QWebEngineView>
 
-#include <QLayout>
 #include <QEvent>
+#include <QLayout>
 
 SubMenuInfoFrame::SubMenuInfoFrame(
     QWidget* parent,
-    const QString& name):
-    QFrame(parent)
+    const QString& name)
+    : QFrame(parent)
 {
     setObjectName(name);
 
-    layout  = new QVBoxLayout(this);
+    layout = new QVBoxLayout(this);
     browser = new QWebEngineView(this);
 
-//@benes    setSizePolicy(parentWidget()->sizePolicy());
+    //@benes    setSizePolicy(parentWidget()->sizePolicy());
     setFrameStyle(QFrame::NoFrame | QFrame::Plain);
     layout->addWidget(browser);
 }
 
-void SubMenuInfoFrame::load(const QString &infoFile){
+void SubMenuInfoFrame::load(const QString& infoFile)
+{
     browser->setHtml(infoFile, QUrl("file://"));
 }
 
-void SubMenuInfoFrame::showEvent(QShowEvent *event){
+void SubMenuInfoFrame::showEvent(QShowEvent* event)
+{
     browser->resize(width(), height());
     QWidget::showEvent(event);
 }

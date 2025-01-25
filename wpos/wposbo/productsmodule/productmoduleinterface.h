@@ -10,21 +10,20 @@
 %LICENCIA%
  ***************************************************************************/
 
-
 #ifndef H_PRODUCT_MODULE_INTERFACE
 #define H_PRODUCT_MODULE_INTERFACE
 
 #include <QString>
 
-class ProductModuleInterface{
-     /**
+class ProductModuleInterface {
+    /**
      *    deleteProduct delete a product from the database
      *    @params QString with the product's code of the product to delete
      *    @return boolean: return true if the product was deleted
      */
-     virtual bool deleteProduct(const QString&)=0;
+    virtual bool deleteProduct(const QString&) = 0;
 
-     /**
+    /**
      *    getProduct return a xml with the product's properties
      *    @params QString with the product's code of the product to consult
      *    @return QString with the product's properties
@@ -51,19 +50,19 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-    //only return the name of a product_code
-     virtual QString getProductName(const QString&)=0;
-     virtual QString getProduct(const QString&)=0;
+    // only return the name of a product_code
+    virtual QString getProductName(const QString&) = 0;
+    virtual QString getProduct(const QString&) = 0;
 
-     /**
+    /**
      *    getProductLike return the code of the product when the product's name
      *    coincide with the name specificated
      *    @params QString with the product's name to consult
      *    @return QString with the code of this product
      */
-     virtual QString getProductLike(const QString&)=0;
+    virtual QString getProductLike(const QString&) = 0;
 
-     /**
+    /**
      *    getFamilies return the families into the database
      *    @return QString with a xml with all families
      *
@@ -79,9 +78,9 @@ class ProductModuleInterface{
      *    <!ELEMENT families (family*) >
      *    <!ELEMENT family (#PCDATA) >
      */
-     virtual QString getFamilies()=0;
+    virtual QString getFamilies() = 0;
 
-     /**
+    /**
      *    getLogo return the product's code, product's name and product's logo of the product
      *    with product's name equals to param's value
      *    @param QString with the product's name
@@ -114,10 +113,10 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-     virtual QString getLogo(const QString&)=0;
-     virtual QString getLogoFromProductCode(const QString&)=0;
-     
-     /**
+    virtual QString getLogo(const QString&) = 0;
+    virtual QString getLogoFromProductCode(const QString&) = 0;
+
+    /**
      *    getLogo return a ProductData with product's name, product's code and product's logo
      *    @param QString with the list of products' name
      *    @return QString xml with product's code, product's name and product's logo for all
@@ -173,9 +172,9 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-     virtual QString getLogos(const QString&)=0;
-     
-     /**
+    virtual QString getLogos(const QString&) = 0;
+
+    /**
      *    getTaxes return the taxes into the database
      *    @return QString with a xml with all taxes
      *
@@ -191,9 +190,9 @@ class ProductModuleInterface{
      *    <!ELEMENT taxes (tax*) >
      *    <!ELEMENT tax (#PCDATA) >
      */
-     virtual QString getTaxes()=0;
+    virtual QString getTaxes() = 0;
 
-          /**
+    /**
      *    getProducts return string with all products of the database
      *    (unitary products and composition products order by product_name)
      *    @return QString: xml with all product's properties
@@ -227,9 +226,9 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-     virtual QString getProductsExtend()=0;
-     
-     /**
+    virtual QString getProductsExtend() = 0;
+
+    /**
      *    getProducts return string with all products of the database
      *    (unitary products and composition products order by product_name)
      *    @return QString: xml with product's code, product's name, product's logo
@@ -258,9 +257,9 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-     virtual QString getProducts()=0;
-     
-     /**
+    virtual QString getProducts() = 0;
+
+    /**
      *    getUnitaryProducts return a xml with all unitary products
      *    @return QString with a xml with all unitary products
      *
@@ -296,9 +295,9 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-     virtual QString getUnitaryProducts()=0;
+    virtual QString getUnitaryProducts() = 0;
 
-     /**
+    /**
      *    insertProduct insert a product into the database
      *    @params QString with the product's properties to insert
      *    @return bool: true if the product was inserted succesfully
@@ -325,9 +324,9 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-     virtual bool insertProduct(const QString&)=0;
+    virtual bool insertProduct(const QString&) = 0;
 
-     /**
+    /**
      *    updateProduct update a product into the database
      *    @params QString with the product's properties to update
      *    @return bool: true if the product was updated succesfully
@@ -354,9 +353,9 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-     virtual bool updateProduct(const QString&)=0;
+    virtual bool updateProduct(const QString&) = 0;
 
-     /**
+    /**
      *    getCompositions return a xml with all combinations (products with more
      *    than one ingredient)
      *    @return QString with a xml with all combinations
@@ -393,9 +392,9 @@ class ProductModuleInterface{
      *    <!ELEMENT logo (#PCDATA) >
      *    <!ELEMENT description (#PCDATA) >
      */
-     virtual QString getCompositions()=0;
+    virtual QString getCompositions() = 0;
 
-     /**
+    /**
      *    insertProductComposition insert a combination into the database
      *    @params QString with a xml with combination's properties
      *    @return bool: return true if the combinations was inserted successfully
@@ -415,16 +414,16 @@ class ProductModuleInterface{
      *    </AUTOMATICALLY_GENERATED_XML>
      *
      *    DTD COMPOSITION:
-      *   <!ELEMENT AUTOMATICALLY_GENERATED_XML (composition)>
+     *   <!ELEMENT AUTOMATICALLY_GENERATED_XML (composition)>
      *    <!ELEMENT composition (composition_code, ingredient+) >
      *    <!ELEMENT composition_code (#PCDATA) >
      *    <!ELEMENT ingredient (ingredient_code, quantity) >
      *    <!ELEMENT ingredient_code (#PCDATA) >
      *    <!ELEMENT quantity (#PCDATA) >
-    */
-     virtual bool insertProductComposition(const QString&)=0;
+     */
+    virtual bool insertProductComposition(const QString&) = 0;
 
-     /**
+    /**
      *    updateProductComposition update a combination into the database
      *    @params QString with a xml with the combination's properties
      *    @return bool: return true if the combinations was updated successfully
@@ -451,9 +450,9 @@ class ProductModuleInterface{
      *    <!ELEMENT ingredient_code (#PCDATA) >
      *    <!ELEMENT quantity (#PCDATA) >
      */
-     virtual bool updateProductComposition(const QString&)=0;
+    virtual bool updateProductComposition(const QString&) = 0;
 
-     /**
+    /**
      *    existProductComposition return true if the composition specificated
      *    into the xml param exist into the database
      *    @param QString xml with all properties of this composition
@@ -481,9 +480,9 @@ class ProductModuleInterface{
      *    <!ELEMENT ingredient_code (#PCDATA) >
      *    <!ELEMENT quantity (#PCDATA) >
      */
-     virtual bool existProductComposition(const QString&)=0;
+    virtual bool existProductComposition(const QString&) = 0;
 
-     /**
+    /**
      *    getIngredients return string with all ingredients of the product specificated
      *    into the param
      *
@@ -511,9 +510,9 @@ class ProductModuleInterface{
      *    <!ELEMENT ingredient_code (#PCDATA) >
      *    <!ELEMENT quantity (#PCDATA) >
      */
-     virtual QString getIngredients(const QString& product_code)=0;
+    virtual QString getIngredients(const QString& product_code) = 0;
 
-     /**
+    /**
      *    getCompositionsWithIngredient return list with all composition that one of this
      *    ingredients are equal to param's value
      *
@@ -522,9 +521,9 @@ class ProductModuleInterface{
      *          //FIXME SET THE CORRECT PARAMS
      *
      */
-     virtual QString getCompositionsWithIngredient(const QString& ingredient_code)=0;
+    virtual QString getCompositionsWithIngredient(const QString& ingredient_code) = 0;
 
-     /**
+    /**
      *  this method returns a QString with the product_code of the
      *  product named as the QString first parameter
      *  this method does not return an XML.
@@ -533,18 +532,16 @@ class ProductModuleInterface{
      *    @return the product code of the product
      *
      */
-     virtual QString getProductCodeByProductName(const QString& product_name)=0;
-     virtual int getNumberOfProducts()=0;
-     virtual void saveBarXml()=0;
+    virtual QString getProductCodeByProductName(const QString& product_name) = 0;
+    virtual int getNumberOfProducts() = 0;
+    virtual void saveBarXml() = 0;
 
-     /**
+    /**
      * this method set a product at a printer system device.
      * this makes a product available to be printed at kitchen devices.
      */
-     virtual void setProductAtPrinter(const QString&, const QString&, bool)=0;
-     virtual bool getProductAtPrinter(const QString&,  const QString&)=0;
+    virtual void setProductAtPrinter(const QString&, const QString&, bool) = 0;
+    virtual bool getProductAtPrinter(const QString&, const QString&) = 0;
 };
 
 #endif
-
-

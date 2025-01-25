@@ -12,14 +12,14 @@
 
 #include "posdesignselectorwidget.h"
 
-#include "productscreendesignwidget.h"
 #include "invitationscreendesignwidget.h"
+#include "productscreendesignwidget.h"
 
+#include <QLabel>
 #include <QListWidget>
+#include <QLocale>
 #include <QPixmap>
 #include <QStackedWidget>
-#include <QLabel>
-#include <QLocale>
 
 const QString& DESIGN_SCREEN = QObject::tr("Product Screen Setting");
 const QString& DESIGN_OFFERS = QObject::tr("Offer Screen Setting");
@@ -27,14 +27,14 @@ const QString& DESIGN_OFFERS = QObject::tr("Offer Screen Setting");
 #include <iostream>
 using namespace std;
 
-POSDesignSelectorWidget::POSDesignSelectorWidget(QWidget *parent, const QString&name)
+POSDesignSelectorWidget::POSDesignSelectorWidget(QWidget* parent, const QString& name)
     : QWidget(parent)
 {
     setupUi(this);
     setObjectName(name);
     action_stack->setCurrentWidget(select_action);
 
-    //Initializations and default selections
+    // Initializations and default selections
     QPixmap default_pixmap("controls48:design1.png");
 
     actions_iconview->clear();
@@ -42,7 +42,7 @@ POSDesignSelectorWidget::POSDesignSelectorWidget(QWidget *parent, const QString&
     auto item = new QListWidgetItem(actions_iconview);
     item->setText(tr("Command Management"));
     item->setIcon(default_pixmap);
-    submenu_item_relantionships.insert(item, QString{});
+    submenu_item_relantionships.insert(item, QString {});
     // Item that raise <Screen Products Designer> menu
     item = new QListWidgetItem(actions_iconview);
     item->setText(DESIGN_SCREEN);
@@ -52,39 +52,41 @@ POSDesignSelectorWidget::POSDesignSelectorWidget(QWidget *parent, const QString&
     item = new QListWidgetItem(actions_iconview);
     item->setText(tr("Quick Access Area Management"));
     item->setIcon(default_pixmap);
-    submenu_item_relantionships.insert(item,"");
+    submenu_item_relantionships.insert(item, "");
     // Item that raise <> menu
     item = new QListWidgetItem(actions_iconview);
     item->setText(tr("Action Menu Management"));
     item->setIcon(default_pixmap);
-    submenu_item_relantionships.insert(item,"");
+    submenu_item_relantionships.insert(item, "");
     // Item that raise <> menu
     item = new QListWidgetItem(actions_iconview);
     item->setText(tr("Calculator Setting"));
     item->setIcon(default_pixmap);
-    submenu_item_relantionships.insert(item,"");
+    submenu_item_relantionships.insert(item, "");
 
     item = new QListWidgetItem(actions_iconview);
     item->setText(DESIGN_OFFERS);
     item->setIcon(default_pixmap);
-    submenu_item_relantionships.insert(item,"");
+    submenu_item_relantionships.insert(item, "");
 
     connect(actions_iconview, &QListWidget::itemSelectionChanged, this, &POSDesignSelectorWidget::actionSelectedChanged);
 }
 
-void POSDesignSelectorWidget::actionSelectedChanged(){
+void POSDesignSelectorWidget::actionSelectedChanged()
+{
     QString action_selected;
 
     auto act_view = qobject_cast<QListWidget*>(sender());
     auto selection = act_view->selectedItems();
 
-    if(selection.isEmpty()) return;
+    if (selection.isEmpty())
+        return;
     action_selected = selection.first()->text();
 
-    if(action_selected == DESIGN_SCREEN){
+    if (action_selected == DESIGN_SCREEN) {
         action_stack->setCurrentWidget(action);
 
-        if(!screen){
+        if (!screen) {
             screen = new ProductScreenDesignWidget(action, "SCREEN_PRODUCTS");
             connect(screen, &ProductScreenDesignWidget::cancel, this, &POSDesignSelectorWidget::cancel);
         }
@@ -93,10 +95,10 @@ void POSDesignSelectorWidget::actionSelectedChanged(){
         screen->show();
     }
 
-    if(action_selected == DESIGN_OFFERS){
+    if (action_selected == DESIGN_OFFERS) {
         action_stack->setCurrentWidget(action);
 
-        if(!offers){
+        if (!offers) {
             offers = new InvitationScreenDesignWidget(action, "SCREEN_OFFERS");
             connect(offers, &InvitationScreenDesignWidget::cancel, this, &POSDesignSelectorWidget::cancel);
         }
@@ -106,12 +108,14 @@ void POSDesignSelectorWidget::actionSelectedChanged(){
     }
 }
 
-void POSDesignSelectorWidget::cancel(){
+void POSDesignSelectorWidget::cancel()
+{
     action_stack->setCurrentWidget(select_action);
     actions_iconview->clearSelection();
 }
 
-void POSDesignSelectorWidget::showEvent(QShowEvent *e){
+void POSDesignSelectorWidget::showEvent(QShowEvent* e)
+{
     action_stack->setCurrentWidget(select_action);
     actions_iconview->clearSelection();
 

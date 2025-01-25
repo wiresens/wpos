@@ -13,22 +13,21 @@
 #ifndef NDELOFFERWIDGET_H
 #define NDELOFFERWIDGET_H
 
-#include "ui_offerdeletionwidgetbase.h"
 #include "productsmodule/offersmodule/productoffermodule.h"
+#include "ui_offerdeletionwidgetbase.h"
 
-class OfferDeletionWidget :
-        public QWidget,
-        private Ui::OfferDeletionWidgetBase{
+class OfferDeletionWidget : public QWidget,
+                            private Ui::OfferDeletionWidgetBase {
 
     Q_OBJECT
 
 public:
-    enum OfferColumn{
+    enum OfferColumn {
         Icon = 0,
         Name = 1
     };
 
-    explicit OfferDeletionWidget(QWidget *parent=0, const QString&name=QString{});
+    explicit OfferDeletionWidget(QWidget* parent = 0, const QString& name = QString {});
     ~OfferDeletionWidget() = default;
 
 public slots:
@@ -45,10 +44,10 @@ public slots:
     void acceptSlot();
 
 protected:
-    virtual void showEvent(QShowEvent *e) override; //allmost
+    virtual void showEvent(QShowEvent* e) override; // allmost
     bool hasAllValues();
 
-    void getOfferTypes(); //idem
+    void getOfferTypes(); // idem
     void showOffers(const QString& offer_type);
 
 private:

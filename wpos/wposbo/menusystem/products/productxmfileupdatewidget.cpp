@@ -14,17 +14,17 @@
 
 #include "productsmodule/productmodule.h"
 
-#include <QLabel>
-#include <QPushButton>
-#include <QProgressBar>
-#include <QGroupBox>
 #include <QApplication>
+#include <QGroupBox>
+#include <QLabel>
+#include <QProgressBar>
+#include <QPushButton>
 
 ProductXmFileUpdateWidget::ProductXmFileUpdateWidget(
-        ProductModule *_product_mod,
-        QWidget *parent, const QString& name):
-    QWidget(parent),
-    product_mod{_product_mod}
+    ProductModule* _product_mod,
+    QWidget* parent, const QString& name)
+    : QWidget(parent)
+    , product_mod { _product_mod }
 {
     setupUi(this);
     setObjectName(name);
@@ -33,7 +33,8 @@ ProductXmFileUpdateWidget::ProductXmFileUpdateWidget(
     connect(ok_button, &QPushButton::released, this, &ProductXmFileUpdateWidget::acceptSlot);
 }
 
-void ProductXmFileUpdateWidget::acceptSlot(){
+void ProductXmFileUpdateWidget::acceptSlot()
+{
     products = product_mod->getNumberOfProducts();
     progress->setValue(products);
     ok_button->setEnabled(false);
@@ -45,8 +46,9 @@ void ProductXmFileUpdateWidget::acceptSlot(){
     product_mod->saveBarXml();
 }
 
-void ProductXmFileUpdateWidget::updatingProduct(int num, const QString &product){
-    if ( num == products){
+void ProductXmFileUpdateWidget::updatingProduct(int num, const QString& product)
+{
+    if (num == products) {
         progress->setValue(0);
         product_label->setText(0);
         progress_frame->hide();
@@ -55,11 +57,10 @@ void ProductXmFileUpdateWidget::updatingProduct(int num, const QString &product)
         products = -1;
         ok_button->setEnabled(true);
 
-        //this code can be removed. It has been coded to avoid errors of use.
+        // this code can be removed. It has been coded to avoid errors of use.
         ok_button->setEnabled(false);
         advertise_label->setText(tr("La actualizacion del XML se ha realizado con exito."));
-    }
-    else{
+    } else {
         progress->setValue(num);
         product_label->setText(product);
         update();
@@ -67,8 +68,9 @@ void ProductXmFileUpdateWidget::updatingProduct(int num, const QString &product)
     }
 }
 
-void ProductXmFileUpdateWidget::showEvent(QShowEvent *e){
-    if ( products < 0 ){
+void ProductXmFileUpdateWidget::showEvent(QShowEvent* e)
+{
+    if (products < 0) {
         progress->setValue(0);
         product_label->setText(0);
         progress_frame->hide();
@@ -77,5 +79,3 @@ void ProductXmFileUpdateWidget::showEvent(QShowEvent *e){
     }
     QWidget::showEvent(e);
 }
-
-

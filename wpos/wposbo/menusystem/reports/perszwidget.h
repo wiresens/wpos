@@ -28,16 +28,14 @@ class XmlConfig;
 class QTimer;
 class QWebEngineView;
 
-class PersZWidget :
-        public QWidget,
-        private Ui::PersZWidgetBase
-{
+class PersZWidget : public QWidget,
+                    private Ui::PersZWidgetBase {
     Q_OBJECT
-public: 
+public:
     static const uint DEFAULT_WIDTH;
     static const uint DEFAULT_HEIGHT;
 
-    explicit PersZWidget(QWidget *parent=0, const QString& name=QString{});
+    explicit PersZWidget(QWidget* parent = 0, const QString& name = QString {});
     ~PersZWidget() = default;
 
 public slots:
@@ -65,8 +63,7 @@ protected slots:
     void setEndDateRange(const QDateTime& start);
 
 protected:
-
-    enum Section{
+    enum Section {
         Icon = 0,
         StartDate = 1,
         EndDate = 2,
@@ -74,15 +71,15 @@ protected:
         EventCode = 4
     };
 
-    enum SectionSize{
+    enum SectionSize {
         IconSize = 60,
         DateSize = 200,
         AmountSize = 140,
         EventCodeSize = IconSize
     };
 
-    virtual void showEvent(QShowEvent *e) override;
-    virtual void hideEvent(QHideEvent *e) override;
+    virtual void showEvent(QShowEvent* e) override;
+    virtual void hideEvent(QHideEvent* e) override;
     virtual bool isPrintServerAvailable() const;
 
     void getZ(const QDateTime& start, const QDateTime& end);
@@ -95,18 +92,18 @@ protected:
     void printZ(const QString& xml_str);
     void printTicketTotal(const QString& xml_str);
 
-    QString xmlToHtml(XmlConfig *xml);
+    QString xmlToHtml(XmlConfig* xml);
 
-    QString mainSection(XmlConfig *xml);
-    QString productSection(XmlConfig *xml);
-    QString waitersSection(XmlConfig *xml);
-    QString offerSection(XmlConfig *xml);
-    QString optionSection(XmlConfig *xml);
+    QString mainSection(XmlConfig* xml);
+    QString productSection(XmlConfig* xml);
+    QString waitersSection(XmlConfig* xml);
+    QString offerSection(XmlConfig* xml);
+    QString optionSection(XmlConfig* xml);
 
-    bool createMainGraph(XmlConfig *xml,int width=DEFAULT_WIDTH,int height= DEFAULT_WIDTH + 30);
-    bool createWaitersGraph(XmlConfig *xml, int width=DEFAULT_WIDTH,int height=DEFAULT_HEIGHT);
-    bool createOffersGraph(XmlConfig *xml, int width=DEFAULT_WIDTH,int height=DEFAULT_HEIGHT);
-    bool createOptionsGraph(XmlConfig *xml, int width=DEFAULT_WIDTH,int height=DEFAULT_HEIGHT);
+    bool createMainGraph(XmlConfig* xml, int width = DEFAULT_WIDTH, int height = DEFAULT_WIDTH + 30);
+    bool createWaitersGraph(XmlConfig* xml, int width = DEFAULT_WIDTH, int height = DEFAULT_HEIGHT);
+    bool createOffersGraph(XmlConfig* xml, int width = DEFAULT_WIDTH, int height = DEFAULT_HEIGHT);
+    bool createOptionsGraph(XmlConfig* xml, int width = DEFAULT_WIDTH, int height = DEFAULT_HEIGHT);
 
     void setupButtons();
     void setupSections();
@@ -119,17 +116,17 @@ private:
     void showHtml(const QString& html_str);
 
 private:
-    HistoricDB database{"GetZetaConnection", cfg::xmlFileByKey(cfg::XMLKey::Database)};
-    QWebEngineView *browser{};
-    QTimer *timer{};
-    QVBoxLayout *b_layout{};
+    HistoricDB database { "GetZetaConnection", cfg::xmlFileByKey(cfg::XMLKey::Database) };
+    QWebEngineView* browser {};
+    QTimer* timer {};
+    QVBoxLayout* b_layout {};
 
-    QStringList headerLabels{"Icon", "Start Date", "End Date", "Price", "Code"};
+    QStringList headerLabels { "Icon", "Start Date", "End Date", "Price", "Code" };
     QString main_graph;
     QString waiters_graph;
     QString offers_graph;
     QString options_graph;
-    int progress_step{};
+    int progress_step {};
 };
 
 #endif

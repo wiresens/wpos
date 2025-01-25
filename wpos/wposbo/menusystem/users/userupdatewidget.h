@@ -15,16 +15,16 @@
 
 #include "usereditionwidget.h"
 
-class UserUpdateWidget : public UserEditionWidget  {
+class UserUpdateWidget : public UserEditionWidget {
     Q_OBJECT
 public:
-    explicit UserUpdateWidget(UserModule *_user_mod, QWidget *parent=0, const QString& name = QString{});
+    explicit UserUpdateWidget(UserModule* _user_mod, QWidget* parent = 0, const QString& name = QString {});
 
-    //try to update the user at the current update user widget.
+    // try to update the user at the current update user widget.
     bool updateUser();
 
 public slots:
-    //set the user with the employee id given at the string
+    // set the user with the employee id given at the string
     void setUser(QString user_id);
 
 protected:

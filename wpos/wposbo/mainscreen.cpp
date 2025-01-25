@@ -1,14 +1,9 @@
-/***************************************************************************
-                          linuxbarbackoffice.cpp  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  mainscreen.cpp
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #include <wposcore/config.h>
 #include <wposgui/common/global.h>
@@ -18,66 +13,71 @@
 #include "menusystem/menus/mainscreenmenu.h"
 
 #include <libbslxml/xmlconfig.h>
-#include <wposgui/windows/menustack.h>
 #include <wposgui/windows/menupage.h>
+#include <wposgui/windows/menustack.h>
 
-#include <QLabel>
-#include <QLayout>
 #include <QApplication>
 #include <QCursor>
 #include <QFile>
-#include <QStyleFactory>
-#include <QStyle>
 #include <QFont>
+#include <QLabel>
+#include <QLayout>
+#include <QStyle>
+#include <QStyleFactory>
 
 #include <iostream>
 using namespace std;
 
-MainScreen::MainScreen(QWidget *parent):
-    QWidget(parent)
+MainScreen::MainScreen(QWidget* parent)
+    : QWidget(parent)
 {
     setupApplication();
     buildMenuStack();
     buildScreenMenu();
 }
 
-void MainScreen::setupApplication(){
+void MainScreen::setupApplication()
+{
     setSizePolicy(QSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding));
     auto configFile = cfg::xmlFileByKey(cfg::XMLKey::Buttons);
-    if (QFile::exists(configFile)){
-        XmlConfig xml (configFile);
-        if ( xml.wellFormed() && xml.setDomain("initscreen")){
-            if (xml.setDomain("font")){
+    if (QFile::exists(configFile)) {
+        XmlConfig xml(configFile);
+        if (xml.wellFormed() && xml.setDomain("initscreen")) {
+            if (xml.setDomain("font")) {
                 auto family = xml.readString("family");
                 auto size = xml.readString("size");
                 xml.releaseDomain("font");
-                if ( !family.isEmpty() ){
+                if (!family.isEmpty()) {
                     bool ok = false;
                     auto font_size = size.toInt(&ok);
                     QFont font(family, Sizes::FONT_SIZE_11);
-                    if (ok) font = QFont(family, font_size);
+                    if (ok)
+                        font = QFont(family, font_size);
                     QApplication::setFont(font);
                 }
             }
             auto style = xml.readString("style");
-            if ( !style.isEmpty() ){
+            if (!style.isEmpty()) {
                 auto st = QStyleFactory::create(style);
-                if (st)  QApplication::setStyle(st);
+                if (st)
+                    QApplication::setStyle(st);
             }
         }
     }
 }
 
-void MainScreen::buildMenuStack(){
+void MainScreen::buildMenuStack()
+{
     mainLayout = new QVBoxLayout(this);
     menuStack = new MenuStack(this);
     menuStack->setSizePolicy(sizePolicy());
-    menuStack->setContentsMargins(0,0,0,0);
+    menuStack->setContentsMargins(0, 0, 0, 0);
     mainLayout->addWidget(menuStack);
-    menuStack->setCurrentPage(Menus::MAIN_MENU); //start page
+    menuStack->setCurrentPage(Menus::MAIN_MENU); // start page
 }
 
-void MainScreen::buildScreenMenu(){
+void MainScreen::buildScreenMenu()
+{
     // Add it to a page of menus_stack
     auto menuPage = new MenuPage(menuStack, Menus::MAIN_MENU);
     menuPage->setLayoutType(MenuPage::LayoutType::VBOX);

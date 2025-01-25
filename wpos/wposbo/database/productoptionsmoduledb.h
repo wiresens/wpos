@@ -1,24 +1,19 @@
-/***************************************************************************
-                          productoptionsmoduledb.h  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  productoptionsmoduledb.h
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #ifndef PRODUCTOPTIONSMODULEDB_H
 #define PRODUCTOPTIONSMODULEDB_H
 
 #include <wposcore/basicdatabase.h>
 
-#include <QString>
 #include <QList>
+#include <QString>
 
-struct ProductOptionData{
+struct ProductOptionData {
     QString option_type;
     QString description_type;
     QString option_name;
@@ -27,13 +22,10 @@ struct ProductOptionData{
     bool is_default;
 };
 
-
-class ProductOptionsModuleDB :
-        public BasicDatabase
-{
+class ProductOptionsModuleDB : public BasicDatabase {
 public:
     ProductOptionsModuleDB(QString _name_connection, QString _path_connection, QString _database, QString _username, QString _passwd);
-    ProductOptionsModuleDB(const QString& _connection_name, XmlConfig *xml);
+    ProductOptionsModuleDB(const QString& _connection_name, XmlConfig* xml);
     ProductOptionsModuleDB(const QString& _connection_name, const QString& configuration_path);
     ~ProductOptionsModuleDB();
 
@@ -60,33 +52,32 @@ public:
     QStringList* getOptionTypes();
 
     bool insertOption(const QString& option_type, const QString& option_name,
-                      const QString& option_description);
+        const QString& option_description);
 
     bool insertOptionType(const QString& option_type, const QString& description_type);
 
     bool updateOption(const QString& option_type, const QString& option_name,
-                      const QString& description_type);
+        const QString& description_type);
 
     bool updateOptionType(const QString& option_type, const QString& description_type);
 
     bool existProductAndOption(const QString& product_code, const QString& option_type,
-                               const QString& option_name);
+        const QString& option_name);
 
     QList<ProductOptionData*>* getProductOptions(const QString& product_code);
 
     bool insertOptionToProduct(const QString& product_code, const QString& option_type,
-                               const QString& option_name, double value, const QString& is_default);
+        const QString& option_name, double value, const QString& is_default);
 
     bool updateOptionToProduct(const QString& product_code, const QString& option_type,
-                               const QString& option_name, double value, const QString& is_default);
+        const QString& option_name, double value, const QString& is_default);
 
     bool deleteOptionToProduct(const QString& product_code, const QString& option_type,
-                               const QString& option_name);
+        const QString& option_name);
 
-    bool setAllProductOptionValue(const QString& option_type,const QString& option_name, const QString& value);
+    bool setAllProductOptionValue(const QString& option_type, const QString& option_name, const QString& value);
 
-    bool updateAllProductOptionValue(const QString& option_type,const QString& option_name,const QString& value);
-
+    bool updateAllProductOptionValue(const QString& option_type, const QString& option_name, const QString& value);
 };
 
 #endif

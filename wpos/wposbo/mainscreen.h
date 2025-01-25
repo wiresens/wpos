@@ -1,14 +1,9 @@
-/***************************************************************************
-                          linuxbarbackoffice.h  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  mainscreen.h
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #ifndef MAINSCREEN_H
 #define MAINSCREEN_H
@@ -38,11 +33,11 @@ class MainScreenMenu;
  *****************************************************************************/
 
 /** LinuxBarBackOffice is the base class of the project */
-class MainScreen : public QWidget{
+class MainScreen : public QWidget {
     Q_OBJECT
 
 public:
-    explicit MainScreen(QWidget* parent=nullptr);
+    explicit MainScreen(QWidget* parent = nullptr);
     ~MainScreen() = default;
 
 protected:
@@ -50,9 +45,9 @@ protected:
     void buildMenuStack();
     void buildScreenMenu();
 
-    QVBoxLayout *mainLayout{};
-    MenuStack   *menuStack{};
-    MainScreenMenu  *screenMenu{};
+    QVBoxLayout* mainLayout {};
+    MenuStack* menuStack {};
+    MainScreenMenu* screenMenu {};
 };
 
 #endif

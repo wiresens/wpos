@@ -15,26 +15,25 @@
 
 #include "ui_screenproductsdesigninterface.h"
 
-#include <wposcore/hlist.h>
 #include <libbslxml/xmlconfig.h>
+#include <wposcore/hlist.h>
 
 class BslDDTable;
 class BslDDIconView;
 class ScreenNode;
 class ProductData;
 
-class ProductScreenDesignWidget :
-        public QWidget ,
-        private Ui::ScreenProductsDesignInterface{
+class ProductScreenDesignWidget : public QWidget,
+                                  private Ui::ScreenProductsDesignInterface {
 
     Q_OBJECT
 public:
-    explicit ProductScreenDesignWidget(QWidget *parent = 0, const QString& name = QString{});
+    explicit ProductScreenDesignWidget(QWidget* parent = 0, const QString& name = QString {});
     ~ProductScreenDesignWidget() = default;
 
 signals:
     void cancel();
-    void productReaded(int num,const QString& screen_name,const QString& product_name,const QString& logo);
+    void productReaded(int num, const QString& screen_name, const QString& product_name, const QString& logo);
 
 protected slots:
     void forwardReleased();
@@ -49,7 +48,7 @@ protected slots:
     void clear();
 
     void startShowing();
-    void productReadedSlot(int num,const QString& screen_name,const QString& product_name,const QString& logo);
+    void productReadedSlot(int num, const QString& screen_name, const QString& product_name, const QString& logo);
 
     void deleteSlot();
 
@@ -60,8 +59,8 @@ protected slots:
     void downSlot();
 
 protected:
-    void showEvent(QShowEvent *e);
-    void hideEvent(QHideEvent *e);
+    void showEvent(QShowEvent* e);
+    void hideEvent(QHideEvent* e);
 
     void getScreens();
     void initScreens();
@@ -77,9 +76,9 @@ protected:
     ProductData* xmlToProduct(const QString& xml_str);
 
 private:
-    BslDDTable* screen{};
-    BslDDIconView* products{};
-    HList<ScreenNode>* screen_list{};
+    BslDDTable* screen {};
+    BslDDIconView* products {};
+    HList<ScreenNode>* screen_list {};
 
     QString actual_namestring;
     int actual_size;

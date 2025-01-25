@@ -10,12 +10,12 @@
 #include "advancedproductinsertionwidget.h"
 
 AdvancedProductUpdateWidget::AdvancedProductUpdateWidget(
-        ProductModule *product_model,
-        QWidget *parent, const QString& name ):
-    AdvancedProductEditionWidget(product_model, parent,name)
+    ProductModule* product_model,
+    QWidget* parent, const QString& name)
+    : AdvancedProductEditionWidget(product_model, parent, name)
 {
-    QVBoxLayout *vlayout{};
-    if (!( vlayout = qobject_cast<QVBoxLayout *> (update_frame->layout())))
+    QVBoxLayout* vlayout {};
+    if (!(vlayout = qobject_cast<QVBoxLayout*>(update_frame->layout())))
         vlayout = new QVBoxLayout(update_frame);
 
     product_insertion_form = new AdvancedProductInsertionWidget(product_model, ProductInsertionWidget::Unitary, update_frame, "Update Widget");
@@ -25,19 +25,23 @@ AdvancedProductUpdateWidget::AdvancedProductUpdateWidget(
     connect(product_insertion_form, &AdvancedProductInsertionWidget::acceptSignal, this, &AdvancedProductUpdateWidget::nUpdateAcceptSlot);
 }
 
-void AdvancedProductUpdateWidget::acceptSlot(){
+void AdvancedProductUpdateWidget::acceptSlot()
+{
     auto items = product_listview->selectedItems();
-    if( items.isEmpty()) return;
+    if (items.isEmpty())
+        return;
     auto item = items.first();
     stack->setCurrentWidget(update_page);
     product_insertion_form->setProduct(item->text(Code));
 }
 
-void AdvancedProductUpdateWidget::nUpdateAcceptSlot(){
+void AdvancedProductUpdateWidget::nUpdateAcceptSlot()
+{
     startShowing();
 }
 
-void AdvancedProductUpdateWidget::nUpdateCancelSlot(){
+void AdvancedProductUpdateWidget::nUpdateCancelSlot()
+{
     product_insertion_form->clear();
     stack->setCurrentWidget(product_page);
 }

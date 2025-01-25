@@ -20,44 +20,42 @@ class MenuStack;
 class QTreeWidgetItem;
 class QShowEvent;
 
-class GenericScreen : public QWidget  {
+class GenericScreen : public QWidget {
     Q_OBJECT
 public:
-    enum Column{
+    enum Column {
         Icon = 0,
         Name = 1,
         Text = Icon
     };
 
     GenericScreen(
-        XmlConfig &xml,
+        XmlConfig& xml,
         const QString& rootDomain,
         QWidget* parent,
-        const QString &name
-    );
+        const QString& name);
 
     ~GenericScreen() = default;
-    void showEvent(QShowEvent *event) override;
+    void showEvent(QShowEvent* event) override;
 
 signals:
     void footerRequested(bool needed);
-    void menuRequested(const QString &menu_name);
-    void menuChanged(const QString &menu);
+    void menuRequested(const QString& menu_name);
+    void menuChanged(const QString& menu);
 
-public slots:    
+public slots:
     void setCurrentMenu(QTreeWidgetItem* item);
-    
+
 private:
     void parseXmlDescription(
-        XmlConfig &xml,
-        const QString& rootDomain
-    );
+        XmlConfig& xml,
+        const QString& rootDomain);
 
 private:
-    QTreeWidgetItem *rootItem{};
-    MenuStack       *menuStack{};
-    QHBoxLayout     *mainLayout{};
-    TreeView        *subMenus{};
+    QTreeWidgetItem* rootItem {};
+    MenuStack* menuStack {};
+    QHBoxLayout* mainLayout {};
+    TreeView* subMenus {};
 };
 
 #endif

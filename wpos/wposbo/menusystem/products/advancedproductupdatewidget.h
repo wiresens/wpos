@@ -18,16 +18,14 @@
 class ProductModule;
 class AdvancedProductInsertionWidget;
 
-class AdvancedProductUpdateWidget :
-        public AdvancedProductEditionWidget
-{
+class AdvancedProductUpdateWidget : public AdvancedProductEditionWidget {
     Q_OBJECT
 
 public:
-    explicit AdvancedProductUpdateWidget(ProductModule *product_model, QWidget *parent=0, const QString& name= QString{});
+    explicit AdvancedProductUpdateWidget(ProductModule* product_model, QWidget* parent = 0, const QString& name = QString {});
     ~AdvancedProductUpdateWidget() = default;
 
-public slots:    
+public slots:
     virtual void acceptSlot() override;
 
 protected slots:
@@ -35,7 +33,7 @@ protected slots:
     void nUpdateCancelSlot();
 
 private:
-    AdvancedProductInsertionWidget *product_insertion_form{};
+    AdvancedProductInsertionWidget* product_insertion_form {};
 };
 
 #endif

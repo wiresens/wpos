@@ -29,22 +29,21 @@ class BslDDTable;
 class ProductData;
 class QListWidgetItem;
 
-class BasicProductCreationWidget :
-        public QWidget,
-        protected Ui::BasicProductCreationWidgetBase{
+class BasicProductCreationWidget : public QWidget,
+                                   protected Ui::BasicProductCreationWidgetBase {
 
     Q_OBJECT
 public:
-    explicit BasicProductCreationWidget(ProductModule *_product_mod,
-                                  int _mode_product = 0,
-                                  QWidget *parent=0,
-                                  const QString& name= QString{});
+    explicit BasicProductCreationWidget(ProductModule* _product_mod,
+        int _mode_product = 0,
+        QWidget* parent = 0,
+        const QString& name = QString {});
 
     ~BasicProductCreationWidget() = default;
 
-    enum ProductMode{
+    enum ProductMode {
         UnitaryProduct = 0,
-        CompositionProduct =1
+        CompositionProduct = 1
     };
 
     QWidget* getIdVisibleWidget();
@@ -57,7 +56,7 @@ public slots:
     void showWidgetAction();
     void showInsertProduct();
 
-    void productNameChanged(const QString &text);
+    void productNameChanged(const QString& text);
     void productPriceChanged(double price);
     void taxChanged();
     void logoButtonClicked();
@@ -73,8 +72,8 @@ public slots:
 
     void draggedText(int x, int y, const QString& text);
     void searchButtonClicked();
-    void searchEditChanged(const QString &text);
-    void selectProduct(const QString& product, BslDDIconView *icon_view);
+    void searchEditChanged(const QString& text);
+    void selectProduct(const QString& product, BslDDIconView* icon_view);
 
     void upButtonClicked();
     void downButtonClicked();
@@ -85,11 +84,11 @@ public slots:
     void newOptionClicked();
     void newOfferClicked();
 
-    void getLogo(QListWidgetItem *item);
+    void getLogo(QListWidgetItem* item);
 
 protected:
-    virtual void hideEvent(QHideEvent *e) override;
-    virtual void showEvent(QShowEvent *e) override;
+    virtual void hideEvent(QHideEvent* e) override;
+    virtual void showEvent(QShowEvent* e) override;
 
     void init();
     void clear();
@@ -100,11 +99,11 @@ protected:
     QList<IngredientData*> getComposition();
     QString getTax();
 
-    void insertItems(BslDDIconView *icon_view, bool unitary);
+    void insertItems(BslDDIconView* icon_view, bool unitary);
     int productPosition(const QString& name, XmlConfig* xml);
 
     void initTaxes();
-    void initLogos(BslDDIconView *icon_view);
+    void initLogos(BslDDIconView* icon_view);
 
     bool insertNewProduct();
     bool insertProductComposition(const QString& code);
@@ -119,26 +118,26 @@ protected:
     void clearButtonList();
 
 protected:
-    FloatKeyboard *float_keyboard_product{};
-    ProductOptionCreationWidget *option_widget{};
-    ProductOfferCreationWidget *offer_widget{};
-    BslDDIconView *icon_view{};
-    BslDDIconView *logo_view{};
-    BslDDTable *table{};
+    FloatKeyboard* float_keyboard_product {};
+    ProductOptionCreationWidget* option_widget {};
+    ProductOfferCreationWidget* offer_widget {};
+    BslDDIconView* icon_view {};
+    BslDDIconView* logo_view {};
+    BslDDTable* table {};
 
-    ProductData *product;
+    ProductData* product;
     QString logo;
 
     QList<IngredientData*> code_list;
     QList<QPushButton*> button_list;
 
 private:
-    ProductModule *product_mod{};
-    QMenu *pop_logo_menu{};
-    QMenu *pop_option_menu{};
-    QMenu *pop_offer_menu{};
-    QButtonGroup* tax_button_group{};
-    ProductMode product_mode{UnitaryProduct};
+    ProductModule* product_mod {};
+    QMenu* pop_logo_menu {};
+    QMenu* pop_option_menu {};
+    QMenu* pop_offer_menu {};
+    QButtonGroup* tax_button_group {};
+    ProductMode product_mode { UnitaryProduct };
 };
 
 #endif

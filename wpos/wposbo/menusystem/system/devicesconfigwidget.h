@@ -18,32 +18,29 @@
 #ifndef DEVICESCONFIG_H
 #define DEVICESCONFIG_H
 
-#include <QWidget>
 #include "ui_devicesconfigwidgetbase.h"
+#include <QWidget>
 
 /**
-  *@author Carlos Manzanedo
-  */
+ *@author Carlos Manzanedo
+ */
 
-class DevicesConfig :
-        public QWidget,
-        private Ui::DeviceConfigWidgetBase
-{
+class DevicesConfig : public QWidget,
+                      private Ui::DeviceConfigWidgetBase {
     Q_OBJECT
 public:
-
-    enum DrawerType{
+    enum DrawerType {
         Serial = 0,
         Drawer = 1,
         Samsung = 2
     };
 
-    enum PrinterType{
+    enum PrinterType {
         Direct = 0,
         Ipp = 1
     };
 
-    enum CashboxDevice{
+    enum CashboxDevice {
         S0 = 0,
         S1 = 1,
         S2 = 2,
@@ -56,7 +53,7 @@ public:
         USB3 = 9
     };
 
-    explicit DevicesConfig(QWidget *parent=0, const QString& name = QString{});
+    explicit DevicesConfig(QWidget* parent = 0, const QString& name = QString {});
     ~DevicesConfig() = default;
 
 public slots:
@@ -74,12 +71,11 @@ public slots:
     void somethingChanged(int index);
 
 protected:
-    virtual void showEvent(QShowEvent *e) override;
+    virtual void showEvent(QShowEvent* e) override;
 
     void readDevicesConfig();
     void readCashboxConfig();
     void readPrinterConfig();
-
 
     void writeDevicesConfig();
     void writePrinterConfig();

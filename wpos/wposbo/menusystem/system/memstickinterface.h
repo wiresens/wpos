@@ -17,8 +17,8 @@
 #ifndef MEM_STICK_INTERFACE_H
 #define MEM_STICK_INTERFACE_H
 
-class MemStickInterface{
-    virtual void setOperationResult(bool) = 0; //ASYNC
+class MemStickInterface {
+    virtual void setOperationResult(bool) = 0; // ASYNC
 };
 
 #endif // MEM_STICK_INTERFACE_H

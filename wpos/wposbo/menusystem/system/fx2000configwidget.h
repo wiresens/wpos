@@ -13,19 +13,18 @@
 #ifndef FX2000CONFIGWIDGET_H
 #define FX2000CONFIGWIDGET_H
 
-#include <QWidget>
-#include "ui_fx2000configwidgetbase.h"
 #include "memstickinterface.h"
+#include "ui_fx2000configwidgetbase.h"
+#include <QWidget>
 
 class PosLabel;
 class FX2000EnrollWidget;
 class UserModule;
 class QTimer;
 
-class FX2000ConfigWidget :
-        public QWidget,
-        virtual public MemStickInterface,
-        private Ui::FX2000ConfigWidgetBase
+class FX2000ConfigWidget : public QWidget,
+                           virtual public MemStickInterface,
+                           private Ui::FX2000ConfigWidgetBase
 
 {
     Q_OBJECT
@@ -34,11 +33,11 @@ class FX2000ConfigWidget :
 public:
     static const QString DBusObjectPath;
 
-    FX2000ConfigWidget(UserModule *model, QWidget *parent=0, const QString& name = QString());
+    FX2000ConfigWidget(UserModule* model, QWidget* parent = 0, const QString& name = QString());
     ~FX2000ConfigWidget() = default;
 
 public slots:
-    virtual void operationResultSlot(bool status) override; //ASYNC
+    virtual void operationResultSlot(bool status) override; // ASYNC
 
 protected slots:
     void redToggle(bool on);
@@ -77,7 +76,7 @@ protected slots:
     void deviceClickedAt(QString name);
 
 protected:
-    void showEvent(QShowEvent *e);
+    void showEvent(QShowEvent* e);
     void connectAll();
     void disconnectAll();
 
@@ -91,11 +90,12 @@ protected:
 private:
     void checkLeds(const QString& cmd, QCheckBox* button = nullptr);
     void checkSensibility(const QString& cmd, QSlider* sld, QProgressBar* pb, uint coef = 100);
+
 private:
-    UserModule *model{};
-    PosLabel *device_label{};
-    FX2000EnrollWidget *enroll_widget{};
-    QTimer *timer;
+    UserModule* model {};
+    PosLabel* device_label {};
+    FX2000EnrollWidget* enroll_widget {};
+    QTimer* timer;
 
     int pos;
 };

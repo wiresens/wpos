@@ -19,11 +19,11 @@ class ProductModule;
 class IngredientData;
 class ProductData;
 
-class BasicProductUpdateWidget  : public BasicProductCreationWidget{
+class BasicProductUpdateWidget : public BasicProductCreationWidget {
     Q_OBJECT
 
-public: 
-    explicit BasicProductUpdateWidget(ProductModule* _product_mod, QWidget *parent={}, const QString& name=QString{});
+public:
+    explicit BasicProductUpdateWidget(ProductModule* _product_mod, QWidget* parent = {}, const QString& name = QString {});
     ~BasicProductUpdateWidget() = default;
 
     bool updateProduct();
@@ -42,11 +42,11 @@ private:
 
     QList<IngredientData*>* getIngredientsProduct(const QString& product_code);
 
-    void showEvent(QShowEvent *e);
-    bool isProductEmpty(ProductData *prod);
+    void showEvent(QShowEvent* e);
+    bool isProductEmpty(ProductData* prod);
 
-    ProductModule* product_mod{};
-    QList<IngredientData*> *ingredients_list_old{};
+    ProductModule* product_mod {};
+    QList<IngredientData*>* ingredients_list_old {};
 };
 
 #endif

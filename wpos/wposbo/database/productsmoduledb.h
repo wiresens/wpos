@@ -1,14 +1,9 @@
-/***************************************************************************
-                          product.h  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  productsmoduledb.h
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #ifndef PRODUCTSMODULEDB_H
 #define PRODUCTSMODULEDB_H
@@ -17,8 +12,10 @@
 
 #include <QString>
 
-template<typename T> class QList;
-template<typename Key, typename Value> class QMap;
+template <typename T>
+class QList;
+template <typename Key, typename Value>
+class QMap;
 
 template <typename Value>
 using QPtrMap = QMap<QString, Value*>;
@@ -26,39 +23,42 @@ using QPtrMap = QMap<QString, Value*>;
 template <typename Value>
 using QPtrList = QList<Value*>;
 
-struct ProductData{
-    ProductData( const ProductData *product): ProductData(*product){}
+struct ProductData {
+    ProductData(const ProductData* product)
+        : ProductData(*product)
+    {
+    }
     ProductData() = default;
-//    ~ProductData() = default;
-//    ProductData(const ProductData& p) = default;
-//    ProductData& operator=(const ProductData& p) = default;
+    //    ~ProductData() = default;
+    //    ProductData(const ProductData& p) = default;
+    //    ProductData& operator=(const ProductData& p) = default;
 
     QString code;
     QString name;
     QString tax;
     QString logo;
     QString description;
-    double price{0.0};
+    double price { 0.0 };
 };
 
-struct IngredientData{
+struct IngredientData {
     QString ingredient_code;
     double quantity;
 };
 
 class ProductsModuleDB : public BasicDatabase {
-public: 
+public:
     ProductsModuleDB(QString _name_connection,
-                     QString _path_connection,
-                     QString _database,
-                     QString _username,
-                     QString _passwd);
+        QString _path_connection,
+        QString _database,
+        QString _username,
+        QString _passwd);
 
     ProductsModuleDB(const QString& _connection_name,
-                     XmlConfig *xml);
+        XmlConfig* xml);
 
     ProductsModuleDB(const QString& _connection_name,
-                     const QString& configuration_path);
+        const QString& configuration_path);
 
     virtual ~ProductsModuleDB() = default;
 
@@ -86,22 +86,22 @@ public:
 
     bool isUnitaryProduct(const QString& product_code);
 
-    bool insertProduct(ProductData *product);
+    bool insertProduct(ProductData* product);
 
-    bool updateProduct(ProductData *product);
+    bool updateProduct(ProductData* product);
 
     QPtrList<ProductData>* getCompositions();
 
     bool insertProductComposition(const QString& composition_code,
-                                  const QString& ingredient_code,
-                                  double quantity, int ordering=0);
+        const QString& ingredient_code,
+        double quantity, int ordering = 0);
 
     bool updateProductComposition(const QString& composition_code,
-                                  const QString& ingredient_code,
-                                  double quantity,int ordering=0);
+        const QString& ingredient_code,
+        double quantity, int ordering = 0);
 
     bool existProductComposition(const QString& compositon_code,
-                                 const QString& ingredient_code);
+        const QString& ingredient_code);
 
     QPtrList<IngredientData>* getIngredients(const QString& composition_code);
 
@@ -111,9 +111,9 @@ public:
 
     int getNumberOfProducts();
 
-    void setProductAtPrinter(const QString& product_name,const QString& printer,bool on);
+    void setProductAtPrinter(const QString& product_name, const QString& printer, bool on);
 
-    bool getProductAtPrinter(const QString& product_name,const QString& printer);
+    bool getProductAtPrinter(const QString& product_name, const QString& printer);
 };
 
 #endif

@@ -16,36 +16,36 @@
 
 #include <libbslxml/xmlconfig.h>
 
-#include <QString>
+#include <QCheckBox>
 #include <QComboBox>
-#include <QCheckBox>
 #include <QLineEdit>
+#include <QString>
 
-#include <QPushButton>
 #include <QCheckBox>
-#include <QListWidget>
-#include <QMenu>
-#include <QLayout>
 #include <QDir>
 #include <QLabel>
+#include <QLayout>
+#include <QListWidget>
+#include <QMenu>
 #include <QPixmap>
+#include <QPushButton>
 // #include <QMatrix>
 #include <QTimer>
 
 static const QString& INVITATION_XML = "xmldocs:invitations_description.xml";
 static const double ICON_SIZE = 32.00;
-static const uint TIME_OUT {10};
+static const uint TIME_OUT { 10 };
 static const QString ICON_PATH = "controls:offers/";
 
-AddInvitationScreenWidget::AddInvitationScreenWidget(QWidget *parent, const QString& name):
-    QMenu(parent)
+AddInvitationScreenWidget::AddInvitationScreenWidget(QWidget* parent, const QString& name)
+    : QMenu(parent)
 {
     setupUi(this);
     setObjectName(name);
 
-//@benes    logo_view->arrangeItemsInGrid(QSize(70,50),true);
-//@benes    logo_view->setMaxItemTextLength(70);
-//@benes    logo_view->setWordWrapIconText(true);
+    //@benes    logo_view->arrangeItemsInGrid(QSize(70,50),true);
+    //@benes    logo_view->setMaxItemTextLength(70);
+    //@benes    logo_view->setWordWrapIconText(true);
 
     up_button->setAutoRepeat(true);
     down_button->setAutoRepeat(true);
@@ -62,81 +62,93 @@ AddInvitationScreenWidget::AddInvitationScreenWidget(QWidget *parent, const QStr
     connect(screen_name_label, &QLineEdit::textChanged, this, &AddInvitationScreenWidget::nameChangedSlot);
     connect(up_button, &QPushButton::clicked, this, &AddInvitationScreenWidget::upButtonSlot);
     connect(down_button, &QPushButton::clicked, this, &AddInvitationScreenWidget::downButtonSlot);
-
 }
 
-void AddInvitationScreenWidget::nameChangedSlot(const QString& name){
-    if (name.isEmpty()) ok_button->setEnabled(false);
-    else  ok_button->setEnabled(true);
+void AddInvitationScreenWidget::nameChangedSlot(const QString& name)
+{
+    if (name.isEmpty())
+        ok_button->setEnabled(false);
+    else
+        ok_button->setEnabled(true);
 }
 
-void AddInvitationScreenWidget::apply(){
-    ProductOfferScreenData *screen = 0;
+void AddInvitationScreenWidget::apply()
+{
+    ProductOfferScreenData* screen = 0;
     QString last_screen_name;
 
     auto text = screen_name_label->text();
     auto item = logo_view->currentItem();
 
-    if ( text.isEmpty() || !item) return;
+    if (text.isEmpty() || !item)
+        return;
 
-    if (updated_screen){
+    if (updated_screen) {
         screen = updated_screen;
         last_screen_name = screen->text;
-    }
-    else
+    } else
         screen = new ProductOfferScreenData();
 
     screen->text = text;
-    screen->name = text+"_entry";
+    screen->name = text + "_entry";
     screen->visible = true;
     screen->enabled = true;
     screen->is_default = entry_default->isChecked();
 
-    if(item) screen->pixmap = ICON_PATH+item->text();
-    else  screen->pixmap.clear();
+    if (item)
+        screen->pixmap = ICON_PATH + item->text();
+    else
+        screen->pixmap.clear();
 
     clear();
-    if (updated_screen) emit screenUpdated(screen,last_screen_name);
-    else  emit screenCreated(screen);
+    if (updated_screen)
+        emit screenUpdated(screen, last_screen_name);
+    else
+        emit screenCreated(screen);
 }
 
-void AddInvitationScreenWidget::cancel(){
+void AddInvitationScreenWidget::cancel()
+{
     clear();
-    if (updated_screen) emit screenUpdated(0, QString{});
-    else emit screenCreated(0);
+    if (updated_screen)
+        emit screenUpdated(0, QString {});
+    else
+        emit screenCreated(0);
 }
 
-void AddInvitationScreenWidget::clear(){
+void AddInvitationScreenWidget::clear()
+{
     screen_name_label->clear();
     logo_view->clear();
     entry_default->setChecked(false);
     ok_button->setEnabled(false);
 }
 
-void AddInvitationScreenWidget::showLogos(){
-//@benes    logo_view->setMaxItemTextLength(70);
+void AddInvitationScreenWidget::showLogos()
+{
+    //@benes    logo_view->setMaxItemTextLength(70);
     logo_view->clear();
     QStringList files = QDir(ICON_PATH).entryList(QStringList("*.png"), QDir::Readable | QDir::Files, QDir::Name);
 
-    QListWidgetItem* item{};
-    for(const auto& filename : files){
+    QListWidgetItem* item {};
+    for (const auto& filename : files) {
         auto abs_file_name = ICON_PATH + filename;
-        item = new QListWidgetItem(cropedIcon(abs_file_name, ICON_SIZE), filename, logo_view );
-//        item->setDragEnabled(false);
+        item = new QListWidgetItem(cropedIcon(abs_file_name, ICON_SIZE), filename, logo_view);
+        //        item->setDragEnabled(false);
     }
 
     logo_view->setSelectionMode(QAbstractItemView::SingleSelection);
 
-    logo_view->setGridSize(QSize(50,50));
-    logo_view->resize(360,160);
+    logo_view->setGridSize(QSize(50, 50));
+    logo_view->resize(360, 160);
     logo_view->show();
 
-    if (!selected_logo.isEmpty()){
+    if (!selected_logo.isEmpty()) {
         auto text = selected_logo;
         auto pos = text.lastIndexOf("/");
-        text = text.mid( pos + 1 , text.length() - pos);
+        text = text.mid(pos + 1, text.length() - pos);
         auto items = logo_view->findItems(text, Qt::MatchContains);
-        if (!items.empty()){
+        if (!items.empty()) {
             item = items.first();
             logo_view->setCurrentItem(item);
             item->setHidden(false);
@@ -146,43 +158,53 @@ void AddInvitationScreenWidget::showLogos(){
     }
 }
 
-void AddInvitationScreenWidget::showEvent(QShowEvent *e){
+void AddInvitationScreenWidget::showEvent(QShowEvent* e)
+{
     QTimer::singleShot(TIME_OUT, this, &AddInvitationScreenWidget::showLogos);
     QWidget::showEvent(e);
 }
 
-void AddInvitationScreenWidget::hideEvent(QHideEvent *e){
+void AddInvitationScreenWidget::hideEvent(QHideEvent* e)
+{
     delete updated_screen;
     QWidget::hideEvent(e);
 }
 
-void AddInvitationScreenWidget::setScreen(const ProductOfferScreenData *screen){
+void AddInvitationScreenWidget::setScreen(const ProductOfferScreenData* screen)
+{
     delete updated_screen;
 
-    if (!screen) return;
+    if (!screen)
+        return;
     updated_screen = new ProductOfferScreenData(screen);
     screen_name_label->setText(updated_screen->text);
     selected_logo = updated_screen->pixmap;
 }
 
-void AddInvitationScreenWidget::upButtonSlot(){
+void AddInvitationScreenWidget::upButtonSlot()
+{
     auto item = logo_view->currentItem();
     auto items = logo_view->selectedItems();
 
-    if ( !item || !items.isEmpty() ) return;
-    else  item = items.first();
+    if (!item || !items.isEmpty())
+        return;
+    else
+        item = items.first();
 
     logo_view->setCurrentItem(item);
     item->setHidden(false);
     item->setSelected(true);
 }
 
-void AddInvitationScreenWidget::downButtonSlot(){
+void AddInvitationScreenWidget::downButtonSlot()
+{
     auto item = logo_view->currentItem();
     auto items = logo_view->selectedItems();
 
-    if ( !item || !items.isEmpty() ) return;
-    else  item = items.last();
+    if (!item || !items.isEmpty())
+        return;
+    else
+        item = items.last();
 
     logo_view->setCurrentItem(item);
     item->setHidden(false);

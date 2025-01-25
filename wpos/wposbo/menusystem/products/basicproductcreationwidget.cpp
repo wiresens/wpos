@@ -12,17 +12,17 @@
 
 #include "basicproductcreationwidget.h"
 
-#include "productoptioncreationwidget.h"
 #include "productoffercreationwidget.h"
+#include "productoptioncreationwidget.h"
 
 #include "menusystem/utils.h"
 
-#include "productsmodule/productmodule.h"
-#include "productsmodule/optionsmodule/productoptionmodule.h"
-#include "productsmodule/offersmodule/productoffermodule.h"
-#include "database/productoptionsmoduledb.h"
 #include "database/productoffersmoduledb.h"
+#include "database/productoptionsmoduledb.h"
 #include "database/productsmoduledb.h"
+#include "productsmodule/offersmodule/productoffermodule.h"
+#include "productsmodule/optionsmodule/productoptionmodule.h"
+#include "productsmodule/productmodule.h"
 
 #include <wposcore/config.h>
 #include <wposgui/common/dragobjects.h>
@@ -55,15 +55,15 @@
 // #include <QFileDialog>
 // #include <QPushButton>
 // #include <QTabWidget>
-#include <QMenu>
 #include <QDir>
+#include <QMenu>
 // #include <QLocale>
 // #include <QImage>
 // #include <QEvent>
 // #include <QHeaderView>
 
 #include <iostream>
-using  std::cerr;
+using std::cerr;
 using std::endl;
 
 static const QColor COLOR_POP_UP = QColor(255, 222, 115);
@@ -76,7 +76,6 @@ static const QString& TAXES_DTD = "dtddocs:products_taxeslist.dtd";
 static const QString& FAMILIES_LIST_DTD = "dtddocs:products_familieslist.dtd";
 static const QString& PRODUCTS_LIST_DTD = "dtddocs:products_productslist.dtd";
 static const QString& PRODUCT_COMPOSITION_DTD = "dtddocs:products_composition.dtd";
-
 
 static const QString TAX_DEFAULT = "iva16";
 static const QString& DEFAULT_QUANTITY = "1";
@@ -91,11 +90,11 @@ static const QString OFFER_BUTTON = "Offer";
 static const double ICON_SIZE = 32.00;
 static const double ICON_BUTTON_SIZE = 50.00;
 
-BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_mod,
-        int _mode_product,
-        QWidget *parent, const QString& name):
-    QWidget(parent),
-    product_mod{_product_mod}
+BasicProductCreationWidget::BasicProductCreationWidget(ProductModule* _product_mod,
+    int _mode_product,
+    QWidget* parent, const QString& name)
+    : QWidget(parent)
+    , product_mod { _product_mod }
 {
     setupUi(this);
     setObjectName(name);
@@ -116,65 +115,65 @@ BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_m
     col_names.append(tr("Quantiy"));
     table->setHorizontalHeaderLabels(col_names);
 
-    QHBoxLayout *layout = 0;
-    if(!(layout = qobject_cast<QHBoxLayout *> (ddtable_frame->layout())))
+    QHBoxLayout* layout = 0;
+    if (!(layout = qobject_cast<QHBoxLayout*>(ddtable_frame->layout())))
         layout = new QHBoxLayout(ddtable_frame);
     layout->addWidget(table);
 
-    //compose and fill the iconview frame
-    icon_view = new BslDDIconView(ddiconview_frame,"iconview");
-    if (!(layout = qobject_cast<QHBoxLayout *> (ddiconview_frame->layout())))
+    // compose and fill the iconview frame
+    icon_view = new BslDDIconView(ddiconview_frame, "iconview");
+    if (!(layout = qobject_cast<QHBoxLayout*>(ddiconview_frame->layout())))
         layout = new QHBoxLayout(ddiconview_frame);
     layout->addWidget(icon_view);
 
-    icon_view->setGridSize(QSize(70,70));
+    icon_view->setGridSize(QSize(70, 70));
 
     float_keyboard_product = new FloatKeyboard(numblock_product_frame);
     float_keyboard_product->setObjectName("float_keyboard_product");
-    if( !( layout = qobject_cast<QHBoxLayout *> (numblock_product_frame->layout())))
+    if (!(layout = qobject_cast<QHBoxLayout*>(numblock_product_frame->layout())))
         layout = new QHBoxLayout(numblock_product_frame);
     layout->addWidget(float_keyboard_product);
 
     //@benes    tax_group_box->setOrientation(Qt::Horizontal);
 
-    //pop logo
+    // pop logo
     pop_logo_menu = new QMenu(this);
     pop_logo_menu->setObjectName("logo");
     pop_logo_menu->setPalette(QPalette(COLOR_POP_UP));
     logo_view = new BslDDIconView(pop_logo_menu);
     logo_view->setObjectName("logo_view");
 
-    if ( !( layout =qobject_cast<QHBoxLayout *> (pop_logo_menu->layout()))){
+    if (!(layout = qobject_cast<QHBoxLayout*>(pop_logo_menu->layout()))) {
         layout = new QHBoxLayout(pop_logo_menu);
     }
     layout->addWidget(logo_view);
-    pop_logo_menu->setContentsMargins(10,10,10,10);
+    pop_logo_menu->setContentsMargins(10, 10, 10, 10);
 
-    logo_view->setGridSize(QSize(60,60));
+    logo_view->setGridSize(QSize(60, 60));
     //@benes    logo_view->setFixedHeight(475);
 
     connect(logo_view, &QListWidget::itemChanged, this, QOverload<QListWidgetItem*>::of(&BasicProductCreationWidget::getLogo));
     //@benes    pop_logo->insertItem(logo_view, 0);
-//@benes    pop_logo_menu->addAction(QString{}, logo_view, logo_view->objectName());
+    //@benes    pop_logo_menu->addAction(QString{}, logo_view, logo_view->objectName());
 
-    //pop option
+    // pop option
     pop_option_menu = new QMenu(this);
-    pop_option_menu->setObjectName( "option");
+    pop_option_menu->setObjectName("option");
     option_widget = new ProductOptionCreationWidget(0.00, pop_option_menu, "option_widget");
     option_widget->initOptionTypes();
     option_widget->setEditable(true);
     option_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     layout = 0;
-    if( ! (layout = qobject_cast<QHBoxLayout *> (pop_option_menu->layout())))
+    if (!(layout = qobject_cast<QHBoxLayout*>(pop_option_menu->layout())))
         layout = new QHBoxLayout(pop_option_menu);
 
     layout->addWidget(option_widget);
     //@benes    pop_option_menu->insertItem(option_widget);
-//@benes    pop_option_menu->addAction(QString{}, option_widget, option_widget->objectName());
+    //@benes    pop_option_menu->addAction(QString{}, option_widget, option_widget->objectName());
     //@benes    pop_option_menu->setLineWidth(0);
 
-    //pop offer
+    // pop offer
     pop_offer_menu = new QMenu(this);
     pop_offer_menu->setObjectName("offer");
     offer_widget = new ProductOfferCreationWidget(0.00, pop_offer_menu, "offer_widget");
@@ -183,52 +182,53 @@ BasicProductCreationWidget::BasicProductCreationWidget(ProductModule *_product_m
     offer_widget->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
 
     layout = 0;
-    if(!(layout = (QHBoxLayout *) pop_offer_menu->layout())){
+    if (!(layout = (QHBoxLayout*)pop_offer_menu->layout())) {
         layout = new QHBoxLayout(pop_offer_menu);
     }
     layout->addWidget(offer_widget);
     //@benes    pop_offer_menu->insertItem(offer_widget);
     //@benes    pop_offer_menu->addAction(QString{}, offer_widget, offer_widget->objectName());
-    //offer_widget    pop_offer_menu->setLineWidth(0);
+    // offer_widget    pop_offer_menu->setLineWidth(0);
 
-    //prepare the connections
-    connect(accept_button,   &QPushButton::released, this, &BasicProductCreationWidget::acceptSlot);
-    connect(cancel_button,  &QPushButton::released, this, &BasicProductCreationWidget::cancelSlot);
-    connect(previous_button,  &QPushButton::released, this, &BasicProductCreationWidget::previousSlot);
-    connect(next_button,  &QPushButton::released, this, &BasicProductCreationWidget::nextSlot);
+    // prepare the connections
+    connect(accept_button, &QPushButton::released, this, &BasicProductCreationWidget::acceptSlot);
+    connect(cancel_button, &QPushButton::released, this, &BasicProductCreationWidget::cancelSlot);
+    connect(previous_button, &QPushButton::released, this, &BasicProductCreationWidget::previousSlot);
+    connect(next_button, &QPushButton::released, this, &BasicProductCreationWidget::nextSlot);
 
-    //product
+    // product
     connect(product_name, &QLineEdit::textChanged, this, &BasicProductCreationWidget::productNameChanged);
     connect(logo_button, &QPushButton::clicked, this, &BasicProductCreationWidget::logoButtonClicked);
     connect(float_keyboard_product, &FloatKeyboard::valueChanged, this, &BasicProductCreationWidget::productPriceChanged);
 
     connect(table, QOverload<int, int, const QString&>::of(&BslDDTable::textEnter), this, &BasicProductCreationWidget::draggedText);
 
-    connect(search_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::searchButtonClicked);
+    connect(search_button, &QPushButton::clicked, this, &BasicProductCreationWidget::searchButtonClicked);
     connect(search_edit, &QLineEdit::textChanged, this, &BasicProductCreationWidget::searchEditChanged);
 
-    connect(up_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::upButtonClicked);
-    connect(down_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::downButtonClicked);
-    connect(delete_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::deleteButtonClicked);
+    connect(up_button, &QPushButton::clicked, this, &BasicProductCreationWidget::upButtonClicked);
+    connect(down_button, &QPushButton::clicked, this, &BasicProductCreationWidget::downButtonClicked);
+    connect(delete_button, &QPushButton::clicked, this, &BasicProductCreationWidget::deleteButtonClicked);
 
-    connect(new_option_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::newOptionClicked);
-    connect(new_offer_button,  &QPushButton::clicked, this, &BasicProductCreationWidget::newOfferClicked);
+    connect(new_option_button, &QPushButton::clicked, this, &BasicProductCreationWidget::newOptionClicked);
+    connect(new_offer_button, &QPushButton::clicked, this, &BasicProductCreationWidget::newOfferClicked);
 
     connect(pop_option_menu, &QMenu::aboutToShow, this, &BasicProductCreationWidget::showPopOption);
     connect(pop_option_menu, &QMenu::aboutToHide, this, &BasicProductCreationWidget::hidePopOption);
 
-    connect(pop_offer_menu,  &QMenu::aboutToShow, this, &BasicProductCreationWidget::showPopOffer);
+    connect(pop_offer_menu, &QMenu::aboutToShow, this, &BasicProductCreationWidget::showPopOffer);
     connect(pop_offer_menu, &QMenu::aboutToHide, this, &BasicProductCreationWidget::hidePopOffer);
 
-    connect(pop_logo_menu,  &QMenu::aboutToShow, this, &BasicProductCreationWidget::showPopLogo);
+    connect(pop_logo_menu, &QMenu::aboutToShow, this, &BasicProductCreationWidget::showPopLogo);
     connect(pop_logo_menu, &QMenu::aboutToHide, this, &BasicProductCreationWidget::hidePopLogo);
 }
 
-void BasicProductCreationWidget::init(){
+void BasicProductCreationWidget::init()
+{
 
     clear();
     product_stack->setCurrentWidget(product_details_page);
-    switch(product_mode){
+    switch (product_mode) {
     case UnitaryProduct:
         previous_button->hide();
         next_button->hide();
@@ -247,7 +247,8 @@ void BasicProductCreationWidget::init(){
     }
 }
 
-void BasicProductCreationWidget::clear(){
+void BasicProductCreationWidget::clear()
+{
     initTaxes();
     table->setRowCount(0);
     product_name->clear();
@@ -258,12 +259,12 @@ void BasicProductCreationWidget::clear(){
     logo_button->setIcon(QIcon());
     logo_button->setText(LOGO_BUTTON);
 
-    if(product){
+    if (product) {
         product = 0;
         delete product;
     }
 
-    switch(product_mode){
+    switch (product_mode) {
     case UnitaryProduct:
         accept_button->setEnabled(false);
         accept_button->show();
@@ -282,23 +283,26 @@ void BasicProductCreationWidget::clear(){
     }
 }
 
-void BasicProductCreationWidget::initTaxes(){
+void BasicProductCreationWidget::initTaxes()
+{
 
     clearTaxes();
-    QLayout *layout = tax_group_box->layout();
-    if(!layout)  return;
+    QLayout* layout = tax_group_box->layout();
+    if (!layout)
+        return;
 
     XmlConfig xml;
-    if(!xml.readXmlFromString(product_mod->getTaxes())) return;
+    if (!xml.readXmlFromString(product_mod->getTaxes()))
+        return;
 
-    if(!xml.validateXmlWithDTD(TAXES_DTD, true)){
-        cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml.validateXmlWithDTD(TAXES_DTD, true)) {
+        cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return;
     }
 
     xml.setDomain("taxes[0]");
-    for( auto i=0; i < xml.howManyTags("tax"); i++){
+    for (auto i = 0; i < xml.howManyTags("tax"); i++) {
         auto tmp_str = xml.readString("tax[" + QString::number(i) + "]");
         auto button = new QPushButton(tmp_str, tax_group_box);
         button->setObjectName(tmp_str);
@@ -311,7 +315,7 @@ void BasicProductCreationWidget::initTaxes(){
         button_list.append(button);
         tax_button_group->addButton(button);
 
-        if(tmp_str == TAX_DEFAULT){
+        if (tmp_str == TAX_DEFAULT) {
             button->setPalette(QPalette(BUTTON_ON));
             button->setDown(false);
         }
@@ -321,17 +325,17 @@ void BasicProductCreationWidget::initTaxes(){
     }
 }
 
-void BasicProductCreationWidget::productNameChanged(const QString &text){
+void BasicProductCreationWidget::productNameChanged(const QString& text)
+{
     QString tmp_str = text;
     static QRegularExpression re(" ");
-    switch(product_mode){
+    switch (product_mode) {
     case UnitaryProduct:
-        tmp_str = tmp_str.replace(re,"_");
-        if(tmp_str.isEmpty()){
+        tmp_str = tmp_str.replace(re, "_");
+        if (tmp_str.isEmpty()) {
             accept_button->setEnabled(false);
             next_button->setEnabled(false);
-        }
-        else{
+        } else {
             accept_button->setEnabled(true);
             next_button->setEnabled(true);
         }
@@ -343,50 +347,56 @@ void BasicProductCreationWidget::productNameChanged(const QString &text){
     }
 }
 
-void BasicProductCreationWidget::taxChanged(){
+void BasicProductCreationWidget::taxChanged()
+{
 
-    for( auto* button : button_list){
-        if( !button->isDown()) button->setPalette(QPalette(BUTTON_ON));
-        else button->setPalette(QPalette(BUTTON_OFF));
+    for (auto* button : button_list) {
+        if (!button->isDown())
+            button->setPalette(QPalette(BUTTON_ON));
+        else
+            button->setPalette(QPalette(BUTTON_OFF));
     }
 }
 
-void BasicProductCreationWidget::initLogos(BslDDIconView *icon_view){
+void BasicProductCreationWidget::initLogos(BslDDIconView* icon_view)
+{
 
     QString absolute_file_path;
     icon_view->clear();
     QStringList files = QDir(ICON_PATH).entryList(QStringList("*.png"), QDir::Files, QDir::Name);
-    for(const auto& file : files){
+    for (const auto& file : files) {
         absolute_file_path = ICON_PATH + file;
-        auto item = new QListWidgetItem( cropedIcon(absolute_file_path, ICON_SIZE) , file, icon_view);
-        icon_view->addItem(item);;
+        auto item = new QListWidgetItem(cropedIcon(absolute_file_path, ICON_SIZE), file, icon_view);
+        icon_view->addItem(item);
+        ;
     }
-    //set also the no lo go icon
-    icon_view->addItem(new QListWidgetItem(tr("WITHOUT ICON") , icon_view));
+    // set also the no lo go icon
+    icon_view->addItem(new QListWidgetItem(tr("WITHOUT ICON"), icon_view));
     files.clear();
 }
 
-void BasicProductCreationWidget::acceptSlot(){
+void BasicProductCreationWidget::acceptSlot()
+{
     offer_widget->checkDefaultOffers();
     option_widget->checkDefaultOptions();
 
-    switch(product_mode){
+    switch (product_mode) {
     case UnitaryProduct:
-        if(!insertNewProduct())
+        if (!insertNewProduct())
             return;
         break;
     case CompositionProduct:
-        if(!insertNewComposition())
+        if (!insertNewComposition())
             return;
         break;
     }
 
-    if(!option_widget->saveOptionsProduct(product->code)){
+    if (!option_widget->saveOptionsProduct(product->code)) {
         cerr << "Can not save product options " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
 
-    if(!offer_widget->saveOffersProduct(product->code)){
+    if (!offer_widget->saveOffersProduct(product->code)) {
         cerr << "Can not save product offers " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
@@ -397,26 +407,27 @@ void BasicProductCreationWidget::acceptSlot(){
     product_stack->setCurrentWidget(product_details_page);
 }
 
-void BasicProductCreationWidget::activeButtons(){
+void BasicProductCreationWidget::activeButtons()
+{
     QString aux;
     int rows;
 
     aux = product_name->text();
     rows = table->rowCount();
-    if(aux.isEmpty()){
+    if (aux.isEmpty()) {
         accept_button->setEnabled(false);
         next_button->setEnabled(false);
-    }
-    else{
+    } else {
         next_button->setEnabled(true);
-        if(rows > 1)
+        if (rows > 1)
             accept_button->setEnabled(true);
         else
             accept_button->setEnabled(false);
     }
 }
 
-bool BasicProductCreationWidget::insertNewProduct(){
+bool BasicProductCreationWidget::insertNewProduct()
+{
 
     clearCodeList();
     auto ingredient = new IngredientData;
@@ -428,7 +439,8 @@ bool BasicProductCreationWidget::insertNewProduct(){
     ingredient->quantity = 1.00;
     code_list.append(ingredient);
 
-    if(!product)  product = new ProductData;
+    if (!product)
+        product = new ProductData;
 
     product->code = code_aux;
     product->name = product_name->text();
@@ -450,44 +462,48 @@ bool BasicProductCreationWidget::insertNewProduct(){
     xml.releaseDomain("product", false);
     xml.releaseDomain("products", true);
 
-    if(!xml.validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-        cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml.validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+        cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return false;
     }
 
-    if(product_mod->insertProduct(xml.toString())){
-        if(!insertProductComposition(code_aux)){
+    if (product_mod->insertProduct(xml.toString())) {
+        if (!insertProductComposition(code_aux)) {
             QMessageBox::warning(this, tr("Inserting product"), tr("An error occurred while inserting the product,\n Try again later."));
             return false;
         }
-    }
-    else  return false;
+    } else
+        return false;
     return true;
 }
 
-QString BasicProductCreationWidget::getTax(){
-    for(const auto& button : button_list)
-        if(! button->isDown()) return button->text();
-    return QString{};
+QString BasicProductCreationWidget::getTax()
+{
+    for (const auto& button : button_list)
+        if (!button->isDown())
+            return button->text();
+    return QString {};
 }
 
-bool BasicProductCreationWidget::insertProductComposition(const QString& code){
+bool BasicProductCreationWidget::insertProductComposition(const QString& code)
+{
 
     XmlConfig xml;
     xml.createElementSetDomain("composition");
     xml.createElement("composition_code", code);
 
-    for (auto* ingredient : code_list){
+    for (auto* ingredient : code_list) {
 
-        if(ingredient->ingredient_code.isEmpty())  continue;
+        if (ingredient->ingredient_code.isEmpty())
+            continue;
 
         xml.createElementSetDomain("ingredient");
         xml.createElement("ingredient_code", ingredient->ingredient_code);
 
-        if(ingredient->quantity == 0.00){
+        if (ingredient->quantity == 0.00) {
             QMessageBox::warning(this, tr("Creating Composition"),
-                                 tr("Quantity of each product must be greater than 0"));
+                tr("Quantity of each product must be greater than 0"));
             cerr << "Problems with product cuantity " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
             return false;
         }
@@ -497,8 +513,8 @@ bool BasicProductCreationWidget::insertProductComposition(const QString& code){
     }
     xml.releaseDomain("composition", true);
 
-    if(!xml.validateXmlWithDTD(PRODUCT_COMPOSITION_DTD, true)){
-        cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml.validateXmlWithDTD(PRODUCT_COMPOSITION_DTD, true)) {
+        cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return false;
     }
@@ -506,7 +522,8 @@ bool BasicProductCreationWidget::insertProductComposition(const QString& code){
     return product_mod->insertProductComposition(xml.toString());
 }
 
-QString BasicProductCreationWidget::getCode(){
+QString BasicProductCreationWidget::getCode()
+{
 
     clearCodeList();
     code_list = getComposition();
@@ -515,8 +532,7 @@ QString BasicProductCreationWidget::getCode(){
     prod_code.replace(" ", "_");
     prod_code = prod_code.toLower();
 
-
-    if(code_list.isEmpty()){
+    if (code_list.isEmpty()) {
         auto ingredient = new IngredientData;
         ingredient->ingredient_code = prod_code;
         ingredient->quantity = 1.00;
@@ -525,30 +541,31 @@ QString BasicProductCreationWidget::getCode(){
     }
 
     QStringList codes;
-    for(const auto* ingredient : code_list)
+    for (const auto* ingredient : code_list)
         codes.append(ingredient->ingredient_code);
 
     codes.sort();
     prod_code.clear();
 
-    for(const auto& code : codes)
+    for (const auto& code : codes)
         prod_code += " " + code;
 
     return prod_code.toLower().trimmed();
 }
 
-int BasicProductCreationWidget::productPosition(const QString& name, XmlConfig *xml){
-    //if the xml haven't this product's name, return a negative number
+int BasicProductCreationWidget::productPosition(const QString& name, XmlConfig* xml)
+{
+    // if the xml haven't this product's name, return a negative number
     int position = -1;
     int i, count;
     QString auxiliar;
 
     count = xml->howManyTags("product");
-    for(i = 0; i < count; i++){
-        //Read the product's name
-        auxiliar = xml->readString("product["+QString::number(i)+"].name");
+    for (i = 0; i < count; i++) {
+        // Read the product's name
+        auxiliar = xml->readString("product[" + QString::number(i) + "].name");
 
-        if (auxiliar == name){
+        if (auxiliar == name) {
             position = i;
             break;
         }
@@ -557,13 +574,15 @@ int BasicProductCreationWidget::productPosition(const QString& name, XmlConfig *
     return position;
 }
 
-void BasicProductCreationWidget::clearTaxes(){
+void BasicProductCreationWidget::clearTaxes()
+{
     clearButtonList();
 }
 
-void BasicProductCreationWidget::showWidgetAction(){
+void BasicProductCreationWidget::showWidgetAction()
+{
     showInsertProduct();
-    if(product_mode == UnitaryProduct){
+    if (product_mode == UnitaryProduct) {
         accept_button->hide();
         next_button->show();
         previous_button->hide();
@@ -571,7 +590,8 @@ void BasicProductCreationWidget::showWidgetAction(){
     }
 }
 
-void BasicProductCreationWidget::showInsertProduct(){
+void BasicProductCreationWidget::showInsertProduct()
+{
     product_stack->setCurrentWidget(product_details_page);
     clear();
 
@@ -581,29 +601,32 @@ void BasicProductCreationWidget::showInsertProduct(){
     cancel_button->show();
 }
 
-void BasicProductCreationWidget::cancelSlot(){
+void BasicProductCreationWidget::cancelSlot()
+{
     clearCodeList();
     clear();
 }
 
-void BasicProductCreationWidget::setTax(const QString& tax){
+void BasicProductCreationWidget::setTax(const QString& tax)
+{
 
-    for(auto* button : button_list){
-        if (button->text() == tax){
+    for (auto* button : button_list) {
+        if (button->text() == tax) {
             button->setDown(false);
             button->setPalette(QPalette(BUTTON_ON));
-        }
-        else{
+        } else {
             button->setDown(true);
             button->setPalette(QPalette(BUTTON_OFF));
         }
     }
 }
 
-bool BasicProductCreationWidget::insertNewComposition(){
+bool BasicProductCreationWidget::insertNewComposition()
+{
 
     QString product_code = getCode();
-    if(product)  delete product;
+    if (product)
+        delete product;
 
     product = new ProductData;
     product->code = product_code;
@@ -611,22 +634,21 @@ bool BasicProductCreationWidget::insertNewComposition(){
     product->price = float_keyboard_product->value();
     product->tax = getTax();
 
-    QListWidgetItem *item = logo_view->currentItem();
-    if(item)  product->logo = item->text();
-    else product->logo.clear();
+    QListWidgetItem* item = logo_view->currentItem();
+    if (item)
+        product->logo = item->text();
+    else
+        product->logo.clear();
 
     product->description = description_text->text();
 
-    QWidget *page = product_stack->currentWidget();
+    QWidget* page = product_stack->currentWidget();
 
-    if( page == product_details_page)
-    {
+    if (page == product_details_page) {
         insertItems(icon_view, true);
         product_stack->setCurrentWidget(product_composition_page);
         return false;
-    }
-    else if(page == product_composition_page)
-    {
+    } else if (page == product_composition_page) {
         XmlConfig xml;
         xml.createElementSetDomain("products");
         xml.createElementSetDomain("product");
@@ -639,52 +661,59 @@ bool BasicProductCreationWidget::insertNewComposition(){
         xml.releaseDomain("product", true);
         xml.releaseDomain("products", true);
 
-        if(!xml.validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-            cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+        if (!xml.validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+            cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
             xml.debug();
             return false;
         }
 
-        if( ! product_mod->insertProduct( xml.toString()) )  return false;
-        if( !insertProductComposition(product_code) ) return false;
+        if (!product_mod->insertProduct(xml.toString()))
+            return false;
+        if (!insertProductComposition(product_code))
+            return false;
     }
     return true;
 }
 
-void BasicProductCreationWidget::insertItems(BslDDIconView *icon_view, bool unitary){
+void BasicProductCreationWidget::insertItems(BslDDIconView* icon_view, bool unitary)
+{
 
-    if(!icon_view) return;
+    if (!icon_view)
+        return;
     icon_view->clear();
 
     QString xml_string;
-    if(unitary) xml_string = product_mod->getUnitaryProducts();
-    else xml_string = product_mod->getCompositions();
+    if (unitary)
+        xml_string = product_mod->getUnitaryProducts();
+    else
+        xml_string = product_mod->getCompositions();
 
     XmlConfig xml;
-    if(!xml.readXmlFromString(xml_string)){
+    if (!xml.readXmlFromString(xml_string)) {
         cerr << "can not convert xml into string " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         return;
     }
 
-    if(!xml.validateXmlWithDTD(PRODUCTS_LIST_DTD, true)){
-        cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__  << ": " << __LINE__ << endl;
+    if (!xml.validateXmlWithDTD(PRODUCTS_LIST_DTD, true)) {
+        cerr << "xml does not validate against dtd " << __PRETTY_FUNCTION__ << ": " << __LINE__ << endl;
         xml.debug();
         return;
     }
 
     xml.delDomain();
     xml.setDomain("products[0]");
-    for(auto i=0; i < xml.howManyTags("product"); i++){
+    for (auto i = 0; i < xml.howManyTags("product"); i++) {
         xml.setDomain("product[" + QString::number(i) + "]");
         auto iconfile = ICON_PATH + xml.readString("logo");
-        auto item = new QListWidgetItem(cropedIcon(iconfile, ICON_SIZE) , xml.readString("name"), icon_view );
+        auto item = new QListWidgetItem(cropedIcon(iconfile, ICON_SIZE), xml.readString("name"), icon_view);
         icon_view->addItem(item);
         xml.releaseDomain("product", false);
     }
     xml.releaseDomain("products", true);
 }
 
-void BasicProductCreationWidget::nextSlot(){
+void BasicProductCreationWidget::nextSlot()
+{
     product_stack->setCurrentWidget(product_composition_page);
 
     next_button->hide();
@@ -696,10 +725,11 @@ void BasicProductCreationWidget::nextSlot(){
     insertItems(icon_view, true);
 }
 
-void BasicProductCreationWidget::previousSlot(){
+void BasicProductCreationWidget::previousSlot()
+{
     product_stack->setCurrentWidget(product_details_page);
 
-    switch(product_mode){
+    switch (product_mode) {
     case UnitaryProduct:
         next_button->hide();
         accept_button->show();
@@ -718,9 +748,10 @@ void BasicProductCreationWidget::previousSlot(){
     }
 }
 
-void BasicProductCreationWidget::draggedText(int x, int y, const QString& text){
-    (void )x;
-    (void) y;
+void BasicProductCreationWidget::draggedText(int x, int y, const QString& text)
+{
+    (void)x;
+    (void)y;
 
     auto row = table->rowCount();
     auto item = new QTableWidgetItem(text);
@@ -731,45 +762,54 @@ void BasicProductCreationWidget::draggedText(int x, int y, const QString& text){
     activeButtons();
 }
 
-void BasicProductCreationWidget::searchButtonClicked(){
+void BasicProductCreationWidget::searchButtonClicked()
+{
     QString name = product_mod->getProductLike(search_edit->text());
-    if(!name.isEmpty()) selectProduct(name, icon_view);
+    if (!name.isEmpty())
+        selectProduct(name, icon_view);
 }
 
-void BasicProductCreationWidget::searchEditChanged(const QString &text){
+void BasicProductCreationWidget::searchEditChanged(const QString& text)
+{
     QString name = product_mod->getProductLike(text);
-    if(!name.isEmpty()) selectProduct(name, icon_view);
+    if (!name.isEmpty())
+        selectProduct(name, icon_view);
 }
 
-void BasicProductCreationWidget::selectProduct(const QString& product, BslDDIconView *icon_view){
+void BasicProductCreationWidget::selectProduct(const QString& product, BslDDIconView* icon_view)
+{
     auto items = icon_view->findItems(product, Qt::MatchExactly);
-    if(!items.isEmpty()){
+    if (!items.isEmpty()) {
         icon_view->setCurrentItem(items.first());
-//        icon_view->ensureItemVisible(item);
+        //        icon_view->ensureItemVisible(item);
         items.first()->setHidden(false);
     }
 }
 
-void BasicProductCreationWidget::showEvent(QShowEvent *e){
+void BasicProductCreationWidget::showEvent(QShowEvent* e)
+{
     initLogos(logo_view);
     init();
     QWidget::showEvent(e);
 }
 
-void BasicProductCreationWidget::hideEvent(QHideEvent *e){
+void BasicProductCreationWidget::hideEvent(QHideEvent* e)
+{
     clear();
     clearCodeList();
     clearButtonList();
     QWidget::hideEvent(e);
 }
 
-QWidget* BasicProductCreationWidget::getIdVisibleWidget(){
+QWidget* BasicProductCreationWidget::getIdVisibleWidget()
+{
     return product_stack->currentWidget();
 }
 
-void BasicProductCreationWidget::setModeProduct(ProductMode _mode_product){
+void BasicProductCreationWidget::setModeProduct(ProductMode _mode_product)
+{
     product_mode = _mode_product;
-    switch (product_mode){
+    switch (product_mode) {
     case UnitaryProduct:
         logo_button->show();
         break;
@@ -779,13 +819,14 @@ void BasicProductCreationWidget::setModeProduct(ProductMode _mode_product){
     }
 }
 
-QList<IngredientData*> BasicProductCreationWidget::getComposition(){
+QList<IngredientData*> BasicProductCreationWidget::getComposition()
+{
     int index, count;
-    IngredientData *ingredient = 0;
+    IngredientData* ingredient = 0;
     QList<IngredientData*> ingredient_list;
 
     count = table->rowCount();
-    for(index = 0; index < count; index++){
+    for (index = 0; index < count; index++) {
         ingredient = 0;
         ingredient = new IngredientData;
         ingredient->ingredient_code = product_mod->getProductCodeByProductName(table->item(index, 1)->text());
@@ -796,63 +837,68 @@ QList<IngredientData*> BasicProductCreationWidget::getComposition(){
     return ingredient_list;
 }
 
-void BasicProductCreationWidget::upButtonClicked(){
-//@benes
-//    int row, index, count;
+void BasicProductCreationWidget::upButtonClicked()
+{
+    //@benes
+    //    int row, index, count;
 
-//    row = table->currentRow();
-//    if(!row)
-//        return;
+    //    row = table->currentRow();
+    //    if(!row)
+    //        return;
 
-//    table->swapRows(row, row - 1, false);
+    //    table->swapRows(row, row - 1, false);
 
-//    count = table->columnCount();
-//    for(index = 0; index < count; index++){
-//        table->updateCell(row - 1, index);
-//        table->updateCell(row, index);
-//    }
+    //    count = table->columnCount();
+    //    for(index = 0; index < count; index++){
+    //        table->updateCell(row - 1, index);
+    //        table->updateCell(row, index);
+    //    }
 }
 
-void BasicProductCreationWidget::downButtonClicked(){
+void BasicProductCreationWidget::downButtonClicked()
+{
 
-//@benes
-//    int row, index, count;
+    //@benes
+    //    int row, index, count;
 
-//    row = table->currentRow();
-//    if(row == table->rowCount() - 1)  return;
+    //    row = table->currentRow();
+    //    if(row == table->rowCount() - 1)  return;
 
-//    table->swapRows(row, row + 1, false);
+    //    table->swapRows(row, row + 1, false);
 
-//    count = table->columnCount();
-//    for(index = 0; index < count; index++){
-//        table->updateCell(row + 1, index);
-//        table->updateCell(row, index);
-//    }
+    //    count = table->columnCount();
+    //    for(index = 0; index < count; index++){
+    //        table->updateCell(row + 1, index);
+    //        table->updateCell(row, index);
+    //    }
 }
 
-void BasicProductCreationWidget::deleteButtonClicked(){
+void BasicProductCreationWidget::deleteButtonClicked()
+{
     table->removeRow(table->currentRow());
 }
 
-void BasicProductCreationWidget::logoButtonClicked(){
+void BasicProductCreationWidget::logoButtonClicked()
+{
     pop_logo_menu->setFixedSize(300, 300);
-    int x = logo_frame->mapToGlobal(QPoint(0,0)).x() + logo_frame->height();
-    int y = logo_frame->mapToGlobal(QPoint(0,0)).y();
+    int x = logo_frame->mapToGlobal(QPoint(0, 0)).x() + logo_frame->height();
+    int y = logo_frame->mapToGlobal(QPoint(0, 0)).y();
 
-    pop_logo_menu->exec(QPoint(x,y));
+    pop_logo_menu->exec(QPoint(x, y));
 }
 
-void BasicProductCreationWidget::getLogo(QListWidgetItem* item){
+void BasicProductCreationWidget::getLogo(QListWidgetItem* item)
+{
 
     logo.clear();
-    if(item){
+    if (item) {
         logo = item->text();
         if (logo == tr("WITHOUT ICON"))
             logo.clear();
     }
 
     pop_logo_menu->hide();
-    if (logo.isEmpty()){
+    if (logo.isEmpty()) {
         logo_button->setText(tr("Logo"));
         return;
     }
@@ -861,60 +907,71 @@ void BasicProductCreationWidget::getLogo(QListWidgetItem* item){
     logo_button->setIcon(cropedIcon(iconfile, ICON_BUTTON_SIZE));
 }
 
-void BasicProductCreationWidget::getLogo(const QString& file_path){
+void BasicProductCreationWidget::getLogo(const QString& file_path)
+{
     logo_button->setIcon(cropedIcon(file_path, ICON_BUTTON_SIZE));
 }
 
-void BasicProductCreationWidget::newOptionClicked(){
+void BasicProductCreationWidget::newOptionClicked()
+{
     int x = new_option_frame->mapToGlobal(QPoint(0, 0)).x() + new_option_frame->width();
     int y = new_option_frame->mapToGlobal(QPoint(0, 0)).y() + new_option_frame->height() - option_widget->height();
 
-    pop_option_menu->exec(QPoint(x,y));
+    pop_option_menu->exec(QPoint(x, y));
 }
 
-void BasicProductCreationWidget::newOfferClicked(){
+void BasicProductCreationWidget::newOfferClicked()
+{
     int x = new_offer_frame->mapToGlobal(QPoint(0, 0)).x() + new_offer_frame->width();
     int y = new_offer_frame->mapToGlobal(QPoint(0, 0)).y() + new_offer_frame->height() - offer_widget->height();
 
-    pop_offer_menu->exec(QPoint(x,y));
+    pop_offer_menu->exec(QPoint(x, y));
 }
 
-void BasicProductCreationWidget::productPriceChanged(double price){
+void BasicProductCreationWidget::productPriceChanged(double price)
+{
     option_widget->setProductPrice(price);
     offer_widget->setProductPrice(price);
 }
 
-void BasicProductCreationWidget::showPopOption(){
+void BasicProductCreationWidget::showPopOption()
+{
     new_option_frame->setPalette(COLOR_POP_UP);
     setEnabled(false, OPTION_BUTTON);
 }
 
-void BasicProductCreationWidget::hidePopOption(){
+void BasicProductCreationWidget::hidePopOption()
+{
     new_option_frame->setPalette(QPalette(COLOR_POP_DOWN));
     setEnabled(true, OPTION_BUTTON);
 }
 
-void BasicProductCreationWidget::showPopOffer(){
+void BasicProductCreationWidget::showPopOffer()
+{
     new_offer_frame->setPalette(QPalette(COLOR_POP_UP));
     setEnabled(false, OFFER_BUTTON);
 }
 
-void BasicProductCreationWidget::hidePopOffer(){
+void BasicProductCreationWidget::hidePopOffer()
+{
     new_offer_frame->setPalette(QPalette(COLOR_POP_DOWN));
     setEnabled(true, OFFER_BUTTON);
 }
 
-void BasicProductCreationWidget::showPopLogo(){
+void BasicProductCreationWidget::showPopLogo()
+{
     logo_frame->setPalette(QPalette(COLOR_POP_UP));
     setEnabled(false, LOGO_BUTTON);
 }
 
-void BasicProductCreationWidget::hidePopLogo(){
+void BasicProductCreationWidget::hidePopLogo()
+{
     logo_frame->setPalette(QPalette(COLOR_POP_DOWN));
     setEnabled(true, LOGO_BUTTON);
 }
 
-void BasicProductCreationWidget::setEnabled(bool enabled, const QString& button_pressed){
+void BasicProductCreationWidget::setEnabled(bool enabled, const QString& button_pressed)
+{
     title_pixmap_label1->setEnabled(enabled);
     title_pixmap_label_text1->setEnabled(enabled);
     name_label->setEnabled(enabled);
@@ -935,31 +992,34 @@ void BasicProductCreationWidget::setEnabled(bool enabled, const QString& button_
     previous_button->setEnabled(enabled);
     next_button->setEnabled(enabled);
 
-    if(button_pressed == LOGO_BUTTON){
+    if (button_pressed == LOGO_BUTTON) {
         new_option_button->setEnabled(enabled);
         new_offer_button->setEnabled(enabled);
     }
 
-    if(button_pressed == OPTION_BUTTON){
+    if (button_pressed == OPTION_BUTTON) {
         logo_button->setEnabled(enabled);
         new_offer_button->setEnabled(enabled);
     }
 
-    if(button_pressed == OFFER_BUTTON){
+    if (button_pressed == OFFER_BUTTON) {
         logo_button->setEnabled(enabled);
         new_option_button->setEnabled(enabled);
     }
 }
 
-void BasicProductCreationWidget::clearButtonList(){
-    for(auto* button : button_list){
+void BasicProductCreationWidget::clearButtonList()
+{
+    for (auto* button : button_list) {
         tax_button_group->removeButton(button);
         button->deleteLater();
     }
     button_list.clear();
 }
 
-void BasicProductCreationWidget::clearCodeList(){
-    for(auto* code : code_list) delete code;
+void BasicProductCreationWidget::clearCodeList()
+{
+    for (auto* code : code_list)
+        delete code;
     code_list.clear();
 }

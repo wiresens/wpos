@@ -16,7 +16,7 @@
 #include "optioneditionwidget.h"
 #include <QObject>
 
-class OptionDeletionWidget : public OptionEditionWidget{
+class OptionDeletionWidget : public OptionEditionWidget {
 
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wposbo.OptionDeletionModel")
@@ -24,24 +24,24 @@ class OptionDeletionWidget : public OptionEditionWidget{
 public:
     static const QString DBusObjectPath;
 
-    explicit OptionDeletionWidget(QWidget *parent=0, const QString& name = QString{});
+    explicit OptionDeletionWidget(QWidget* parent = 0, const QString& name = QString {});
     ~OptionDeletionWidget() = default;
 
 signals:
-    Q_SCRIPTABLE void optionChanged(); //dbus_signals
+    Q_SCRIPTABLE void optionChanged(); // dbus_signals
 
 protected slots:
     virtual void acceptSlot() override;
     virtual void notify() override;
 
     void optionClickedSlot();
-    void delTypeSlot(); //processType()
-    bool delOption(const QString& type,const QString& option); //processOption()
+    void delTypeSlot(); // processType()
+    bool delOption(const QString& type, const QString& option); // processOption()
 
 protected:
-    virtual void showEvent(QShowEvent *e) override;
+    virtual void showEvent(QShowEvent* e) override;
     virtual void getTypes() override;
     virtual void getOptionTypes(const QString& type) override;
 };
 
-#endif //OPTION_DELETION_WIDGET_H
+#endif // OPTION_DELETION_WIDGET_H

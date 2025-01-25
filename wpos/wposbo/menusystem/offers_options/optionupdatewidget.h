@@ -16,7 +16,7 @@
 #include "optioneditionwidget.h"
 #include <QObject>
 
-class OptionUpdateWidget : public OptionEditionWidget{
+class OptionUpdateWidget : public OptionEditionWidget {
 
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wposbo.OptionUpdateModel")
@@ -24,21 +24,21 @@ class OptionUpdateWidget : public OptionEditionWidget{
 public:
     static const QString DBusObjectPath;
 
-    explicit OptionUpdateWidget(QWidget *parent=0, const QString& name = QString{});
+    explicit OptionUpdateWidget(QWidget* parent = 0, const QString& name = QString {});
     ~OptionUpdateWidget() = default;
 
 signals:
-    Q_SCRIPTABLE void optionChanged(); //dbus_signals
+    Q_SCRIPTABLE void optionChanged(); // dbus_signals
 
 protected slots:
     virtual void acceptSlot() override;
     virtual void notify() override;
 
-    void optionClickedSlot(); //processOption()
-    void applyToAllProductsSlot(); //processType()
+    void optionClickedSlot(); // processOption()
+    void applyToAllProductsSlot(); // processType()
 
 protected:
-    virtual void showEvent(QShowEvent *e) override;
+    virtual void showEvent(QShowEvent* e) override;
     virtual void getTypes() override;
     virtual void getOptionTypes(const QString& type) override;
 };

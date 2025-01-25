@@ -1,28 +1,22 @@
-/***************************************************************************
-                          offer.h  -  description
-                             -------------------
-    begin                 : mon Jun 2 2003
-    copyright          : (C) 2003 by Napsis S.L.
-    email                 : carlos@napsis.com
-
-@author Carlos Manzanedo Rueda
-
-%LICENCIA%
- ***************************************************************************/
+// file      :  productoffermodule.h
+// birth     :  6/2/2003
+// copyright :  Copyright (c) 2003 by Napsis S.L.
+// copyright :  Copyright (c) 2016-2024 WireSens Inc.
+// author    :  Carlos Manzanedo Rueda, Gilles Bene Pougoue
+// contact   :  contact@wiresens.com - +237 697 02 63 76
 
 #ifndef PRODUCT_OFFER_MODULE_H
 #define PRODUCT_OFFER_MODULE_H
 
 #include "productoffermoduleinterface.h"
-#include <QtCore/QObject>
 #include <QString>
+#include <QtCore/QObject>
 
 class ProductOffersModuleDB;
 class ProductOfferData;
 
-class ProductOfferModule :
-        public QObject,
-        virtual public ProductOfferModuleInterface {
+class ProductOfferModule : public QObject,
+                           virtual public ProductOfferModuleInterface {
 
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "com.wiresens.wpos.wposbo.DBusBOProductOffer")
@@ -30,8 +24,8 @@ class ProductOfferModule :
 public:
     static const QString DBusObjectPath;
 
-    explicit ProductOfferModule(QObject *parent= 0, const QString& name= QString{});
-     ~ProductOfferModule() = default;
+    explicit ProductOfferModule(QObject* parent = 0, const QString& name = QString {});
+    ~ProductOfferModule() = default;
 
 public slots:
     Q_SCRIPTABLE bool deleteOffer(const QString& xml_string) override;
@@ -70,11 +64,11 @@ public slots:
     Q_SCRIPTABLE void setAllProductOfferValue(const QString& offer_type, const QString& offer_name, const QString& value) override;
     Q_SCRIPTABLE void updateAllProductOfferValue(const QString& offer_type, const QString& offer_name, const QString& value) override;
 
- private:
-      QString getStringXmlOffer(ProductOfferData* offer);
+private:
+    QString getStringXmlOffer(ProductOfferData* offer);
 
 private:
-      ProductOffersModuleDB *db;
+    ProductOffersModuleDB* db;
 };
 
 #endif

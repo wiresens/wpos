@@ -106,7 +106,6 @@ private:
   */
     //  void deleteFiles(const QString& _dir, const QString& filter);
 
-
     /**
   * Will write the default xml header to this file, this header is writen when
   * a new file is done either temporal or real one. But never overwrite other's headers

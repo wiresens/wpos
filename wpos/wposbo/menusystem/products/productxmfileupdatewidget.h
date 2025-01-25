@@ -18,26 +18,24 @@
 #include <QWidget>
 
 class ProductModule;
-class ProductXmFileUpdateWidget :
-        public QWidget,
-        private Ui::ProductXmFileUpdateWidgetBase
-{
+class ProductXmFileUpdateWidget : public QWidget,
+                                  private Ui::ProductXmFileUpdateWidgetBase {
     Q_OBJECT
 
 public:
-    explicit ProductXmFileUpdateWidget(ProductModule *_product_mod, QWidget *parent=0, const QString &name=QString{});
+    explicit ProductXmFileUpdateWidget(ProductModule* _product_mod, QWidget* parent = 0, const QString& name = QString {});
     ~ProductXmFileUpdateWidget() = default;
 
 public slots:
     void acceptSlot();
-    void updatingProduct(int num, const QString &product);
+    void updatingProduct(int num, const QString& product);
 
 protected:
-    void showEvent(QShowEvent *e);
+    void showEvent(QShowEvent* e);
 
 private:
-    ProductModule *product_mod{};
-    int products{-1};
+    ProductModule* product_mod {};
+    int products { -1 };
 };
 
 #endif

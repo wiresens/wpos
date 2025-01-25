@@ -19,8 +19,8 @@
 #define SHORTCUTBUTTONWIDGET_H
 
 #include "ui_shortcutbuttoninterface.h"
-#include <QtCore/QObject>
 #include <QWidget>
+#include <QtCore/QObject>
 
 #include <wposcore/hlist.h>
 
@@ -28,9 +28,9 @@ class QListWidgetItem;
 class BslDDTable;
 class BslDDIconView;
 
-class ShortcutButtonData{
+class ShortcutButtonData {
 public:
-    enum ButtonType{
+    enum ButtonType {
         Product = 0,
         Offer = 1,
         Option = 2,
@@ -43,25 +43,24 @@ public:
     QString name;
     QString code;
     QString pixmap;
-    ButtonType button_type{ShortcutButtonData::Product};
-    int num{};
-    bool state{false};
+    ButtonType button_type { ShortcutButtonData::Product };
+    int num {};
+    bool state { false };
 };
 
-class ShortcutButtonWidget :
-        public QWidget,
-        private Ui::ShortcutButtonInterface {
+class ShortcutButtonWidget : public QWidget,
+                             private Ui::ShortcutButtonInterface {
 
     Q_OBJECT
 public:
-    enum SpecialButtons{
+    enum SpecialButtons {
         FreePrice = 0,
         GenericProduct = 1,
         OpenCashBox = 2,
-        PrintAtKitchen= 3
+        PrintAtKitchen = 3
     };
 
-    explicit ShortcutButtonWidget(QWidget *parent = 0, const QString& name = QString{});
+    explicit ShortcutButtonWidget(QWidget* parent = 0, const QString& name = QString {});
     ~ShortcutButtonWidget();
 
 public slots:
@@ -83,10 +82,10 @@ protected slots:
 
     void writeConfig();
     void startShowing();
-    void itemReadedSlot(int num, const QString& text1,const QString& text2);
+    void itemReadedSlot(int num, const QString& text1, const QString& text2);
 
 signals:
-    void itemReaded(int num,const QString& text1, const QString& text2);
+    void itemReaded(int num, const QString& text1, const QString& text2);
 
 protected:
     void clear();
@@ -95,16 +94,16 @@ protected:
     void readButtonsXml();
     void showButtonsAtList();
 
-    void showEvent(QShowEvent *e);
+    void showEvent(QShowEvent* e);
 
-    BslDDTable *shortcut_button_table{};
-    BslDDIconView *products_iconview{};
-    BslDDIconView *offers_iconview{};
-    BslDDIconView *options_iconview{};
-    BslDDIconView *special_buttons_iconview{};
+    BslDDTable* shortcut_button_table {};
+    BslDDIconView* products_iconview {};
+    BslDDIconView* offers_iconview {};
+    BslDDIconView* options_iconview {};
+    BslDDIconView* special_buttons_iconview {};
 
-    HList<ShortcutButtonData>* button_list{};
-    bool first_show{true};
+    HList<ShortcutButtonData>* button_list {};
+    bool first_show { true };
 };
 
 #endif

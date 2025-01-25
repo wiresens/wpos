@@ -25,20 +25,19 @@
 #include <iostream>
 using namespace std;
 
-static const uint TIMER_SLOT{5};
-static const QString iconsMsg       {QObject::tr("The icons are being copied\n This operation may take a few minutes...")};
-static const QString dbMsg          {QObject::tr("Database backup is in progress...")};
-static const QString csvMsg         {QObject::tr("The backup copy of the database in CSV format is in progress...")};
-static const QString failedMsg      {QObject::tr("The call to the memory stick save module has failed")};
-static const QString failedcaption  {QObject::tr("The save operation on the stick has failed")};
+static const uint TIMER_SLOT { 5 };
+static const QString iconsMsg { QObject::tr("The icons are being copied\n This operation may take a few minutes...") };
+static const QString dbMsg { QObject::tr("Database backup is in progress...") };
+static const QString csvMsg { QObject::tr("The backup copy of the database in CSV format is in progress...") };
+static const QString failedMsg { QObject::tr("The call to the memory stick save module has failed") };
+static const QString failedcaption { QObject::tr("The save operation on the stick has failed") };
 
-
-const QString MemStickWidget::DBusObject  = QString{"/wpos/wposbo/MemStick"};
+const QString MemStickWidget::DBusObject = QString { "/wpos/wposbo/MemStick" };
 
 MemStickWidget::MemStickWidget(
-    QWidget *parent,
-    const QString& name ):
-    QWidget(parent)
+    QWidget* parent,
+    const QString& name)
+    : QWidget(parent)
 {
     ui = new Ui::MemStickWidgetBase();
     ui->setupUi(this);
@@ -51,11 +50,13 @@ MemStickWidget::MemStickWidget(
     init();
 }
 
-MemStickWidget::~MemStickWidget(){
+MemStickWidget::~MemStickWidget()
+{
     delete timer;
 }
 
-void MemStickWidget::init(){
+void MemStickWidget::init()
+{
 
     QFont font = QApplication::font();
     font.setPointSize(16);
@@ -66,7 +67,7 @@ void MemStickWidget::init(){
     ui->db_listview->header()->hide();
     ui->db_listview->setSelectionMode(QAbstractItemView::SingleSelection);
     ui->db_listview->setAllColumnsShowFocus(true);
-//    ui->db_listview->setColumnAlignment(0, Qt::AlignCenter);
+    //    ui->db_listview->setColumnAlignment(0, Qt::AlignCenter);
 
     ui->export_icons_button->setIcon(QPixmap("controls32:usb_devices.png"));
     ui->import_icons_button->setIcon(QPixmap("controls32:usb_devices.png"));
@@ -92,85 +93,88 @@ void MemStickWidget::init(){
 
     connect(ui->accept_button, &QPushButton::clicked, this, &MemStickWidget::accept);
 
-//    connectDCOPSignal(0,0, "stickOperationDone(bool)", "operationResultSlot(bool)",false); @benes
+    //    connectDCOPSignal(0,0, "stickOperationDone(bool)", "operationResultSlot(bool)",false); @benes
 }
 
-void MemStickWidget::saveIconsToStick(){
+void MemStickWidget::saveIconsToStick()
+{
     QString text;
     QByteArray data, reply_data;
     QDataStream out_stream(&data, QIODevice::ReadWrite);
     QDataStream reply(&reply_data, QIODevice::ReadWrite);
 
-    if (!stickModuleAvailable()){
+    if (!stickModuleAvailable()) {
         showErrorScreen();
         return;
     }
 
-//@benes    client = kapp->dcopClient();
+    //@benes    client = kapp->dcopClient();
     ui->info_label->setText(iconsMsg);
     startTimer();
-//@benes    if (!client->send("dcopstick","dcopstick", "asyncSaveIconsToStick()", data))
+    //@benes    if (!client->send("dcopstick","dcopstick", "asyncSaveIconsToStick()", data))
     errorMessage(failedcaption, iconsMsg, std::cerr);
 }
 
-void MemStickWidget::loadIconsFromStick(){
+void MemStickWidget::loadIconsFromStick()
+{
     QString text;
     QByteArray data, reply_data;
     QDataStream out_stream(&data, QIODevice::ReadWrite);
     QDataStream reply(&reply_data, QIODevice::ReadWrite);
 
-    if (!stickModuleAvailable()){
+    if (!stickModuleAvailable()) {
         showErrorScreen();
         return;
     }
 
-//  client = kapp->dcopClient();  @benes
+    //  client = kapp->dcopClient();  @benes
     ui->info_label->setText(iconsMsg);
     startTimer();
-//    if (!client->send("dcopstick", "dcopstick","asyncGetIconsFromStick()",data)) @benes
+    //    if (!client->send("dcopstick", "dcopstick","asyncGetIconsFromStick()",data)) @benes
     errorMessage(failedcaption, iconsMsg, std::cerr);
-
 }
 
-void MemStickWidget::saveDatabaseToStick(){
+void MemStickWidget::saveDatabaseToStick()
+{
     QString text;
     QByteArray data, reply_data;
-    QDataStream out_stream(&data,QIODevice::ReadWrite);
+    QDataStream out_stream(&data, QIODevice::ReadWrite);
     QDataStream reply(&reply_data, QIODevice::ReadWrite);
 
-    if (!stickModuleAvailable()){
+    if (!stickModuleAvailable()) {
         showErrorScreen();
         return;
     }
 
-//    client = kapp->dcopClient(); @benes
+    //    client = kapp->dcopClient(); @benes
     ui->info_label->setText(dbMsg);
     startTimer();
-//    if (!client->send("dcopstick","dcopstick","asyncSaveDatabaseToStick()",data)) @benes
-        errorMessage(failedcaption, failedMsg, std::cerr);
-
-}
-
-void MemStickWidget::saveDatabaseCSVToStick(){
-    QString text;
-    QString reply_type;
-    QByteArray data, reply_data;
-    QDataStream out_stream(&data,QIODevice::ReadWrite);
-    QDataStream reply(&reply_data, QIODevice::ReadWrite);
-
-    if (!stickModuleAvailable()){
-        showErrorScreen();
-        return;
-    }
-
-//    client = kapp->dcopClient(); @benes
-    ui->info_label->setText(csvMsg);
-    startTimer();
-//    if (!client->send("dcopstick","dcopstick","asyncSaveDatabaseCSVToStick()",data))  @benes
+    //    if (!client->send("dcopstick","dcopstick","asyncSaveDatabaseToStick()",data)) @benes
     errorMessage(failedcaption, failedMsg, std::cerr);
 }
 
-void MemStickWidget::getDatabaseFromStick(){
+void MemStickWidget::saveDatabaseCSVToStick()
+{
+    QString text;
+    QString reply_type;
+    QByteArray data, reply_data;
+    QDataStream out_stream(&data, QIODevice::ReadWrite);
+    QDataStream reply(&reply_data, QIODevice::ReadWrite);
+
+    if (!stickModuleAvailable()) {
+        showErrorScreen();
+        return;
+    }
+
+    //    client = kapp->dcopClient(); @benes
+    ui->info_label->setText(csvMsg);
+    startTimer();
+    //    if (!client->send("dcopstick","dcopstick","asyncSaveDatabaseCSVToStick()",data))  @benes
+    errorMessage(failedcaption, failedMsg, std::cerr);
+}
+
+void MemStickWidget::getDatabaseFromStick()
+{
     int i, count;
     QString sql_string;
     QStringList sql_list;
@@ -179,24 +183,24 @@ void MemStickWidget::getDatabaseFromStick(){
     QDataStream out_stream(&data, QIODevice::ReadWrite);
     QDataStream reply(&reply_data, QIODevice::ReadWrite);
 
-    if (!stickModuleAvailable()){
+    if (!stickModuleAvailable()) {
         showErrorScreen();
         return;
     }
 
     clearDatabasePage();
 
-//    client = kapp->dcopClient(); @benes
-//    if (!client->call("dcopstick","dcopstick","getSqlFilesFromStick()", data,reply_type,reply_data)) @benes
+    //    client = kapp->dcopClient(); @benes
+    //    if (!client->call("dcopstick","dcopstick","getSqlFilesFromStick()", data,reply_type,reply_data)) @benes
     errorMessage(failedcaption, failedMsg, std::cerr);
-    if (reply_type == "QString")  reply >> sql_string;
+    if (reply_type == "QString")
+        reply >> sql_string;
 
-    if (sql_string.isEmpty()){
+    if (sql_string.isEmpty()) {
         QString text = tr(
             "There are no databases saved on the Memory Stick.\n\n\
             The memory stick may not be accessible because\n\
-            It is not plugged into a USB slot or it is already mounted"
-        );
+            It is not plugged into a USB slot or it is already mounted");
         errorMessage(failedcaption, text, std::cerr);
         ui->stack->setCurrentWidget(ui->main_page);
         return;
@@ -207,7 +211,7 @@ void MemStickWidget::getDatabaseFromStick(){
     sql_list = sql_string.split(QLatin1Char(','));
     count = sql_list.count();
 
-    for(auto elt : sql_list){
+    for (auto elt : sql_list) {
         auto item = new QTreeWidgetItem(ui->db_listview);
         item->setText(0, elt);
     }
@@ -215,7 +219,8 @@ void MemStickWidget::getDatabaseFromStick(){
     ui->ok_button->setEnabled(false);
 }
 
-void MemStickWidget::cancel(){
+void MemStickWidget::cancel()
+{
     if (!stickModuleAvailable())
         showErrorScreen();
     else
@@ -223,84 +228,91 @@ void MemStickWidget::cancel(){
     this->clearDatabasePage();
 }
 
-void MemStickWidget::proceed(){
+void MemStickWidget::proceed()
+{
     QString text;
     QString reply_type;
     QByteArray data, reply_data;
-    QDataStream out_stream(&data,QIODevice::ReadWrite);
+    QDataStream out_stream(&data, QIODevice::ReadWrite);
     QDataStream reply(&reply_data, QIODevice::ReadWrite);
     QString db_name;
 
-    if (!stickModuleAvailable()){
+    if (!stickModuleAvailable()) {
         showErrorScreen();
         return;
     }
 
     auto selected_items = ui->db_listview->selectedItems();
-    if (selected_items.isEmpty()) return;
+    if (selected_items.isEmpty())
+        return;
 
     db_name = ui->db_name_lineedit->text();
-    if (selected_items.isEmpty() || db_name.isEmpty()){
+    if (selected_items.isEmpty() || db_name.isEmpty()) {
         ui->stack->setCurrentWidget(ui->main_page);
         return;
     }
     auto item = selected_items.at(0);
-//    client = kapp->dcopClient();
+    //    client = kapp->dcopClient();
     ui->info_label->setText(csvMsg);
     startTimer();
     out_stream << db_name;
     out_stream << item->text(0);
 
-//    if (!client->send("dcopstick","dcopstick", "asyncSetDatabaseFromStick(QString,QString)",data)) @benes
+    //    if (!client->send("dcopstick","dcopstick", "asyncSetDatabaseFromStick(QString,QString)",data)) @benes
     errorMessage(failedcaption, failedMsg, std::cerr);
 }
 
-void MemStickWidget::dbSelection(){
+void MemStickWidget::dbSelection()
+{
     checkAllDB();
 }
 
-void MemStickWidget::dbName(const QString& name){
+void MemStickWidget::dbName(const QString& name)
+{
     checkAllDB();
 }
 
-void MemStickWidget::checkAllDB(){
+void MemStickWidget::checkAllDB()
+{
 
     auto selected_items = ui->db_listview->selectedItems();
     auto name = ui->db_name_lineedit->text();
 
-    if ( !selected_items.isEmpty() && !name.isEmpty())
+    if (!selected_items.isEmpty() && !name.isEmpty())
         ui->ok_button->setEnabled(true);
     else
         ui->ok_button->setEnabled(false);
 }
 
-void MemStickWidget::setOperationResult(bool status){
+void MemStickWidget::setOperationResult(bool status)
+{
 
-    if (!isVisible()) return;
+    if (!isVisible())
+        return;
 
-    if (status){
+    if (status) {
         stopTimer();
         ui->stack->setCurrentWidget(ui->all_ok_page);
-    }
-    else{
+    } else {
         stopTimer();
         auto msg = tr(
             "There have been problems trying to\nperform the operation on the memory stick.\n\
-            Maybe the stick is not connected, connected incorrectly or it is not formatted\n"
-        );
+            Maybe the stick is not connected, connected incorrectly or it is not formatted\n");
         errorMessage(failedcaption, msg, std::cerr);
         ui->stack->setCurrentWidget(ui->main_page);
     }
 }
 
-void MemStickWidget::accept(){
+void MemStickWidget::accept()
+{
     if (!stickModuleAvailable())
         showErrorScreen();
     else
         ui->stack->setCurrentWidget(ui->main_page);
 }
 
-void MemStickWidget::startTimer(){
+void MemStickWidget::startTimer()
+{
     ui->stack->setCurrentWidget(ui->progress_page);
     qApp->processEvents();
     ui->progress_bar->setValue(0);
@@ -309,53 +321,60 @@ void MemStickWidget::startTimer(){
     pos = 0;
 }
 
-void MemStickWidget::timerSlot(){
+void MemStickWidget::timerSlot()
+{
     pos++;
     ui->progress_bar->setValue(pos);
     qApp->processEvents();
 }
 
-void MemStickWidget::stopTimer(){
+void MemStickWidget::stopTimer()
+{
     disconnect(timer, &QTimer::timeout, this, &MemStickWidget::timerSlot);
     timer->stop();
 }
 
-void MemStickWidget::showEvent(QShowEvent *event){
+void MemStickWidget::showEvent(QShowEvent* event)
+{
     /*if ( !stickModuleAvailable())  showErrorScreen();
-    else*/ ui->stack->setCurrentWidget(ui->main_page);
+    else*/
+    ui->stack->setCurrentWidget(ui->main_page);
     QWidget::showEvent(event);
 }
 
-bool MemStickWidget::wposStckicRunning(){
+bool MemStickWidget::wposStckicRunning()
+{
     //    client = kapp->dcopClient();
     //    if (!client->isAttached()) client->attach();
 
     //    if the dcopreceipt is not running  exit without saving
     //    return (client->isApplicationRegistered("dcopstick"));
-    return false ; // @benes
+    return false; // @benes
 }
 
-bool MemStickWidget::showErrorScreen(){
+bool MemStickWidget::showErrorScreen()
+{
     ui->stack->setCurrentWidget(ui->error_page);
     return true;
 }
 
-bool MemStickWidget::stickModuleAvailable(){
+bool MemStickWidget::stickModuleAvailable()
+{
     return wposStckicRunning();
 }
 
-void MemStickWidget::clearDatabasePage(){
+void MemStickWidget::clearDatabasePage()
+{
     ui->db_listview->clear();
     ui->db_name_lineedit->clear();
 }
 
 void MemStickWidget::errorMessage(
-    const QString &caption,
-    const QString &msg,
-    ostream &s)
+    const QString& caption,
+    const QString& msg,
+    ostream& s)
 {
     s << "Problems while trying to call wposstick module\n";
     s << "Make sure the process wposstick is running an try again\n";
     QMessageBox::warning(this, caption, msg, QMessageBox::NoButton);
-
 }

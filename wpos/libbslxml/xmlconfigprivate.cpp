@@ -179,3 +179,12 @@ void XmlConfigPrivate::setXmlHeaderAndFooter(QFile &file){
     if(!stream.seek(0))
         cerr << "We can't get to the beggining of the file" << endl;
 }
+
+// void XmlConfigPrivate::setXmlHeaderAndFooter(QFile &file){
+//     QTextStream stream(&file);
+//     stream << "<?xml version = '1.0' encoding='UTF-8'?> \n<AUTOMATICALLY_GENERATED_XML>\n\n" ; // xml header
+//     stream << "</AUTOMATICALLY_GENERATED_XML>"; // xml footer
+
+//     if(!stream.seek(0)) //rewind the file to the initial pos so the info just written can be read
+//         cerr << "We can't get to the beggining of the file" << endl;
+// }

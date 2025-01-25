@@ -9,7 +9,6 @@
 #include "authentication/credential_manager.h"
 #include "views/product_creation_navigator.h"
 #include "views/inventory/stock_inventory_form.h"
-#include "views/stock_entry_form.h"
 #include "views/stock_creation_navigator.h"
 #include <wposgui/views/content_lister_navigator.h>
 #include <wposgui/views/catalog_browser.h>
